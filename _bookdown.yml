@@ -1,0 +1,31 @@
+book_filename: geocompr2-ja
+rmd_files: 
+    - "index.Rmd"
+    - "01-introduction-ja.Rmd"
+    - "02-spatial-data-ja.Rmd"
+    - "03-attribute-operations-ja.Rmd"
+    - "04-spatial-operations-ja.Rmd"
+    - "05-geometry-operations-ja.Rmd"
+    - "06-raster-vector-ja.Rmd"
+    - "07-reproj-ja.Rmd"
+    - "08-read-write-plot-ja.Rmd"
+    - "09-mapping-ja.Rmd"
+    - "10-gis-ja.Rmd"
+    - "11-algorithms-ja.Rmd"
+    - "12-spatial-cv-ja.Rmd"
+    - "13-transport-ja.Rmd"
+    - "14-location-ja.Rmd"
+    - "15-eco-ja.Rmd"
+    - "16-synthesis-ja.Rmd"
+    - "references.Rmd"
+new_session: yes
+before_chapter_script: ["code/before_script.R"]
+delete_merged_file: true
+language:
+  label:
+    fig: "FIGURE "
+    tab: "TABLE "
+  ui:
+    edit: "Edit"
+    chapter_name: "Chapter "
+

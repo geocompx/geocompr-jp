@@ -1,0 +1,6 @@
+package,published,title,depends_count,suggests_count,tidyverse_happy,has_vignette_build,has_tests,reverse_count,dl_last_month,ci,test_coverage,stars,forks,last_commit,last_issue_closed,contributors,watchers
+cartogram,2020-08-26,R で地図を作成,NA,4,FALSE,FALSE,FALSE,1,3122,NONE,NONE,129,14,11.1,4.5,4,NA
+geogrid,2018-12-11,地理空間ポリゴンを通常及び六角形ポリゴンに変換,NA,3,FALSE,FALSE,TRUE,1,1081,Travis,CodeCov,367,31,NA,40.766666666666666,6,NA
+geofacet,2020-05-26,'ggplot2' 用地理データをファセット化,1,5,TRUE,TRUE,TRUE,1,1132,Travis,CodeCov,311,38,23.266666666666666,1.3333333333333333,2,NA
+globe,2017-05-12,"地球の２次元と３次元ん表示、主要な海岸線を含む",3,NA,NA,FALSE,FALSE,0,464,NA,NA,NA,NA,NA,NA,NA,NA
+linemap,2021-01-19,Line 地図,1,2,FALSE,FALSE,TRUE,0,368,NONE,CodeCov,108,6,2.2,0.43333333333333335,0,NA
