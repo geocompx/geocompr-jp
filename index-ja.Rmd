@@ -217,6 +217,10 @@ Roger Bivand
 
 ベルゲン、2018年9月
 
+# 序文（第２版） {- #forward-2nd-edition}
+
+TBC.
+
 # 序文  {- #preface}
 
 ## 本書の対象  {- #who-this-book-is-for}

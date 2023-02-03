@@ -202,7 +202,7 @@ geo_df
 得られたデータフレームは、`st_as_sf()` を用いて `sf` オブジェクトに変換することができる。
 
 ```{r, eval=FALSE}
-geo_sf = st_as_sf(geo_df, coords = c("lat", "long"), crs = "EPSG:4326")
+geo_sf = st_as_sf(geo_df, coords = c("long", "lat"), crs = "EPSG:4326")
 ```
 
 また、このパッケージは、一組の座標に基づいて一連の情報（名前、住所など）を取得するために使用される逆ジオコーディングと呼ばれる逆の処理を実行することもできる。

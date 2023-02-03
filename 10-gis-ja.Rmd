@@ -426,8 +426,7 @@ sg = saga$imagery_segmentation$seed_generation
 また、次のステップでツールのコード全体を再入力しないように、`sg` オブジェクトに割り当てる。^[ツールの詳細は https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_2.html を参照]
 `sg` と入力することで、ツールの簡単な概要と、パラメータ、説明、およびデフォルトのデータフレームが表示される。
 また、`tidy(sg)` を使用すると、パラメータのテーブルだけを取り出すことができる。
-`seed_generation` ツールは、少なくとも1つの入力 (`features`) つまりラスタデータを必要とする。
-また、初期ポリゴンのサイズを指定する `band_width` などの追加パラメータを提供することができる。
+`seed_generation` ツールは、引数にラスタデータ (`features`) を必要とする。また、初期ポリゴンのサイズを指定する `band_width` などの追加パラメータを提供することができる。
 
 ```{r, eval=FALSE}
 ndvi_seeds = sg(ndvi, band_width = 2)
@@ -857,9 +856,9 @@ PostGIS データベースに格納されたラスタデータを照会・操作
 PostgreSQL/PostGIS は、非常に難解なオープンソースの空間データベースである。
 しかし、軽量なデータベースエンジンである SQLite/SpatiaLite や、バックグラウンドで SQLite を使用する GRASS\INDEX{GRASS} も同様と言える（section \ref(grass) 参照）。
 
-If your datasets are too big for PostgreSQL/PostGIS and you require massive spatial data management and query performance, it may be worth exploring large-scale geographic querying on distributed computing systems.
-Such systems are outside the scope of this book but it worth mentioning that open source software providing this functionality exists.
-Prominent projects in this space include [GeoMesa](http://www.geomesa.org/) and [Apache Sedona](https://sedona.apache.org/), formerly known as GeoSpark [@huang_geospark_2017], which has and R interface provided by the [**apache.sedona**](https://cran.r-project.org/package=apache.sedona) package.
+データセットが PostgreSQL/PostGIS では大きすぎる場合、大規模な空間データ管理とクエリ性能を必要とする場合、分散コンピューティングシステム上での大規模な地理クエリを検討する価値があるかもしれない。
+このようなシステムは本書の範囲外ではあるが、この機能を提供するオープンソースソフトウェアが存在することは触れておく価値があります。
+この分野の著名なプロジェクトには、[GeoMesa](http://www.geomesa.org/) と [Apache Sedona](https://sedona.apache.org/) がある。後者については、[**apache.sedona**](https://cran.r-project.org/package=apache.sedona)パッケージがインタフェースを提供している。
 
 ## クラウドへのブリッジ {#cloud}
 

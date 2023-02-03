@@ -375,7 +375,7 @@ ch_raster2 = rasterize(cycle_hire_osm_projected, raster_template,
 
 ```{r 06-raster-vector-27 }
 ch_raster3 = rasterize(vect(cycle_hire_osm_projected), raster_template, 
-                       field = "capacity", fun = sum)
+                       field = "capacity", fun = sum, na.rm = TRUE)
 ```
 
 ```{r vector-rasterization1, echo=FALSE, fig.cap="点のラスタ化例。", warning=FALSE}

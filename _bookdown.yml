@@ -1,6 +1,6 @@
 book_filename: geocompr2-ja
 rmd_files: 
-    - "index.Rmd"
+    - "index-ja.Rmd"
     - "01-introduction-ja.Rmd"
     - "02-spatial-data-ja.Rmd"
     - "03-attribute-operations-ja.Rmd"

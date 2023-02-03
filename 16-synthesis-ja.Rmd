@@ -127,16 +127,12 @@ revdeps_spatstat = devtools::revdep(pkg = "spatstat", dependencies = c("Depends"
 繰り返しになるが、これらのトピック、特に生態系のユースケースについては、@zuur_mixed_2009、@zuur_beginners_2017 や、David Rossiter による *Geostatistics &amp; Open-source Statistical Computing* の自由に使える教材やコードなどが既にあり、 [css.cornell.edu/faculty/dgr2](http://www.css.cornell.edu/faculty/dgr2/teach/) でホストされており、 [*R for Geographic Data Science*](https://sdesabbata.github.io/r-for-geographic-data-science/) プロジェクトでは [レスター大学](https://le.ac.uk/people/stefano-de-sabbata) の　[Stefano De Sabbata](https://stefanodesabbata.com/) による地理データ科学向けの R\index{R} の導入\index{data science}  などがあるからであった。
  [@blangiardo_spatial_2015;@krainski_advanced_2018] また、モデリングと不確実性推定の強力なフレームワークであるベイズモデリングを使用した空間統計 \index{spatial!statistics}  に関する優れたリソースもある。
 
-最後に、ビッグデータ \index{big data}  の分析については、ほとんど省略している。
-特に地理的なデータはあっという間に大きくなってしまうので、これは意外に思われるだろう。 
-しかし、ビッグデータ解析を行うためには、小さなデータセットで問題を解決する方法を知っていることが大前提となる。
-もちろん、ツールボックスを拡張する必要はあるが、一度学んだら、ビッグデータに関する質問にも全く同じ手法を適用できる。 
-最初に学ぶべきは、地理データのクエリーの扱い方である。
-というのも、ビッグデータ \index{big data}  の分析は、多くの場合、特定の統計分析のためにデータベースから少量のデータを抽出することに集約されることがある。
-このため、空間データベース \index{spatial database}  の紹介と、R 内から GIS \index{GIS}  を利用する方法を Chapter \@ref(gis) で紹介した。
-もし、本当に大きな、あるいは完全なデータセットで分析をしなければならないのであれば、解決しようとしている問題は、恥ずかしくなるほど並列であることが望まれる。
-そのためには、Section \@ref(postgis) で紹介した [Apache Sedona](https://sedona.apache.org/)など、この並列化を効率的に行うことができるシステムを習得する必要がある。
-データセットの大きさに関わらず、小さなデータセットで使用したのと同じテクニックやコンセプトは有効である。
+最後に、ビッグデータ\index{big data} のジオコンピュテーションについては避けている。ここでビッグデータとは、個人 PC に保存できないデータセットや一つのCPUで処理しきれないデータセットを指す。
+しかし、通常の研究や政策決定に必要とされる地理データの大多数は、個人 PC で保存できる大きさであり、また巨大なデータセットの問題を解決するには小さなデータセットでの解決方法を学ぶ必要があるため、このように決断した。場合によっては、PC に RAM を増設 (あるいは [Github Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=84222786&machine=basicLinux32gb&devcontainer_path=.devcontainer.json&location=WestEurope) のような処理を「レンタル」できるプラットフォームを一時的に使用する) 必要があるかもしれない。
+「ビッグデータ」の解析には、特定の統計解析のためデータベースからデータを抽出することもある。
+\ref(gis) で紹介した空間データベース\index{spatial database}は、メモリで処理しきれないデータセットの解析に有用である。
+'Earth observation cloud back-ends' は、[openeo.org](https://openeo.org/) で解説されている通り、**openeo** パッケージを使うことで R でアクセスすることができる。
+[Apache Sedona](https://sedona.apache.org/) などのソフトウェアを使ったビッグデータの地理的解析については、使用が限定にも関わらず環境構築のハードウェアと時間のコストが非常に高いため、詳細は割愛した。
 
 ## Getting help?  {#questions}
 <!-- Now wondering if this should be an appendix, or even a new chapter?? -->
