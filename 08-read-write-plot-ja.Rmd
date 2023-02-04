@@ -18,7 +18,7 @@ library(spData)
 
 この章では、地理データの読み書きの方法について説明する。
 地理データ<u>入力</u> (Import) はジオコンピューテーション\index{geocomputation}に不可欠である。 実世界のアプリケーションはデータなしには不可能である。
-データ<u>出力</u> (Output) も重要で、あなたが研究の結果得られた価値ある新しいデータセットや改良されたデータセットを他の人が利用できるようにすることができる。
+データ<u>出力</u> (Output) も重要で、研究の結果得られた価値ある新しいデータセットや改良されたデータセットを他の人が利用できるようにすることができる。
 これらの入力/出力の処理をまとめて、データ I/O と呼ぶことができる。
 
 地理データの入出力は、プロジェクトの最初と最後に数行のコードで行われることが多い。
@@ -48,8 +48,8 @@ Section \@ref(retrieving-data) では、このトピックについて合計で�
 
 \index{geoportals}
 グローバルなジオポータルの中には、この問題を克服しているものもある。
-例えば、[GEOSS portal](http://www.geoportal.org/) や [Copernicus Open Access Hub](https://scihub.copernicus.eu/) には、全世界をカバーする多くのラスタデータセットが含まれている。
-米国航空宇宙局（NASA）が運営するポータルサイト [SEDAC](http://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
+例えば、[GEOSS portal](http://www.geoportal.org/) や [Copernicus Open Access Hub](https://scihub.copernicus.eu/) には、全世界をカバーするラスタデータセットを多数含んでいる。
+また、米国航空宇宙局（NASA）が運営するポータルサイト [SEDAC](http://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
 
 ジオポータルは、ほとんどの場合空間的および時間的範囲などの特性に基づいてデータセットを照会できるグラフィカルなインターフェースを提供している。米国地質調査所の [EarthExplorer](https://earthexplorer.usgs.gov/) はその代表例である。
 ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤーを理解する上で効果的な方法である。
@@ -83,7 +83,7 @@ datapackages = tibble::tribble(
   "osmdata", "OpenStreetMap の小さなデータセットをダウンロードし、インポート。",
   "osmextract", "OpenStreetMap の大きなデータセットをダウンロードし、インポート。",
   "geodata", "行政データ、標高データ、WorldClim データのダウンロードとインポート。",
-  "rnaturalearth", "Natural Earth ベクタ・ラスタデータ",
+  "rnaturalearth", "Natural Earth ベクタ・ラスタデータ。",
   "rnoaa", "米国海洋大気庁（National Oceanic and Atmospheric Administration, NOAA）の気候データをインポート。"
 )
 knitr::kable(datapackages, 
@@ -119,9 +119,9 @@ Table \@ref(tab:datapackages) の3つのパッケージについて、データ�
 
 ```{r 07-read-write-plot-3}
 library(rnaturalearth)
-usa = ne_countries(country = "United States of America") # United States borders
+usa = ne_countries(country = "United States of America") # アメリカ合衆国境界線
 class(usa)
-# alternative way of accessing the data, with geodata
+# geodata による別のアクセス方法
 # geodata::gadm("USA", level = 0, path = tempdir())
 ```
 
@@ -148,8 +148,8 @@ worldclim_prec = worldclim_global("prec", res = 10, path = tempdir())
 class(worldclim_prec)
 ```
 
-3つ目の例は、**osmdata** パッケージ [@R-osmdata]  を使って、OpenStreetMap\index{OpenStreetMap} (OSM) データベースから公園を検索してみる。
-以下のコードチャンクに示すように、クエリーは関数 `opq()`（OpenStreetMap query の略）で始まり、その最初の引数は bounding box、つまり境界線（この場合はリーズの都市）を表すテキスト文字列である。
+3つ目の例は、**osmdata** パッケージ [@R-osmdata]  を使って、OpenStreetMap\index{OpenStreetMap} (OSM) データベースから公園を検索してみよう。
+以下のコードチャンクに示すように、クエリーは関数 `opq()`（OpenStreetMap query の略）で始まり、最初の引数は bounding box、またはつまり境界線を表すテキスト文字列（この場合はリーズ市）である。
 その結果は、どの OSM 要素（この場合は公園）に興味があるかを選択する関数に渡され、<u>key-value ペア</u>で表される。
 次に、これらのデータは関数 `osmdata_sf()` に渡され、データのダウンロードと `sf` オブジェクトのリストへの変換が行われる（詳しくは `vignette('osmdata')` を参照）。
 
@@ -310,16 +310,16 @@ Table \@ref(tab:formats) では、よく使われる空間ファイルフォー�
 
 ```{r formats, echo=FALSE}
 file_formats = tibble::tribble(~名称, ~拡張子, ~情報, ~タイプ, ~モデル, 
-                         "ESRI Shapefile", ".shp （メインとなるファイル）", "よく使われているフォーマットで、少なくとも3つのファイルから構成される。ファイルサイズが 2GB を超えるもの、種類が混在するもの、名前が10文字以上のもの、列数が255以上のものはサポートされていない。", "ベクタ", "Partially open",
-                         "GeoJSON", ".geojson", "JSON 交換フォーマットを、シンプルフィーチャを含むように 拡張したもので、主に経度・緯度の座標を格納するために使用され、TopoJSON フォーマットによって拡張される。", "ベクタ", "Open",
-                         "KML", ".kml", "Google Earth で使用するために開発された、XML ベースの空間可視化フォーマット。ZIP 形式の KML ファイルは KMZ 形式。", "ベクタ", "Open",
-                         "GPX", ".gpx", "GPS データ交換のために作成された XML スキーマ。", "Vector", "Open",
-                         "FlatGeobuf", ".fgb", "ベクターデータを高速に読み書きできる単一ファイル形式。ストリーミング機能を持つ。", "ベクタ", "Open",
-                         "GeoTIFF", ".tif/.tiff", "一般的なラスタフォーマット。空間メタデータを追加したTIFFファイル。", "ラスタ", "Open",
-                         "Arc ASCII", ".asc", "最初の6行がラスタヘッダーで、その後にラスタセルの値が行と列に並んでいるテキスト形式。", "ラスタ", "Open",
-                         "SQLite/SpatiaLite", ".sqlite", "スタンドアローンのリレーショナルデータベースである SpatiaLite は、SQLite の空間拡張版。", "ベクタとラスタ", "Open",
-                         "ESRI FileGDB", ".gdb", "ArcGIS で作成された空間および非空間オブジェクト。可能なこと：複数のフィーチャクラス、トポロジー。GDAL によるサポートは限定される。", "ベクタとラスタ", "Proprietary",
-                         "GeoPackage", ".gpkg", "SQLite をベースとした軽量なデータベースコンテナで、プラットフォームに依存しないジオデータの交換を容易に行うことができます。", "ベクタと（制限のある）ラスタ", "Open"
+                         "ESRI Shapefile", ".shp （メインとなるファイル）", "よく使われているフォーマットで、少なくとも3つのファイルから構成される。ファイルサイズが 2GB を超えるもの、種類が混在するもの、名前が10文字以上のもの、列数が255以上のものはサポートされていない。", "ベクタ", "一部オープン",
+                         "GeoJSON", ".geojson", "JSON 交換フォーマットを、シンプルフィーチャを含むように 拡張したもので、主に経度・緯度の座標を格納するために使用され、TopoJSON フォーマットによって拡張される。", "ベクタ", "オープン",
+                         "KML", ".kml", "Google Earth で使用するために開発された、XML ベースの空間可視化フォーマット。ZIP 形式の KML ファイルは KMZ 形式。", "ベクタ", "オープン",
+                         "GPX", ".gpx", "GPS データ交換のために作成された XML スキーマ。", "ベクタ", "オープン",
+                         "FlatGeobuf", ".fgb", "ベクターデータを高速に読み書きできる単一ファイル形式。ストリーミング機能を持つ。", "ベクタ", "オープン",
+                         "GeoTIFF", ".tif/.tiff", "一般的なラスタフォーマット。空間メタデータを追加したTIFFファイル。", "ラスタ", "オープン",
+                         "Arc ASCII", ".asc", "最初の6行がラスタヘッダーで、その後にラスタセルの値が行と列に並んでいるテキスト形式。", "ラスタ", "オープン",
+                         "SQLite/SpatiaLite", ".sqlite", "スタンドアローンのリレーショナルデータベースである SpatiaLite は、SQLite の空間拡張版。", "ベクタとラスタ", "オープン",
+                         "ESRI FileGDB", ".gdb", "ArcGIS で作成された空間および非空間オブジェクト。可能なこと：複数のフィーチャクラス、トポロジー。GDAL によるサポートは限定される。", "ベクタとラスタ", "プロプライエタリ",
+                         "GeoPackage", ".gpkg", "SQLite をベースとした軽量なデータベースコンテナで、プラットフォームに依存しないジオデータの交換を容易に行うことができます。", "ベクタと（制限のある）ラスタ", "オープン"
                          )
 knitr::kable(file_formats, 
              caption = "代表的な空間ファイル形式。",
@@ -616,7 +616,7 @@ world_files = list.files(pattern = "world*")
 file.remove(world_files)
 ```
 
-`read_sf()` の対語は `write_sf()`。
+`read_sf()` と対になるのは `write_sf()` である。
 `.geojson`、`.shp`、`.gpkg` などの最も一般的なものを含む、広範囲の地理ベクタファイルフォーマットに **sf** オブジェクトを書き込むことができる。
 ファイル名から、`write_sf()` が自動的に使用するドライバを決定する。 
 また、書き込み速度はドライバに依存する。
@@ -638,7 +638,7 @@ write_sf(obj = world, dsn = "world_many_layers.gpkg", append = TRUE)
 ```
 
 また、`write_sf()` と同等である、`st_write()` を使用することもできる。
-ただし、デフォルトは異なる。ファイルを上書きしない（上書きしようとするとエラーを返す）、書き込まれたファイル形式とオブジェクトの短い要約を表示する、などである。
+ただし、デフォルトの挙動は異なる。異なる点は、ファイルを上書きしない（上書きしようとするとエラーを返す）、書き込まれたファイル形式とオブジェクトの短い要約を表示する、などである。
 
 ```{r 07-read-write-plot-32}
 st_write(obj = world, dsn = "world2.gpkg")
