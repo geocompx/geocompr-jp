@@ -3,8 +3,11 @@
 # Rで地理データ  {#spatial-class}
 
 ## 必須パッケージ  {- #prerequisites-02}
+<!--rl-->
 
 本書の最初の実用的な章であるため、ソフトウェア要件がある。
+<!-- toDo: rl-->
+<!-- should we be that specific regarding the r version?-->
 R の最新版（R [4.2.0](https://stat.ethz.ch/pipermail/r-announce/2022/000683.html) またはそれ以降のバージョン）がインストールされているコンピュータにアクセスする必要がある。
 文章を読むだけでなく、各章の<u>コードを実行</u>して、ジオコンピューティングのスキルを身につけることを勧める。
 
@@ -128,7 +131,7 @@ knitr::include_graphics(c("figures/vector_lonlat.png", "figures/vector_projected
 - [S2](https://s2geometry.io/) は、Google が開発した C++ で書かれた球面幾何学エンジンである。 [**s2**](https://r-spatial.github.io/s2/) パッケージ経由で、この章の Section \@ref(s2) と Chapter \@ref(reproj-geo-data) でカバーする。
 <!-- - [liblwgeom](https://github.com/postgis/postgis/tree/master/liblwgeom), a geometry engine used by PostGIS, via the [**lwgeom**](https://r-spatial.github.io/lwgeom/) package -->
 
-これらのインターフェースに関する情報は、パッケージが最初にロードされたときに **sf** によって表示される。この章の最初にある `library(sf)` コマンドの下に表示されるメッセージ `Linking to GEOS 3.8.0, GDAL 3.0.4, PROJ 6.3.1; sf_use_s2() is TRUE` は、リンクされている GEOS、GDAL、PROJ ライブラリのバージョン（コンピュータや時期によって変わる）と S2インターフェースがオンになっているかどうかという情報を教えてくれる。
+これらのインターフェースに関する情報は、パッケージが最初にロードされたときに **sf** によって表示される。この章の最初にある `library(sf)` コマンドの下に表示されるメッセージ `r print(capture.output(sf:::.onAttach(), type = "message"))` は、リンクされている GEOS、GDAL、PROJ ライブラリのバージョン（コンピュータや時期によって変わる）と S2インターフェースがオンになっているかどうかという情報を教えてくれる。
 今では当たり前のことであるが、そもそも再現性のあるジオコンピューティングを可能にするのは、様々な地理ライブラリとの緊密な連携に他ならない。
 
 **sf** の特徴として、投影法未指定のデータで使用するデフォルトのジオメトリエンジンを変更することができる S2 のスイッチを切るには、`sf::sf_use_s2(FALSE)` というコマンドを使う。つまり、平面ジオメトリエンジン GEOS が、投影されていないデータに対するジオメトリ操作を含む、すべてのジオメトリ操作にデフォルトで使用されることになる。

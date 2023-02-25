@@ -44,7 +44,7 @@ library(progressr)
 応答変数は、二値（地滑りの発生など）、カテゴリ（土地利用）、整数（種の豊富さ数）、数値（土壌酸性度の測定された pH 値）のいずれでもよい。
 教師あり技術は、オブザベーションのサンプルについて既知の応答と、1つまたは複数の予測変数の間の関係をモデル化する。
 
-多くの機械学習\index{machine learning}において、研究の主な目的は優れた予測を行うことであり、統計的/ベイズ的推論とは対照的に、データにおける根本的なメカニズムや不確実性の理解を助けることに長けている [@krainski_advanced_2018 参照]。
+多くの機械学習\index{machine learning}において、研究の主な目的は優れた予測を行うことである。
 機械学習が「ビッグデータ」\index{big data}の時代に繁栄しているのは、その手法が入力変数に関する仮定をほとんど必要とせず、巨大なデータセットを扱えるからである。
 機械学習は、将来の顧客行動予測、推薦サービス（音楽、映画、次に買うもの）、顔認識、自律走行、テキスト分類、予知保全（インフラ、産業）などのタスクに資するものである。
 
@@ -208,8 +208,17 @@ knitr::include_graphics("figures/lsl-susc-1.png")
 ```
 
 ここで、予測を行う際には、空間自己相関構造があってもなくても平均的に予測精度は変わらないと仮定しているため、空間自己相関\index{autocorrelation!spatial}を無視する。
-もちろん、空間自己相関\index{autocorrelation!spatial}構造をモデルに [@zuur_mixed_2009;@blangiardo_spatial_2015;@zuur_beginners_2017] 、また予測に含めることも可能である [kriging approaches, see, e.g., @goovaerts_geostatistics_1997;@hengl_practical_2007;@bivand_applied_2013]。
-なお、これは本書の範囲外である。
+空間自己相関\index{autocorrelation!spatial} を、モデルと予測に組み入れることも可能である。
+これは本書の範疇を越えるが、いくつかの資料を紹介する。
+
+1. 回帰クリギングの予測値は、回帰の予測値と回帰の残差のクリギングを組み合わせたものである [@goovaerts_geostatistics_1997; @hengl_practical_2007; @bivand_applied_2013]。
+2. また、一般化最小二乗モデルに空間相関（依存関係）構造を追加することもできる [`nlme::gls()`; @zuur_mixed_2009; @zuur_beginners_2017]。
+3. また、混合効果モデリング・アプローチを使用することもできる。
+基本的に、ランダム効果は、応答変数に従属構造を課し、それによって、あるクラスのオブザベーションが、他のクラスのオブザベーションよりも互いに類似していることを可能にする [@zuur_mixed_2009]。
+クラスは、例えば、ハチの巣、フクロウの巣、植生トランセクト、標高の層別などである。
+この混合モデリングのアプローチは、正規かつ独立に分布するランダム切片を仮定している。
+これは、正規分布で空間的に依存するランダム切片を使用することによっても拡張することができる。
+しかし、このためには、ベイズ・モデリング・アプローチに頼らなければならないだろう [@blangiardo_spatial_2015; @zuur_beginners_2017]。
 
 空間予測地図は、モデルの非常に重要なアウトカムの一つである。
 さらに重要なのは、モデルの予測性能が低ければ、予測マップは役に立たないので、基盤となるモデルがどれだけ優れているかということである。
@@ -325,21 +334,21 @@ mlr3extralearners::list_mlr3learners(
 ```
 
 ```{r lrns, echo=FALSE}
-lrns_df = mlr3extralearners::list_mlr3learners(
-  filter = list(class = "classif", properties = "twoclass"), 
-  select = c("id", "mlr3_package", "required_packages")) |>
-  head()
+# lrns_df = mlr3extralearners::list_mlr3learners(
+#   filter = list(class = "classif", properties = "twoclass"), 
+#   select = c("id", "mlr3_package", "required_packages")) |>
+#   head()
 # dput(lrns_df)
-# lrns_df = structure(list(Class = c("classif.adaboostm1", "classif.binomial", 
-# "classif.featureless", "classif.fnn", "classif.gausspr", "classif.IBk"
-# ), Name = c("ada Boosting M1", "Binomial Regression", "Featureless classifier", 
-# "Fast k-Nearest Neighbour", "Gaussian Processes", "k-Nearest Neighbours"
-# ), `Short name` = c("adaboostm1", "binomial", "featureless", 
-# "fnn", "gausspr", "ibk"), Package = c("RWeka", "stats", "mlr", 
-# "FNN", "kernlab", "RWeka")), row.names = c(NA, 6L), class = "data.frame")
+lrns_df = structure(list(Class = c("classif.adaboostm1", "classif.binomial",
+"classif.featureless", "classif.fnn", "classif.gausspr", "classif.IBk"
+), Name = c("ada Boosting M1", "Binomial Regression", "Featureless classifier",
+"Fast k-Nearest Neighbour", "Gaussian Processes", "k-Nearest Neighbours"
+), `Short name` = c("adaboostm1", "binomial", "featureless",
+"fnn", "gausspr", "ibk"), Package = c("RWeka", "stats", "mlr",
+"FNN", "kernlab", "RWeka")), row.names = c(NA, 6L), class = "data.frame")
 knitr::kable(lrns_df, 
-             caption = paste("mlr3 パッケージの二項タスクで", 
-                             "利用可能な学習器のサンプル。"), 
+             caption = paste("Sample of available learners for binomial", 
+                             "tasks in the mlr3 package."), 
              caption.short = "Sample of available learners.", booktabs = TRUE)
 ```
 
@@ -474,15 +483,15 @@ SVM\index{SVM} クラスを分離するための最適な「超平面」を探�
 
 空間チューニングを定義する前に、Section \@ref(glm) で紹介した **mlr3** \index{mlr3 (package)} ビルディングブロックを SVM 用に設定することにする。
 分類\index{classification}のタスクは変わらないので、Section \@ref(glm) で作成した `task` オブジェクトを再利用すればよい。
-SVM を実装している学習器は、**mlr3extralearners** パッケージの `listLearners()` を用いて以下のように検索することができる。
+SVM を実装している学習器は、**mlr3extralearners** パッケージの `listLearners()` を用いて検索することができる。
 
-```{r 12-spatial-cv-23}
+```{r 12-spatial-cv-23, eval=FALSE, echo=FALSE}
 mlr3_learners = mlr3extralearners::list_mlr3learners()
 mlr3_learners[class == "classif" & grepl("svm", id),
               .(id, class, mlr3_package, required_packages)]
 ```
 
-上に示したオプションのうち、**kernlab** パッケージの `ksvm()` を使用することにする [@karatzoglou_kernlab_2004]。
+オプションのうち、**kernlab** パッケージの `ksvm()` を使用することにする [@karatzoglou_kernlab_2004]。
 非線形関係を許容するために、`ksvm()` のデフォルトでもある、一般的な放射状基底関数（またはガウス）カーネル（`"rbfdot"`）を使用する。
 `type` 引数に `"C-svc"` を設定することで、`ksvm()` が確実に分類タスクを解く。
 1 つのモデルの失敗でチューニングが止まらないように、フォールバック学習器を追加で定義している（詳細は https://mlr3book.mlr-org.com/technical.html#fallback-learners を参照）。

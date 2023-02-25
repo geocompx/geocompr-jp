@@ -72,10 +72,9 @@ methods(class = "sf") # sf オブジェクトのメソッド、最初の12
 ```
 
 ```{r 03-attribute-operations-4}
-#>  [1] aggregate             cbind                 coerce               
-#>  [4] initialize            merge                 plot                 
-#>  [7] print                 rbind                 [                    
-#> [10] [[<-                  $<-                   show                 
+#> [1] [             [[<-          $<-           aggregate    
+#> [5] as.data.frame cbind         coerce        filter       
+#> [9] identify      initialize    merge         plot        
 ```
 
 ```{r 03-attribute-operations-5, eval=FALSE, echo=FALSE}
@@ -126,7 +125,7 @@ ncol(world_df)
 地理的属性データの操作に習熟するということは、データフレームの操作に習熟するということである。
 
 多くのアプリケーションにおいて、tidyverse \index{tidyverse (package)}  パッケージ **dplyr** は、データフレームを扱うための効果的なアプローチを提供する。
-tidyverse との互換性は、前身の **sp** になかった **sf** の利点であるが、落とし穴もあるのでハマることもある（詳しくは [geocompr.github.io](https://geocompr.github.io/geocompkg/articles/tidyverse-pitfalls.html) の補足 `tidyverse-pitfalls` vignetteを参照）。
+tidyverse との互換性は、前身の **sp** になかった **sf** の利点であるが、落とし穴もあるのでハマることもある（詳しくは [geocompx.org](https://geocompx.github.io/geocompkg/articles/tidyverse-pitfalls.html) の補足 `tidyverse-pitfalls` vignetteを参照）。
 
 ### ベクタ属性の部分集合  {#vector-attribute-subsetting}
 
@@ -542,7 +541,7 @@ class(coffee_world)
 ```
 
 ここでは、join のユースケースの大半をカバーしている。
-詳しくは、@grolemund_r_2016 の [Relational data](https://r4ds.had.co.nz/relational-data.html?q=join#relational-data) の章、本書に付属する **geocompkg** パッケージの [join vignette](https://geocompr.github.io/geocompkg/articles/join.html) 、および **data.table** などのパッケージによる結合を説明した [documentation](https://asardaes.github.io/table.express/articles/joins.html) を読むことを勧める。
+詳しくは、@grolemund_r_2016 の [Relational data](https://r4ds.had.co.nz/relational-data.html?q=join#relational-data) の章、本書に付属する **geocompkg** パッケージの [join vignette](https://geocompx.github.io/geocompkg/articles/join.html) 、および **data.table** などのパッケージによる結合を説明した[ドキュメント](https://asardaes.github.io/table.express/articles/joins.html)を読むことを勧める。
 空間結合については次の章で説明する（Section \@ref(spatial-joining)）。
 
 ### 属性の作成と空間情報の削除  {#vec-attr-creation}

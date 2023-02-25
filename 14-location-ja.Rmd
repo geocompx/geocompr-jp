@@ -28,8 +28,7 @@ library(spDataLarge)
 ロケーション分析\index{location analysis}の基本は人である。 特に時間やその他のリソースを費やす可能性が高い場所である。
 興味深いことに、エコロジーの概念やモデルは、店舗立地分析に使われるものと非常によく似ている。
 動物や植物は、空間的に変化する変数に基づいて、特定の「最適な」場所でそのニーズを最もよく満たすことができる（@muenchow_review_2018; Chapter \@ref(eco) も参照)。
-これはジオコンピューティングやGISサイエンス全般の大きな強みである。
-コンセプトや手法は他の分野にも転用可能である。
+これはジオコンピューティングやGISサイエンス全般の大きな強みである。コンセプトや手法は他の分野にも転用可能である。
 例えば、ホッキョクグマは気温が低く、餌（アザラシやアシカ）が豊富な北緯を好む。
 同様に、人間は特定の場所に集まる傾向があり、北極の生態学的ニッチに類似した経済的ニッチ（そして高い地価）を作り出する。
 ロケーション分析の主な作業は、利用可能なデータに基づいて、特定のサービスにとってそのような「最適な場所」がどこであるかを見つけ出すことである。
@@ -66,13 +65,18 @@ library(spDataLarge)
 
 ドイツ政府は、1kmまたは100mの解像度でグリッド化された国勢調査データを提供している。
 次のコードは、1kmのデータをダウンロードし、解凍し、読み込むものである。
-なお、`census_de` は **spDataLarge** パッケージ ( `data("census_de", package = "spDataLarge"` ) からも入手可能である。
 
 ```{r 13-location-2, eval=FALSE}
 download.file("https://tinyurl.com/ybtpkwxz", 
               destfile = "census.zip", mode = "wb")
 unzip("census.zip") # unzip the files
 census_de = readr::read_csv2(list.files(pattern = "Gitter.csv"))
+```
+
+なお、`census_de` は **spDataLarge** パッケージ ( `data("census_de", package = "spDataLarge"` ) からも入手可能である。
+
+```{r attach-census}
+data("census_de", package = "spDataLarge")
 ```
 
 `census_de` オブジェクトは、ドイツ全土の30万以上のグリッドセルについて、13の変数を含むデータフレームである。
@@ -83,10 +87,11 @@ census_de = readr::read_csv2(list.files(pattern = "Gitter.csv"))
 ```{r 13-location-4}
 # pop = population, hh_size = household size
 input = dplyr::select(census_de, x = x_mp_1km, y = y_mp_1km, pop = Einwohner,
-                      women = Frauen_A, mean_age = Alter_D,
-                      hh_size = HHGroesse_D)
+                      women = Frauen_A, mean_age = Alter_D, hh_size = HHGroesse_D)
 # set -1 and -9 to NA
-input_tidy = mutate_all(input, list(~ifelse(. %in% c(-1, -9), NA, .)))
+input_tidy = dplyr::mutate(input,
+  dplyr::across(.cols = c(pop, women, mean_age, hh_size), 
+                .fns =  ~ifelse(.x %in% c(-1, -9), NA, .x)))
 ```
 
 

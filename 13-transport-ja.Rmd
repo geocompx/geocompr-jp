@@ -25,7 +25,7 @@ library(sfnetworks) # 空間ネットワークのクラスと関数
 ## イントロダクション  {#introduction-13}
 
 交通ほど地理的空間が明確なセクターは他にないだろう。
-1970年に Waldo [@miller_tobler_2004] が述べた（下記参照）ように、移動の努力（距離の克服）は、地理学の「第一法則」の中心である。
+1970年に Waldo Tobler が述べたように、移動の努力（距離の克服）は、地理学の「第一法則」の中心である [@tobler_computer_1970]。
 
 > Everything is related to everything else, but near things are more related than distant things.
 
@@ -102,7 +102,7 @@ knitr::include_graphics("figures/13_bristol.png")
 2011年の国勢調査では、自転車で通勤していると答えた人は全体の8％だったのに対し、全国ではわずか3％にとどまっている。
 
 ```{r 13-transport-3, eval=FALSE, echo=FALSE}
-if(!require(readODS)) {
+if (!require(readODS)) {
   install.packages("readODS")
 }
 u = "https://www.gov.uk/government/uploads/system/uploads/attachment_data/file/536823/local-area-walking-and-cycling-in-england-2015.zip"
@@ -382,8 +382,7 @@ Figure \@ref(fig:stations) に示すように、最初の `desire_rail` の行�
 
 ```{r stations, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="鉄道利用率の高い直線的な希望線（黒）を、公共交通機関（グレー）を経由して出発駅（赤）へ、そして目的地（ごく短い青線）へという3レグに変換する中間点として使用される駅ノード（赤い点）。", fig.scap="Station nodes."}
 # zone_cents = st_centroid(zones_od)
-# Temporary hack:
-zone_cents = st_centroid(zones_od) |> st_set_crs(st_crs(desire_rail))
+zone_cents = st_centroid(zones_od)
 zone_cents_rail = zone_cents[desire_rail, ]
 bb = tmaptools::bb(desire_rail, ext = 1.1)
 desire_rail_plot = rbind(

@@ -491,6 +491,7 @@ location には、1 つのプロジェクトまたは 1 つの領域のジオデ
 GRASS 空間データベース\index{spatial database}システムの詳細は、@neteler_open_2008 と [GRASS GIS quick start](https://grass.osgeo.org/grass-stable/manuals/helptext.html) 。
 こkでは R から手軽に GRASS を使うため **link2GI** パッケージを使う。しかし、GRASS GIS データベースを順番に作ることもできる。
 作り方は [GRASS within R](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#GRASS_within_R) を参照。
+以下の段落で解説するコードは、初めて GRASS を使う方には難しいかもしれないが、コードを１行１行実行して途中の結果を確認することで、コードの元となる理由が明らかになる。
 
 ここでは、GIScience における最も興味深い問題の一つである巡回セールスマン問題 \index{traveling salesman}  を用いた **rgrass** \index{rgrass (package)}  を紹介する。
 ある巡回セールスマンが24件の顧客を訪問したいとする。

@@ -278,7 +278,6 @@ knitr::include_graphics("figures/07-s2geos.png")
 
 
 CRS の重要性を示すために、このセクションでは、前セクションで作成した `london` オブジェクトの周りに 100 km のバッファを作成する。
-CRS の重要性を示すために、このセクションでは、前セクションで作成した `london` オブジェクトの周りに 100 km のバッファを作成する。
 また、100 km にほぼ相当する1度（赤道では1度は約 111 km）の「距離」を持つ意図的に欠陥のあるバッファを作成する。
 コードに入る前に、Figure \@ref(fig:crs-buf) を見て、これからコードチャンクで再現するはずの出力を視覚的に把握するのもよいだろう。
 
@@ -502,7 +501,7 @@ crs_utm_south = crs_utm[grepl("south", crs_utm$prj4), ]
 ```{r 06-reproj-13}
 lonlat2UTM = function(lonlat) {
   utm = (floor((lonlat[1] + 180) / 6) %% 60) + 1
-  if(lonlat[2] > 0) {
+  if (lonlat[2] > 0) {
     utm + 32600
   } else{
     utm + 32700

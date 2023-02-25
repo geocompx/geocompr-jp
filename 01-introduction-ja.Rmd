@@ -149,9 +149,9 @@ leaflet() |>
 ```
 
 ```{r interactive, fig.cap="青いマーカーは著者の出身地を示している。ベースマップは、NASAが提供する夜の地球のタイル画像。オンライン版（geocompr.robinlovelace.net）では、ズームインしたりポップアップをクリックするなどして、インタラクティブに楽しむことができる。", out.width="100%", fig.scap="Where the authors are from.", echo=FALSE}
-if(knitr::is_latex_output()){
+if (knitr::is_latex_output()){
     knitr::include_graphics("figures/interactive.png")  
-} else if(knitr::is_html_output()){
+} else if (knitr::is_html_output()){
     # library(leaflet)
     # popup = c("Robin", "Jakub", "Jannes")
     # interactive = leaflet() |>
@@ -221,9 +221,10 @@ ArcGIS\index{ArcGIS} 用の `arcpy` がある。]
 これは、R と Python のどちらかを選ばなければならないということではない。Python\index{Python} は、ほとんどの一般的な統計手法をサポートしており（ただし、空間統計の新しい開発は R の方が早くサポートする傾向がある）、Python で学んだ多くの概念は R\index{R}  の世界にも適用することができる。
 <!--rl:toDo-->
 <!--to update! -->
-R と同様に、Python も地理データの解析と操作をサポートしており、**osgeo**、**Shapely**、**NumPy**、**PyGeoProcessing** などのパッケージがある [@garrard_geoprocessing_2016]。
+R と同様に、Python も地理データの解析と操作をサポートしており、**shapely**、**geopandas**、**rasterio**、**xarray** などのパッケージがある。
 
 ## Rの空間エコシステム  {#r-ecosystem}
+<!--rl-->
 
 R で地理データを扱う方法はたくさんあり、この分野では何十ものパッケージ\index{R-spatial}がある。^[
 R の空間エコシステムの概要は、CRAN\index{CRAN}  Task View on Analysis of Spatial Data に掲載されている。
@@ -273,6 +274,7 @@ knitr::kable(top_dls[1:5, 1:2], digits = 0,
 主なメンバーは、空間ラスタを扱う **terra** パッケージである（Section \@ref(an-introduction-to-terra) を参照）。
 
 ## R-spatial の歴史  {#the-history-of-r-spatial}
+<!-- jn -->
 
 最新の空間パッケージである **sf** を使うメリットはたくさんあるが、R の空間機能の歴史を知っておくことも重要である。多くの機能、ユースケース、教材は古いパッケージに含まれている。
 古いものにも、見るところさえ分かれば、今でも十分役に立つ。

@@ -616,7 +616,7 @@ tmap_mode("view")
 map_nz
 ```
 
-```{r tmview, message=FALSE, fig.cap="tmap のビューモードで作成されたニュージーランドのインタラクティブマップ。インタラクティブ版は geocompr.robinlovelace.net からオンラインで入手可能。", fig.scap="Interactive map of New Zealand.", echo=FALSE}
+```{r tmview, message=FALSE, fig.cap="tmap のビューモードで作成されたニュージーランドのインタラクティブマップ。インタラクティブ版は r.geocompx.org からオンラインで入手可能。", fig.scap="Interactive map of New Zealand.", echo=FALSE}
 if (knitr::is_latex_output()){
     knitr::include_graphics("figures/tmview-1.png")
 } else if (knitr::is_html_output()){
@@ -624,7 +624,7 @@ if (knitr::is_latex_output()){
     # m_tmview = map_nz
     # tmap_save(m_tmview, "tmview-1.html")
     # file.copy("tmview-1.html", "~/geocompr/geocompr.github.io/static/img/tmview-1.html")
-    knitr::include_url("https://geocompr.github.io/img/tmview-1.html")
+    knitr::include_url("https://geocompx.org/static/img/tmview-1.html")
 }
 
 ```
