@@ -1,6 +1,6 @@
 # (PART) 応用  {.unnumbered}
 
-# 交通  {#transport}
+# 交通解析  {#transport}
 
 ```{r transport-setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE)
@@ -49,10 +49,10 @@ library(sfnetworks) # 空間ネットワークのクラスと関数
 これらは、 [MATSim](http://www.matsim.org/) のようなソフトウェアのおかげで、計算によって表現することができる。これは、エージェントベースモデリング (ABM) \index{agent-based modeling}  のアプローチを用いて、高い空間および時間分解能で輸送システムのダイナミクスを捉えるものである [@horni_multi-agent_2016]。
 ABMは、Rの空間クラスと統合できる可能性が高い交通研究の強力なアプローチであるが [@thiele_r_2014; @lovelace_spatial_2016]、本章の範囲外である。
 地理的レベルやエージェントを超えて、ほとんどの交通モデルの分析の基本単位は**トリップ**であり、出発地「A」から目的地「B」までの単一目的の旅である [@hollander_transport_2016]。
-トリップは、異なるレベルの交通システムを結合し、単純化すると、<u>ゾーン<,u>の重心\index{centroid}（<u>ノード</u>）を結ぶ地理的な<u>希望線</u>として、あるいは交通<u>ルートネットワーク/u>に沿った経路として表現することができる。
+トリップは、異なるレベルの交通システムを結合し、単純化すると、<u>ゾーン</u>の重心\index{centroid}（<u>ノード</u>）を結ぶ地理的な<u>希望線</u>として、あるいは交通<u>ルートネットワーク/u>に沿った経路として表現することができる。
 この文脈では、<u>エージェント</u>\index{agent-based modeling}は通常、輸送ネットワーク内を移動する点である。
 
-交通システムはどう的である [@xie_evolving_2011]。
+交通システムは動的である [@xie_evolving_2011]。
 この章では、交通システムの地理的な分析に焦点を当てるが、変化のシナリオをシミュレートするために、この手法をどのように利用できるかについて、Section \@ref(prioritizing-new-infrastructure) にて洞察を提供する。
 地理学上の交通モデルの目的は、このような時空間システムの複雑さを、その本質を捉える形で単純化することにあると解釈できる。
 適切なレベルの地理的分析を選択することで、最も重要な特徴や変数を失うことなく、この複雑さを単純化し、より良い意思決定とより効果的な介入を可能にすることができる [@hollander_transport_2016]＞
@@ -148,13 +148,13 @@ Figure \@ref(fig:bristol) の内側の青い境界を参照。なお、この方
 - OSM が正式な境界線を返したとしても、人々が移動する場所とはほとんど関係がないため、交通研究にとっては不適切かもしれない。
 
 TTWA（Travel to Work Area）は、水文学的な流域に類似したゾーニングシステムを構築することで、これらの問題に対処している。
-TTWAはまず、人口の75％が通勤で利用する連続したゾーンと定義され、 [@coombes_efficient_1986]、この章ではこの定義を用いる。
+TTWA はまず、人口の75％が通勤で利用する連続したゾーンと定義され、 [@coombes_efficient_1986]、この章ではこの定義を用いる。
 ブリストルは、周辺の町からの旅行者を惹きつける主要な雇用主であるため、そのTTWAは市域よりもかなり大きい（ Figure \@ref(fig:bristol) 参照）。
 この輸送方向の境界を表すポリゴンは、本章の冒頭でロードした **spDataLarge** パッケージが提供するオブジェクト `bristol_ttwa` に格納されている。
 
-本章で使用する出発地と目的地は同じである。中間の地理的解像度で公式に定義されたゾーン（ [official](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualsmallareapopulationestimates/2014-10-23) の名称は Middle layer Super Output Areas または MSOAs）である。
+本章で使用する出発地と目的地は同じである。中間の地理的解像度で公式に定義されたゾーン（[公式](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualsmallareapopulationestimates/2014-10-23)名称は Middle layer Super Output Areas または MSOAs）である。
 それぞれ約8,000人が暮らしている。
-このような行政区域は、特定の介入から最も恩恵を受ける可能性のある人々のタイプなど、輸送分析に不可欠な状況を提供することができる [e.g., @moreno-monroy_public_2017] .
+このような行政区域は、特定の介入から最も恩恵を受ける可能性のある人々のタイプなど、輸送分析に不可欠な状況を提供することができる [例 @moreno-monroy_public_2017] .
 
 これらのゾーンの地理的解像度は重要である。通常、地理的解像度の高い小さなゾーンが望ましいが、大きな地域でその数が多いと、処理に影響を及ぼすことがある（特に、ゾーン数の非線形関数として可能性の数が増加する起点-終点分析） [@hollander_transport_2016]。
 
@@ -184,7 +184,7 @@ nrow(bristol_od)
 nrow(bristol_zones)
 ```
 
-先ほどのコードチャンクの結果、各ゾーンに10組以上のODペアがあることがわかった。つまり、下図のように、`bristol_zones`、結合する前に発着地データを集約する必要がある（発着地データは Section \@ref(desire-lines) に記述されている）。
+先ほどのコードチャンクの結果、各ゾーンに 10 組以上の OD ペアがあることがわかった。つまり、下図のように、`bristol_zones`、結合する前に発着地データを集約する必要がある（発着地データは Section \@ref(desire-lines) に記述されている）。
 
 ```{r 13-transport-7}
 zones_attr = bristol_od %>% 
@@ -203,13 +203,13 @@ zones_attr = bristol_od %>%
     真を返す変数のみが要約される。
 
 結果として得られるオブジェクト `zones_attr` は、ゾーンを表す行とID変数を持つデータフレームである。
-IDが `zones` データセットのものと一致するかどうかは、`%in%` 演算子を用いて以下のように確認することができる。
+ID が `zones` データセットのものと一致するかどうかは、`%in%` 演算子を用いて以下のように確認することができる。
 
 ```{r 13-transport-8}
 summary(zones_attr$geo_code %in% bristol_zones$geo_code)
 ```
 
-その結果、新しいオブジェクトには102のゾーンがすべて存在し、`zone_attr`、ゾーン上に結合できる形になっていることがわかった。[^13-transport-4]
+その結果、新しいオブジェクトには 102 のゾーンがすべて存在し、`zone_attr`、ゾーン上に結合できる形になっていることがわかった。[^13-transport-4]
 これは、結合関数 `left_join()` を使って行われる（なお、`inner_join()` でも同じ結果になる）。
 
 [^13-transport-4]: また、実データで ID が逆方向で一致するかどうかのチェックも重要だろう。
@@ -263,7 +263,7 @@ source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-zones.R", pri
 このセクションでは、このタイプの希望線を作成して使用するが、OD データを基にした分析の空間的なカバレッジと精度を高めるために、複数の開始点と終了点を可能にする「ジッタリング」技術は知っておく価値がある [@lovelace_jittering_2022b]。
 
 データセット `bristol_od` に、希望線を表すデータをすでに読み込んでいる。
-この起点ー終点（OD）データフレームオブジェクトは、`o` で表されるゾーンと `d`、 Table \@ref(tab:od) で示されるゾーン間の移動人数を表している。
+この起点ー終点（OD）データフレームオブジェクトは、`o` で表されるゾーンと `d`、Table \@ref(tab:od) で示されるゾーン間の移動人数を表している。
 OD データをすべてのトリップで並べ、上位5つだけをフィルタリングするには、次のように入力する（非空間属性操作の詳細については、Chapter \@ref(attr) を参照）。
 
 ```{r 13-transport-12}
@@ -291,7 +291,7 @@ bristol_od$Active = (bristol_od$bicycle + bristol_od$foot) /
   bristol_od$all * 100
 ```
 
-OD  ペアは、大きく分けて<u>ゾーン間</u>と<u>ゾーン内</u>の2種類がある。
+OD ペアは、大きく分けて<u>ゾーン間</u>と<u>ゾーン内</u>の2種類がある。
 ゾーン間 OD ペアは、目的地と出発地が異なるゾーン間の移動を表する。
 ゾーン内 OD ペアは、同一ゾーン内の移動を表す（ Table \@ref(tab:od) の上段参照）。
 以下のコードチャンクでは、`od_bristol` をこの2種類に分割している。
@@ -337,15 +337,15 @@ source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-desire.R", pr
 
 [^13-transport-6]: **sfnetworks** パッケージの関数 [`st_network_blend()`](https://luukvdmeer.github.io/sfnetworks/reference/st_network_blend.html) により、ネットワーク上またはネットワーク外の任意の点への近接性に基づいて、ネットワーク上に新しいノードを作成することができる。
 
-交通ネットワーク \index{network}  は、グラフ \index{graph}  として表すことができ、その中で各セグメントは、ネットワーク内の1つ以上の他のエッジ \index{edge}  に（地理的な線を表すエッジを介して）接続されている。
-ネットワーク外のノード \index{network}  は「重心・コネクタ」で追加可能 \index{centroid}、ネットワーク\index{network}上の近くのノード \index{node}への新しいルートセグメント    [@hollander_transport_2016] 。[^13-transport-7]
-ネットワーク \index{network}  の各ノード \index{node}  は、ネットワーク\index{network}上の個々のセグメントを表す 1 つ以上の「エッジ」\index{edge}によって接続されている。
-交通ネットワーク\index{network}がグラフ \index{graph}  として表現できることを Section \@ref(route-networks) で確認する。
+交通ネットワーク\index{network}は、グラフ\index{graph}として表すことができ、その中で各セグメントは、ネットワーク内の1つ以上の他のエッジ\index{edge}に（地理的な線を表すエッジを介して）接続されている。
+ネットワーク外のノード\index{network}は「重心・コネクタ」で追加可能\index{centroid}、ネットワーク\index{network}上の近くのノード\index{node}への新しいルートセグメント [@hollander_transport_2016] 。[^13-transport-7]
+ネットワーク\index{network}の各ノード\index{node}は、ネットワーク\index{network}上の個々のセグメントを表す 1 つ以上の「エッジ\index{edge}によって接続されている。
+交通ネットワーク\index{network}がグラフ\index{graph}として表現できることを Section \@ref(route-networks) で確認する。
 
 [^13-transport-7]: これらのコネクターは、その近辺の交通量を過大に見積もる可能性があるため、その位置は慎重に選ぶ必要がある [@jafari_investigation_2015]。
 
 公共交通機関の駅や停留所は特に重要なノード\index{node}である。道路の一部であるバス停、または線路から数百メートルの歩行者入口ポイントによって表される大規模な鉄道駅のいずれかのタイプのノードとして表現されることができる。
-ここでは、ブリストルにおける自転車の増加という研究課題に関連して、公共交通機関のノード \index{node}を説明するために鉄道駅を使用しよう。
+ここでは、ブリストルにおける自転車の増加という研究課題に関連して、公共交通機関のノード\index{node}を説明するために鉄道駅を使用しよう。
 鉄道駅のデータは、`bristol_stations` の **spDataLarge** で提供されている。
 
 通勤において自動車から他の交通への転換を阻む共通の障壁は、自宅から職場までの距離が遠すぎると徒歩や自転車では無理だということである。
@@ -357,14 +357,14 @@ source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-desire.R", pr
 - 降車駅から目的地までの行程。
 
 Section \@ref(desire-lines) で行った分析に基づき、公共交通機関のノード\index{node}を使って、バスと（この例では）鉄道を利用できる旅行のための3分割の希望線\index{desire lines}を構築することができる。
-最初の段階は、公共交通機関の利用が多い希望線\index{desire lines}を特定することである。ここでは、先に作成したデータセット `desire_lines` にすでに電車での移動回数を表す変数が含まれているので簡単である（公共交通機関の利用可能性は、 [OpenTripPlanner](http://www.opentripplanner.org/) などの公共交通ルート探索\index{routing}  サービスを使って推定することも可能）。
-アプローチを簡単にするために、レールの使用量の上位3つの欲求ライン \index{desire lines}  のみを選択することにする。
+最初の段階は、公共交通機関の利用が多い希望線\index{desire lines}を特定することである。ここでは、先に作成したデータセット `desire_lines` にすでに電車での移動回数を表す変数が含まれているので簡単である（公共交通機関の利用可能性は、[OpenTripPlanner](http://www.opentripplanner.org/) などの公共交通ルート探索\index{routing}サービスを使って推定することも可能）。
+アプローチを簡単にするために、レールの使用量の上位3つの希望線\index{desire lines}のみを選択することにする。
 
 ```{r 13-transport-20}
 desire_rail = top_n(desire_lines, n = 3, wt = train)
 ```
 
-そこで、これらの線を3つに分解し、公共交通機関\index{node}の乗り換えを表現することにする。
+そこで、これらの線を 3 つに分解し、公共交通機関\index{node}の乗り換えを表現することにする。
 これは、希望線を、旅行の出発地、公共交通機関、目的地の3つの線ジオメトリからなるマルチラインストリングに変換することで実現できる。
 この作業は、行列の作成（起点、終点、鉄道駅を表す「経由点」）、最近傍\index{nearest neighbor}の特定、マルチラインストリング\index{multilinestrings}への変換の3段階に分けることができる。
 この一連の処理は、`line_via()` 関数が行う。
@@ -698,13 +698,13 @@ tm_shape(ways_centrality |> st_as_sf(), bb = bb_wayssln) +
 上で使った例のデータセットが比較的小さい。
 データのサブセットで手法をテストし、十分な RAM を確保することが助けになるが、R5 [@alessandretti_multimodal_2022] などの大規模ネットワークに最適化された輸送ネットワーク分析ができる他のツールも調べる価値があるだろう。
 
-## 新しいインフラの優先順位付け  {#prioritizing-new-infrastructure}
+## 新インフラの優先順位付け  {#prioritizing-new-infrastructure}
 
 この節では、交通計画分野においてジオコンピュテーションが政策関連の成果を作ることができることを示す。
 持続可能な交通インフラの投資先として有望な場所を、教育目的のシンプルなアプローチで特定する。
 
 本章で紹介するデータ駆動型アプローチの利点は、モジュール化されていることである。
-この段階に至るまでには、(欲望線から生成された)短いが車に依存する通勤経路を特定するための手順があり、(ルート・ネットワーク)セクションで **sfnetworks** パッケージを使用してルート・ネットワークの特性を分析することが含まれています。
+この段階に至るまでには、(希望線から生成された)短いが車に依存する通勤経路を特定するための手順があり、(ルート・ネットワーク)セクションで **sfnetworks** パッケージを使用してルート・ネットワークの特性を分析することが含まれています。
 本章の最後のコードチャンクは、サイクリングインフラから短い距離のエリアを表す新しいデータセットに、前のセクションのサイクリング潜在力の推定値を重ねることによって、これらの一連の分析を結合する。
 この新しいデータセットは、以下のコードで作成される。1) 交通ネットワークを表す`bristol_ways`オブジェクトからサイクルウェイのエンティティをフィルタリングする。2) サイクルウェイの個々の LINESTRING エンティティを単一の multilinestring オブジェクトに「統合」する（バッファ作成が速くなるため）。
 

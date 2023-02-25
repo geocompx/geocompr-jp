@@ -49,15 +49,15 @@ library(spDataLarge)
 さらに、仮定の調査（この章のために考案されたもので、商業利用はできない！）によると、独身の若い男性（20歳から40歳）が貴社の製品を購入する可能性が最も高いということである：これが*ターゲット層*である。
 あなたは、何店舗も出店できる十分な資金をお持ちの幸運な立場にある。
 しかし、どこに配置すればいいのだろうか？
-コンサルティング会社（ジオマーケティング \index{geomarketing}  アナリストを雇っている）は、このような質問に答えるために喜んで高い料金を取るだろう。
-幸い、オープンデータ（ \index{open data}  ）やオープンソースソフトウェア（ \index{open source software}  ）の力を借りれば、私たち自身でそれを行うことができる。
+コンサルティング会社（ジオマーケティング\index{geomarketing}アナリストを雇っている）は、このような質問に答えるために喜んで高い料金を取るだろう。
+幸い、オープンデータ\index{open data}やオープンソースソフトウェア\index{open source software}の力を借りれば、私たち自身でそれを行うことができる。
 以下の章では、本書の最初の章で学んだテクニックを、サービスロケーション解析の一般的なステップにどのように応用できるかを紹介する。
 
 - ドイツの国勢調査の入力データを整頓する ( Section \@ref(tidy-the-input-data) )
-- 集計された国勢調査データをラスタに変換 \index{raster}  オブジェクト ( Section \@ref(create-census-rasters) )
+- 集計された国勢調査データをラスタ\index{raster}オブジェクトに変換 ( Section \@ref(create-census-rasters) )
 - 人口密度の高い都市圏の特定 ( Section \@ref(define-metropolitan-areas) )
-- これらの地域の詳細な地理データ（OpenStreetMap \index{OpenStreetMap} , with **osmdata** \index{osmdata (package)}  ）をダウンロードする ( Section \@ref(points-of-interest) ) 。
-- 地図代数を用いて異なる場所の相対的な望ましさをスコアリングするためのラスタ \index{raster}  を作成する \index{map algebra}  ( Section \@ref(identifying-suitable-locations) )
+- これらの地域の詳細な地理データ（**osmdata**\index{osmdata (package)} で OpenStreetMap\index{OpenStreetMap}）をダウンロードする (Section \@ref(points-of-interest))
+- 地図代数\index{map algebra}を用いて異なる場所の相対的な望ましさをスコアリングするためのラスタ\index{raster}を作成する (Section \@ref(identifying-suitable-locations))
 
 これらのステップは、特定のケーススタディに適用されたが、店舗立地や公共サービス提供の多くのシナリオに一般化することが可能である。
 
@@ -127,10 +127,10 @@ tab = tribble(
 #   hh_size = fct_hh_size,
 # )
 # summary(input_factor)
-cap = paste("Categories for each variable in census data from",
-            "Datensatzbeschreibung...xlsx", 
-            "located in the downloaded file census.zip (see Figure",
-            "13.1 for their spatial distribution).")
+cap = paste("ダウンロードした census.zip",
+            "Datensatzbeschreibung...xlsx から", 
+            "国勢調査データの各変数のカテゴリ (",
+            "空間分布は Figure 13.1)。")
 knitr::kable(tab,
              col.names = c("class", "Population", "% female", "Mean age",
                            "Household size"),
@@ -163,12 +163,12 @@ input_ras
 ```
 
 ```{block2 13-location-7, type='rmdnote'}
-Note that we are using an equal-area projection (EPSG:3035; Lambert Equal Area Europe), i.e., a projected CRS\index{CRS!projected} where each grid cell has the same area, here 1000 x 1000 square meters. 
-Since we are using mainly densities such as the number of inhabitants or the portion of women per grid cell, it is of utmost importance that the area of each grid cell is the same to avoid 'comparing apples and oranges'.
-Be careful with geographic CRS\index{CRS!geographic} where grid cell areas constantly decrease in poleward directions (see also Section \@ref(crs-intro) and Chapter \@ref(reproj-geo-data)). 
+なお、ここでは等面積投影（EPSG:3035; Lambert Equal Area Europe）、つまり各グリッドセルが同じ面積（ここでは1000×1000平方メートル）を持つ投影 CRS\index{CRS!projected} を使用している。
+主に格子点あたりの住民数や女性比率などの密度を用いているので、「リンゴとオレンジの比較」を避けるために、各格子点の面積が同じであることが最も重要である。
+グリッドセル面積が極方向に減少し続ける地理的 CRS\index{CRS!geographic} には注意が必要 (Section \@ref(crs-intro) と Chapter \@ref(reproj-geo-data) も参照)。
 ```
 
-```{r census-stack, echo=FALSE, fig.cap="Gridded German census data of 2011 (see Table 13.1 for a description of the classes).", fig.scap="Gridded German census data."}
+```{r census-stack, echo=FALSE, fig.cap="グリッド化した2011年ドイツ国勢調査 (クラスの内容は Table 13.1)。", fig.scap="Gridded German census data."}
 knitr::include_graphics("figures/14_census_stack.png")
 ```
 
@@ -260,7 +260,7 @@ metros = polys %>%
 
 他の列を入力として与えなければ、`summarize()` はジオメトリを分解（ディゾルブ）するだけである。
 
-```{r metro-areas, echo=FALSE, fig.width=1, fig.height=1, fig.cap="The aggregated population raster (resolution: 20 km) with the identified metropolitan areas (golden polygons) and the corresponding names.", fig.scap="The aggregated population raster."}
+```{r metro-areas, echo=FALSE, fig.width=1, fig.height=1, fig.cap="人口ラスタ（分解能20km）、大都市圏（金色のポリゴン）とその名称。", fig.scap="The aggregated population raster."}
 knitr::include_graphics("figures/14_metro_areas.png")
 ```
 
@@ -291,7 +291,7 @@ metro_names = revgeo(longitude = coords[, 1], latitude = coords[, 2],
 
 ```{r metro-names, echo=FALSE}
 knitr::kable(dplyr::select(metro_names, city, state), 
-             caption = "Result of the reverse geocoding.", 
+             caption = "逆ジオコーディングの結果", 
              caption.short = "Result of the reverse geocoding.", 
              booktabs = TRUE)
 ```
@@ -306,7 +306,7 @@ metro_names = dplyr::pull(metro_names, city) %>%
   ifelse(. == "Wülfrath", "Duesseldorf", .)
 ```
 
-## 注目点  {#Points-of-interest}
+## 注目点  {#points-of-interest}
 
 \index{point of interest}
 **osmdata**\index{osmdata (package)} パッケージは、OSM \index{OpenStreetMap}  データへの使いやすいアクセスを提供する ( Section \@ref(retrieving-data) も参照)。
@@ -316,21 +316,21 @@ metro_names = dplyr::pull(metro_names, city) %>%
 - `map()` \index{loop!map}  ( `lapply()` \index{loop!lapply}  の **tidyverse** 相当)。これは、OSM \index{OpenStreetMap}  クエリー関数 `opq()` ( Section \@ref(retrieving-data) 参照) のバウンディングボックス\index{bounding box}  を定義する、8つの大都市名すべてを繰り返し処理するものである。
 - `add_osm_feature()` で、キー値が `shop` の OSM\index{OpenStreetMap}  要素を指定する (共通のキー:値のペアの一覧は [wiki.openstreetmap.org](http://wiki.openstreetmap.org/wiki/Map_Features) を参照)。
 - `osmdata_sf()`、これは OSM\index{OpenStreetMap} データを空間オブジェクト（クラス `sf` ）に変換するものである。
-- `while()` \index{loop!while}、1回目のダウンロードに失敗すると繰り返し（今回は3回）ダウンロードを試みる^[OSM-downloadは1回目で失敗することもあるようである。
+- `while()`\index{loop!while}、1回目のダウンロードに失敗すると繰り返し（今回は3回）ダウンロードを試みる。^[OSM-downloadは1回目で失敗することもあるようである。
 ]
-このコードを実行する前に: 約2GBのデータをダウンロードすることを考慮してみよう。
+このコードを実行する前に: 約 2 GB のデータをダウンロードすることを考慮してみよう。
 時間とリソースを節約するために、`shops` という名前の出力を **spDataLarge** に入れることとした。
-お使いの環境で利用できるようにするには、**spDataLarge** パッケージがロードされていることを確認するか、`data("shops", package = "spDataLarge")` を実行してみよう。
+自分の環境で利用できるようにするには、**spDataLarge** パッケージがロードされていることを確認するか、`data("shops", package = "spDataLarge")` を実行してみよう。
 
 ```{r 13-location-20, eval=FALSE, message=FALSE}
 shops = map(metro_names, function(x) {
   message("Downloading shops of: ", x, "\n")
-  # give the server a bit time
+  # サーバに少し時間を与える
   Sys.sleep(sample(seq(5, 10, 0.1), 1))
   query = opq(x) %>%
     add_osm_feature(key = "shop")
   points = osmdata_sf(query)
-  # request the same data again if nothing has been downloaded
+  # ダウンロードされていない場合は、再度同じデータを要求
   iter = 2
   while (nrow(points$osm_points) == 0 & iter > 0) {
     points = osmdata_sf(query)
@@ -345,7 +345,7 @@ shops = map(metro_names, function(x) {
 その場合は、該当する地域のショップを再度ダウンロードすることを勧める。
 
 ```{r 13-location-21, eval=FALSE}
-# checking if we have downloaded shops for each metropolitan area
+# 各都道府県のダウンロードショップがあるかどうかの確認
 ind = map(shops, nrow) == 0
 if (any(ind)) {
   message("There are/is still (a) metropolitan area/s without any features:\n",
@@ -358,9 +358,9 @@ OSMの投稿者は、データを収集する際に同じように細心の注�
 `rbind` 最後に、すべてのショップを1つの大きな `sf` \index{sf}  オブジェクトにまとめる。
 
 ```{r 13-location-22, eval=FALSE}
-# select only specific columns
+# 特定の列のみを選択
 shops = map(shops, dplyr::select, osm_id, shop)
-# putting all list elements into a single data frame
+# リスト要素に1つのデータフレームを入れる
 shops = do.call(rbind, shops)
 ```
 
@@ -373,16 +373,16 @@ shops = do.call(rbind, shops)
 重要なのは、ここで `count()` 関数を用いて、各セルのショップ数を算出していることだ。
 
 ```{block2 13-location-24, type='rmdnote'}
-If the `shop` column were used instead of the `osm_id` column, we would have retrieved fewer shops per grid cell. 
-This is because the `shop` column contains `NA` values, which the `count()` function omits when rasterizing vector objects.
+もし `osm_id` カラムの代わりに `shop` カラムを使用した場合、グリッドセルあたりの取得店舗数は少なくなる。
+これは、 `shop` カラムが `NA` 値を含んでいるためで、 `count()` 関数はベクトルオブジェクトをラスタライズする際にこの値を省略することができる。
 ```
 
 そのため、後続のコードチャンクの結果は、店舗密度（店舗/km^2^）の推定値となる。
-`st_transform()`\index{sf!st\_transform} は、両入力の CRS\index{CRS} が一致するように、   `rasterize()`\index{raster!rasterize} の前に使用される。
+`st_transform()`\index{sf!st\_transform} は、両入力の CRS\index{CRS} が一致するように、`rasterize()`\index{raster!rasterize} の前に使用される。
 
 ```{r 13-location-25, message=FALSE}
 shops = st_transform(shops, proj4string(reclass))
-# create poi raster
+# poi ラスタを作成
 poi = rasterize(x = shops, y = reclass, field = "osm_id", fun = "count")
 ```
 
@@ -392,13 +392,13 @@ poi = rasterize(x = shops, y = reclass, field = "osm_id", fun = "count")
 ここでは、クラス内分散を最小化する Fisher-Jenks 自然休息法を選択し、その結果を再分類行列の入力とする。
 
 ```{r 13-location-26, message=FALSE, warning=FALSE}
-# construct reclassification matrix
+# 再クラス化行列を構築
 int = classInt::classIntervals(values(poi), n = 4, style = "fisher")
 int = round(int$brks)
 rcl_poi = matrix(c(int[1], rep(int[-c(1, length(int))], each = 2), 
                    int[length(int)] + 1), ncol = 2, byrow = TRUE)
 rcl_poi = cbind(rcl_poi, 0:3) 
-# reclassify
+# 再クラス化
 poi = reclassify(poi, rcl = rcl_poi, right = NA) 
 names(poi) = "poi"
 ```
@@ -413,9 +413,9 @@ names(poi) = "poi"
 これは、相補関数 `addLayer()` と `dropLayer()` によって実現される。
 
 ```{r 13-location-27}
-# add poi raster
+# poi ラスタを追加
 reclass = addLayer(reclass, poi)
-# delete population raster
+# 人口ラスタを削除
 reclass = dropLayer(reclass, "pop")
 ```
 
@@ -423,13 +423,13 @@ reclass = dropLayer(reclass, "pop")
 きれいなデータであれば、最後のステップであるすべてのラスタ\index{raster}のレイヤを合計して最終的なスコアを計算することも、1行のコードで実現できる。
 
 ```{r 13-location-28}
-# calculate the total score
+# 合計点を計算
 result = sum(reclass)
 ```
 
 例えば、9以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値かもしれない（Figure \@ref(fig:bikeshop-berlin) ; `code/14-location-jm.R` も参照）。
 
-```{r bikeshop-berlin, echo=FALSE, eval=TRUE, fig.cap="Suitable areas (i.e., raster cells with a score > 9) in accordance with our hypothetical survey for bike stores in Berlin.", fig.scap="Suitable areas for bike stores."}
+```{r bikeshop-berlin, echo=FALSE, eval=TRUE, fig.cap="ベルリンにおける自転車店の仮想調査に従った適切なエリア（スコア> 9のラスターセル）。", fig.scap="Suitable areas for bike stores."}
 if (knitr::is_latex_output()){
     knitr::include_graphics("figures/bikeshop-berlin-1.png")
 } else if (knitr::is_html_output()){
@@ -473,8 +473,8 @@ if (knitr::is_latex_output()){
 これまでの調査により、1km四方でバイクショップの立地が可能なエリアを特定した。
 その後の分析のステップを踏むことができる。
 
-- 特定のキャッチメントエリア内の住民の数に基づいて最適な場所を見つける \index{catchment area} .
-例えば、できるだけ多くの人が自転車で15分以内の移動距離で行けるお店であること（キャッチメントエリア \index{catchment area}  ルーティング \index{routing}  ）。
+- 特定のキャッチメントエリア\index{catchment area} 内の住民の数に基づいて最適な場所を見つける。
+例えば、できるだけ多くの人が自転車で15分以内の移動距離で行けるお店であること（キャッチメントエリア\index{catchment area}ルーティング\index{routing}）。
 そのため、店舗から遠ければ遠いほど、実際に店舗を訪れる可能性が低くなることを考慮する必要がある（距離減衰関数）。
 - また、競合他社を考慮するのも良いアイデアだろう。 
 つまり、選択した場所の近辺にすでに自転車屋がある場合、可能性のある顧客（または販売可能性）を競合他社に分散させる必要がある [@huff_probabilistic_1963; @wieland_market_2017] .
