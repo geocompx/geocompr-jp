@@ -48,15 +48,15 @@ de_9im = function(x,
     funs_matched[[i]](x, y, sparse = sparse)
   })
   res = unlist(res)
-  if(output == "character") {
+  if (output == "character") {
     res = unlist(funs)[res]
   }
   res_text2 = ""
-  if(include_relate) {
+  if (include_relate) {
     relation = sf::st_relate(x, y)
     res_text2 = paste0(" \nDE-9IM string: \n", relation) 
   }
-  if(plot) {
+  if (plot) {
     res_text1 = paste(res, collapse = collapse)
     collapse_no_break = gsub(pattern = "\\n", replacement = "", x = collapse)
     res_text1 = paste0(res_text1, collapse_no_break)
@@ -80,7 +80,7 @@ de_9im_plot = function(xy, label1 = "test", label2 = "",
     annotate("text", x = 0.1, y = 0.95, label = label1, hjust = "left", vjust = "top") +
     annotate("text", x = 0.1, y = 0.1, label = label2, hjust = "left", vjust = "bottom", 
              fontface = "italic") +
-    theme_bw(base_family = "HiraginoSans-W3") +theme
+    theme
 }
 
 de_9im_plot2 = function(xy, label1 = "test", label2 = "",
@@ -93,7 +93,7 @@ de_9im_plot2 = function(xy, label1 = "test", label2 = "",
                 palette = c("#E36939", "#6673E3")) +
     tm_credits(label1, position = c(0.1, "top"), just = "top") +
     tm_credits(label2, position = c(0.1, 0.4), fontface = "italic", just = "bottom") +
-    tm_layout(frame = FALSE, fontfamily = "HiraginoSans-W3")
+    tm_layout(frame = FALSE)
 }
 
 # # Test code to functionalize:

@@ -3,7 +3,7 @@ library(tmap)
 library(spData)
 library(terra)
 
-if(!exists("cycle_hire_osm_projected")) {
+if (!exists("cycle_hire_osm_projected")) {
   cycle_hire_osm_projected = st_transform(cycle_hire_osm, "EPSG:27700")
   raster_template = rast(ext(cycle_hire_osm_projected), resolution = 1000,
                          crs = "EPSG:27700")
@@ -14,7 +14,7 @@ if(!exists("cycle_hire_osm_projected")) {
                          field = 1, fun = "length")
   
   ch_raster3 = rasterize(vect(cycle_hire_osm_projected), raster_template, 
-                         field = "capacity", fun = sum)
+                         field = "capacity", fun = sum, na.rm = TRUE)
 }
 
 r0p = tm_shape(cycle_hire_osm_projected) + 
