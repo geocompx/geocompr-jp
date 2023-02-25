@@ -356,7 +356,7 @@ shops = st_transform(shops, proj4string(reclass))
 poi = rasterize(x = shops, y = reclass, field = "osm_id", fun = "count")
 ```
 
-他のラスタレイヤ（人口、女性、平均年齢、世帯人員）と同様、`poi` ラスタは4つのクラスに再分類される（Section \@ref(create-census-rasters) 参照）。 
+他のラスタレイヤ（人口、女性、平均年齢、世帯人員）と同様、`poi` ラスタは 4 つのクラスに再分類される（Section \@ref(create-census-rasters) 参照）。 
 クラス間隔の定義は、ある程度恣意的に行われるものである。
 均等割、分位割、固定値などを使用することができる。
 ここでは、クラス内分散を最小化する Fisher-Jenks 自然休息法を選択し、その結果を再分類行列の入力とする。
@@ -376,7 +376,7 @@ names(poi) = "poi"
 ## 適当な場所を特定  {#identifying-suitable-locations}
 
 すべてのレイヤを結合する前に残っている唯一のステップは、`poi` を `reclass` のラスタスタックに追加し、そこから人口レイヤを削除することである。
-後者の理由は2つある。
+後者の理由は 2 つある。
 まず、大都市圏、つまりドイツの他の地域に比べて人口密度が平均的に高い地域はすでに定義されている。
 第二に、特定のキャッチメントエリア\index{catchment area}内に多くの潜在顧客がいることは有利であるが、数が多いだけでは、実際には望ましいターゲットグループを表していない可能性がある。
 例えば、タワーマンションは人口密度が高い地域であるが、高価なサイクル部品の購買力が高いとは限らない。
@@ -398,26 +398,23 @@ result = sum(reclass)
 例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値かもしれない（Figure \@ref(fig:bikeshop-berlin) ; `code/14-location-jm.R` も参照）。
 
 ```{r bikeshop-berlin, echo=FALSE, eval=TRUE, fig.cap="ベルリンにおける自転車店の仮想調査に従った適切なエリア（スコア> 9のラスターセル）。", fig.scap="Suitable areas for bike stores."}
-if (knitr::is_latex_output()){
+if (knitr::is_latex_output()) {
     knitr::include_graphics("figures/bikeshop-berlin-1.png")
-} else if (knitr::is_html_output()){
+} else if (knitr::is_html_output()) {
     library(leaflet)
-    library(sp)
     # have a look at suitable bike shop locations in Berlin
     berlin = metros[metro_names == "Berlin", ]
-    berlin_raster = raster::crop(result, berlin) 
+    berlin_raster = terra::crop(result, terra::vect(berlin)) 
     # summary(berlin_raster)
     # berlin_raster
-    berlin_raster = berlin_raster > 9
-    
-    berlin_raster = berlin_raster == TRUE
-    berlin_raster[berlin_raster == 0] = NA
-    
-    leaflet() %>% 
-      addTiles() %>%
-      addRasterImage(berlin_raster, colors = "darkgreen", opacity = 0.8) %>%
-      addLegend("bottomright", colors = c("darkgreen"), 
-                labels = c("potential locations"), title = "Legend") 
+    berlin_raster = berlin_raster[berlin_raster > 9, drop = FALSE]
+    leaflet::leaflet() |> 
+      leaflet::addTiles() |>
+      # addRasterImage so far only supports raster objects
+      leaflet::addRasterImage(raster::raster(berlin_raster), colors = "darkgreen",
+                              opacity = 0.8) |>
+      leaflet::addLegend("bottomright", colors = c("darkgreen"), 
+                         labels = c("potential locations"), title = "Legend")  
 }
 ```
 
@@ -445,31 +442,12 @@ if (knitr::is_latex_output()){
 例えば、できるだけ多くの人が自転車で15分以内の移動距離で行けるお店であること（キャッチメントエリア\index{catchment area}ルーティング\index{routing}）。
 そのため、店舗から遠ければ遠いほど、実際に店舗を訪れる可能性が低くなることを考慮する必要がある（距離減衰関数）。
 - また、競合他社を考慮するのも良いアイデアだろう。 
-つまり、選択した場所の近辺にすでに自転車屋がある場合、可能性のある顧客（または販売可能性）を競合他社に分散させる必要がある [@huff_probabilistic_1963; @wieland_market_2017] .
+つまり、選択した場所の近辺にすでに自転車屋がある場合、可能性のある顧客（または販売可能性）を競合他社に分散させる必要がある [@huff_probabilistic_1963; @wieland_market_2017]。
 - 例えば、アクセスの良さ、駐車場の有無、通行人の希望頻度、大きな窓があることなど、適切かつ手頃な価格の不動産を探す必要がある。
 
 ## 演習
 
-1. `raster::rasterFromXYZ()` を使って、`input_tidy` をラスタブリック\index{raster!brick}に変換しなさい。
-`sp::gridded()` 機能の助けを借りて、同じことを実現してみてみよう。
-<!--
-input = st_as_sf(input, coords = c("x", "y"))
-# 正しいプロジェクションを使用する（データの説明を参照）。
-input = st_set_crs(input, 3035)
-# spオブジェクトに変換する
-input = as(input, "Spatial")
-gridded(input) = TRUE
-# ラスタスタックに変換する
-入力 = スタック(入力)
--->
-
-1. 100mセル分解能の住民情報を含むcsvファイルをダウンロードする（https://www.zensus2011.de/SharedDocs/Downloads/DE/Pressemitteilung/DemografischeGrunddaten/csv_Bevoelkerung_100m_Gitter.zip?__blob=publicationFile&amp;v=3）。
-解凍後のファイルサイズは1.23GBとなるので注意。
-R\index{R}  に読み込むには、`readr::read_csv` を使用する。
-私のマシン（16GB RAM）では30秒かかる。
-`data.table::fread()` はさらに高速で、 クラスのオブジェクトを返すだろう。
-`data.table()` `as.tibble()` を使ってティブル\index{tibble}に変換する。
-住民ラスタ\index{raster}を作成し、セル解像度1kmでこれを集計\index{aggregation!spatial}し、クラス平均値を用いて作成した住民ラスタ（`inh`）との差を比較しなさい。
-
-1. 私たちの自転車ショップでは、主に高齢者に電動自転車を販売しているとする。 
-年齢ラスタ\index{raster}を適宜変更し、残りの解析を繰り返し、元の結果と比較しなさい。
+```{r, echo=FALSE, results='asis'}
+res = knitr::knit_child('_14-ex.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
+cat(res, sep = '\n')
+```
