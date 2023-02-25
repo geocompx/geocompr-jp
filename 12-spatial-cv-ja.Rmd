@@ -463,8 +463,8 @@ ggplot2::ggplot(data = score[learner_id == "classif.log_reg"],
 Section \@ref(intro-cv) では、統計的学習\index{statistical learning}の一環として、機械学習\index{machine learning}を導入した 。
 もう一度確認しよう。[Jason Brownlee](https://machinelearningmastery.com/linear-regression-for-machine-learning/) による機械学習の以下の定義に従う。
 
-> Machine learning, more specifically the field of predictive modeling, is primarily concerned with minimizing the error of a model or making the most accurate predictions possible, at the expense of explainability.
-In applied machine learning we will borrow, reuse and steal algorithms from many different fields, including statistics and use them towards these ends.
+> 機械学習、より具体的には予測モデリングの分野では、説明可能性を犠牲にして、モデルの誤差を最小化すること、あるいは可能な限り正確な予測を行うことに主眼が置かれている。
+応用機械学習では、統計学を含む多くの異なる分野からアルゴリズムを借用、再利用、盗用し、こうした目的のために使用する。
 
 Section \@ref(glm) では、GLM を用いて地滑りしやすさを予測した。
 ここでは、同じ目的のためにサポートベクタマシン（SVM）\index{SVM}を紹介する。
@@ -481,7 +481,7 @@ SVM\index{SVM} クラスを分離するための最適な「超平面」を探�
 **kernlab** が提供 SVM 実装の中には、ハイパーパラメータを自動的に、通常はランダムなサンプルに基づいて調整することができるものもある（Figure \@ref(fig:partitioning) の上段を参照）。
 これは非空間データでは有効だが、空間データではあまり意味がなく、「空間チューニング」を行う必要がある。
 
-空間チューニングを定義する前に、Section \@ref(glm) で紹介した **mlr3** \index{mlr3 (package)} ビルディングブロックを SVM 用に設定することにする。
+空間チューニングを定義する前に、Section \@ref(glm) で紹介した **mlr3**\index{mlr3 (package)} ビルディングブロックを SVM 用に設定することにする。
 分類\index{classification}のタスクは変わらないので、Section \@ref(glm) で作成した `task` オブジェクトを再利用すればよい。
 SVM を実装している学習器は、**mlr3extralearners** パッケージの `listLearners()` を用いて検索することができる。
 
@@ -654,7 +654,7 @@ Section \@ref(intro-cv) で述べたように、空間座標を持つオブザ�
 機械学習全体、そして空間データを理解するための機械学習は大きな分野であり、この章では基本的なことを説明したが、まだまだ学ぶべきことはある。
 このような方向性で、以下の資料を勧める。
 
-- **mlr3 book** [@becker_mlr3_2022; https://mlr-org.github.io/mlr-tutorial/release/html/)]  と、特に [chapter on the handling of spatio-temporal data](https://mlr3book.mlr-org.com/spatiotemporal.html) を参考。
+- **mlr3 book** [@becker_mlr3_2022; https://mlr-org.github.io/mlr-tutorial/release/html/]  と、特に [chapter on the handling of spatio-temporal data](https://mlr3book.mlr-org.com/spatiotemporal.html) を参考。
 - ハイパーパラメータ\index{hyperparameter}チューニングに関する学術論文 [@schratz_hyperparameter_2019] 
 - **mlr3spatiotempcv** の使用方法に関する学術論文 [@schratz_mlr3spatiotempcv_2021] 
 - 時空間データの場合、空間的\index{autocorrelation!spatial}と時間的\index{autocorrelation!temporal}の自己相関を考慮した上で CV\index{cross-validation} を行う必要がある [@meyer_improving_2018]。
