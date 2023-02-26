@@ -202,8 +202,9 @@ names(world)
 
 この `geom` 列の内容は、`sf` オブジェクトに空間的な力を与える。`world$geom` は、国別ポリゴンのすべての座標を含む '[list column](https://adv-r.hadley.nz/vectors-chap.html#list-columns)' である。
 \index{list column}
-`sf` オブジェクトは、R の基本関数である `plot()` を使ってすぐにプロットすることができる。
-次のコマンドは、Figure \@ref(fig:world-all) を作成する。
+`sf` オブジェクトは、`plot()` を使ってすぐにプロットすることができる。
+`plot()` は、R のデフォルト (base R) の一部であり、他のパッケージが拡張することのできる[ジェネリック](https://adv-r.hadley.nz/s3.html#s3-methods)というものである。
+
 
 ```{r world-all, fig.cap="sf パッケージを用いた世界の空間プロットで、各属性ごとのファセットを表示。", warning=FALSE, fig.scap="A spatial plot of the world using the sf package."}
 plot(world)
