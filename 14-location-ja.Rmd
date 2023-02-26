@@ -2,7 +2,7 @@
 
 ## 必須パッケージ  {- #prerequisites-14}
 
-- この章では、以下のパッケージが必要である（**revgeo**もインストールされている必要がある）。
+- この章では、以下のパッケージが必要である（**revgeo** もインストールしておく必要がある）。
 
 ```{r 14-location-1, message=FALSE }
 library(sf)
@@ -19,19 +19,19 @@ library(spDataLarge)
 
 ## イントロダクション
 
-この章では、パート I とパート II で学んだスキルを特定のドメインに適用する方法を示す。ジオマーケティング\index{geomarketing} （ロケーション分析\index{location analysis}  やロケーションインテリジェンスとも呼ばれることがある）である。
+この章では、パート I とパート II で学んだスキルを特定のドメインに適用する方法を示す。ジオマーケティング\index{geomarketing} （立地分析\index{location analysis}  やロケーションインテリジェンスとも呼ばれることがある）である。
 研究・実用化されている分野は幅広い。
 その典型的な例が、新しい店舗をどこに置くかということである。
 ここでの目的は、最も多くの訪問者を集め、最終的に最も多くの利益を上げることである。
 また、例えば新しい医療サービスをどこに配置するかなど、この技術を公共の利益のために利用できる非商業的なアプリケーションも多い [@tomintz_geography_2008]。
 
-ロケーション分析\index{location analysis}の基本は人である。 特に時間やその他のリソースを費やす可能性が高い場所である。
+立地分析\index{location analysis}の基本は人である。 特に時間やその他のリソースを費やす可能性が高い場所である。
 興味深いことに、エコロジーの概念やモデルは、店舗立地分析に使われるものと非常によく似ている。
 動物や植物は、空間的に変化する変数に基づいて、特定の「最適な」場所でそのニーズを最もよく満たすことができる（@muenchow_review_2018; Chapter \@ref(eco) も参照)。
-これはジオコンピューティングやGISサイエンス全般の大きな強みである。コンセプトや手法は他の分野にも転用可能である。
+これはジオコンピュテーションや GIS サイエンス全般の大きな強みである。コンセプトや手法は他の分野にも転用可能である。
 例えば、ホッキョクグマは気温が低く、餌（アザラシやアシカ）が豊富な北緯を好む。
 同様に、人間は特定の場所に集まる傾向があり、北極の生態学的ニッチに類似した経済的ニッチ（そして高い地価）を作り出する。
-ロケーション分析の主な作業は、利用可能なデータに基づいて、特定のサービスにとってそのような「最適な場所」がどこであるかを見つけ出すことである。
+立地分析の主な作業は、利用可能なデータに基づいて、特定のサービスにとってそのような「最適な場所」がどこであるかを見つけ出すことである。
 典型的なリサーチクエスチョンとしては、以下のようなものがある。
 
 - ターゲット層はどこに住んでいて、どのエリアによく行くのか？
@@ -40,7 +40,7 @@ library(spDataLarge)
 - 既存のサービスは、市場の潜在力を過大に、あるいは過小に開拓していないか？
 - ある企業の特定地域における市場シェアはどのくらいか？
 
-本章では、実データに基づく仮想的なケーススタディに基づき、ジオコンピューティングがそのような疑問に答えることができることを示す。
+本章では、実データに基づく仮想的なケーススタディに基づき、ジオコンピュテーションがそのような疑問に答えることができることを示す。
 
 ## ケーススタディ: ドイツの自転車店  {#case-study}
 
@@ -63,8 +63,8 @@ library(spDataLarge)
 
 ## 入力データを整頓  {#tidy-the-input-data}
 
-ドイツ政府は、1kmまたは100mの解像度でグリッド化された国勢調査データを提供している。
-次のコードは、1kmのデータをダウンロードし、解凍し、読み込むものである。
+ドイツ政府は、1 km または 100 m の解像度でグリッド化された国勢調査データを提供している。
+次のコードは、1 km のデータをダウンロードし、解凍し、読み込むものである。
 
 ```{r 14-location-2, eval=FALSE}
 download.file("https://tinyurl.com/ybtpkwxz", 
@@ -79,7 +79,7 @@ census_de = readr::read_csv2(list.files(pattern = "Gitter.csv"))
 data("census_de", package = "spDataLarge")
 ```
 
-`census_de` オブジェクトは、ドイツ全土の30万以上のグリッドセルについて、13の変数を含むデータフレームである。
+`census_de` オブジェクトは、ドイツ全土の 30 万以上のグリッドセルについて、13 の変数を含むデータフレームである。
 私たちの仕事では、これらのサブセットだけが必要である。東経（`x`）と北緯（`y`）、住民数（人口；`pop`）、平均年齢（`mean_age`）、女性の割合（`women`）、平均世帯人員（`hh_size`）である。
 これらの変数は、以下のコードチャンクで選択され、ドイツ語から英語に名前が変更され、 Table \@ref(tab:census-desc) に要約される。 
 さらに、`mutate_all()` は、値 -1 と -9 (不明を意味する) を `NA` に変換するために使用される。
@@ -126,7 +126,7 @@ tab = tribble(
 #   hh_size = fct_hh_size,
 # )
 # summary(input_factor)
-cap = paste("ダウンロードした census.zip",
+cap = paste("ダウンロードした census.zip の",
             "Datensatzbeschreibung...xlsx から", 
             "国勢調査データの各変数のカテゴリ (",
             "空間分布は Figure 13.1)。")
@@ -195,8 +195,8 @@ rcl = list(rcl_pop, rcl_women, rcl_age, rcl_hh)
 
 ```{r 14-location-9}
 reclass = input_ras
-for (i in seq_len(nlayers(reclass))) {
-  reclass[[i]] = reclassify(x = reclass[[i]], rcl = rcl[[i]], right = NA)
+for (i in seq_len(terra::nlyr(reclass))) {
+  reclass[[i]] = terra::classify(x = reclass[[i]], rcl = rcl[[i]], right = NA)
 }
 names(reclass) = names(input_ras)
 ```
@@ -216,21 +216,21 @@ reclass
 この粗い解像度のピクセルは、Section \@ref(aggregation-and-disaggregation) で紹介したように、`aggregate()` \index{aggregation}、速やかに作成することができる。
 以下のコマンドは、引数 `fact = 20`、結果の解像度を20倍にしている（元のラスタの解像度が1km^2^であったことを思い出してみよう）。
 
-```{r 14-location-11, warning=FALSE}
-pop_agg = aggregate(reclass$pop, fact = 20, fun = sum)
+```{r 14-location-11, warning=FALSE, cache=TRUE, cache.lazy=FALSE}
+pop_agg = terra::aggregate(reclass$pop, fact = 20, fun = sum, na.rm = TRUE)
+summary(pop_agg)
 ```
 
 次のステージは、50万人以上のセルだけを残すことである。
 
-```{r 14-location-12, warning=FALSE}
-summary(pop_agg)
+```{r 14-location-12, warning=FALSE, cache.lazy=FALSE, cache=TRUE}
 pop_agg = pop_agg[pop_agg > 500000, drop = FALSE] 
 ```
 
 これをプロットすると、8つの大都市圏（Figure \@ref(fig:metro-areas)）が見えてくる。
 各領域は、1つ以上のラスタセルで構成される。
 1つのリージョンに属するすべてのセルを結合できればコマンドは、
-**terra**\index{terra}の `patches()` である。
+**terra**\index{terra} の `patches()` である。
 その後、`as.polygons()` でラスタオブジェクトを空間ポリゴンに変換し、`st_as_sf()` で `sf`. オブジェクトに変換する。
 
 ```{r 14-location-13, warning=FALSE, message=FALSE}
@@ -350,10 +350,10 @@ data("shops", package = "spDataLarge")
 そのため、後続のコードチャンクの結果は、店舗密度（店舗/km^2^）の推定値となる。
 `st_transform()`\index{sf!st\_transform} は、両入力の CRS\index{CRS} が一致するように、`rasterize()`\index{raster!rasterize} の前に使用される。
 
-```{r 14-location-25, message=FALSE}
-shops = st_transform(shops, proj4string(reclass))
-# poi ラスタを作成
-poi = rasterize(x = shops, y = reclass, field = "osm_id", fun = "count")
+```{r 14-location-25, message=FALSE, warning=FALSE}
+shops = sf::st_transform(shops, st_crs(reclass))
+# create poi raster
+poi = terra::rasterize(x = shops, y = reclass, field = "osm_id", fun = "length")
 ```
 
 他のラスタレイヤ（人口、女性、平均年齢、世帯人員）と同様、`poi` ラスタは 4 つのクラスに再分類される（Section \@ref(create-census-rasters) 参照）。 
@@ -362,14 +362,14 @@ poi = rasterize(x = shops, y = reclass, field = "osm_id", fun = "count")
 ここでは、クラス内分散を最小化する Fisher-Jenks 自然休息法を選択し、その結果を再分類行列の入力とする。
 
 ```{r 14-location-26, message=FALSE, warning=FALSE}
-# 再クラス化行列を構築
-int = classInt::classIntervals(values(poi), n = 4, style = "fisher")
+# construct reclassification matrix
+int = classInt::classIntervals(terra::values(poi), n = 4, style = "fisher")
 int = round(int$brks)
 rcl_poi = matrix(c(int[1], rep(int[-c(1, length(int))], each = 2), 
                    int[length(int)] + 1), ncol = 2, byrow = TRUE)
-rcl_poi = cbind(rcl_poi, 0:3) 
-# 再クラス化
-poi = reclassify(poi, rcl = rcl_poi, right = NA) 
+rcl_poi = cbind(rcl_poi, 0:3)  
+# reclassify
+poi = terra::classify(poi, rcl = rcl_poi, right = NA) 
 names(poi) = "poi"
 ```
 
@@ -397,7 +397,7 @@ result = sum(reclass)
 
 例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値かもしれない（Figure \@ref(fig:bikeshop-berlin) ; `code/14-location-jm.R` も参照）。
 
-```{r bikeshop-berlin, echo=FALSE, eval=TRUE, fig.cap="ベルリンにおける自転車店の仮想調査に従った適切なエリア（スコア> 9のラスターセル）。", fig.scap="Suitable areas for bike stores."}
+```{r bikeshop-berlin, echo=FALSE, eval=TRUE, fig.cap="ベルリンにおける自転車店の仮想調査に従った適切なエリア（スコア> 9のラスタセル）。", fig.scap="Suitable areas for bike stores.", warning=FALSE}
 if (knitr::is_latex_output()) {
     knitr::include_graphics("figures/bikeshop-berlin-1.png")
 } else if (knitr::is_html_output()) {
@@ -428,7 +428,7 @@ if (knitr::is_latex_output()) {
 - 最終的なスコアの算出には均等なウェイトを用いたが、世帯規模など他の要因も、女性の割合や平均年齢と同様に重要である可能性がある。
 - 全てのポイントオブインタレスト\index{point of interest}  を使用したが、DIY、ハードウェア、自転車、釣り、ハンティング、バイク、アウトドア、スポーツショップなど、バイクショップに関連するもののみ（ショップ値の範囲は [OSM Wiki](http://wiki.openstreetmap.org/wiki/Map_Features#Shop) で確認可能）、より洗練された結果を得ることができたかもしれない
 - より高い解像度のデータにより、出力が向上する場合がある（演習参照）
-- 私たちは限られた変数のみを使用し、 [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/discovery/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない（Section \@ref(retrieving-data) も参照のこと）。
+- 私たちは限られた変数のみを使用し、[INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/discovery/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない（Section \@ref(retrieving-data) も参照のこと）。
 - 男性比率と単身世帯の関係などの相互作用は考慮されていない。
 
 つまり、この分析は多方面に拡張できるのである。
@@ -438,7 +438,7 @@ if (knitr::is_latex_output()) {
 これまでの調査により、1 km 四方でバイクショップの立地が可能なエリアを特定した。
 その後の分析のステップを踏むことができる。
 
-- 特定のキャッチメントエリア\index{catchment area} 内の住民の数に基づいて最適な場所を見つける。
+- 特定のキャッチメントエリア\index{catchment area}内の住民の数に基づいて最適な場所を見つける。
 例えば、できるだけ多くの人が自転車で15分以内の移動距離で行けるお店であること（キャッチメントエリア\index{catchment area}ルーティング\index{routing}）。
 そのため、店舗から遠ければ遠いほど、実際に店舗を訪れる可能性が低くなることを考慮する必要がある（距離減衰関数）。
 - また、競合他社を考慮するのも良いアイデアだろう。 
