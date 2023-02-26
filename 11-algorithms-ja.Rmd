@@ -95,10 +95,10 @@ knitr::include_graphics("figures/codecheck.png")
 ジオコンピュテーションのためのスクリプトで特に考慮すべき点は、GDAL など外部ライブラリへの依存が多い点である。実際、Chapter \@ref(read-write) のデータ入出力では GDAL をたくさん使用した。 
 GIS ソフトウェアの依存は、Chaptger \@ref(gis) で解説したようにより多くの特別なジオアルゴリズムを実行するために必要になる。
 地理データを扱うスクリプトは、入力データセットが特定のファイル形式であることを必要とする。
-このような依存関係は、スクリプトのコメントとして、またはスクリプトの一部であるプロジェクトの他の場所で言及されるべきである。例えば、[`11-centroid-alg.R` ](https://github.com/Robinlovelace/geocompr/blob/main/code/11-centroid-alg.R) で示している。
+このような依存関係は、スクリプトのコメントとして、またはスクリプトの一部であるプロジェクトの他の場所で言及されるべきである。例えば、[`11-centroid-alg.R` ](https://github.com/geocompx/geocompr/blob/main/code/11-centroid-alg.R) で示している。
 「保守的」プログラミング技術と適切なエラーメッセージは、要件が満たされていない時に依存性を確認し、ユーザと対話する時間を節約する。
 R では `if ()` で表される If 文を使用し、特定の条件が揃った時のみにメッセージを送ったりコードを実行するようにコードを書く。
-以下のコード例は、特定のファイルがない場合にユーザにメッセージを送る。
+以下のコード例は、特定のファイルがない場合にユーザにメッセージを送る (訳註: メッセージに日本語を使わないことを推奨する。)。
 
 ```{r}
 if (!file.exists("required_geo_data.gpkg")) {
@@ -115,7 +115,7 @@ poly_mat = cbind(
   x = c(0, 0, 9, 9, 0),
   y = c(0, 9, 9, 0, 0)
 )
-# Short URL to code/11-centroid-alg.R in the geocompr repo
+# geocompr レポジトリの code/11-centroid-alg.R の短い URL
 source("https://t.ly/0nzj")
 ```
 
@@ -172,7 +172,7 @@ source("code/11-centroid-setup.R")
 ```
 
 ```{r 10-algorithms-4}
-# generate a simple matrix representation of a polygon:
+# ポリゴンを表現する行列を作成
 x_coords = c(10, 0, 0, 12, 20, 10)
 y_coords = c(0, 0, 10, 20, 15, 0)
 poly_mat = cbind(x_coords, y_coords)
@@ -216,7 +216,7 @@ $$
 この式を、三角形の行列表現のデータを扱う R コードに翻訳すると、次のようになる (関数 `abs()` は、正の結果を保証する)。
 
 ```{r 10-algorithms-6}
-# calculate the area of the triangle represented by matrix T1:
+# 行列 T1 で表される三角形の面積を計算
 abs(T1[1, 1] * (T1[2, 2] - T1[3, 2]) +
     T1[2, 1] * (T1[3, 2] - T1[1, 2]) +
     T1[3, 1] * (T1[1, 2] - T1[2, 2])) / 2
@@ -295,9 +295,9 @@ t_centroid = function(x) {
 }
 ```
 
-上記の例では、 [functions](https://adv-r.hadley.nz/functions.html)) の2つの重要な構成要素を示している。
-1) 関数の *body* 、中括弧内のコードで、関数が入力に対して何をするかを定義する。 2) *formals* 、関数が扱う引数のリスト --- この場合は `x` である (3番目の重要なコンポーネント、環境はこのセクションの範囲外)。
-デフォルトでは、関数は最後に計算したオブジェクトを返す (`t_centroid()` の場合は重心の座標\index{centroid})。^[
+上記の例では、[関数](https://adv-r.hadley.nz/functions.html)の2つの重要な構成要素を示している。
+1) 関数の *body* 、中括弧内のコードで、関数が入力に対して何をするかを定義する。 2) *formal* 、関数が扱う引数のリスト。この場合は `x` である (3番目の重要なコンポーネント、環境はこのセクションの範囲外)。
+デフォルトでは、関数は最後に計算したオブジェクトを返す (`t_centroid()` の場合は重心\index{centroid}の座標)。^[
 また、関数の本文に `return(output)` を追加することで、関数の出力を明示的に設定することができる。 `output` は返すべき結果である。
 ]
 
@@ -343,8 +343,8 @@ t_area(t_new)
 
 関数の便利な点は、モジュール化されていることである。
 出力が何であるかが分かっていれば、ある関数を別の関数の構成要素として利用することができる。
-したがって、関数 `t_centroid()` と `t_area()` は、スクリプト `11-centroid-alg.R`のより大きな関数\index{function}のサブコンポーネントである : 任意の凸ポリゴンの面積を計算するために使用することができる。
-以下のコードでは、凸ポリゴンに対する `sf::st_centroid()` の動作を模倣する関数 `poly_centroid()` を作成している:^[
+したがって、関数 `t_centroid()` と `t_area()` は、スクリプト `11-centroid-alg.R`というより大きな関数\index{function}のサブコンポーネントとして使うことができる。このスクリプトは、任意の凸ポリゴンの面積を計算する。
+以下のコードでは、凸ポリゴンに対する `sf::st_centroid()` の動作を模倣する関数 `poly_centroid()` を作成している。^[
 なお、作成した関数は、`lapply()`\index{loop!lapply}  と `vapply()`\index{loop!vapply}  の関数呼び出しで繰り返し呼び出されている。
 ]
 
