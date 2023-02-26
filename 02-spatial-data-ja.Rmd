@@ -204,7 +204,7 @@ names(world)
 \index{list column}
 `sf` オブジェクトは、`plot()` を使ってすぐにプロットすることができる。
 `plot()` は、R のデフォルト (base R) の一部であり、他のパッケージが拡張することのできる[ジェネリック](https://adv-r.hadley.nz/s3.html#s3-methods)というものである。
-
+**sf** は、エクスポートされていない (ユーザからはほとんどの場合隠されている) `plot.sf()` 関数を含んでおり、以下のコマンドでは裏でこの関数が呼ばれ、Figure \@ref(fig:world-all) を作成する。
 
 ```{r world-all, fig.cap="sf パッケージを用いた世界の空間プロットで、各属性ごとのファセットを表示。", warning=FALSE, fig.scap="A spatial plot of the world using the sf package."}
 plot(world)
