@@ -478,10 +478,6 @@ source("https://github.com/geocompx/geocompr/raw/main/code/06-raster-vectorizati
 平滑化処理はポリゴン境界の鋭いエッジを除去するため、平滑化ポリゴンは元のピクセルとは空間的範囲が正確に同じにはならない (例は、**smoothr** [ウェブサイト](https://strimas.com/smoothr/) を参照)。
 そのため、平滑化されたポリゴンをさらに解析に使用する場合は注意が必要です。
 
-```{r 06-raster-vector-40, echo=FALSE, fig.cap="ラスタ (左) をポリゴン (dissolve = FALSE、中央) と集約ポリゴン (dissolve = TRUE、右) にベクトル化した図。", warning=FALSE, fig.asp=0.4, fig.scap="Illustration of vectorization."}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/06-raster-vectorization2.R", print.eval = TRUE)
-```
-
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
