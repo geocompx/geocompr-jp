@@ -7,7 +7,7 @@ knitr::opts_chunk$set(warning = FALSE)
 
 ## 必須パッケージ  {- #prerequisites-12}
 
-本章では、Chapter \@ref(spatial-class) からChapter \@ref(reproj-geo-data) までの内容を学習し、演習を行うなどして、地理データ解析 \index{geographic data analysis}  に習熟していることを前提としている。
+本章では、Chapter \@ref(spatial-class) から Chapter \@ref(reproj-geo-data) までの内容を学習し、演習を行うなどして、地理データ解析 \index{geographic data analysis}  に習熟していることを前提としている。
 一般化線形モデル（GLM）\index{GLM}と機械学習\index{machine learning}  に精通していることを強く推奨する [例えば @zuur_mixed_2009;@james_introduction_2013]。
 
 この章では、以下のパッケージを使用する。^[

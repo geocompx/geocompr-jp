@@ -70,10 +70,11 @@ object.size(seine)
 object.size(seine_simp)
 ```
 
+\index{vector!simplification} 
 簡略化はポリゴンにも適用できる。
 下の例は、米国本土 `us_states` を表している。
 Chapter \@ref(reproj-geo-data) で示したように、GEOS はデータが投影型 CRS にあることを前提にしているため、地理型 CRS を使用した場合、予期せぬ結果になる可能性がある。
-したがって、まず最初に、US National Atlas Equal Area (epsg = 2163) のような適切な投影 CRS にデータを投影する（Figure \@ref(fig:us-simp) の左側）。
+したがって、まず最初に、US National Atlas Equal Area (EPSG = 2163) のような適切な投影 CRS にデータを投影する (Figure \@ref(fig:us-simp) 左上)。
 
 ```{r 05-geometry-operations-4}
 us_states2163 = st_transform(us_states, "EPSG:2163")
@@ -87,7 +88,7 @@ us_states_simp1 = st_simplify(us_states2163, dTolerance = 100000) # 100 km
 ```
 
 `st_simplify()` の制限事項として、ジオメトリ単位でオブジェクトを簡略化することが挙げられる。
-このため、「トポロジー」が失われ、Figure \@ref(fig:us-simp) （中央のパネル）に示すような、重なり合った「穴のあいた」面単位になってしまうのである。
+このため、「トポロジー」が失われ、Figure \@ref(fig:us-simp) (パネル右上) に示すような、重なり合った「穴のあいた」面単位になってしまうのである。
 `ms_simplify()` の **rmapshaper** はこの問題を克服する代替手段を提供する。
 デフォルトでは、Douglas-Peucker アルゴリズムのいくつかの制限を克服した Visvalingam アルゴリズムが使用される [@visvalingam_line_1993]。
 <!-- https://bost.ocks.org/mike/simplify/ -->
@@ -102,9 +103,9 @@ us_states_simp2 = rmapshaper::ms_simplify(us_states2163, keep = 0.01,
                                           keep_shapes = TRUE)
 ```
 
-
-簡略化の代わりに、ポリゴンや線のジオメトリの境界を平滑化するという方法もあり、**smoothr** パッケージで実装されている。
-平滑化はジオメトリのエッジを補間するため、必ずしも頂点の数が少なくなるわけではないが、ラスタを空間的にベクトル化したジオメトリを扱うときに特に有用である（このトピックは Chapter \@ref(raster-vector) で説明する）。
+\index{vector!simplification}
+簡略化の代わりに、ポリゴンや線のジオメトリの境界を平滑化するという方法もあり、**smoothr** パッケージ\index{smoothr (package)}で実装されている。
+平滑化はジオメトリのエッジを補間するため、必ずしも頂点の数が少なくなるわけではないが、ラスタを空間的にベクトル化したジオメトリを扱うときに特に有用である (このトピックは Chapter \@ref(raster-vector) で説明する)。
 **Smoothr** は、Gaussian kernel 回帰、Chaikin's corner cutting  アルゴリズム、スプライン補間の3つの平滑化手法を実装しており、パッケージ vignette と[web](https://strimas.com/smoothr/)で説明されている。
 `st_simplify()` と同様に、平滑化アルゴリズムは「トポロジー」を保存しないことに注意。
 **smoothr** の主要関数は `smooth()` であり、 `method` 引数は使用する平滑化手法を指定する。
@@ -112,18 +113,19 @@ us_states_simp2 = rmapshaper::ms_simplify(us_states2163, keep = 0.01,
 引数 `smoothness` は、形状を滑らかにするために使用するガウスの帯域幅を制御する。デフォルト値は 1。
 
 ```{r 05-geometry-operations-6b, warning=FALSE}
-us_states_simp3 = smoothr::smooth(us_states2163, method = 'ksmooth', smoothness = 6)
-
+us_states_simp3 = smoothr::smooth(us_states2163, 
+                                  method = "ksmooth", smoothness = 6)
 ```
 
-最後に、元のデータセットと2つの簡易版の視覚的な比較により、Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 回帰 (`smooth(method=ksmooth`) アルゴリズムの出力に違いがあることがわかる（Figure \@ref(fig:us-simp)）。
+最後に、元のデータセットと2つの簡易版を視覚的に比較してみよう。
+Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 回帰 (`smooth(method=ksmooth`) アルゴリズムの出力に違いがあることがわかる（Figure \@ref(fig:us-simp)）。
 
-```{r us-simp, echo=FALSE, fig.cap="ポリゴンの簡略化。sf（右上）、rmapshaper（左下）、smoothr（右下）の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。", warning=FALSE, fig.asp=0.3, fig.scap="Polygon simplification in action."}
+```{r us-simp, echo=FALSE, fig.cap="ポリゴンの簡略化。sf（右上）、rmapshaper（左下）、smoothr（右下）の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。", warning=FALSE, fig.scap="Polygon simplification in action."}
 library(tmap)
 p_ussimp1 = tm_shape(us_states2163) + tm_polygons() + tm_layout(main.title = "オリジナルデータ", fontfamily = "HiraginoSans-W3")
 p_ussimp2 = tm_shape(us_states_simp1) + tm_polygons() + tm_layout(main.title = "st_simplify")
 p_ussimp3 = tm_shape(us_states_simp2) + tm_polygons() + tm_layout(main.title = "ms_simplify")
-p_ussimp4 = tm_shape(us_states_simp3) + tm_polygons() + tm_layout(main.title = "smooth(method=ksmooth)")
+p_ussimp4 = tm_shape(us_states_simp3) + tm_polygons() + tm_layout(main.title = 'smooth(method = "ksmooth")')
 tmap_arrange(p_ussimp1, p_ussimp2, p_ussimp3, p_ussimp4, ncol = 2, nrow = 2)
 ```
 
@@ -144,11 +146,11 @@ nz_centroid = st_centroid(nz)
 seine_centroid = st_centroid(seine)
 ```
 
-地理的重心は、親オブジェクトの境界の外にあることもある（ドーナツを想像してみよう）。
-このような場合、親オブジェクトに点があることを保証するために、*point on surface* オペレーションを使用することができ（例：島国のような不規則なマルチポリゴンオブジェクトのラベル付け）、Figure \@ref(fig:centr) の赤い点に示されている。
+地理的重心は、親オブジェクトの境界の外にあることもある (ドーナツを想像すればよい)。
+このような場合、親オブジェクトに点があることを保証するために、*point on surface* オペレーションを使用することができ (例：島国のような不規則なマルチポリゴンオブジェクトのラベル付け)、Figure \@ref(fig:centr) の赤い点に示されている。
 これらの赤い点は、常に親オブジェクトの上にあることに確認しておこう。
 `st_point_on_surface()` を使い、以下のように作成する。^[
-`st_point_on_surface()` の動作の説明は、https://gis.stackexchange.com/q/76498 に記載されている。
+`st_point_on_surface()` の動作の説明は、https://gis.stackexchange.com/a/76563/20955 に記載されている。
 ]
 
 ```{r 05-geometry-operations-8, warning=FALSE}
@@ -281,11 +283,7 @@ rotation = function(a){
 重心のような選択された点を中心に回転させることができる（Figure \@ref(fig:affine-trans) の右パネル）。
 その他の例については、`vignette("sf3")`（訳注：[日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html)）を参照。
 
-```{r 05-geometry-operations-16-eval, echo = F, eval = T}
-library(lwgeom)
-nz_rotate = lwgeom_make_valid((nz_sfc - nz_centroid_sfc) * rotation(30)) + nz_centroid_sfc
-```
-```{r 05-geometry-operations-16, echo = T, eval = F}
+```{r 05-geometry-operations-16}
 nz_rotate = (nz_sfc - nz_centroid_sfc) * rotation(30) + nz_centroid_sfc
 ```
 
@@ -363,12 +361,14 @@ source("https://github.com/Robinlovelace/geocompr/raw/main/code/05-venn-clip.R")
 
 ### 部分集合と切り取り（clip）
 
+\index{vector!clipping} 
+\index{spatial!subsetting} 
 オブジェクトの切り取りは、その形状を変更することができるが、オブジェクトを部分集合を作成することもでき、切り取り/部分集合オブジェクトと交差する（または部分的に交差する）フィーチャのみを返す。
 この点を説明するために、を Figure \@ref(fig:venn-clip) の円 `x` と `y` の境界ボックスをカバーする点の部分集合を作成しよう。
 ある点は1つの円の中に入り、ある点は両方の円の中に入り、ある点はどちらの円の中にも入らない。
 `st_sample()` は、円 `x` と `y` の範囲内にある点を <u>単純なランダム化</u>をして生成し、Figure \@ref(fig:venn-subset)  に示すような出力を得るために、以下のように使用する。ここで一つ問題がある。円 `x` と `y` 両方と交差する点の部分集合はどのように得られるだろうか？
 
-```{r venn-subset, fig.cap="円x、yを囲むバウンディングボックス内にランダムに分布する点。オブジェクトx、yの両方と交差する点がハイライトされる。", fig.height=6, fig.width=9, fig.asp=0.4, fig.scap="Randomly distributed points within the bounding box. Note that only one point intersects with both x and y, highlighted with a red circle.", echo=FALSE}
+```{r venn-subset, fig.cap="円x、yを囲むバウンディングボックス内にランダムに分布する点。オブジェクトx、yの両方と交差する点がハイライトされる。", fig.height=6, fig.width=9, fig.scap="Randomly distributed points within the bounding box. Note that only one point intersects with both x and y, highlighted with a red circle.", echo=FALSE}
 bb = st_bbox(st_union(x, y))
 box = st_as_sfc(bb)
 set.seed(2017)
@@ -381,7 +381,6 @@ plot(p, add = TRUE)
 plot(p_xy1, cex = 3, col = "red", add = TRUE)
 text(x = c(-0.5, 1.5), y = 1, labels = c("x", "y"), cex = 2)
 ```
-
 
 ```{r venn-subset-to-show, eval=FALSE}
 bb = st_bbox(st_union(x, y))
@@ -399,10 +398,10 @@ x_and_y = st_intersection(x, y)
 結果は（属性名の表面的な違いを除いて）同じだが、実装は大きく異なる。
 
 ```{r 05-geometry-operations-21}
-p_xy1 = p[x_and_y]
-p_xy2 = st_intersection(p, x_and_y)
-sel_p_xy = st_intersects(p, x, sparse = FALSE)[, 1] &
-  st_intersects(p, y, sparse = FALSE)[, 1]
+p_xy1 = p[x_and_y] # way #1
+p_xy2 = st_intersection(p, x_and_y) # way #2
+sel_p_xy = st_intersects(p, x, sparse = FALSE)[, 1] & 
+  st_intersects(p, y, sparse = FALSE)[, 1] # way #3
 p_xy3 = p[sel_p_xy]
 ```
 
@@ -430,7 +429,7 @@ box = st_convex_hull(pmulti)
 \index{vector!union} 
 \index{aggregation!spatial} 
 Section \@ref(vector-attribute-aggregation) で見たように、空間的な集約は、同グループの接しているポリゴンのジオメトリを静かにディゾルブ (dissolve) させることができる。
-以下のコードでは、49個の `us_states` が base と **tidyverse** \index{tidyverse (package)}  関数を使って4つの地域に集約されている（結果は Figure \@ref(fig:us-regions) を参照）。
+以下のコードでは、49個の `us_states` が base と **dplyr** \index{dplyr (package)}  関数を使って 4 つの地域に集約されている (結果は Figure \@ref(fig:us-regions) を参照)。
 
 ```{r 05-geometry-operations-23}
 regions = aggregate(x = us_states[, "total_pop_15"], by = list(us_states$REGION),
@@ -665,7 +664,7 @@ elev_3 = elev + elev_2
 ```
 
 しかし、2つのラスタの範囲を `extend()` で揃えることができる。 
-追加する行や列の数を関数に指示すのではなく（以前のように）、別のラスタオブジェクトを使って計算させるようにしている。
+追加する行や列の数を (以前のように) 関数に指示するのではなく、別のラスタオブジェクトを使って計算させるようにしている。
 ここでは、`elev` のオブジェクトを、`elev_2` の範囲に拡張している。 
 新しく追加された行と列は、`NA` を受け取る。
 
@@ -673,9 +672,10 @@ elev_3 = elev + elev_2
 elev_4 = extend(elev, elev_2)
 ```
 
-ラスタの原点 (origin) は、座標(0, 0)に最も近いセルコーナーである。
+\index{raster!origin}
+ラスタの原点 (origin) は、座標 (0, 0) に最も近いセルコーナーである。
 `origin()` 関数は、原点の座標を返す。
-以下の例では、座標(0, 0)のセルコーナーが存在するが、必ずしもそうとは限らない。
+以下の例では、座標 (0, 0) のセルコーナーが存在するが、必ずしもそうとは限らない。
 
 ```{r 05-geometry-operations-39}
 origin(elev_4)
@@ -736,9 +736,10 @@ p_ar2 = tm_shape(dem_agg) +
 tmap_arrange(p_ar1, p_ar2, ncol = 2)
 ```
 
-`disagg()` 関数は、ラスタオブジェクトの解像度を上げ、新しく作成されたセルに値を割り当てるための2つの方法を提供する。デフォルトの方法（`method = "near"`）は、すべての出力セルに入力セルの値を与えるだけなので、値が重複し、「ブロック状の」出力となる。
-`bilinear` メソッドは、入力画像の4つの最近接画素中心（Figure \@ref(fig:bilinear) のサーモン色の点）を用いて、距離で重み付けした平均値を計算する（ Figure \@ref(fig:bilinear) の矢印）。
-出力セルの値は、左上の四角で表現される（Figure \@ref(fig:bilinear)）。
+\index{raster!disaggregation}
+`disagg()` 関数は、ラスタオブジェクトの解像度を上げ、新しく作成されたセルに値を割り当てるための2つの方法を提供する。デフォルトの方法 (`method = "near"`) は、すべての出力セルに入力セルの値を与えるだけなので、値が重複し、「ブロック状の」出力となる。
+`bilinear` メソッドは、入力画像の4つの最近接画素中心 (Figure \@ref(fig:bilinear) のサーモン色の点) を用いて、距離で重み付けした平均値を計算する (Figure \@ref(fig:bilinear) の矢印)。
+出力セルの値は、左上の四角で表現される (Figure \@ref(fig:bilinear))。
 
 ```{r 05-geometry-operations-41}
 dem_disagg = disagg(dem_agg, fact = 5, method = "bilinear")

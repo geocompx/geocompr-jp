@@ -42,22 +42,21 @@ QGIS\index{QGIS} [@sherman_desktop_2008] の作成者である Gary Sherman に�
 R が提供するような優れた CLI\index{command-line interface}（そして RStudio\index{RStudio} のような IDE\index{IDE}  によって強化されている）の利点は数多くある。
 良い CLI とは、
 
-- 繰り返の作業の自動化を促進する
+- 繰り返し作業の自動化を促進する
 - 優れた科学的実践とデータサイエンスのバックボーンである透明性と再現性を可能にする
 - 既存の機能を修正したり、新しい機能を実装するためのツールを提供することで、ソフトウェア開発を促進する
 - 多くの分野や産業で求められている、将来性のあるプログラミングスキルを身につけることができる
 - ユーザーフレンドリーで高速、効率的なワークフローを実現する
 
-一方、GUIベースのGIS \index{GIS}  システム（特にQGIS \index{QGIS}  ）も有利である。
+一方、GUI ベースの GIS\index{GIS} システム (特に QGIS\index{QGIS}) にも有利な点がある。
 良い GIS GUI とは、
 
 - 学習曲線が「浅い」ので、新しい言語を何時間も学ぶことなく、地理データを探索し、可視化することができる
 - トレース、スナップ、トポロジーツールなど、「デジタイジング」（新しいベクタデータセットの作成）のための優れたサポートを提供する^[
 **mapedit** パッケージは、いくつかの空間的特徴を素早く編集することができるが、専門的で大規模な地図製作のデジタイズはできない。
 ]
-- 地上基準点によるジオリファレンス（ラスタ画像と既存地図とのマッチング）、オルソレクションが可能である
-- 立体視マッピング（LiDAR、Structure from Motionなど）に対応する
-- オブジェクト指向のリレーショナルデータモデル、トポロジー、高速な（空間）クエリを備えた空間データベース管理システムへのアクセスを提供する
+- 地上基準点によるジオリファレンス (georeference、ラスタ画像と既存地図とのマッチング)、オルソレクティフィケーション (orthorectification) が可能である
+- 立体視マッピング (LiDAR、Structure from Motion など) に対応する
 
 専用 GIS のもう一つの利点は、何百もの「ジオアルゴリズム」（地理的問題を解決するための計算レシピ、Chapter \@ref(algorithms) を参照）を利用できることである。
 これらの多くは、本章のテーマであり動機でもある「GIS ブリッジ」を経由する以外、R のコマンドラインから利用することはできない。^[
@@ -78,7 +77,8 @@ R は GIS として設計されたものではない。
 R は統計プログラミング言語としてよく知られているが、GIS のワークフローを再現することができ、さらに（比較的）一貫した CLI という利点があることを知らない人が多いようである。
 さらに、R は、インタラクティブ/アニメーションマップ作成（Chapter \@ref(adv-map) 参照）や空間統計モデリング（ Chapter \@ref(spatial-cv) 参照）など、ジオコンピューティング\index{geocomputation}のいくつかの分野では GIS を凌駕する性能を有している。
 この章では、3つの成熟したオープンソース GIS 製品への「ブリッジ」（Table \@ref(tab:gis-comp) 参照）に焦点を当てる。QGIS\index{QGIS} (**qgisprocess**\index{qgisprocess (package)}; Section \@ref(rqgis) )、SAGA\index{SAGA} (**Rsagacmd**\index{Rsagacmd (package)}; Section \@ref(saga))、GRASS\index{GRASS} (**rgrass**\index{rgrass (package)}; Section \@ref(grass))である。^[
-ここでは取り上げないが、ArcGIS\index{ArcGIS} から R を使用するための R-ArcGIS ブリッジ（https://github.com/R-ArcGIS/r-bridge 参照）も知っておくとよいだろう。
+もうメンテナンスされていない R パッケージの **RPyGeo** は、R から ArcGIS のジオリファレンス機能への接続を確立した。
+ここでは取り上げないが、ArcGIS\index{ArcGIS} から R を使用するための R-ArcGIS ブリッジ (https://github.com/R-ArcGIS/r-bridge 参照) も知っておくとよいだろう。
 また、QGIS\index{QGIS} 内から R スクリプトを使用することもできる（https://docs.qgis.org/3.22/en/docs/training_manual/processing/r_intro.html 参照）。
 最後に、GRASS GIS\index{GRASS} のコマンドラインから R を使用することも可能となる（https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#R_within_GRASS 参照）。
 ]
@@ -116,7 +116,7 @@ QGIS \index{QGIS}  は、最も人気のあるオープンソース GIS の 1 �
 ```{r, eval=FALSE}
 library(qgisprocess)
 #> Using 'qgis_process' in the system PATH.
-#> QGIS version: 3.26.1-Buenos Aires
+#> QGIS version: 3.28.2-Firenze
 #> ...
 ```
 
@@ -152,7 +152,7 @@ qgis_providers()
 
 異なる空間単位（地域、行政単位など）を持つ2つのポリゴンオブジェクトがある場合を考えてみよう。
 この2つのオブジェクトを統合して、すべての境界線と関連する属性を含む1つのオブジェクトにすることが目標である。
-Section \@ref(incongruent) ( Figure \@ref(fig:uniondata) ) ですでに出会った不整合なポリゴンを再び利用する。
+Section \@ref(incongruent) (Figure \@ref(fig:uniondata)) でも見た不整合なポリゴン\index{spatial congruence}を再び利用する。
 どちらのポリゴンデータセットも **spData** パッケージで提供されており、その両方に地理的な CRS \index{CRS!geographic}  を使用したい（Chapter \@ref(reproj-geo-data) も参照）。
 
 ```{r 09-gis-4}
@@ -237,17 +237,17 @@ QGIS\index{QGIS} の union \index{vector!union}  の操作は、交差\index{vec
 
 その結果、`union_sf`、2つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
 しかし、これらのポリゴンの多くは小さく、実際の領域を表しているわけではなく、2つのデータセットの詳細度が異なるために生じたものであることに注意しておこう。
-これらの誤差はスライバーポリゴンと呼ばれる（ Figure \@ref(fig:sliver) の左側のパネルにある赤い色のポリゴンを参照）。
-スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば25000m^2^を見つけ、次にそれを削除する。
+こうした誤差によってできたものは、スライバー (sliver) ポリゴンと呼ばれている (Figure \@ref(fig:sliver) の左側のパネルにある赤い色のポリゴンを参照)。
+スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25000 m^2^ を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。
 
 ```{r, eval=FALSE}
 grep("clean", qgis_algo$algorithm, value = TRUE)
 ```
 
-今回見つかったアルゴリズム（ `v.clean` ）は、QGIS ではなく、GRASS GIS に含まれている。
-GRASS GIS の `v.clean` は、空間ベクタデータのトポロジーをクリーニングする強力なツールである。 
-重要なのは、**qgisprocess**を通して使用できることである。
+今回見つかったアルゴリズム (`v.clean`) は、QGIS ではなく、GRASS GIS\index{GRASS} に含まれている。
+GRASS GIS の `v.clean` は、空間ベクタデータのトポロジーをクリーニング\index{topology cleaning}する強力なツールである。 
+重要なのは、**qgisprocess** を通して使用できることである。
 
 前のステップと同様に、このアルゴリズムのヘルプを見るところから始めよう。
 
@@ -257,7 +257,7 @@ qgis_show_help("grass7:v.clean")
 
 ここでは出力を省略した。実際のヘルプテキストはかなり長く、多くの引数を含んでいる。^[また、QGIS の引数とは異なり、小文字になる。] 
 これは、`v.clean` がマルチツールであり、さまざまな種類のジオメトリをクリーニングし、さまざまな種類のトポロジー問題を解決することができることがある。
-この例では、いくつかの引数に絞って説明するが、`v.clean` の機能については、 [このアルゴリズムのドキュメント](https://grass.osgeo.org/grass78/manuals/v.clean.html)を勧める。
+この例では、いくつかの引数に絞って説明するが、`v.clean` の機能については、 [このアルゴリズムのドキュメント](https://grass.osgeo.org/grass-stable/manuals/v.clean.html)を勧める。
 
 ```{r, eval=FALSE}
 qgis_arguments("grass7:v.clean") |>
@@ -295,12 +295,12 @@ knitr::include_graphics("figures/10-sliver.png")
 
 ### ラスタデータ  {#qgis-raster}
 
-デジタル標高モデル（DEM）には、ラスタセルごとの標高情報が含まれている。
+デジタル標高モデル (Digital Elevation Model, DEM)\index{digital elevation model} には、ラスタセルごとの標高情報が含まれている。
 衛星航法、水流モデル、表面分析、可視化など、さまざまな用途で使用されている。
 ここでは、DEM ラスタから統計学習における予測因子として利用可能な新しい情報を導き出してみたい。
 例えば、様々な地形パラメータは、地滑りの予測に役立つ（Chapter \@ref(spatial-cv) 参照）。
 
-このセクションでは、`dem.tif` を使用することにする。これは、 Mongón 調査地域のデジタル標高モデル\index{digital elevation model}である（Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照）。
+このセクションでは、`dem.tif` を使用することにする。これは、 Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照)。
 解像度は約 30 m × 30 mで、投影型 CRS を使用している。
 
 ```{r, eval=FALSE}
@@ -320,7 +320,7 @@ grep("wetness", qgis_algo$algorithm, value = TRUE)
 #> [1] "saga:sagawetnessindex"           "saga:topographicwetnessindextwi"
 ```
 
-上記のコードの出力は、目的のアルゴリズムが SAGA GIS ソフトウェアに存在することを示唆するものである。^[TWI can be also calculated using the  `r.topidx` GRASS GIS function.]
+上記のコードの出力は、目的のアルゴリズムが SAGA GIS\index{SAGA} ソフトウェアに存在することを示唆するものである。^[TWI は、 GRASS GIS 関数 `r.topidx` でも計算可能。]
 SAGA はハイブリッド GIS であるが、主にラスタ処理、ここでは特にデジタル標高モデル \index{digital elevation model}  （土壌特性、地形属性、気候パラメータ）に重点を置いている。 
 したがって、SAGA は大規模な（高解像度の）ラスタ\index{raster}データセットの高速処理に特に優れている [@conrad_system_2015]。
 
@@ -341,7 +341,7 @@ dem_wetness = qgis_run_algorithm("saga:sagawetnessindex", DEM = dem,
                                  .quiet = TRUE)
 ```
 
-その結果、`dem_wetness`、4つの出力へのファイルパスが記載されたリストが得られる。
+<!-- その結果、`dem_wetness`、4つの出力へのファイルパスが記載されたリストが得られる。 -->
 `qgis_as_terra()` 関数で出力名を指定することで、選択した出力を読み出すことができる。
 
 ```{r, eval=FALSE}
@@ -349,11 +349,10 @@ dem_wetness_twi = qgis_as_terra(dem_wetness$TWI)
 ```
 
 Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マップを見ることができる。
-地形湿潤指数は、単位なし。
-数値が小さいほど水がたまらず、数値が大きいほど水がたまるエリアであることを示す。
+地形湿潤指数には単位がない。数値が小さいほど水がたまらず、数値が大きいほど水がたまるエリアであることを示す。
 
-また、デジタル標高モデルからの情報は、例えば、地形に分類することができる。地形は、斜面、尾根、谷などの地形を表す10のクラスからなる地形学的フォノタイプである [@jasiewicz_geomorphons_2013] 。
-これらのクラスは、地滑りしやすさ、生態系サービス、人間の移動性、デジタル土壌マッピングなど、多くの研究で利用されている。 
+また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon)\index{geomorphons} に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である [@jasiewicz_geomorphons_2013] 。
+これらの表現型は、地滑りしやすさ、生態系サービス、人間の移動性、デジタル土壌マッピングなど、多くの研究で利用されている。 
 
 geomorphons のアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess**のリストで `"grass7:r.geomorphon"` として見つけることができる。
 
@@ -414,15 +413,15 @@ saga = saga_gis(raster_backend = "terra", vector_backend = "sf")
 これはライブラリ（ツールのグループ）のリストとして構成されており、ライブラリの内部にはツールのリストがある。
 どのツールにも `$` 記号でアクセスできる（TAB キーで自動補完することが可能）。
 
-シード領域拡大アルゴリズムは，主に2つのステップで動作する [@adams_seeded_1994;@bohner_image_2006]。
-まず、指定されたサイズのローカルウィンドウにおいて、最も分散の小さいセルを見つけることで、初期セル（seed）が生成される．
+シード領域拡大アルゴリズム\index{seeded region growing algorithm}は，主に2つのステップで動作する [@adams_seeded_1994;@bohner_image_2006]。
+まず、指定されたサイズのローカルウィンドウにおいて、最も分散の小さいセルを見つけることで、初期セル (seed) が生成される．
 次に、領域成長アルゴリズムを用いて、seed の近傍画素をマージし、均質な領域を作成する。
 
 ```{r, eval=FALSE}
 sg = saga$imagery_segmentation$seed_generation
 ```
 
-上記の例では、まず `imagery_segmentation` ライブラリを開き、次にその `seed_generation` ツールを使用した。
+上記の例では、まず `imagery_segmentation` ライブラリを示し、次にその `seed_generation` ツールを使用した。
 また、次のステップでツールのコード全体を再入力しないように、`sg` オブジェクトに割り当てる。^[ツールの詳細は https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_2.html を参照]
 `sg` と入力することで、ツールの簡単な概要と、パラメータ、説明、およびデフォルトのデータフレームが表示される。
 また、`tidy(sg)` を使用すると、パラメータのテーブルだけを取り出すことができる。
@@ -455,11 +454,12 @@ plot(ndvi_srg$segments)
 これをポリゴンに変換するには、`as.polygons()` と `st_as_sf()` を使用する（Section \@ref(spatial-vectorization))。
 
 ```{r, eval=FALSE}
-ndvi_segments = as.polygons(ndvi_srg$segments) |> 
+ndvi_segments = ndvi_srg$segments |> 
+  as.polygons() |> 
   st_as_sf()
 ```
 
-```{r sagasegments, echo=FALSE, fig.cap="Normalized difference vegetation index (NDVI, left panel) and NDVi-based segments derived using t he seeded region growing algorithm for the Mongón study area."}
+```{r sagasegments, echo=FALSE, fig.cap="正規化差分植生指数 (NDVI、左図) と、Mongón調査地域のシード領域成長アルゴリズムを用いて得られたNDViベースのセグメント。"}
 knitr::include_graphics("figures/10-saga-segments.png")
 ```
 
@@ -547,11 +547,11 @@ write_VECT(terra::vect(points[, 1]), vname = "points")
 ```
 
 **rgrass** パッケージは、入力と出力が **terra** オブジェクトであることを想定している。
-したがって、 `write_VECT()` を使用するためには、 `vect()` 関数を使用して `sf` 空間ベクトルを **terra** の `SpatVector` に変換する必要がある。^[You can learn more how to convert between spatial classes in R by reading the (Conversions between different spatial classes in R)[https://geocompr.github.io/post/2021/spatial-classes-conversion/] blog post and the 
-(Coercion between object formats)[https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html] vignette] 
+したがって、 `write_VECT()` を使用するためには、 `vect()` 関数を使用して `sf` 空間ベクトルを **terra** の `SpatVector` に変換する必要がある。^[R における空間クラスの変換については (Conversions between different spatial classes in R)[https://geocompx.org/post/2021/spatial-classes-conversion/] というブログと、
+(Coercion between object formats)[https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html] vignette を参照。] 
 
-現在、両方のデータセットが GRASS GIS のデータベースに存在しています。
-ネットワーク\index{network}の解析を行うには、トポロジカルクリーンな道路ネットワークが必要です。
+現在、両方のデータセットが GRASS GIS のデータベースに存在している。
+ネットワーク\index{network}の解析を行うには、トポロジカルクリーン\index{topology cleaning}な道路ネットワークが必要である。
 GRASS の `"v.clean"` は、重複、小角、ダングルの除去などを行う。
 ここでは、後続のルーティングアルゴリズムが実際に交差点で右折または左折できるように、各交差点で改行し、その出力を `streets_clean` という名前の GRASS オブジェクトに保存している。
 
@@ -628,7 +628,7 @@ R にデータをインポートする前に、いくつかの（空間）サブ
 R-GIS のインターフェースは、個人の好みや作業内容、GIS\index{GIS}  の使い方に依存するため、一概にお勧めすることはできないし、研究分野にもよるだろう。
 前述の通り、SAGA \index{SAGA} は大規模（高解像度）ラスタ\index{raster}データセットの高速処理に特に優れており、水文学者、気候学者、土壌学者に頻繁に利用されている [@conrad_system_2015]。
 一方、GRASS GIS\index{GRASS}  は、トポロジーに基づく空間データベースをサポートする唯一の GIS であり、ネットワーク分析だけでなくシミュレーション研究にも特に有用である。
-QGIS は、GRASS-GIS や SAGA-GIS と比較して、特に初めて GIS を使う方にとって使いやすく、おそらく最も人気のあるオープンソースのGISだと思われる。
+QGIS\index{QGIS} は、GRASS-GIS や SAGA-GIS と比較して、特に初めて GIS を使う方にとって使いやすく、おそらく最も人気のあるオープンソースのGISだと思われる。
 したがって、**qgisprocess**\index{qgisprocess (package)} は、ほとんどのユースケースに適切な選択である。
 その主なメリットは
 
@@ -640,10 +640,10 @@ QGIS は、GRASS-GIS や SAGA-GIS と比較して、特に初めて GIS を使�
 もちろん、他の R-GIS ブリッジを使用した方が良いケースもある。
 QGIS は、複数の GIS\index{GIS}  ソフトウェアパッケージへの統一インターフェースを提供する唯一の GIS であるが、対応するサードパーティのジオアルゴリズムのサブセットへのアクセスしか提供しない（詳細については、@muenchow_rqgis:_2017 を参照）。
 したがって、SAGA と GRASS の関数一式を使用するには、**RSAGA**\index{RSAGA (package)} と **rgrass** 以外は使わない方が良い。
-最後に、地形データ、空間データベース管理機能（マルチユーザーアクセスなど）が必要な場合は、GRASSの利用を勧める。 
 また、ジオデータベース\index{spatial database}を用いてシミュレーションを行いたい場合 [@krug_clearing_2010]、**qgisprocess** が、呼び出しごとに常に新しい GRASS セッションを開始するので、**rgrass** を直接使用してみよう。
+最後に、地形データ、空間データベース管理機能（マルチユーザーアクセスなど）が必要な場合は、GRASSの利用を勧める。 
 
-なお、スクリプティング・インターフェースを持つ GIS ソフトウェアパッケージは以下のように数多くあるが、これらを利用できる専用の R パッケージはない：gvSig、OpenJump、Orfeo Toolbox。^[注記：**link2GI** は Orfeo Toolboxを部分的に統合しており、**qgisprocess** から Orfeo Toolbox アルゴリズムへアクセスすることもできる。TauDEM は R パッケージの **traudem** からアクセスできる。]
+なお、スクリプティング・インターフェースを持つ GIS ソフトウェアパッケージは以下のように数多くあるが、これらを利用できる専用の R パッケージはない：gvSig、OpenJump、Orfeo Toolbox。^[注記：**link2GI** は Orfeo Toolbox\index{Orfeo Toolbox} を部分的に統合しており、**qgisprocess** から Orfeo Toolbox アルゴリズムへアクセスすることもできる。TauDEM\index{TauDEM} は R パッケージの **traudem** からアクセスできる。]
 
 ## その他のブリッジ
 
@@ -849,6 +849,8 @@ tm_shape(buf) +
 ```
 
 PostGIS とは異なり、**sf**は空間ベクタデータのみをサポートしている。
+<!--toDo:jn-->
+<!-- reconsider referening to rpostgis -- https://github.com/r-spatial/discuss/issues/58 -->
 PostGIS データベースに格納されたラスタデータを照会・操作するには、**rpostgis**パッケージ[@bucklin_rpostgis_2018]、または PostGIS\index{PostGIS} インストールの一部に含まれる `rastertopgsql` などのコマンドラインツールを使用する必要がある。
 
 このサブセクションでは、PostgreSQL/PostGIS の簡単な紹介にとどめる。
@@ -859,14 +861,15 @@ PostgreSQL/PostGIS は、非常に難解なオープンソースの空間デー�
 
 データセットが PostgreSQL/PostGIS では大きすぎる場合、大規模な空間データ管理とクエリ性能を必要とする場合、分散コンピューティングシステム上での大規模な地理クエリを検討する価値があるかもしれない。
 このようなシステムは本書の範囲外ではあるが、この機能を提供するオープンソースソフトウェアが存在することは触れておく価値があります。
-この分野の著名なプロジェクトには、[GeoMesa](http://www.geomesa.org/) と [Apache Sedona](https://sedona.apache.org/) がある。後者については、[**apache.sedona**](https://cran.r-project.org/package=apache.sedona)パッケージがインタフェースを提供している。
+この分野の著名なプロジェクトには、[GeoMesa](http://www.geomesa.org/) と [Apache Sedona](https://sedona.apache.org/) がある。
+後者については、[**apache.sedona**](https://cran.r-project.org/package=apache.sedona) パッケージがインタフェースを提供している。
 
 ## クラウドへのブリッジ {#cloud}
 
 近年、インターネット上では、クラウド技術の利用が目立ってきている。
 この中には、空間データの保存や処理に利用されることも含まれている。
-Amazon Web Services, Microsoft Azure / Planetary Computer, Google Cloud Platform などの主要なクラウドコンピューティングプロバイダ\index{cloud computing}は、Sentinel-2 アーカイブのようなオープンな地球観測データの巨大なカタログを彼らのプラットフォーム上で提供している。
-私たちは R を使い、これらのアーカイブから直接データに接続し、処理することができる。理想的には、同じクラウドや地域のマシンから接続することができる。
+Amazon Web Services, Microsoft Azure / Planetary Computer, Google Cloud Platform などの主要なクラウドコンピューティングプロバイダ\index{cloud computing}は、Sentinel-2\index{Sentinel-2} アーカイブのようなオープンな地球観測データの巨大なカタログを彼らのプラットフォーム上で提供している。
+R を使えば、これらのアーカイブから直接データに接続し、処理することができる。理想的には、同じクラウドや地域のマシンから接続することができる。
 
 このような画像アーカイブをクラウド上でより簡単に、より効率的に利用するために、[SpatioTemporal Asset Catalog (STAC)](https://stacspec.org)\index{STAC}, [cloud-optimized GeoTIFF (COG)](https://www.cogeo.org/)\index{COG} 画像形式、データキューブ\index{data cube}が有望視されていまる。
 Section \@ref(staccog) では、これらの個々の開発について紹介し、Rからどのように利用できるかを簡単に説明する。
@@ -879,7 +882,7 @@ OpenEO の詳細については、"openEO "の項を参照。
 
 STAC（SpatioTemporal Asset Catalog）\index{STAC}は、時空間データの汎用記述フォーマットで、画像、合成開口レーダー（SAR）データ、点群など、クラウド上の様々なデータセットの記述に使用されている。
 STAC-API は、単純な静的カタログ記述の他に、カタログのアイテム（画像など）を空間、時間、その他のプロパティで照会するウェブサービスを提供している。
-R では、**rstac**パッケージ[@simoes_rstac_2021]が STAC-API エンドポイントに接続し、アイテムを検索することができる。
+R では、**rstac** パッケージ\index{rstac (package)} [@simoes_rstac_2021] が STAC-API エンドポイントに接続し、アイテムを検索することができる。
 以下の例では、[Sentinel-2 Cloud-Optimized GeoTIFF (COG) dataset on Amazon Web Services](https://registry.opendata.aws/sentinel-2-l2a-cogs)\index{COG} から、事前に定義した関心領域と時間に交差するすべての画像を要求している。
 結果は、見つかったすべての画像とそのメタデータ（雲量など）、および AWS 上の実際のファイルを指す URL を含んでいます。
 
@@ -898,23 +901,23 @@ items = s |>
 クラウドストレージはローカルのハードディスクとは異なり、従来の画像ファイル形式はクラウドベースのジオプロセシングではうまく機能しない。
 クラウドに最適化された GeoTIFF は、GeoTIFF の一種であり、クラウドストレージから画像の一部分のみを効率的に読み込むことができる。
 そのため、画像の矩形部分や低解像度の画像の読み込みが非常に効率的になる。
-[GDAL](https://gdal.org)\index{GDAL}（およびそれを使ったパッケージ）はすでに COG を扱うことができるので、R ユーザーであれば COG を扱うために何かをインストールする必要はない。ただし、データ提供者のカタログを閲覧する際には、COG が利用可能であることが大きなプラスになることを覚えておこう。
+[GDAL](https://gdal.org)\index{GDAL}（およびそれを使ったパッケージ）はすでに COG を扱うことができるので、R ユーザーであれば COG を扱うために何かをインストールする必要はない。
+ただし、データ提供者のカタログを閲覧する際には、COG が利用可能であることが大きなプラスになることを覚えておこう。
 
 領域が大きい時、要求された画像を扱うのはまだ比較的困難である。それらは異なる地図投影を使用することがあり、空間的に重なることがあり、空間解像度はしばしばスペクトルバンドに依存する。
-**gdalcubes** パッケージ [@appel_gdalcubes_2019] は、個々の画像から抽象化し、画像コレクションを4次元データキューブ\index{data cube}として作成し処理するために使用することができる。
+**gdalcubes** パッケージ\index{gdalcubes (package)} [@appel_gdalcubes_2019] は、個々の画像から抽象化し、画像コレクションを4次元データキューブ\index{data cube}として作成し処理するために使用することができる。
 
 以下のコードは、前回の STAC-API 検索で返された Sentinel-2 画像から、低解像度（250m）の最大 NDVI コンポジットを作成する最小限の例を示している。
 
 ```{r 09-gdalcubes-example, eval = FALSE}
 library(gdalcubes)
-# Filter images from STAC response by cloud cover 
-# and create an image collection object
+# クラウドカバーで画像をフィルタし、画像コレクションを生成
 collection = stac_image_collection(items$features, 
                   property_filter = function(x) {x[["eo:cloud_cover"]] < 10})
-# Define extent, resolution (250m, daily) and CRS of the target data cube
+# データキューブの範囲、解像度 (250m、毎日)、CRS を定義
 v = cube_view(srs = "EPSG:3857", extent = collection, dx = 250, dy = 250,
-              dt = "P1D") # "P1D" is an ISO 8601 duration string
-# Create and process the data cube
+              dt = "P1D") # "P1D" は ISO 8601 期間文字列
+# データキューブを生成し処理
 cube = raster_cube(collection, v) |>
   select_bands(c("B04", "B08")) |>
   apply_pixel("(B08-B04)/(B08+B04)", "NDVI") |>
@@ -929,7 +932,7 @@ cube = raster_cube(collection, v) |>
 詳しくは、こちらの[OpenGeoHubサマースクール2021で発表したチュートリアル](https://appelmar.github.io/ogh2021/tutorial.html)を参照。
 
 STAC\index{STAC}、COGs\index{COG}、data cube\index{data cube} を組み合わせて、衛星画像の（大規模）コレクションをクラウド上\index{cloud computing}で解析するクラウドネイティブワークフローを形成する. 
-これらのツールは、例えば、大規模な地球観測データの土地利用や土地被覆の分類を可能にする **sits** R パッケージのバックボーンを既に形成している。
+これらのツールは、例えば、大規模な地球観測データの土地利用や土地被覆の分類を可能にする **sits** R パッケージ\index{sits (package)}のバックボーンを既に形成している。
 このパッケージは、クラウドサービスで利用可能な画像コレクションからEOデータキューブを構築し、様々な機械学習アルゴリズムを用いてデータキューブの土地分類を実行するものである。
 **sits** の詳細については、https://e-sensing.github.io/sitsbook/ をご覧いただくか、関連記事 [@rs13132428] を参照。
 
@@ -944,7 +947,7 @@ OpenEO [@schramm_openeo_2021]\index{openEO} は、データ処理のための共
 
 その後、ユーザーは画像コレクションのロード、プロセスの適用と連鎖、ジョブの送信、結果の探索とプロットを行うことができる。
 
-以下のコードは、[openEO platform backend](https://openeo.cloud/) に接続し、利用可能なデータセット、プロセス、出力フォーマットを要求し、Sentinel-2データから最大 NDVI 画像を計算するプロセスグラフを定義し、最後にバックエンドにログインした後にグラフを実行する。
+以下のコードは、[openEO platform backend](https://openeo.cloud/) に接続し、利用可能なデータセット、プロセス、出力フォーマットを要求し、Sentinel-2 データから最大 NDVI 画像を計算するプロセスグラフを定義し、最後にバックエンドにログインした後にグラフを実行する。
 openEO\index{openEO} プラットフォームのバックエンドには無料版があり、既存の機関やソーシャルプラットフォームのアカウントから登録することが可能である。
 
 ```{r 09-openeo-example, eval=FALSE}
