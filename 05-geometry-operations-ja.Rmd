@@ -355,7 +355,7 @@ plot(x_and_y, col = "lightgrey", border = "grey", add = TRUE) # 範囲を inters
 次のコードチャンクは、`x` と `y` を表すベン図のすべての組み合わせに対して、これがどのように機能するかを示している。これは、書籍 *R for Data Science* の [Figure 5.1](http://r4ds.had.co.nz/transform.html#logical-operators) から着想を得ている [@grolemund_r_2016]。
 
 ```{r venn-clip, echo=FALSE, fig.cap="論理演算子の空間的等価性。", warning=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/05-venn-clip.R")
+source("https://github.com/geocompx/geocompr/raw/main/code/05-venn-clip.R")
 # source("code/05-venn-clip.R") # for testing local version, todo: remove or change
 ```
 
@@ -446,7 +446,7 @@ regions2 = us_states |>
 ```
 
 ```{r us-regions, fig.cap="連続したポリゴンに対する空間的な集計。アメリカの州の人口を地域に集計し、人口を色で表した。この操作により、州間の境界が自動的に解消されることに注意。", echo=FALSE, warning=FALSE, fig.asp=0.2, out.width="100%", fig.scap="Spatial aggregation on contiguous polygons."}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/05-us-regions.R", print.eval = TRUE)
+source("https://github.com/geocompx/geocompr/raw/main/code/05-us-regions.R", print.eval = TRUE)
 ```
 
 ジオメトリ的にはどうなっているのだろうか？
@@ -702,7 +702,7 @@ tm_shape(elev4_poly) +
   tm_polygons(col = "elev") +
   tm_layout(frame = FALSE, legend.show = FALSE,
             inner.margins = c(0.1, 0.12, 0, 0))
-# # See https://github.com/Robinlovelace/geocompr/issues/695
+# # See https://github.com/geocompx/geocompr/issues/695
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/146618199-786fe3ad-9718-4dd0-a640-41180fc17e63.png")
 ```
 
