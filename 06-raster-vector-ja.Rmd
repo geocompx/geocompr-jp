@@ -67,7 +67,7 @@ srtm_final = mask(srtm_cropped, zion)
 ```
 
 `mask()` の設定を変更すると、異なる結果が得られる。
-`inverse = TRUE` を設定すると、公園の境界の<u>内側</u>をすべてマスクする （詳細は `?mask` を参照）（Figure \@ref(fig:cropmask) (D)）。また、`updatevalue = 0` を設定すると、国立公園外のすべてのピクセルが0に設定される。
+`inverse = TRUE` を設定すると、公園の境界の<u>内側</u>をすべてマスクする (詳細は `?mask` を参照) (Figure \@ref(fig:cropmask) (D))。また、`updatevalue = 0` を設定すると、国立公園外のすべてのピクセルが 0 に設定される。
 
 ```{r 06-raster-vector-6 }
 srtm_inv_masked = mask(srtm, zion, inverse = TRUE)
@@ -86,7 +86,7 @@ pz2 = tm_shape(srtm_cropped) +
   tm_raster(palette = terrain_colors, legend.show = FALSE, style = "cont") + 
   tm_shape(zion) +
   tm_borders(lwd = 2) + 
-  tm_layout(main.title = "B. 切り落とし（crop）", inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_layout(main.title = "B. 切り落とし (crop)", inner.margins = 0, fontfamily = "HiraginoSans-W3")
 pz3 = tm_shape(srtm_masked) + 
   tm_raster(palette = terrain_colors, legend.show = FALSE, style = "cont") + 
   tm_shape(zion) + 
@@ -103,14 +103,14 @@ tmap_arrange(pz1, pz2, pz3, pz4, ncol = 4, asp = NA)
 ## ラスタ抽出  {#raster-extraction}
 
 \index{raster-vector raster extraction} 
-ラスタ抽出は、地理的（通常はベクタ）な「範囲選択」オブジェクトに基づいて、特定の位置の「ターゲット」ラスタに関連する値を識別して返す処理である。
-結果は、使用する範囲選択の種類（点、線、ポリゴン）と、`terra::extract()` 関数に渡される引数に依存する。
+ラスタ抽出は、地理的 (通常はベクタ) な「範囲選択」オブジェクトに基づいて、特定の位置の「ターゲット」ラスタに関連する値を識別して返す処理である。
+結果は、使用する範囲選択の種類 (点、線、ポリゴン) と、`terra::extract()` 関数に渡される引数に依存する。
 ラスタ抽出の逆、つまりベクタオブジェクトに基づいてラスタセル値を割り当てるのがラスタ化で、Section \@ref(rasterization) で説明する。
 
 \index{raster extraction!points}
 基本的な例として、ラスタセルの特定の**点**の値を抽出してみよう。
-そのために、ザイオン国立公園内の30カ所のサンプルを収録した `zion_points` を使用する（Figure \@ref(fig:pointextr)）。 
-次のコマンドは、`srtm` から標高値を抽出し、各ポイントの ID（ベクタの行ごとに 1 つの値）と関連する `srtm` の値を含むデータフレームを作成する。
+そのために、ザイオン国立公園内の30カ所のサンプルを収録した `zion_points` を使用する (Figure \@ref(fig:pointextr))。 
+次のコマンドは、`srtm` から標高値を抽出し、各ポイントの ID (ベクタの行ごとに 1 つの値) と関連する `srtm` の値を含むデータフレームを作成する。
 さて、出来上がったオブジェクトを `cbind()` 関数で `zion_points` データセットに追加してみよう。 
 
 ```{r 06-raster-vector-8}
@@ -129,12 +129,12 @@ zion_points = cbind(zion_points, elevation)
 ```
 
 ```{r pointextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="ラスタ抽出に使用した点の位置。", fig.asp=0.57}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/06-pointextr.R", print.eval = TRUE)
+source("https://github.com/geocompx/geocompr/raw/main/code/06-pointextr.R", print.eval = TRUE)
 ```
 
 \index{raster extraction!lines}
 ラスタ抽出は、**線**範囲選択でも機能する。
-そして、線に接するラスタセルごとに1つの値を抽出する。
+そして、線に接するラスタセルごとに 1 つの値を抽出する。
 しかし、抽出されたラスタ値の各ペア間の距離を正しく取得することが難しいため、線の断片に沿った値を得るための線抽出アプローチは推奨されていない。
 
 この場合、線を多くの点に分割し、その点の値を抽出するのが良い方法である。
@@ -268,7 +268,7 @@ group_by(zion_srtm_values, ID) |>
 この例ではポリゴンが1つしかないので、1行のデータフレームが返されるが、このメソッドは複数の範囲選択ポリゴンが使用されている場合に動作する。
 
 同様のアプローチは、ポリゴン内のカテゴリ的なラスタ値の出現をカウントする場合にも有効である。
-これは、Figure \@ref(fig:polyextr) (B) の **spDataLarge** パッケージの土地被覆データセット ( `nlcd` ) を使って説明され、以下のコードで実証されている。
+これは、Figure \@ref(fig:polyextr) (B) の **spDataLarge** パッケージの土地被覆データセット (`nlcd`) を使って説明され、以下のコードで実証されている。
 
 ```{r 06-raster-vector-20, warning=FALSE, message=FALSE}
 nlcd = rast(system.file("raster/nlcd.tif", package = "spDataLarge"))
@@ -300,7 +300,7 @@ tmap_arrange(rast_poly_srtm, rast_poly_nlcd, ncol = 2)
 
 \index{raster extraction!exact fractions}
 **terra** パッケージはポリゴン内のラスタ値を高速に抽出するが、`extract()` は大きなポリゴンデータセットを処理する際のボトルネックになることがある。
-**exactextractr** パッケージは、 `exact_extract()` 関数を通してピクセル値を抽出するための [超高速の代替手段](https://github.com/Robinlovelace/geocompr/issues/813) を提供する。
+**exactextractr** パッケージは、`exact_extract()` 関数を通してピクセル値を抽出するための [超高速の代替手段](https://github.com/geocompx/geocompr/issues/813) を提供する。
 また、`exact_extract()` 関数は、デフォルトで、ポリゴンによってオーバーラップされた各ラスタセルの割合を計算し、より正確である (詳細については、以下の注を参照)。
 
 ```{block2 06-raster-vector-22, type='rmdnote'}
@@ -360,7 +360,7 @@ ch_raster2 = rasterize(cycle_hire_osm_projected, raster_template,
 
 新しい出力である `ch_raster2` は、各グリッドセル内のサイクルハイヤーポイントの数を示している。
 レンタルサイクルの拠点は、`capacity` 変数で記述される自転車の数が異なるため、各グリッドセルの収容台数 (`capacity`) はどの程度なのかという疑問が生じる。
-これを計算するためには、フィールド(`"capacity"`) を `sum` することが必要で、その結果、Figure \@ref(fig:vector-rasterization1) (D) のような出力が得られる。以下のコマンドで計算する (`mean` など他の要約関数も使用できる)。
+これを計算するためには、フィールド (`"capacity"`) を `sum` することが必要で、その結果、Figure \@ref(fig:vector-rasterization1) (D) のような出力が得られる。以下のコマンドで計算する (`mean` など他の要約関数も使用できる)。
 
 ```{r 06-raster-vector-27 }
 ch_raster3 = rasterize(vect(cycle_hire_osm_projected), raster_template, 
@@ -368,13 +368,13 @@ ch_raster3 = rasterize(vect(cycle_hire_osm_projected), raster_template,
 ```
 
 ```{r vector-rasterization1, echo=FALSE, fig.cap="点のラスタ化例。", warning=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/06-vector-rasterization1.R", print.eval = TRUE)
+source("https://github.com/geocompx/geocompr/raw/main/code/06-vector-rasterization1.R", print.eval = TRUE)
 ```
 
 \index{rasterization!lines} 
 \index{rasterization!polygons} 
 また、カリフォルニア州のポリゴンと境界線をベースにしたデータセット (下記作成) は、線のラスタ化を表している。
-ポリゴンオブジェクトをマルチリンストリングにキャストした後、0.5 度の分解能を持つテンプレートラスタを作成する。
+ポリゴンオブジェクトを複合線にキャストした後、0.5 度の分解能を持つテンプレートラスタを作成する。
 
 ```{r 06-raster-vector-29 }
 california = dplyr::filter(us_states, NAME == "California")
@@ -385,7 +385,7 @@ raster_template2 = rast(ext(california), resolution = 0.5,
 
 線またはポリゴンのラスタ化を考慮する場合、有用な追加引数の1つは `touches` である。
 デフォルトでは `FALSE` であるが、`TRUE` に変更すると、線またはポリゴンの境界で接触しているすべてのセルが値を得る。
-`touches = TRUE` による線分ラスタ化を以下のコードで実行する ( Figure \@ref(fig:vector-rasterization2) (A))。
+`touches = TRUE` による線分ラスタ化を以下のコードで実行する (Figure \@ref(fig:vector-rasterization2) (A))。
 
 ```{r 06-raster-vector-30 }
 california_raster1 = rasterize(california_borders, raster_template2,
@@ -399,7 +399,7 @@ california_raster2 = rasterize(california, raster_template2)
 ```
 
 ```{r vector-rasterization2, echo=FALSE, fig.cap="線とポリゴンのラスタ化の例。", warning=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/06-vector-rasterization2.R", print.eval = TRUE)
+source("https://github.com/geocompx/geocompr/raw/main/code/06-vector-rasterization2.R", print.eval = TRUE)
 ```
 
 ## 空間ベクタ化  {#spatial-vectorization}
@@ -425,7 +425,7 @@ elev_point = as.points(elev) |>
 ```
 
 ```{r raster-vectorization1, echo=FALSE, fig.cap="elev オブジェクトのラスタ表現と点表現。", warning=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/06-raster-vectorization1.R", print.eval = TRUE)
+source("https://github.com/geocompx/geocompr/raw/main/code/06-raster-vectorization1.R", print.eval = TRUE)
 ```
 
 \index{spatial vectorization!contours}
@@ -441,8 +441,8 @@ plot(dem, axes = FALSE)
 plot(cl, add = TRUE)
 ```
 
-`contour()` , `rasterVis::contourplot()` , `tmap::tm_iso()` などの関数で、既存のプロットに等高線を追加することもできる。
- Figure \@ref(fig:contour-tmap) に示すように、等高線 (isoline) にはラベルを付けることができる。
+`contour()`, `rasterVis::contourplot()`, `tmap::tm_iso()` などの関数で、既存のプロットに等高線を追加することもできる。
+Figure \@ref(fig:contour-tmap) に示すように、等高線 (isoline) にはラベルを付けることができる。
 
 \index{hillshade}
 
@@ -459,7 +459,7 @@ knitr::include_graphics("figures/06-contour-tmap.png")
 
 \index{spatial vectorization!polygons}
 ベクタ化の最後のタイプとして、ラスタをポリゴンに変換しよう。
-これには、`terra::as.polygons()` を使う。各ラスタセルを5つの座標からなるポリゴンに変換し、そのすべてがメモリに保存される (ラスタがベクタと比較して高速である理由を説明する！)。
+これには、`terra::as.polygons()` を使う。各ラスタセルを 5 つの座標からなるポリゴンに変換し、そのすべてがメモリに保存される (ラスタがベクタと比較して高速であることが多い理由が分かる！)。
 
 以下では、`grain` オブジェクトをポリゴンに変換し、その後、同じ属性値を持つポリゴン間の境界を解消することで説明している (`as.polygons()` の `dissolve` の引数も参照)。
 
@@ -476,7 +476,7 @@ source("https://github.com/geocompx/geocompr/raw/main/code/06-raster-vectorizati
 `grain` 粒状データセットのポリゴンは、長方形のピクセルをつなぐことで定義される直方体の境界を持つ。
 ポリゴンを滑らか (smooth) にするために、Chapter \@ref(geometry-operations) のパッケージ **smoothr** を使用することができる。
 平滑化処理はポリゴン境界の鋭いエッジを除去するため、平滑化ポリゴンは元のピクセルとは空間的範囲が正確に同じにはならない (例は、**smoothr** [ウェブサイト](https://strimas.com/smoothr/) を参照)。
-そのため、平滑化されたポリゴンをさらに解析に使用する場合は注意が必要です。
+そのため、平滑化されたポリゴンをさらに解析に使用する場合は注意が必要となる。
 
 ## 演習
 
