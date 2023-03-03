@@ -48,7 +48,7 @@ point_sf = sf::st_as_sf(point_df, coords = c("X", "Y"))
 ラスタマトリックスの3行4列目の画素を考えてみよう。
 その空間的な位置は、マトリックス内のインデックスで定義される。原点から x 方向に 4 セル (地図上では通常東と右)、y 方向に 3 セル (通常南と下) 移動させる。
 ラスタの<u>解像度</u>は、<u>ヘッダ</u>で指定された各 x ステップと y ステップの距離を定義する。
-ヘッダはラスタデータセットの重要な構成要素で、ピクセルと地理的座標の関係を指定する ( Chapter \@ref(spatial-operations) も参照)。
+ヘッダはラスタデータセットの重要な構成要素で、ピクセルと地理的座標の関係を指定する (Chapter \@ref(spatial-operations) も参照)。
 
 本章は、ベクタデータセットではバス停の名前、ラスタデータセットではピクセルの標高といった属性に基づいて地理的なオブジェクトを操作する方法を解説する。
 ベクタデータの場合は、部分集合 (subset) や属性集計 (aggregate) といった手法になる (Section \@ref(vector-attribute-subsetting) と Section \@ref(vector-attribute-aggregation) を参照)。
@@ -66,7 +66,7 @@ Section \@ref(summarizing-raster-objects) は、ラスタデータセット全�
 \index{attribute}
 `sf` クラスは、R の基本クラスの `data.frame` を拡張したものである。このため、地理ベクタデータセットは、R で十分にサポートされている。
 データフレームのように、`sf` オブジェクトは、属性変数 ('name'など) ごとに1列、観察または <u>フィーチャ</u> (たとえば、バス停ごと) ごとに1行を持つ。
-`sf` オブジェクトは基本的なデータフレームとは異なり、`sfc` クラス の　`geometry` 列を持ち、1 行にさまざまな地理的実体 (「複合でない」および「複合」点、線、ポリゴン) を含むことができる。
+`sf` オブジェクトは基本的なデータフレームとは異なり、`sfc` クラス の `geometry` 列を持ち、1 行にさまざまな地理的実体 (「複合でない」および「複合」点、線、ポリゴン) を含むことができる。
 これは、Chapter \@ref(spatial-class) で、`plot()` や `summary()` などの<u>ジェネリック関数</u>が `sf` オブジェクトでどのように動作するかを示した。
 **sf** はまた、`sf` オブジェクトが通常のデータフレームのように動作することを可能にするジェネリック関数を提供する。`sf` に対応するジェネリック関数は、以下で確認できる。
 
@@ -100,7 +100,7 @@ attributes(methods(class = "sf"))$info |>
 これにより、空間データベースからインポートしたジオメトリに、`wkb_geometry` や `the_geom` などのさまざまな名前を付けることができるようになる。
 ```
 
-`sf` オブジェクトは、データフレーム用の `tidyverse`クラスである `tbl_df` と `tbl` を拡張することも可能である。
+`sf` オブジェクトは、データフレーム用の `tidyverse` クラスである `tbl_df` と `tbl` を拡張することも可能である。
 \index{tidyverse (package)}
 このように **sf** は、データ解析に基本的な R や tidyverse 関数を使用するなど、R のデータ解析能力の全力を地理データに対して発揮することを可能にする。
 \index{tibble}
@@ -128,7 +128,7 @@ ncol(world_df)
 `sf` オブジェクトに対する非空間データ操作は、適切な場合にのみオブジェクトのジオメトリを変更する (例：集約後に隣接するポリゴン間の境界を解消する)。
 地理的属性データの操作に習熟するということは、データフレームの操作に習熟するということである。
 
-多くのアプリケーションにおいて、tidyverse \index{tidyverse (package)}  パッケージ **dplyr** は、データフレームを扱うための効果的なアプローチを提供する。
+多くのアプリケーションにおいて、tidyverse\index{tidyverse (package)} パッケージ **dplyr** は、データフレームを扱うための効果的なアプローチを提供する。
 tidyverse との互換性は、前身の **sp** になかった **sf** の利点であるが、落とし穴もあるのでハマることもある (詳しくは [geocompx.org](https://geocompx.github.io/geocompkg/articles/tidyverse-pitfalls.html) の補足 `tidyverse-pitfalls` vignetteを参照)。
 
 ### ベクタ属性の部分集合  {#vector-attribute-subsetting}
@@ -137,7 +137,7 @@ R の基本的な部分集合 (subset) の作成方法には、演算子 `[` と
 **dplyr** の関数では、行の部分集合作成には `filter()` と `slice()` があり、列の部分集合作成には `select()` がある。
 どちらのアプローチも `sf` オブジェクトの属性データの空間成分を保持する。一方、演算子 `$` や **dplyr** 関数 `pull()` を使って単一の属性列をベクトルとして返すと、これから説明するようにジオメトリデータが失われる。
 \index{attribute!subsetting}
-このセクションでは、`sf` データフレームの部分集合作成に焦点を当てている。ベクトルや非地理データフレームの部分集合に関する詳細については、An Introduction to R [@rcoreteam_introduction_2021]  の Chapter [2.7](https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Index-vectors) と Advanced R Programming [@wickham_advanced_2019]  の Chapter [4](https://adv-r.hadley.nz/subsetting.html) を勧める。
+このセクションでは、`sf` データフレームの部分集合作成に焦点を当てている。ベクトルや非地理データフレームの部分集合に関する詳細については、An Introduction to R [@rcoreteam_introduction_2021] の Chapter [2.7](https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Index-vectors) と Advanced R Programming [@wickham_advanced_2019]  の Chapter [4](https://adv-r.hadley.nz/subsetting.html) を勧める。
 
 \index{attribute!subsetting}
 `[` 演算子は、行と列の両方から部分集合を作成 (抽出) することができる。 
