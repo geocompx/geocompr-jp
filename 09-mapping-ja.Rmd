@@ -983,7 +983,7 @@ plotly::ggplotly(g1)
 また、`layer_spatial()` は様々な空間データクラスを扱うことができる。
 これによって、Figure \@ref(fig:ggterra) で示すように、**terra** の `SpatRaster` オブジェクトをプロットすることができる。
  
-```{r ggterra, echo=FALSE, eval=FALSE, message=FALSE, fig.cap="Map of New Zealand's elevation created with ggplot2 and ggspatial."}
+```{r ggterra, echo=FALSE, eval=FALSE, message=FALSE, fig.cap="ggplot2 と ggspatial で作成したニュージーランド標高地図"}
 library(ggspatial)
 ggplot() + 
   layer_spatial(nz_elev) +
