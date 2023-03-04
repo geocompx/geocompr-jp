@@ -194,8 +194,8 @@ GIS パッケージ gvSig、OpenJump、uDig はすべて Java\index{Java} で記
 Java で書かれた GIS ライブラリは、GeoTools や Java Topology Suite の JTS など多数ある (GEOS\index{GEOS} は JTS の C++\index{C++} 移植版)。
 さらに、Geoserver/Geonode、deegree、52°North WPS など、多くの地図サーバーアプリケーションは Java\index{Java}  を使用している。
 
-Java\index{Java} のオブジェクト指向の構文は、C++\index{C++} のに似ている。
-Java\index{Java} の大きな利点は、プラットフォームに依存せず (コンパイル言語としては異例) 、拡張性が高いことで、本書を執筆した RStudio\index{RStudio} のような IDE\index{IDE} に適した言語であることが挙げられる。
+Java\index{Java} のオブジェクト指向の文法は、C++\index{C++} の文法に似ている。
+Java\index{Java} の大きな利点は、(コンパイル言語としては珍しく) プラットフォームに依存せず、拡張性が高いことで、本書を執筆した RStudio\index{RStudio} のような IDE\index{IDE} に適した言語であることが挙げられる。
 Java は、データサイエンスに使用できるものの、統計的モデリングや可視化のためのツールが Python や R に比べて少ない [@brzustowicz_data_2017]。
 
 Python\index{Python} は、特に GRASS\index{GRASS}、SAGA\index{SAGA}、QGIS\index{QGIS}  などの多くのデスクトップ GIS\index{GIS} が Python API\index{API} を提供しているので、ジオコンピュテーションには重要な言語である (Chapter \@ref(gis) を参照)。
@@ -218,7 +218,7 @@ QGIS\index{QGIS} 用　`processing`、
 ArcGIS\index{ArcGIS} 用の `arcpy` がある。]
 
 しかし、空間統計\index{spatial!statistics}と予測モデリングでは、R は他の追随を許さない。
-これは、R と Python のどちらかを選ばなければならないということではない。Python\index{Python} は、ほとんどの一般的な統計手法をサポートしており (ただし、空間統計の新しい開発は R の方が早くサポートする傾向がある) 、Python で学んだ多くの概念は R\index{R}  の世界にも適用することができる。
+これは、R と Python のどちらかを選ばなければならないということではない。Python\index{Python} は、ほとんどの一般的な統計手法をサポートしており (ただし、空間統計の新しい開発は R の方が早くサポートする傾向がある) 、Python で学んだ多くの概念は R\index{R} の世界にも適用することができる。
 <!--rl:toDo-->
 <!--to update! -->
 R と同様に、Python も地理データの解析と操作をサポートしており、**shapely**、**geopandas**、**rasterio**、**xarray** などのパッケージがある。
@@ -249,7 +249,7 @@ knitr::include_graphics("figures/01-cranlogs.png")
 **dplyr** は [2016年](https://cran.r-project.org/src/contrib/Archive/tidyverse/) の後半に **tidyverse**\index{tidyverse (package)}  という「メタパッケージ」に配置され、スタイルを共有する他のパッケージ (例えば、**ggplot2** など) と並び、「整えられた (tidy) データ」に重点を置いている。
 <!--rl:toDo-->
 <!-- add reference -->
-ロング型データと直感的な名前の関数に焦点を当てた **tidyverse**\index{tidyverse (package)}  アプローチは、絶大な人気を誇っている。
+ロング型データと直感的な名前の関数に焦点を当てた **tidyverse**\index{tidyverse (package)} アプローチは、絶大な人気を誇っている。
 そのため、「整えられた地理的データ」が求められ、その一部を **sf** が担ってきている。
 **tidyverse** の明らかな特徴として、パッケージが調和して動作する傾向がある。
 <!--rl:toDo-->
@@ -259,7 +259,7 @@ knitr::include_graphics("figures/01-cranlogs.png")
 ```{r revdep, echo=FALSE, message=FALSE}
 top_dls = readr::read_csv("extdata/top_dls.csv")
 knitr::kable(top_dls[1:5, 1:2], digits = 0, 
-             caption = paste("sfに依存するパッケージで、前月の1日あたりの平均ダウンロード数が多い上位5位。", 
+             caption = paste("sf に依存するパッケージで、前月の 1 日あたりの平均ダウンロード数が多い上位 5 位。", 
                              "", 
                              "",
                              min(top_dls$date), "時点で、", nrow(top_dls), 
@@ -287,7 +287,7 @@ R の空間機能は、S 言語の初期の空間パッケージが起源であ�
 GeoComputation 2000 で発表された [article](http://www.geocomputation.org/2000/GC009/Gc009.htm) によると、「点パターン解析、地球統計学、探索的空間データ解析、空間経済学」という様々な空間手法のための R パッケージが 2000 年までに誕生した [@bivand_open_2000]。
 これらのうち、特に **spatial**、**sgeostat**、**splancs** は CRAN\index{CRAN} でまだ利用可能である [@rowlingson_splancs_1993; @rowlingson_splancs_2017;@venables_modern_2002; @majure_sgeostat_2016]。
 
-その後の R News ([The R Journal](https://journal.r-project.org/) の前身) の記事には、当時の R の空間統計ソフトウェアの概要が掲載されており、その多くは S/S-PLUS\index{S}   のために書かれた以前のコードに基づいていた [@ripley_spatial_2001]。
+その後の R News ([The R Journal](https://journal.r-project.org/) の前身) の記事には、当時の R の空間統計ソフトウェアの概要が掲載されており、その多くは S/S-PLUS\index{S} のために書かれた以前のコードに基づいていた [@ripley_spatial_2001]。
 この概要では、**akima** や **geoR** [@akima_akima_2016; @jr_geor_2016]  などの空間平滑化や補間のパッケージ、**splancs** [@rowlingson_splancs_2017] や **spatstat** [@baddeley_spatial_2015]  などの点パターン解析のパッケージについて説明した。
 
 R News の次の号 (Volume 1/3)  では、空間系パッケージに再びスポットライトを当て、**splancs** をより詳しく紹介し、空間統計に関する将来の展望を解説した [@bivand_more_2001]。
@@ -305,23 +305,23 @@ R News の次の号 (Volume 1/3)  では、空間系パッケージに再びス�
 これらのアイデアは、**rgdal** と **sp** というパッケージで、かなりの部分実現されている。
 これらは、2008年に初版が発行された *Applied Spatial Data Analysis with R* (ASDAR) [@bivand_applied_2013]  で説明されているように、R による空間データ解析の基礎を提供するものであった。
 10年後、R の空間機能は大幅に進化したが、@hornik_approaches_2003 で示されたアイデアの上に成り立っていることに変わりはない。
-例えば、GDAL\index{GDAL} と PROJ\index{PROJ}  のインターフェースは、R の高性能な地理データ入出力と CRS\index{CRS} 変換機能を依然として支えている (それぞれ、Chapter \@ref(reproj-geo-data) および Chapter @ref(read-write) を参照)。
+例えば、GDAL\index{GDAL} と PROJ\index{PROJ} のインターフェースは、R の高性能な地理データ入出力と CRS\index{CRS} 変換機能を依然として支えている (それぞれ、Chapter \@ref(reproj-geo-data) および Chapter \@ref(read-write) を参照)。
 
 2003 年にリリースされた **rgdal** は、R に GDAL \index{GDAL}  バインディングを提供し、これまで利用できなかった地理データ形式からデータをインポートする機能を大幅に向上させることとした。
 初期リリースではラスタドライバのみをサポートしていたが、その後の機能拡張により、座標参照系 (PROJ ライブラリ経由) 、再投影、ベクタファイル形式のインポート (ファイル形式については Chapter \@ref(read-write) を参照) をサポートするようになった。 
-これらの追加機能の多くは、Barry Rowlingson によって開発され、2006年に **rgdal** コードベースでリリースされた[コンテキストについては、 @rowlingson_rasp:_2003 と [R-help](https://stat.ethz.ch/pipermail/r-help/2003-January/028413.html) email list を参照]。
+これらの追加機能の多くは、Barry Rowlingson によって開発され、2006年に **rgdal** コードベースでリリースされた [コンテキストについては、 @rowlingson_rasp:_2003 と [R-help](https://stat.ethz.ch/pipermail/r-help/2003-January/028413.html) email list を参照]。
 
 2005年にリリースされた **sp** は、R の空間オブジェクトと非空間オブジェクトの区別ができない点を克服した [@pebesma_classes_2005]。
-**sp** は2003年にウィーンの [workshop](http://spatial.nhh.no/meetings/vienna/index.html) から発展し、 [R-Forge](https://r-forge.r-project.org) に移行する前は sourceforge でホストされていた。
+**sp** は 2003 年にウィーンで開かれた[ワークショップ](http://spatial.nhh.no/meetings/vienna/index.html) から発展し、 [R-Forge](https://r-forge.r-project.org) に移行する前は sourceforge でホストされていた。
 2005年以前は、地理座標は一般的に他の数値と同様に扱われていた。 
 点、線、ポリゴン、グリッド、属性データをサポートするクラスと汎用メソッドにより、**sp** はこれを変更した。
 
-**sp** は、S4 クラス \index{S4 class} システムを使用して、バウンディングボックス \index{bounding box}、座標参照系\index{CRS}、属性などの情報を `Spatial` オブジェクトのスロットに格納する。
+**sp** は、S4 クラス\index{S4 class}システムを使用して、バウンディングボックス \index{bounding box}、座標参照系\index{CRS}、属性などの情報を `Spatial` オブジェクトのスロットに格納する。
 データ操作で地理データを扱えるようにする (Section \@ref(why-simple-features) 参照)。
 さらに、**sp** では、地理データのための `summary()` や `plot()` などの汎用的なメソッドが用意されている。
-その後の10年間で **sp** クラスは R の地理データ用として急速に普及し、これに依存するパッケージの数は2008年の約20から2013年には100以上に増加した [@bivand_applied_2013]。
-現在では、**sp** に依存するパッケージは500を超え (これに対して、**sf** パッケージはより速く成長している) 、R のエコシステムの重要な一部となっている。 
-**sp** を使用する主な R パッケージには、以下のものがある。**gstat** は空間・時空間地球統計学 \index{spatial!statistics}、 **geosphere** は球面三角法、**adehabitat** は動物による生息地選択の分析 [@R-gstat; @calenge_package_2006; @hijmans_geosphere_2016]。
+その後の 10 年間で **sp** クラスは R の地理データ用として急速に普及し、これに依存するパッケージの数は 2008 年の約 20 から 2013 年には 100 以上に増加した [@bivand_applied_2013]。
+現在では、**sp** に依存するパッケージは 500 を超え (これに対して、**sf** パッケージはより速く成長している) 、R のエコシステムの重要な一部となっている。 
+**sp** を使用する主な R パッケージには、空間・時空間地球統計学\index{spatial!statistics}の **gstat** 、球面三角法の **geosphere**、動物による生息地選択の分析の **adehabitat** などがある [@R-gstat; @calenge_package_2006; @hijmans_geosphere_2016]。
 
 ```{r, eval=FALSE, echo=FALSE}
 # Aim: show n. pkgs that depend on sf and sp
