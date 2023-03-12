@@ -4,8 +4,6 @@
 
 - この章では、以下のパッケージが必要である。
 
-<!-- TODO: remove warning=FALSE in next chunk to suppress the following message: -->
-<!-- #> Warning: multiple methods tables found for 'gridDistance' -->
 ```{r 06-reproj-1, message=FALSE, warning=FALSE}
 library(sf)
 library(terra)
@@ -25,7 +23,7 @@ Section \@ref(crs-intro) は、座標参照系 (CRS) を紹介し、2つの主�
 多くのプロジェクトでは、CRS について心配する必要はないし、変換について考える必要もない。
 しかし、データが投影座標系なのか地理座標系なのか、そしてそれがジオメトリ操作に与える影響を知ることは重要である。
 データの CRS とジオメトリ操作の結果（次のセクションで取り上げる）を知っていれば、CRS は裏で<u>ただ</u>うまく機能してくれる。しかし、物事がうまくいかないとき、突然 CRS について学ぶ必要が出てくるのである。
-すべての投影データが入る投影 CRS を明確に定義し、異なる CRS をどのように、そしてなぜ使うのかを理解することで、物事がうまくいくことを確実にすることができる。
+すべての投影データが入る CRS を明確に定義し、異なる CRS をどのように、そしてなぜ使うのかを理解することで、物事がうまくいくことを確実にすることができる。
 さらに、座標系について学ぶことで、地理データセットとその効果的な使用方法についての知識を深めることができる。
 
 この章では、CRS の基本を学び、異なる CRS を使用した場合の結果（何が問題になるかを含む）を示し、ある座標系から別の座標系にデータセットを「再投影」する方法について説明する。
@@ -33,7 +31,6 @@ Section \@ref(crs-intro) は、座標参照系 (CRS) を紹介し、2つの主�
 Section \@ref(geom-proj) は、バッファを作成する作業例を参照しながら、データがどの CRS にあるのかを知ることの重要性を示している。
 Section \@ref(whenproject) と Section \@ref(which-crs) において、それぞれ、いつ再投影するべきか、どの CRS を使うかという問題に取り組んでいる。
 ベクタとラスタの再投影については、\@ref(reproj-vec-geom) と \@ref(reproj-ras) で、地図投影の修正については Section \@ref(mapproj) で説明している。
-
 
 ## 座標参照系  {#crs-in-r}
 
@@ -43,56 +40,46 @@ Section \@ref(whenproject) と Section \@ref(which-crs) において、それぞ
 R-spatial のコアパッケージや QGIS などのデスクトップ GIS ソフトウェアなど、CRS 変換を必要とする最新の地理ツールのほとんどは、「ある座標参照系（CRS）から別の座標に変換する」オープンソース C++ ライブラリ [PROJ](https://proj.org) とつながっている。
 CRS には、以下のような様々な表現がある。
 
-1. 単純だが曖昧になる可能性のある記述、例えば「lon/lat座標で表示される」。
-2. `+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs` のような、形式化された、しかし今では時代遅れの「proj4 文字列」。
-3. `EPSG:4326` のような識別用の 'authority:code' テキスト文字列。
+1. 単純だが曖昧になる可能性のある記述、例えば「lon/lat座標で表示される」
+2. `+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs` のような、形式化された、しかし今では時代遅れの「proj4 文字列」(または proj 文字列)
+3. `EPSG:4326` のような識別用の 'authority:code' テキスト文字列
 
 上の例はそれぞれ、全地球測位システム（GPS）座標やその他多くのデータセットの基礎となる「WGS84」座標系という同じものを指している。（訳注：WGS84 は、世界で一般的に用いられている緯度経度座標系だが、日本の場合は、JGD2011 が用いられることが多い。そのコードは `EPSG:6668` である。なお、JGD2011 は東日本大震災の影響を考慮しており、震災以前は `JGD2000 が用いられていた。そのコードは `EPSG:4612` である。データが作成された年によって両者を使い分けるとよい。詳細については、[空間情報クラブ](https://club.informatix.co.jp/?p=998)などを参照。）
 しかし、どれが正しいのだろうか？
 
+\index{CRS!EPSG}
 短く答えると、CRS を識別する3つ目の方法が正しい。`EPSG:4326` は、本書で取り上げた **sf** と **terra** （さらに **stars**）パッケージ、及び [QGIS](https://docs.qgis.org/3.16/en/docs/user_manual/working_with_projections/working_with_projections.html) や [PROJ](https://proj.org/development/quickstart.html) などの地理データを扱うための多くのソフトウェアプロジェクトによって理解されている。
 `EPSG:4326` は将来を見据えたものである。
 さらに、機械可読でありながら、proj-string 表現とは異なり、「EPSG:4326」は短く、覚えやすく、オンラインで非常に「見つけやすい」（例えば、EPSG:4326 を検索すると、ウェブサイト [epsg.io](https://epsg.io/4326) の専用ページが表示される）。
 より簡潔に `4326` だけでも **sf** によって理解されるが、 **曖昧さを防ぎ、文脈を提供するために、より明示的な `AUTHORITY:CODE` という形式を推奨する**。
 
+\index{CRS!WKT}
 より長く答えると、3つの記述のどれも十分ではなく、CRS の処理と変換を明確にするためには、より詳細な情報が必要になる。
-このため、Open Geospatial Consortium（OGC、**sf** パッケージが実装するシンプルフィーチャの仕様も整備している団体）が、WKT（Well Known Text）と呼ばれる CRS 記述形式をオープンスタンダードで開発した。
+このため、Open Geospatial Consortium（OGC、**sf** パッケージが実装するシンプルフィーチャの仕様も整備している団体）が、WKT（Well-Known Text）と呼ばれる CRS 記述形式をオープンスタンダードで開発した。
 これは、「ISO 19111:2019 に記述された座標参照系の抽象モデルのテキスト文字列実装の構造と内容を定義する」[100ページを超えるドキュメント](https://portal.opengeospatial.org/files/18-010r7)に詳細が記述されている。 [@opengeospatialconsortium_wellknown_2019]。
 WGS84 CRS、**識別子** `EPSG:4326` の WKT 表現は以下の通りである。
-
-<!-- Source: https://spatialreference.org/ref/epsg/4326/prettywkt/ -->
-<!-- ``` -->
-<!-- GEOGCS["WGS 84", -->
-<!--     DATUM["WGS_1984", -->
-<!--         SPHEROID["WGS 84",6378137,298.257223563, -->
-<!--             AUTHORITY["EPSG","7030"]], -->
-<!--         AUTHORITY["EPSG","6326"]], -->
-<!--     PRIMEM["Greenwich",0, -->
-<!--         AUTHORITY["EPSG","8901"]], -->
-<!--     UNIT["degree",0.01745329251994328, -->
-<!--         AUTHORITY["EPSG","9122"]], -->
-<!--     AUTHORITY["EPSG","4326"]] -->
-<!-- ``` -->
 
 ```{r}
 st_crs("EPSG:4326")
 ```
 
+\index{CRS!SRID}
 コマンドの出力は、CRS 識別子（空間参照識別子または [SRID](https://postgis.net/workshops/postgis-intro/projection.html)とも呼ばれる）がどのように機能するかを示している。これは単にルックアップであり、CRS のより完全な WKT 表現に関連する一意の識別子を提供するものである。
 このことは、識別子と CRS の長い WKT 表現との間にミスマッチがある場合はどうなるのか、という問題を提起している。
 この点、@opengeospatialconsortium_wellknown_2019 は明確で、冗長な WKT 表現が[識別子](https://docs.opengeospatial.org/is/18-010r7/18-010r7.html#37)より優先される。 
 
 > 引用された識別子の属性や値が、WKT 記述で明示的に与えられた属性や値と矛盾する場合、 WKT の値が優先されるものとする。
 
+\index{CRS!SRID}
 CRS の識別子を `AUTHORITY:CODE` という形式で参照する慣習は、他の[言語](https://jorisvandenbossche.github.io/blog/2020/02/11/geopandas-pyproj-crs/)で書かれた地理ソフトウェアでも使われており、正式に定義された広範囲の座標系を参照することができる。^[
-[QGIS](https://docs.qgis.org/3.16/en/docs/pyqgis_developer_cookbook/crs.html?highlight=srid) は、5つの識別子タイプ（EPSGコード、PostGIS SRID、INTERNAL SRID、PROJ4 文字列、WKT 文字列）や、`EPSG:4326` 識別子のより長い表現である `urn:ogc:def:crs:EPSG::4326` も受け入れ可能で、固有の CRS を参照する [@opengeospatialconsortium_wellknown_2019]。
+[QGIS](https://docs.qgis.org/3.16/en/docs/pyqgis_developer_cookbook/crs.html?highlight=srid) は、5つの識別子タイプ（EPSGコード、PostGIS SRID、INTERNAL SRID、PROJ 文字列、WKT 文字列）や、`EPSG:4326` 識別子のより長い表現である `urn:ogc:def:crs:EPSG::4326` も受け入れ可能で、固有の CRS を参照する [@opengeospatialconsortium_wellknown_2019]。
 ]
-CRS の識別子で最もよく使われる機関は、CRS の標準化リストを発表した欧州石油調査グループ（European Petroleum Survey Group）の頭文字をとった *EPSG* である（EPSG は2005年に石油・ガス団体の [Geomatics Committee of the International Association of Oil & Gas Producers](https://www.iogp.org/our-committees/geomatics/) により[引き継ぎ](http://wiki.gis.com/wiki/index.php/European_Petroleum_Survey_Group)された）。
+CRS の識別子で最もよく使われる機関は、CRS の標準化リストを発表した欧州石油調査グループ（European Petroleum Survey Group）の頭文字をとった *EPSG*\index{CRS!EPSG} である（EPSG は2005年に石油・ガス団体の [Geomatics Committee of the International Association of Oil & Gas Producers](https://www.iogp.org/our-committees/geomatics/) により[引き継ぎ](http://wiki.gis.com/wiki/index.php/European_Petroleum_Survey_Group)された）。
 CRS の識別子には、他の機関を使用することもできる。
 例えば、`ESRI:54030` は、ESRI の Robinson 投影の実装で、以下の WKT 文字列（最初の8行のみ表示）を持っていることを指している。
 
 ```{r, eval=FALSE}
-sf::st_crs("ESRI:54030")
+st_crs("ESRI:54030")
 #> Coordinate Reference System:
 #>   User input: ESRI:54030 
 #>   wkt:
@@ -115,13 +102,15 @@ WKT の CRS 定義が登場する以前は、proj-string が座標操作の指�
 この文字列表現は、key=value の形式（例えば、`+proj=longlat +datum=WGS84 +no_defs`）で構築されているが、ほとんどの場合、すでに WKT 表現に取って代わられたか、将来的に取って代わられるはずである。
 ]
 
+\index{CRS!proj-string}
 最近の PROJ のバージョン（6+）では、座標操作を定義するために proj-string を使用することができるが、いくつかの proj-string キー（`+nadgrids` , `+towgs84` , `+k` , `+init=epsg:`）はもうサポートされていないか、推奨されないものである。
 また、proj-string に直接設定できる測地系は3つ（WGS84、NAD83、NAD27）だけである。
 CRS の定義の進化と PROJ ライブラリの長い説明は、@bivand_progress_2021、@pebesma_spatial_2022 の第2章、[Floris Vanderhaeghe によるブログ](https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/)に記載されている。
-[PROJ documentation](https://proj.org/development/reference/cpp/cpp_general.html) に概説されているように、WKT CRS 形式には WKT1 と 2 種類の WKT2 があり、後者 (WKT2, 2018 仕様) は ISO 19111:2019 に対応するものである [@opengeospatialconsortium_wellknown_2019]。
+[PROJ documentation](https://proj.org/development/reference/cpp/cpp_general.html) にも概説されているように、WKT CRS 形式には WKT1 と 2 種類の WKT2 があり、後者 (WKT2, 2018 仕様) は ISO 19111:2019 に対応するものである [@opengeospatialconsortium_wellknown_2019]。
 
 ## 座標系の照会と設定  {#crs-setting}
 
+\index{vector!CRS}
 R の空間オブジェクトに CRS がどのように格納され、どのようにクエリや設定ができるのかを見ていこう。
 まず、**ベクタ**の地理データオブジェクトの CRS の取得と設定について、次の例から見ていく。
 
@@ -146,16 +135,18 @@ st_crs(new_vector) # get CRS
 new_vector_crs = st_crs(new_vector)
 ```
 
+\index{vector!CRS}
 出力は主に2つの要素を含むリストである。
 
 1. `User input` (この場合、`WGS 84`、入力ファイルから取得した `EPSG:4326` の同義語)、前述の CRS 識別子に対応する。
-1. `wkt` CRS に関するすべての関連情報を含む完全な WKT 文字列を含む。
+2. `wkt` CRS に関するすべての関連情報を含む完全な WKT 文字列を含む。
 
 `input` 要素は柔軟性があり、入力ファイルやユーザー入力に応じて、`AUTHORITY:CODE` 表現（例：`EPSG:4326`）、CRS の名前（例： `WGS 84`）、あるいは proj-string 定義を含めることができる。
 `wkt` 要素には WKT 表現が格納され、オブジェクトをファイルに保存したり、座標演算を行う際に使用される。
 上記で、`new_vector` のオブジェクトは、WGS84 楕円体を持ち、グリニッジ本初子午線を使用し、緯度・経度軸の順番になっていることがわかる。
 この場合、この CRS の使用に適したエリアを説明する `USAGE` や、CRS の識別子を指し示す `ID`（`EPSG:4326`） などの追加要素もある。
 
+\index{vector!CRS}
 また、`st_crs` 関数には、使用中の CRS に関する追加情報を取得することができる、という便利な特徴もある。 
 例えば、実行させてみよう。
 
@@ -176,6 +167,7 @@ waldo::compare(new_vector_crs, st_crs(new_vector))
 # `new$input`: "EPSG:4326"
 ```
 
+\index{raster!CRS}
 CRS の取得と設定は、**ラスタ** 地理データオブジェクトと同様の方法で行われる。
 `terra` パッケージの `crs()` 関数は `SpatRaster` オブジェクトから CRS 情報にアクセスする （きれいに印刷するために `cat()` 関数を使用していることに注意）。 
 
@@ -210,6 +202,7 @@ st_is_longlat(london)
 CRS を手動で指定するか、CRS メタデータを持つソースから読み込まれない限り、**sf** は座標系について「わからない」と言う以外の明示的な仮定をしない。
 この動作は、利用可能な CRS の多様性を考えると理にかなっているが、GeoJSON ファイルフォーマット仕様のような、すべての座標が lon/lat CRS（EPSG:4326`）を持つという単純化した仮定をするいくつかのアプローチとは異なる。
 
+\index{vector!CRS}
 `sf` オブジェクトに CRS を追加するには、主に 3 つの方法がある。
 
 - CRS をあらかじめ存在するオブジェクトに割り当てる。例えば `st_crs(london) = "EPSG:4326"` 

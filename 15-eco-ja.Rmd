@@ -61,7 +61,7 @@ knitr::include_graphics("figures/15_study_area_mongon.png")
 Ordinations\index{ordination}  は、（ノイズの多い）データセットから主要な勾配を抽出するための次元削減技術であり、私たちの場合は南山斜面に沿って発達した植物学的勾配である（次のセクションを参照）。
 本章では、最初の序列軸である植物相の勾配を、標高、傾斜、集水域\index{catchment area}および NDVI\index{NDVI}  といった環境予測因子の関数としてモデル化することにする。
 このために、非常に有名な機械学習\index{machine learning}アルゴリズムであるランダムフォレストモデル\index{random forest}を利用する [@breiman_random_2001]。
-このモデルを使えば、調査地のどこでも植物組成の空間的な予測が可能になる。
+このモデルを使えば、調査地のどこでも植物組成の空間分布図作成が可能になる。
 最適な予測を保証するために、空間クロスバリデーション \index{cross-validation!spatial CV}（Section \@ref(svm) 参照）の助けを借りて、ハイパーパラメータ\index{hyperparameter}を事前に調整することが推奨される。
 
 ## データとデータ準備  {#data-and-data-preparation}
@@ -215,7 +215,7 @@ ep = terra::rast(system.file("raster/ep.tif", package = "spDataLarge"))
 ```{r 15-eco-10, cache=TRUE, cache.lazy=FALSE, message=FALSE, warning=FALSE}
 # terra::extract は、不要な ID 列を自動的に追加
 ep_rp = terra::extract(ep, random_points) |>
-  dplyr::select(-ID)
+  select(-ID)
 random_points = cbind(random_points, ep_rp)
 ```
 
@@ -443,7 +443,7 @@ knitr::include_graphics("figures/15_tree.png")
 100 回繰り返しの 5 回空間クロスバリデーション \index{cross-validation!spatial CV}  と 50 回のランダムサーチを使用した場合、バイアス低減された性能推定値を得るために 125,500 個のモデルが必要だったことを思い出してみよう (Section \@ref(svm) を参照)。
 ハイパーパラメータ \index{hyperparameter}  のチューニングレベルでは、最適なハイパーパラメータの組み合わせを見つけ、それを特定の空間分割のテストデータを予測するための外部パフォーマンスレベルで使用した（Figure \@ref(fig:inner-outer) も参照）。 
 これを 5 つの空間分割に対して行い、100 回繰り返した結果、合計 500 の最適なハイパーパラメータの組み合わせが得られた。
-空間予測に使うべきはどちらか？
+空間分布図作成に使うべきはどちらか？
 答えは簡単で、全くない。 
 このチューニングは、バイアスを低減した性能推定値を得るために行われたものであり、最良の空間予測を行うために行われたものではないことに留意してみよう。
 後者については、完全なデータセットから最適なハイパーパラメータ\index{hyperparameter}の組み合わせを推定する。
@@ -456,7 +456,7 @@ knitr::include_graphics("figures/15_tree.png")
 
 ```{r 15-eco-20}
 # task を作成
-task = mlr3spatiotempcv::as_task_regr_st(dplyr::select(rp, -id, -spri),
+task = mlr3spatiotempcv::as_task_regr_st(select(rp, -id, -spri),
   id = "mongon", target = "sc")
 ```
 
@@ -543,7 +543,7 @@ autotuner_rf$predict(task)
 ```
 
 `predict` メソッドは、モデリングに使用されるすべてのオブザベーションにモデルを適用する。
-モデリングで使用された予測因子として名付けられたラスタを含む多層 `SpatRaster`、`terra::predict()` は空間予測、すなわち新しいデータに対する予測も行う。
+モデリングで使用された予測因子として名付けられたラスタを含む多層 `SpatRaster`、`terra::predict()` は空間分布図作成、すなわち新しいデータに対する予測も行う。
 
 ```{r 15-eco-28, cache=TRUE, cache.lazy=FALSE, eval=FALSE}
 pred = terra::predict(ep, model = autotuner_rf, fun = predict)
@@ -622,7 +622,7 @@ all(values(pred - pred_2) == 0)
 線形モデルは、ランダムフォレスト（ \index{random forest}  ）モデルよりも説明や理解がしやすいので好まれ（パーシモンの法則）、さらに計算負荷が少ない（演習を参照）。
 線形モデルがデータに存在する非線形性の程度に対処できない場合、一般化加法モデル\index{generalized additive model}  (GAM) を試してみることもできる。
 ここで重要なのは、データサイエンティストのツールボックスは複数のツールで構成されており、目の前のタスクや目的に最適なツールを選択するのはあなたの責任であるということである。
-ここでは、ランダムフォレスト\index{random forest}のモデリングと、それに対応した空間予測への利用方法を紹介したいと思われる。
+ここでは、ランダムフォレスト\index{random forest}のモデリングと、それに対応した空間予測図への利用方法を紹介したいと思われる。
 この目的のためには、反応と予測因子の関係が既知の、よく研究されたデータセットが適切である。
 しかし、これはランダムフォレスト\index{random forest}モデルが予測性能の面で最良の結果を返したことを意味するものではない（演習を参照）。
 

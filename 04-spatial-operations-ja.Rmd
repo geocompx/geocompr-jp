@@ -11,13 +11,6 @@ library(dplyr)
 library(spData)
 ```
 
-- さらに、Section \@ref(spatial-ras) では、以下の二つのデータセットも読み込む必要がある。
-
-```{r 04-spatial-operations-1-1}
-elev = rast(system.file("raster/elev.tif", package = "spData"))
-grain = rast(system.file("raster/grain.tif", package = "spData"))
-```
-
 ## イントロダクション  {#introduction-04}
 
 ジオコンピュテーション\index{geocomputation}において、ベクタデータセット間の空間結合やラスタデータセットのローカルおよびフォーカル演算などの空間演算は重要な要素である。
@@ -75,6 +68,20 @@ p_hpnz2 = tm_shape(nz) + tm_polygons(col = "white") +
   tm_layout(main.title = "カンタベリーの High Point", main.title.size = 1,
             bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_hpnz1, p_hpnz2, ncol = 2)
+
+if (packageVersion("tmap") >= "4.0"){
+  library(tmap)
+  p_hpnz1 = tm_shape(nz) + tm_polygons(fill = "white") +
+    tm_shape(nz_height) + tm_symbols(shape = 2, col = "red", size = 0.25) +
+    tm_title("High points in New Zealand") +
+    tm_layout(bg.color = "lightblue")
+  p_hpnz2 = tm_shape(nz) + tm_polygons(fill = "white") +
+    tm_shape(canterbury) + tm_fill(col = "gray") + 
+    tm_shape(canterbury_height) + tm_symbols(shape = 2, col = "red", size = 0.25) +
+    tm_title("High points in Canterbury") +
+    tm_layout(bg.color = "lightblue")
+  tmap_arrange(p_hpnz1, p_hpnz2, ncol = 2)
+}
 ```
 
 属性による部分集合と同様に、コマンド  `x[y, ]` （`nz_height[canterbury, ]` と同等）は、<u>ソース</u> オブジェクトの内容を使用して、<u>ターゲット</u>のフィーチャの部分集合を返す。
@@ -127,9 +134,6 @@ canterbury_height2 = nz_height[sel_logical, ]
 canterbury_height3 = nz_height |>
   st_filter(y = canterbury, .predicate = st_intersects)
 ```
-
-<!--toDo:jn-->
-<!-- fix pipes -->
 
 ```{r 04-spatial-operations-7b-old, eval=FALSE, echo=FALSE}
 # Additional tests of subsetting
@@ -275,7 +279,6 @@ st_distance(point_sf, polygon_sfc)
 # [2,] 0.1341641
 # [3,] 0.0000000
 ```
-
 
 ```{block2 04-spatial-operations-15, type='rmdnote'}
 位相関係を計算する関数では、空間インデックスを用いることで、空間クエリの性能を大幅に向上させることができる。
@@ -491,7 +494,7 @@ Figure \@ref(fig:relations) に示す関係（3列目1行目のポリゴンペ�
 
 ```{r}
 xy2sfc = function(x, y) st_sfc(st_polygon(list(cbind(x, y))))
-x = xy2sfc(x = c(0, 0, 1, 1,   0), y = c(0, 1, 1, 0.5, 0))
+x = xy2sfc(x = c(0, 0, 1, 1, 0), y = c(0, 1, 1, 0.5, 0))
 y = xy2sfc(x = c(0.7, 0.7, 0.9, 0.7), y = c(0.8, 0.5, 0.5, 0.8))
 st_relate(x, y)
 ```
@@ -524,8 +527,17 @@ tm_shape(grid_sf) +
   tm_borders(col = "grey", lwd = 2) +
   tm_layout(frame = FALSE, legend.show = FALSE,
             panel.labels = c("クィーン (queen)", "ルーク (rook)"), fontfamily = "HiraginoSans-W3")
-```
 
+if (packageVersion("tmap") >= "4.0"){
+  tm_shape(grid_sf) +
+    tm_fill(fill = c("queens", "rooks"), 
+            fill.scale = tm_scale(values = c("white", "black"))) +
+    tm_shape(grid_sf) +
+    tm_borders(col = "grey", lwd = 2) +
+    tm_layout(frame = FALSE, legend.show = FALSE,
+              panel.labels = c("queen", "rook"))
+}
+```
 
 <!-- Another of a custom binary spatial predicate is 'overlapping lines' which detects lines that overlap for some or all of another line's geometry. -->
 <!-- This can be implemented as follows, with the pattern signifying that the intersection between the two line interiors must be a line: -->
@@ -579,7 +591,6 @@ sel_relates = st_relate(rnet_approx[1, ], osm_net)
 dim(sel_relates)
 sel_table = table(sel_relates)
 sel_table
-
 ```
 
 ### 空間結合  {#spatial-joining}
@@ -602,8 +613,7 @@ random_df = data.frame(
   y = runif(n = 10, min = bb[2], max = bb[4])
 )
 random_points = random_df |> 
-  st_as_sf(coords = c("x", "y")) |> # 座標を設定
-  st_set_crs("EPSG:4326") # 地理 CRC を設定
+  st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") # 座標と CRC を設定
 ```
 
 Figure \@ref(fig:spatial-join) で示したシナリオでは、`random_points` オブジェクト（左上）には属性データがないのに対し、`world` （右上）には凡例で示した国名のサンプルを含む属性があることがわかる。
@@ -676,10 +686,12 @@ if (knitr::is_latex_output()){
 
 `cycle_hire_osm` の変数 `capacity` を `cycle_hire` に含まれる公式の「ターゲット」データに結合する必要があるとする。
 このとき、オーバーラップしない結合が必要である。
-最も簡単な方法は、トポロジカル演算子 `st_is_within_distance()` を使用することである。
+最も簡単な方法は、トポロジカル演算子 `st_is_within_distance()` を使用することである。これは、下の例で 20 m で示している。
+距離は、球面幾何エンジン S2 を使っていれば、非投影座標系 (例えば WGS84 の緯度経度) であってもメートル法を使うことができる。これは、 **sf** のデフォルトである (Section \@ref(s2) 参照)。
 
 ```{r 04-spatial-operations-24}
-sel = st_is_within_distance(cycle_hire, cycle_hire_osm, dist = 20)
+sel = st_is_within_distance(cycle_hire, cycle_hire_osm, 
+                            dist = units::set_units(20, "m"))
 summary(lengths(sel) > 0)
 ```
 
@@ -689,7 +701,6 @@ sel = st_is_within_distance(cycle_hire, cycle_hire_osm, dist = 20)
 summary(lengths(sel) > 0)
 # still works: must be lwgeom or some other magic!
 ```
-
 
 ```{r 04-spatial-operations-24-projected, eval=FALSE, echo=FALSE}
 # This chunk contains the non-overlapping join on projected data, a step that is no longer needed:
@@ -706,7 +717,8 @@ summary(lengths(sel) > 0)
 解答は再び `st_join()`だが、引数 `dist` を追加する（20 m 以下に設定）。
 
 ```{r 04-spatial-operations-25}
-z = st_join(cycle_hire, cycle_hire_osm, st_is_within_distance, dist = 20)
+z = st_join(cycle_hire, cycle_hire_osm, st_is_within_distance, 
+            dist = units::set_units(20, "m"))
 nrow(cycle_hire)
 nrow(z)
 ```
@@ -749,11 +761,19 @@ nz_agg = aggregate(x = nz_height, by = nz, FUN = mean)
 先の操作の結果を Figure \@ref(fig:spatial-aggregation) に示す。これは、ニュージーランドの16の地域それぞれにおける `nz_height` のフィーチャの平均値を示している。
 また、次のように `st_join()` の出力を「tidy」関数 `group_by()` と `summarize()` にパイプすることでも、同じ結果を生成することができる。
 
-```{r spatial-aggregation, echo=FALSE, fig.cap="ニュージーランドの各地域の上位101の高さの平均値。", fig.asp=1, message=FALSE, out.width="50%"}
+```{r spatial-aggregation, echo=FALSE, fig.cap="ニュージーランドの各地域の上位 101 の高さの平均値。", fig.asp=1, message=FALSE, out.width="50%"}
 library(tmap)
 tm_shape(nz_agg) +
   tm_fill("elevation", breaks = seq(27, 30, by = 0.5) * 1e2) +
   tm_borders()
+
+if (packageVersion("tmap") >= "4.0"){
+  library(tmap)
+  tm_shape(nz_agg) +
+    tm_fill("elevation", 
+            fill.scale = tm_scale(breaks = seq(27, 30, by = 0.5) * 1e2)) +
+    tm_borders()
+}
 ```
 
 ```{r 04-spatial-operations-29}
@@ -773,7 +793,6 @@ plot(nz_agg2)
 注: `aggregate()` と `group_by() |> summarize()` のアプローチの違いの一つは、前者は一致しない地域名に対して `NA` の値を返すのに対し、後者は地域名を保持することである。
 したがって、「tidy」アプローチは、集計関数や結果の列名の点でより柔軟である。
 新しいジオメトリも作成する集計操作については、Section \@ref(geometry-unions) で説明している。
-
 
 ### 不一致レイヤを結合  {#incongruent}
 
@@ -846,6 +865,11 @@ plot(st_geometry(nz_height)[2:3], add = TRUE)
 このセクションでは、ラスタデータセットを操作するためのさまざまな基本メソッドを紹介した Section \@ref(manipulating-raster-objects) をベースに、より高度で明示的な空間ラスタ操作を実演する。また、Section \@ref(manipulating-raster-objects) で手動で作成したオブジェクト `elev` と `grain` を使用する。
 これらのデータセットは、読者の便宜を図るため **spData** パッケージにも含まれている。
 
+```{r}
+elev = rast(system.file("raster/elev.tif", package = "spData"))
+grain = rast(system.file("raster/grain.tif", package = "spData"))
+```
+
 ### 空間部分集合  {#spatial-raster-subsetting}
 
 前の章（Section \@ref(manipulating-raster-objects)）では、特定のセル ID や行と列の組み合わせに関連する値を取得する方法を紹介した。
@@ -863,9 +887,6 @@ elev[id]
 terra::extract(elev, matrix(c(0.1, 0.1), ncol = 2))
 ```
 
-<!--jn:toDo-->
-<!-- to update? -->
-<!-- It is convenient that both functions also accept objects of class `Spatial* Objects`. -->
 ラスタオブジェクトは、以下のコードのように、別のラスタオブジェクトの内部に部分集合することもできる。
 
 ```{r 04-spatial-operations-35, eval=FALSE}
@@ -931,7 +952,6 @@ elev[elev < 20] = NA
 
 \index{map algebra}
 「マップ代数」(Map algebra) という用語は、1970年代後半に、地理的なラスタデータ<u>および</u>（あまり目立たないが）ベクタデータを分析するための「規則、機能、および技術のセット」を表すために作られたものである [@tomlin_map_1994]。
-<!-- Although the concept never became widely adopted, the term usefully encapsulates and helps classify the range operations that can be undertaken on raster datasets. -->
 ここでは、マップ代数をより狭く定義し、周囲のセル、ゾーン、またはすべてのセルに適用される統計関数を参照して、ラスタセル値を修正または要約する操作としている。
 
 ラスタデータセットは暗黙的に座標を保存しているだけなので、マップ代数演算は高速になる傾向があり、そのため[古いことわざ](https://geozoneblog.wordpress.com/2013/04/19/raster-vs-vector/)では「ラスタは高速だがベクタは補正が効く」とされている。

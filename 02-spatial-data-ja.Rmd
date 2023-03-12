@@ -843,6 +843,25 @@ tm2 = tm_shape(india_buffer_without_s2) +
             title = "s2 switched off")
 
 tmap_arrange(tm1, tm2, ncol = 2)
+
+if (packageVersion("tmap") >= "4.0"){
+  library(tmap)
+  tm1 = tm_shape(india_buffer_with_s2) +
+    tm_fill(fill = hcl.colors(4, palette = "purple green")[3]) +
+    tm_shape(india) +
+    tm_fill(fill = "grey95") +
+    tm_title("st_buffer() with dist = 1") +
+    tm_title("s2 switched on (default)", position = tm_pos_in(), size = 1)
+  
+  tm2 = tm_shape(india_buffer_without_s2) +
+    tm_fill(fill = hcl.colors(4, palette = "purple green")[3]) +
+    tm_shape(india) +
+    tm_fill(fill = "grey95") +
+    tm_title(" ") +
+    tm_title("s2 switched off", position = tm_pos_in(), size = 1)
+  
+  tmap_arrange(tm1, tm2, ncol = 2)
+}
 ```
 
 本書では、特に明記していない限り、S2 がオンになっていることを前提に説明する。
@@ -922,7 +941,6 @@ Section \@ref(the-history-of-r-spatial) にあるように、その中でも特�
 **terra** パッケージ は、R のラスタオブジェクトをサポートする。
 前身の **raster**（同じ開発者 Robert Hijmans による）と同様、ラスタデータセットの作成、読み込み、書き出し、操作、処理を行うための豊富な関数群を提供する。
 **terra** の機能は、より成熟した **raster** パッケージとほぼ同じであるが、いくつかの相違点がある。**terra** の関数は通常、**raster** の対応する関数よりも計算効率が高い。
-<!-- todo: add evidence (RL 2021-11) -->
 一方、**raster** クラスシステムは人気があり、他の多くのパッケージで使用されている。
 古いスクリプトやパッケージとの後方互換性を確保するために、2種類のオブジェクトをシームレスに変換することができる。例えば、**raster** パッケージの [`raster()`](https://rspatial.github.io/raster/reference/raster.html)、[`stack()`](https://rspatial.github.io/raster/reference/stack.html)、`brick()` などの関数がある（地理データを扱うための R パッケージの進化については、前の章を参照）。
 

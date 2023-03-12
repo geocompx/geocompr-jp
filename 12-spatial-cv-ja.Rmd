@@ -167,7 +167,7 @@ pred_glm = predict(object = fit, type = "response")
 head(pred_glm)
 ```
 
-予測ラスタに係数を適用することで、空間予測を行うことができる。 
+予測ラスタに係数を適用することで、空間分布図を作成することができる。 
 これは、手動または `terra::predict()` で行うことができる。
 モデルオブジェクト (`fit`) に加えて、この関数は、モデルの入力データフレーム（Figure \@ref(fig:lsl-susc)）と同じ名前の予測子（ラスタレイヤ）を持つ `SpatRaster` も必要とする。
 
@@ -176,7 +176,7 @@ head(pred_glm)
 pred = terra::predict(ta, model = fit, type = "response")
 ```
 
-```{r lsl-susc, echo=FALSE, out.width="70%",fig.cap="GLM を用いた地すべり感受性の空間的予測.", fig.scap = "Spatial prediction of landslide susceptibility.", warning=FALSE}
+```{r lsl-susc, echo=FALSE, out.width="70%",fig.cap="GLM を用いた地すべり感受性の空間分布図.", fig.scap = "Spatial distribution of landslide susceptibility.", warning=FALSE}
 # # attach study mask for the natural part of the study area
 # data("lsl", "study_mask", package = "spDataLarge")
 # ta = terra::rast(system.file("raster/ta.tif", package = "spDataLarge"))
@@ -220,7 +220,7 @@ knitr::include_graphics("figures/lsl-susc-1.png")
 これは、正規分布で空間的に依存するランダム切片を使用することによっても拡張することができる。
 しかし、このためには、ベイズ・モデリング・アプローチに頼らなければならないだろう [@blangiardo_spatial_2015; @zuur_beginners_2017]。
 
-空間予測地図は、モデルの非常に重要なアウトカムの一つである。
+空間分布図は、モデルの非常に重要なアウトカムの一つである。
 さらに重要なのは、モデルの予測性能が低ければ、予測マップは役に立たないので、基盤となるモデルがどれだけ優れているかということである。
 二項モデルの予測性能を評価する最も一般的な尺度は、Area Under the Receiver Operator Characteristic Curve (AUROC)\index{AUROC} である。
 これは 0.5 から 1.0 の間の値で、0.5 はランダム化より良くないモデル、1.0 は 2 つのクラスを完全に予測することを示す。 
@@ -382,7 +382,7 @@ learner$model
 
 ```{r 12-spatial-cv-17, eval=FALSE}
 fit = glm(lslpts ~ ., family = binomial(link = "logit"), 
-          data = dplyr::select(lsl, -x, -y))
+          data = select(lsl, -x, -y))
 identical(fit$coefficients, learner$model$coefficients)
 ```
 -->
@@ -470,7 +470,7 @@ Section \@ref(glm) では、GLM を用いて地滑りしやすさを予測した
 ここでは、同じ目的のためにサポートベクタマシン（SVM）\index{SVM}を紹介する。
 ランダムフォレスト\index{random forest}モデルは SVM よりも人気があるだろう。しかし、ハイパーパラメータ\index{hyperparameter}のチューニングがモデル性能に与えるプラスの効果は、SVM の場合の方が顕著である [@probst_hyperparameters_2018]。
 本節では、（空間）ハイパーパラメータのチューニングが主な目的であるため、SVM を用いることにする。
-ランダムフォレストモデルを適用したい方は、この章を読んでから Chapter \@ref(eco) に進むことを勧める。この章では、現在取り上げられている概念と技術を応用して、ランダムフォレストモデルに基づく空間予測を行うことを説明する。
+ランダムフォレストモデルを適用したい方は、この章を読んでから Chapter \@ref(eco) に進むことを勧める。この章では、現在取り上げられている概念と技術を応用して、ランダムフォレストモデルに基づく空間分布図を作成する方法を説明する。
 
 SVM\index{SVM} クラスを分離するための最適な「超平面」を探索し（分類 \index{classification}  の場合）、特定のハイパーパラメータで「カーネル」を推定して、クラス間の非線形境界を作成する [@james_introduction_2013]。
 ハイパーパラメーター \index{hyperparameter}  パラメトリックモデルの係数と混同してはいけない。後者は、パラメータと呼ばれることもある（[machine mastery blog](https://machinelearningmastery.com/difference-between-a-parameter-and-a-hyperparameter/) も参照）。
@@ -637,7 +637,7 @@ GLM\index{GLM}（集計された AUROC \index{AUROC} は  `r score [score $resam
 一方、ランダムサーチの反復回数を増やすと、モデルの総数も増え、その分実行時間も長くなる。
 
 これまで、空間 CV \index{cross-validation!spatial CV}  は、学習アルゴリズムが未知のデータに対して汎化する能力を評価するために利用されていた。
-空間予測では、完全なデータセットでハイパーパラメータ\index{hyperparameter}を調整する。
+空間分布図作成では、完全なデータセットでハイパーパラメータ\index{hyperparameter}を調整する。
 これについては、Chapter \@ref(eco) で説明する。
 
 ## 結論  {#conclusions}

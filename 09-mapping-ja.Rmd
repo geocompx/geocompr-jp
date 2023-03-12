@@ -840,15 +840,15 @@ Section \@ref(interactive-maps) で示されたインタラクティブなウェ
 
 これらの制約を克服するためには、静的なウェブ地図にとどまらず、地理空間系のフレームワークや地図サーバーを利用することが必要である。
 この分野の製品には、 [GeoDjango](https://docs.djangoproject.com/en/2.0/ref/contrib/gis/)\index{GeoDjango}（Django Web フレームワークを拡張したもので、 [Python](https://github.com/django/django)\index{Python}）、[MapServer](https://github.com/mapserver/mapserver)\index{MapServer}（Web アプリケーション開発用のフレームワークで、大部分が C と C++\index{C++} で書かれている）や [GeoServer](https://github.com/geoserver/geoserver) （Java\index{Java} で書かれた成熟した強力なマップサーバ）が含まれる。
-これら（特に GeoServer）はそれぞれ拡張性があり、毎日何千人もの人々に地図を提供することが可能である（あなたの地図に対する人々の関心が十分に高ければの話であるが）。
+これらはそれぞれ拡張性があり、毎日何千人もの人々に地図を提供することが可能である（あなたの地図に対する人々の関心が十分に高ければの話であるが）。
 欠点としては、このようなサーバーサイドのソリューションは、セットアップと保守に多くの熟練した開発者の時間を必要とし、地理空間データベース管理者（[DBA](https://wiki.gis.com/wiki/index.php/Database_administrator)）などの役割を持つ人々を巻き込んでしまうこともよくある。
 
-R のコードをインタラクティブなウェブアプリケーションに変換するためのパッケージである **shiny**\index{shiny (package)}  を使って、ウェブ地図アプリケーションを素早く作成できるようになったのは良いニュースである。
-`tmap::renderTmap()` や `renderLeaflet()` などの関数によって、インタラクティブな地図をサポートしているためである^[これは、RStudio の **leaflet** ウェブサイトの [Shiny integration](https://rstudio.github.io/leaflet/shiny.html) セクションで説明されている ]。
+R の場合は幸運なことに、**shiny**\index{shiny (package)}  を使って、ウェブ地図アプリケーションを素早く作成できるようになった。
+オープンソース本 [Mastering Shiny](https://mastering-shiny.org/) で説明されているように、 **shiny** は、R コードをインタラクティブなウェブアプリに変換する R パッケージでありフレームワークである [@wickham_mastering_2021]。
+`tmap::renderTmap()` と [`leaflet::renderLeaflet()`](https://rstudio.github.io/leaflet/shiny.html) を使うことで、shiny アプリにインタラクティブ地図を追加することができる。
 このセクションでは、ウェブ地図の観点から **shiny** の基本を学び、100行未満のコードで全画面マッピングアプリケーションを完成させることができる。
 
-**shiny** の仕組みは、 [shiny.rstudio.com](https://shiny.rstudio.com/)に詳しく書かれている。
-**shiny** アプリの2つの重要な要素は、ほとんどのウェブアプリケーション開発に共通する二つのエンド、すなわち「フロントエンド」（ユーザーが見る部分）と「バックエンド」コードを反映している。
+**shiny** の仕組みは、 [shiny.rstudio.com](https://shiny.rstudio.com/)に詳しく書かれている。これは「フロントエンド」（ユーザーが見る部分）と「バックエンド」コードという２つの構成要素を強調している。
 **shiny** アプリでは、これらの要素は通常、`app フォルダ`内にある `app.R` という R スクリプト内の  `ui` と `server` というオブジェクトで作成される。
 これにより、ウェブマッピングのアプリケーションを1つのファイルで表現することができ、例えば、本書の GitHub リポジトリにある [`CycleHireApp/app.R`](https://github.com/Robinlovelace/geocompr/blob/main/apps/CycleHireApp/app.R) ファイルのような単一のファイルで表現できる。
 
@@ -926,15 +926,12 @@ PCT は毎日何十人もの人が利用しており、1000行以上の [コー�
 そのため、**shiny** を提案しながらも、インタラクティブ地図のプロジェクトの第一段階として、ペンと紙という古くからある技術から始めることを推奨している。
 このように、プロトタイプのウェブアプリケーションは、技術的な考慮事項ではなく、開発者の動機と想像力によって制限されるべきものなのである。
 
-```{r CycleHireApp-html, echo=FALSE, message=FALSE, fig.cap="Hire a cycle App は、住んでいる場所と必要な自転車に基づいて、最も近い自転車レンタルステーションを見つけるためのシンプルなウェブマッピングアプリケーション。インタラクティブ版は geocompr.robinlovelace.net で確認できる。",fig.scap="Cycle Hire App, a simple web mapping application.", eval=knitr::is_html_output(), out.width="690"}
-
+```{r CycleHireApp-html, echo=FALSE, message=FALSE, fig.cap="CycleHireApp は、住んでいる場所と必要な自転車に基づいて、最も近い自転車レンタルステーションを見つけるためのシンプルなウェブマッピングアプリケーション。インタラクティブ版は geocompr.robinlovelace.net で確認できる。",fig.scap="Cycle Hire App, a simple web mapping application.", eval=knitr::is_html_output(), out.width="690"}
 knitr::include_app("https://shiny.robinlovelace.net/CycleHireApp/")
 ```
 
-
-
-```{r CycleHireApp-latex, echo=FALSE, message=FALSE, fig.cap="Hire a cycle App は、住んでいる場所と必要な自転車に基づいて、最も近い自転車レンタルステーションを見つけるためのシンプルなウェブマッピングアプリケーション。インタラクティブ版は geocompr.robinlovelace.net で確認できる。", fig.scap="coffeeApp, a simple web mapping application.", eval=knitr::is_latex_output()}
-knitr::include_graphics("figures/CycleHireApp-2.png")
+```{r CycleHireApp-latex, echo=FALSE, message=FALSE, fig.cap="CycleHireApp は、住んでいる場所と必要な自転車に基づいて、最も近い自転車レンタルステーションを見つけるためのシンプルなウェブマッピングアプリケーション。インタラクティブ版は geocompr.robinlovelace.net で確認できる。", fig.scap="coffeeApp, a simple web mapping application.", eval=knitr::is_latex_output()}
+knitr::include_graphics("figures/09_cycle_hire_app.png")
 ```
 
 ## その他のマッピングパッケージ  {#other-mapping-packages}
@@ -1002,7 +999,7 @@ ggplot() +
 
 ```{r map-gpkg, echo=FALSE, message=FALSE, warning=FALSE}
 gpkg_df = readr::read_csv("extdata/generic_map_pkgs-ja.csv")
-map_gpkg_df = dplyr::select(gpkg_df, Package = package, Title = title)
+map_gpkg_df = select(gpkg_df, Package = package, Title = title)
 map_gpkg_df$Title[map_gpkg_df$Package == "leaflet"] =
   "JavaScript 'Leaflet' ライブラリを使ったインタラクティブウェブ地図を作成"
 knitr::kable(map_gpkg_df, 
@@ -1021,7 +1018,7 @@ Table \@ref(tab:map-spkg) に示すように、いくつかのパッケージは
 
 ```{r map-spkg, echo=FALSE, message=FALSE}
 spkg_df = readr::read_csv("extdata/specific_map_pkgs-ja.csv")
-map_spkg_df = dplyr::select(spkg_df, Package = package, Title = title)
+map_spkg_df = select(spkg_df, Package = package, Title = title)
 knitr::kable(map_spkg_df, 
              caption = "特定の目的のための地図製作パッケージを選択し、関連する指標を示す。",
              caption.short = "Selected specific-purpose mapping packages.",

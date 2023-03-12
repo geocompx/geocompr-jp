@@ -86,7 +86,7 @@ data("census_de", package = "spDataLarge")
 
 ```{r 14-location-4}
 # pop = population, hh_size = household size
-input = dplyr::select(census_de, x = x_mp_1km, y = y_mp_1km, pop = Einwohner,
+input = select(census_de, x = x_mp_1km, y = y_mp_1km, pop = Einwohner,
                       women = Frauen_A, mean_age = Alter_D, hh_size = HHGroesse_D)
 # set -1 and -9 to NA
 input_tidy = dplyr::mutate(input,
@@ -254,7 +254,7 @@ knitr::include_graphics("figures/14_metro_areas.png")
 ```{r 14-location-17, warning=FALSE, eval=FALSE}
 metro_names = sf::st_centroid(metros, of_largest_polygon = TRUE) |>
   tmaptools::rev_geocode_OSM(as.data.frame = TRUE) |>
-  dplyr::select(city, town, state)
+  select(city, town, state)
 # 小さい都市は town の列で返される。すべての名前を1つのカラムにするため、
 # NA である場合に備えて、町の名前を市の列に移動させる。
 metro_names = dplyr::mutate(metro_names, city = ifelse(is.na(city), town, city))
@@ -264,7 +264,7 @@ metro_names = dplyr::mutate(metro_names, city = ifelse(is.na(city), town, city))
 
 ```{r metro-names, echo=FALSE}
 data("metro_names", package = "spDataLarge")
-knitr::kable(dplyr::select(metro_names, city, state), 
+knitr::kable(select(metro_names, city, state), 
              caption = "逆ジオコーディングの結果", 
              caption.short = "Result of the reverse geocoding.", 
              booktabs = TRUE)
@@ -334,7 +334,7 @@ if (any(ind)) {
 
 ```{r 14-location-22, eval=FALSE}
 # 特定の列のみを選択
-shops = purrr::map_dfr(shops, dplyr::select, osm_id, shop)
+shops = purrr::map_dfr(shops, select, osm_id, shop)
 ```
 
 注： `shops` は、`spDataLarge` パッケージで提供される。
@@ -350,9 +350,16 @@ data("shops", package = "spDataLarge")
 そのため、後続のコードチャンクの結果は、店舗密度 (店舗/km^2^) の推定値となる。
 `st_transform()`\index{sf!st\_transform} は、両入力の CRS\index{CRS} が一致するように、`rasterize()`\index{raster!rasterize} の前に使用される。
 
-```{r 14-location-25, message=FALSE, warning=FALSE}
+
+```{r tmmppp21, echo=FALSE, message=FALSE, warning=FALSE}
 shops = sf::st_transform(shops, st_crs(reclass))
 # create poi raster
+poi = terra::rasterize(x = vect(shops), y = reclass, field = "osm_id", fun = "length")
+```
+
+```{r 14-location-25, message=FALSE, warning=FALSE, eval=FALSE}
+shops = sf::st_transform(shops, st_crs(reclass))
+# POI ラスタを作成
 poi = terra::rasterize(x = shops, y = reclass, field = "osm_id", fun = "length")
 ```
 

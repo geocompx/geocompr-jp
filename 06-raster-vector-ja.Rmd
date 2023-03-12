@@ -353,7 +353,14 @@ ch_raster1 = rasterize(cycle_hire_osm_projected, raster_template)
 `fun` 引数は、近接した複数の観測値をラスタオブジェクトの関連セルに変換するために使用される要約統計量を指定する。
 デフォルトでは、`fun = "last"` が使用されるが、`fun = "length"` などの他のオプションも使用できる。この場合、各グリッドセル内のサイクルレンタルの点の数をカウントする (この操作の結果は、Figure \@ref(fig:vector-rasterization1) (C) に示される)。
 
-```{r 06-raster-vector-26 }
+<!-- # toDo: jn clean in the future -->
+
+```{r tmmppp, echo=FALSE}
+ch_raster2 = rasterize(vect(cycle_hire_osm_projected), raster_template, 
+                       fun = "length")
+```
+
+```{r 06-raster-vector-26, eval=FALSE }
 ch_raster2 = rasterize(cycle_hire_osm_projected, raster_template, 
                        fun = "length")
 ```
@@ -386,15 +393,27 @@ raster_template2 = rast(ext(california), resolution = 0.5,
 線またはポリゴンのラスタ化を考慮する場合、有用な追加引数の1つは `touches` である。
 デフォルトでは `FALSE` であるが、`TRUE` に変更すると、線またはポリゴンの境界で接触しているすべてのセルが値を得る。
 `touches = TRUE` による線分ラスタ化を以下のコードで実行する (Figure \@ref(fig:vector-rasterization2) (A))。
+<!-- # toDo: jn clean in the future -->
 
-```{r 06-raster-vector-30 }
+```{r tmmppp2, echo=FALSE}
+california_raster1 = rasterize(vect(california_borders), raster_template2,
+                               touches = TRUE)
+```
+
+```{r 06-raster-vector-30 , eval=FALSE}
 california_raster1 = rasterize(california_borders, raster_template2,
                                touches = TRUE)
 ```
 
 ポリゴンのラスタ化と比較すると、`touches = FALSE` がデフォルトで、Figure \@ref(fig:vector-rasterization2) (B) に示すように、範囲選択ポリゴン内に中心点があるラスタセルのみが選択されることになる。
 
-```{r 06-raster-vector-31 }
+<!-- # toDo: jn clean in the future -->
+
+```{r tmmppp3, echo=FALSE}
+california_raster2 = rasterize(vect(california), raster_template2)
+```
+
+```{r 06-raster-vector-31, eval=FALSE }
 california_raster2 = rasterize(california, raster_template2) 
 ```
 
