@@ -8,7 +8,7 @@
 library(sf)
 library(dplyr)
 library(purrr)
-library(raster)
+library(terra)
 library(osmdata)
 library(spDataLarge)
 ```
