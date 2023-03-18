@@ -98,7 +98,7 @@ knitr::kable(x = d,
   # kableExtra::add_footnote(label = "Comparing downloads of different providers is rather difficult (see http://spatialgalaxy.net/2011/12/19/qgis-users-around-the-world), and here also useless since every Windows QGIS download automatically also downloads SAGA and GRASS.", notation = "alphabet")
 ```
 
-また、R-GIS ブリッジを補完するために、第 2 部では空間ライブラリへのインタフェース (Section \@ref(gdal)、 空間データベース\index{spatial database} (Section \@ref(postgis))、 地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。) 
+また、R-GIS ブリッジを補完するために、第 2 部では空間ライブラリへのインタフェース (Section \@ref(gdal)、空間データベース\index{spatial database} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。) 
 
 ## **qgisprocess** から QGIS  {#rqgis}
 
@@ -124,7 +124,7 @@ library(qgisprocess)
 設定に失敗した場合の解決策としては、`options(qgisprocess.path = "path/to/your_qgis_process")`、環境変数 `R_ QGISPROCESS_PATH` を設定する方法が考えられる。
 <!--toDo:jn-->
 <!-- link to the vignette https://github.com/paleolimbot/qgisprocess/pull/31/files when it is online -->
-上記の方法は、複数のQGISがインストールされており、どれを使うかを決めたい場合にも使える。
+上記の方法は、複数の QGIS がインストールされており、どれを使うかを決めたい場合にも使える。
 
 次に、どのプロバイダ (異なるソフトウェアを意味する) が自分のコンピュータで利用できるかを調べる。
 
@@ -145,7 +145,7 @@ qgis_providers()
 
 これで、R から QGIS の地理計算をする準備ができた。
 それでは、2つの事例を試してみよう。
-最初のものは、異なる境界線を持つ2つのポリゴンデータセットを統合する方法を示している \index{union}  (Section \@ref(qgis-vector) )。
+最初のものは、異なる境界線を持つ2つのポリゴンデータセットを和集合を作成 (union)\index{union} する方法を示している (Section \@ref(qgis-vector) )。
 もう一つは、ラスタ (Section \@ref(qgis-raster) ) で表現された数値標高モデルから新しい情報を導き出すことに重点を置いている。
 
 ### ベクタデータ  {#qgis-vector}
@@ -153,7 +153,7 @@ qgis_providers()
 異なる空間単位 (地域、行政単位など) を持つ2つのポリゴンオブジェクトがある場合を考えてみよう。
 この2つのオブジェクトを統合して、すべての境界線と関連する属性を含む1つのオブジェクトにすることが目標である。
 Section \@ref(incongruent) (Figure \@ref(fig:uniondata)) でも見た不整合なポリゴン\index{spatial congruence}を再び利用する。
-どちらのポリゴンデータセットも **spData** パッケージで提供されており、その両方に地理的な CRS \index{CRS!geographic}  を使用したい (Chapter \@ref(reproj-geo-data) も参照)。
+どちらのポリゴンデータセットも **spData** パッケージで提供されており、その両方に地理的な CRS \index{CRS!geographic} を使用したい (Chapter \@ref(reproj-geo-data) も参照)。
 
 ```{r 09-gis-4}
 data("incongruent", "aggregating_zones", package = "spData")
@@ -192,14 +192,14 @@ if (packageVersion("tmap") >= "4.0"){
 ```
 
 この作業を行うアルゴリズムを見つけるには、`qgis_algorithms()` 関数の出力を検索すればよい。
-この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。^[したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があるためと思われる。]
+この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。^[したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。]
 
 ```{r, eval=FALSE}
 qgis_algo = qgis_algorithms()
 ```
 
 `qgis_algo` オブジェクトには多くの列があるが、通常、私たちが関心を持つのは、プロバイダとアルゴリズム名の情報を組み合わせた `algorithm` 列だけである。
-関数の短い説明文に「union」という単語が含まれていると仮定すると \index{union}、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
+関数の短い説明文に "union"\index{union}という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
 
 ```{r, eval=FALSE}
 grep("union", qgis_algo$algorithm, value = TRUE)
@@ -240,7 +240,7 @@ union
 
 上記のコードを実行すると、2つの入力オブジェクトが一時的な .gpkg ファイルに保存され、選択されたアルゴリズムがそれらに実行され、一時的な .gpkg ファイルが出力として返される。
 **qgisprocess** パッケージは、`qgis_run_algorithm()` の結果を、この場合は出力ファイルへのパスを含むリストとして保存する。
-このファイルを R に読み戻すには、`read_sf()` (例,  `union_sf = read_sf(union [[1] ])` を使うか、`st_as_sf()` を使って直接読み込むことができる。
+このファイルを R に読み戻すには、`read_sf()` (例,  `union_sf = read_sf(union[[1]])` を使うか、`st_as_sf()` を使って直接読み込むことができる。
 
 ```{r, eval=FALSE}
 union_sf = st_as_sf(union)
