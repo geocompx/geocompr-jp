@@ -2,7 +2,7 @@
 
 ## 必須パッケージ  {- #prerequisites-10}
 
-- 本章では、QGIS \index{QGIS}、SAGA \index{SAGA}、GRASS \index{GRASS}  がインストールされていること、および以下のパッケージが添付されていることを条件とする。
+- 本章では、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS\index{GRASS}  がインストールされていること、および以下のパッケージが添付されていることを条件とする。
 
 ```{r 09-gis-1, message=FALSE}
 library(sf)
@@ -36,9 +36,9 @@ GUI \index{graphical user interface}  が一般的になったのは、1990年�
 QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS\index{GRASS}、gvSIG をシステムターミナルや組み込み CLI\index{command-line interface} から操作することは<u>可能</u>であるが、「マウス操作」が一般的である。
 QGIS\index{QGIS} [@sherman_desktop_2008] の作成者である Gary Sherman によれば、これは多くの GIS\index{GIS}  ユーザーがコマンドラインの利点を見逃していることを意味するとのことである。
 
-> 「近代的」GIS ソフトウェアの発展に伴い、マウス操作を好む人がほとんどである。それはいいことであるが、とてつもない量のコマンドラインには、柔軟性とパワーが待っている。繰り返しコマンドラインで作業をする場合、同じことを GUI で行う場合よりも短い時間で行うことができる。
+> 「近代的」GIS ソフトウェアの発展に伴い、マウス操作を好む人がほとんどである。それはいいことであるが、コマンドラインには、とてつもない量の柔軟性とパワーが待っている。繰り返しコマンドラインで作業をする場合、同じことを GUI で行う場合よりも短い時間で行うことができる。
 
-「CLI vs GUI」 \index{graphical user interface}  の議論は逆境になることもあるが、その必要はない。どちらの選択肢も、目の前のタスクとユーザーのスキルセットに応じて、互換的に使用することができる^[GRASS GIS や PostGIS は、アカデミックや産業界で人気があり、コマンドラインを中心に構築されているため、この流れに逆行する製品ともいえる。] 。
+「CLI vs GUI」\index{graphical user interface}  の議論は逆境になることもあるが、その必要はない。どちらの選択肢も、目の前のタスクとユーザーのスキルセットに応じて、互換的に使用することができる^[GRASS GIS や PostGIS は、アカデミックや産業界で人気があり、コマンドラインを中心に構築されているため、この流れに逆行する製品ともいえる。] 。
 R が提供するような優れた CLI\index{command-line interface} (そして RStudio\index{RStudio} のような IDE\index{IDE}  によって強化されている) の利点は数多くある。
 良い CLI とは、
 
@@ -90,9 +90,9 @@ d = tibble("GIS" = c("QGIS", "SAGA", "GRASS"),
             "No. functions" = c(">1000", ">600", ">500"),
             "Support" = c("hybrid", "hybrid", "hybrid"))
 knitr::kable(x = d, 
-             caption = paste("Comparison between three open-source GIS.", 
-                             "Hybrid refers to the support of vector and", 
-                             "raster operations."),
+             caption = paste("３つのオープンソース GIS の比較。", 
+                             "hybrid とは、ベクタとラスタ", 
+                             "に対応していることを示す。"),
              caption.short = "Comparison between three open-source GIS.", 
              booktabs = TRUE) #|>
   # kableExtra::add_footnote(label = "Comparing downloads of different providers is rather difficult (see http://spatialgalaxy.net/2011/12/19/qgis-users-around-the-world), and here also useless since every Windows QGIS download automatically also downloads SAGA and GRASS.", notation = "alphabet")
@@ -141,7 +141,7 @@ qgis_providers()
 #> 6 saga     SAGA
 ```
 
-出力表から、QGISのジオアルゴリズム (`native`, `qgis`, `3d`) と、サードパーティプロバイダの GDAL、SAGA、GRASS の外部アルゴリズムを QGIS インターフェースを通して使用できることが確認できた。
+出力表から、QGIS のジオアルゴリズム (`native`, `qgis`, `3d`) と、サードパーティプロバイダの GDAL、SAGA、GRASS の外部アルゴリズムを QGIS インターフェースを通して使用できることが確認できた。
 
 これで、R から QGIS の地理計算をする準備ができた。
 それでは、2つの事例を試してみよう。
@@ -161,7 +161,7 @@ incongr_wgs = st_transform(incongruent, "EPSG:4326")
 aggzone_wgs = st_transform(aggregating_zones, "EPSG:4326")
 ```
 
-```{r uniondata, echo=FALSE, fig.cap="Illustration of two areal units: incongruent (black lines) and aggregating zones (red borders). "}
+```{r uniondata, echo=FALSE, fig.cap="二つの地域単位の例。不一致（黒線）と集約（赤色の境界）。"}
 library(tmap)
 tm_shape(incongr_wgs) +
   tm_polygons(border.col = "grey5") +
@@ -246,7 +246,7 @@ union
 union_sf = st_as_sf(union)
 ```
 
-QGIS\index{QGIS} の union \index{vector!union}  の操作は、交差\index{vector!intersection}  と2つの入力レイヤーの対称差分を用いて、2つの入力レイヤーを1つのレイヤーにマージすることに注意 (ちなみに、これは GRASS \index{GRASS} と SAGA \index{SAGA}  でユニオン操作をするときのデフォルトでもある)。
+QGIS\index{QGIS} の和集合 (union \index{vector!union}) の操作は、2つの入力レイヤーの交差 (intersect)\index{vector!intersection}  と対称差 (symmetrical difference) を用いて、2つの入力レイヤを1つのレイヤにマージすることに注意 (ちなみに、これは GRASS\index{GRASS} と SAGA\index{SAGA} でユニオン操作をするときのデフォルトでもある)。
 これは `st_union(incongr_wgs, aggzone_wgs)`  (演習参照) とは**違う**！
 
 その結果、`union_sf`、2つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
@@ -315,7 +315,7 @@ knitr::include_graphics("figures/10-sliver.png")
 例えば、様々な地形パラメータは、地滑りの予測に役立つ (Chapter \@ref(spatial-cv) 参照)。
 
 このセクションでは、`dem.tif` を使用することにする。これは、 Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照)。
-解像度は約 30 m × 30 mで、投影型 CRS を使用している。
+解像度は約 30 m × 30 m で、投影型 CRS を使用している。
 
 ```{r, eval=FALSE}
 library(qgisprocess)
@@ -325,7 +325,7 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 
 **terra** パッケージの `terrain()` では、傾斜、アスペクト、TPI (*Topographic Position Index*)、TRI (*Topographic Ruggedness Index*)、粗さ、流れ方向など、地形の基本特性を算出することができる。
 とはいえ、GIS は、地形の特性に関する機能が他にもたくさんあり、文脈によってはより適しているものもある。
-例えば、地形湿潤指数 (TWI) は、水文・生物学的プロセスの研究に有用であることがわかっている [@sorensen_calculation_2006]。
+例えば、地形湿潤指数 (Topologic Wetness Index, TWI) は、水文・生物学的プロセスの研究に有用であることがわかっている [@sorensen_calculation_2006]。
 このインデックスのアルゴリズムリストを、`"wetness"` というキーワードで検索してみよう。
 
 ```{r, eval=FALSE}
@@ -396,7 +396,7 @@ dem_geomorph_terra = qgis_as_terra(dem_geomorph$forms)
 興味深いことに、Figure \@ref(fig:qgis-raster-map) に示すように、いくつかの地形と TWI 値の間にはつながりがある。
 TWI値が最も大きいのは谷や窪地であり、最も小さいのは予想通り尾根であった。
 
-```{r qgis-raster-map, echo=FALSE, fig.cap="Topographic wetness index (TWI, left panel) and geomorphons (right panel) derived for the Mongón study area."}
+```{r qgis-raster-map, echo=FALSE, fig.cap="研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) とジオモーフォン (パネル右)。"}
 knitr::include_graphics("figures/10-qgis-raster-map.png")
 ```
 
@@ -514,7 +514,7 @@ GRASS 空間データベース\index{spatial database}システムの詳細は�
 この場合、可能な解の数は `(25 - 1)! / 2`、すなわち24の階乗を2で割った数に相当する (2で割るのは、順方向と逆方向を区別しないため)。
 1回の繰り返しがナノ秒でも、`r format(factorial(25 - 1) / (2 * 10^9 * 3600 * 24 * 365))` 年間に相当する。
 幸いなことに、この想像を絶する時間のごく一部で実行できる、巧妙でほぼ最適なソリューションがある。
-GRASS GIS\index{GRASS} は、これらの解決策の一つを提供する (詳細は、 [v.net.salesman](https://grass.osgeo.org/grass82/manuals/v.net.salesman.html)を参照)。
+GRASS GIS\index{GRASS} は、これらの解決策の一つを提供する (詳細は、 [v.net.salesman](https://grass.osgeo.org/grass-stable/manuals/v.net.salesman.html)を参照)。
 今回の使用例では、ロンドンの街角にある最初の25の自転車ステーション (顧客の代わり) 間の最短経路\index{shortest route}を見つけたい (最初の自転車ステーションは、巡回セールスマン\index{traveling salesman}の自宅に相当すると単純に仮定する)。
 
 ```{r 09-gis-24}
@@ -575,8 +575,8 @@ execGRASS(cmd = "v.clean", input = "london_streets", output = "streets_clean",
 ```
 
 ```{block2 06-raster-vector-22, type='rmdnote'}
-To learn about the possible arguments and flags of the GRASS GIS modules you can you the `help` flag.
-For example, try `execGRASS("g.region", flags = "help")`.
+GRASS GIS モジュールの引数やフラグについて学ぶには、`help` フラグを使うことができる。
+例えば `execGRASS("g.region", flags = "help")` と試してみよう。
 ```
 
 サイクリング・ステーションのいくつかのポイントは、正確に街路セグメント上に位置しない可能性がある。
@@ -611,7 +611,7 @@ route = read_VECT("shortest_route") |>
 mapview::mapview(route) + points
 ```
 
-```{r grass-mapview, fig.cap="Shortest route (blue line) between 24 cycle hire stations (blue dots) on the OSM street network of London.", fig.scap="Shortest route between 24 cycle hire stations.", echo=FALSE, out.width="80%"}
+```{r grass-mapview, fig.cap="ロンドンの OSM 道路網の24の自転車レンタル地点 (青点) とその最短ルート (青線) ", fig.scap="Shortest route between 24 cycle hire stations.", echo=FALSE, out.width="80%"}
 knitr::include_graphics("figures/10_shortest_route.png")
 ```
 
@@ -635,7 +635,7 @@ R にデータをインポートする前に、いくつかの (空間) サブ�
 ベクトルデータには `"v.select"` と `"v.extract"` を使用する。
 `"db.select"` を使用すると、対応するジオメトリを返さずにベクトルレイヤーの属性テーブルのサブセットを選択することができる。
 - また、実行中の GRASS のセッションから R を起動することもできます [詳細は @bivand_applied_2013 を参照]。
-- GRASS で提供されて入るジオアルゴリズム\index{geoalgorithm}の素晴らしいドキュメントは、 [GRASS online help](https://grass.osgeo.org/grass82/manuals/) または `execGRASS("g.manual", flags = "i")` を参照。
+- GRASS で提供されて入るジオアルゴリズム\index{geoalgorithm}の素晴らしいドキュメントは、 [GRASS online help](https://grass.osgeo.org/grass-stable/manuals/) または `execGRASS("g.manual", flags = "i")` を参照。
 
 ## いつ、何を使うべきか？
 
@@ -733,7 +733,7 @@ TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-to
 データベースは、空間および非空間フィールドに基づく大規模なデータセットの保存とクエリを効率的に行うことができ、マルチユーザーアクセスとトポロジー\index{topological relations}のサポートを提供する。
 
 最も重要なオープンソースの空間データベース\index{spatial database}は PostGIS \index{PostGIS} である [@obe_postgis_2015]。^[
-SQLite/SpatiaLiteも確かに重要であるが、GRASS \index{GRASS}  はバックグラウンドでSQLiteを使っているので、暗黙のうちにこの方法をすでに導入している ( Section \@ref(grass) を参照)。
+SQLite/SpatiaLiteも確かに重要であるが、GRASS \index{GRASS}  はバックグラウンドでSQLiteを使っているので、暗黙のうちにこの方法をすでに導入している (Section \@ref(grass) を参照)。
 ]
 PostGIS \index{PostGIS} のような空間 DBMS への R ブリッジは重要で、数ギガバイトの地理データを RAM にロードすることなく、、R セッションをクラッシュさせる可能性があるような巨大なデータストアにアクセスできる。
 このセクションの残りの部分では、*PostGIS in Action, Second Edition* の "Hello real world" に基づいて、R から PostGIS を呼び出す方法を紹介する [@obe_postgis_2015]。^[
@@ -842,7 +842,7 @@ RPostgreSQL::postgresqlCloseConnection(conn)
 load("extdata/postgis_data.Rdata")
 ```
 
-```{r postgis, echo=FALSE, fig.cap="Visualization of the output of previous PostGIS commands showing the highway (black line), a buffer (light yellow) and four restaurants (red points) within the buffer.", fig.scap="Visualization of the output of previous PostGIS commands."}
+```{r postgis, echo=FALSE, fig.cap="直前の PostGIS コマンドによる出力の例。高速道路 (黒線)、バッファ (黄色)、バッファ内の４つのレストラン (赤点)。", fig.scap="Visualization of the output of previous PostGIS commands."}
 # クエリ結果をプロット
 library(tmap)
 tm_shape(buf) +
@@ -888,7 +888,7 @@ PostGIS データベースに格納されたラスタデータを照会・操作
 それでも、地理的および非地理的データを空間 DBMS で保存しながら、さらなる (地理) 統計解析に必要なそれらのサブセットだけを R のグローバル環境にアタッチするという実践を奨励したい。
 提示された SQL クエリのより詳細な説明と PostgreSQL/PostGIS 一般のより包括的な紹介は @obe_postgis_2015 を参照。
 PostgreSQL/PostGIS は、非常に難解なオープンソースの空間データベースである。
-しかし、軽量なデータベースエンジンである SQLite/SpatiaLite や、バックグラウンドで SQLite を使用する GRASS\INDEX{GRASS} も同様と言える (section \ref(grass) 参照)。
+しかし、軽量なデータベースエンジンである SQLite/SpatiaLite や、バックグラウンドで SQLite を使用する GRASS\INDEX{GRASS} も同様と言える (Section \@ref(grass) 参照)。
 
 データセットが PostgreSQL/PostGIS では大きすぎる場合、大規模な空間データ管理とクエリ性能を必要とする場合、分散コンピューティングシステム上での大規模な地理クエリを検討する価値があるかもしれない。
 このようなシステムは本書の範囲外ではあるが、この機能を提供するオープンソースソフトウェアが存在することは触れておく価値があります。
@@ -919,8 +919,8 @@ R では、**rstac** パッケージ\index{rstac (package)} [@simoes_rstac_2021]
 
 ```{r 09-stac-example, eval = FALSE}
 library(rstac)
-# Connect to the STAC-API endpoint for Sentinel-2 data
-# and search for images intersecting our AOI
+# Sentinel-2 データの STAC-API endpoint に接続し、
+# AOI と交差する画像を検索
 s = stac("https://earth-search.aws.element84.com/v0")
 items = s |>
   stac_search(collections = "sentinel-s2-l2a-cogs",
