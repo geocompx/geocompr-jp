@@ -269,7 +269,6 @@ Figure \@ref(fig:s2geos) で示すように、**sf** は、CRS 種別に応じ�
 knitr::include_graphics("figures/07-s2geos.png")
 ```
 
-
 CRS の重要性を示すために、このセクションでは、前セクションで作成した `london` オブジェクトの周りに 100 km のバッファを作成する。
 また、100 km にほぼ相当する1度（赤道では1度は約 111 km）の「距離」を持つ意図的に欠陥のあるバッファを作成する。
 コードに入る前に、Figure \@ref(fig:crs-buf) を見て、これからコードチャンクで再現するはずの出力を視覚的に把握するのもよいだろう。
@@ -278,8 +277,8 @@ CRS の重要性を示すために、このセクションでは、前セクシ�
 
 ```{r 06-reproj-4-1}
 london_buff_no_crs = st_buffer(london, dist = 1)  # incorrect: no CRS
-london_buff_s2 = st_buffer(london_geo, dist = 1e5) # silent use of s2
-london_buff_s2_100_cells = st_buffer(london_geo, dist = 1e5, max_cells = 100) 
+london_buff_s2 = st_buffer(london_geo, dist = 100000) # silent use of s2
+london_buff_s2_100_cells = st_buffer(london_geo, dist = 100000, max_cells = 100) 
 ```
 
 上の1行目では、**sf** は入力が投影されていると仮定して、度数単位のバッファを持つ結果を生成しているが、後述するようにこれは問題である。
@@ -314,7 +313,7 @@ sf::sf_use_s2(TRUE)
 
 ```{r 06-reproj-6}
 london_proj = data.frame(x = 530000, y = 180000) |> 
-  st_as_sf(coords = 1:2, crs = "EPSG:27700")
+  st_as_sf(coords = c("x", "y"), crs = "EPSG:27700")
 ```
 
 結果は、`london` と同じであるが、適切な CRS（この場合、EPSG コードが 27700 の British National Grid）に再投影され、単位がメートルである新しいオブジェクトになる。
@@ -343,7 +342,7 @@ LENGTHUNIT フィールドに記述された CRS の単位が（度ではなく�
 次のコードは、ちょうど 100 km の<u>投影</u>データの周りにバッファを作成するものである。
 
 ```{r 06-reproj-8}
-london_buff_projected = st_buffer(london_proj, 1e5)
+london_buff_projected = st_buffer(london_proj, 100000)
 ```
 
 先に作成した CRS を<u>持つ</u>3つの `london_buff*` オブジェクト（`london_buff_s2`、`london_buff_lonlat`、`london_buff_projected`)の形状を Figure \@ref(fig:crs-buf) に示す。
@@ -397,6 +396,37 @@ tm3 = tm_shape(london_buff_lonlat, bbox = st_bbox(london_buff_s2_100_cells)) +
   tm_symbols()
 
 tmap_arrange(tm1, tm2, tm3, nrow = 1)
+
+if (packageVersion("tmap") >= "4.0"){
+  library(tmap)
+  tm1 = tm_shape(london_buff_s2, bbox = st_bbox(london_buff_s2_100_cells)) + 
+    tm_graticules(lwd = 0.2) +
+    tm_borders(col = "black", lwd = 0.5) + 
+    tm_shape(london_buff_s2_100_cells) +
+    tm_borders(col = "black", lwd = 1.5) +
+    tm_shape(uk) +
+    tm_polygons(lty = 3, fill_alpha = 0.2, fill = "#567D46") +
+    tm_shape(london_proj) +
+    tm_symbols()
+  
+  tm2 = tm_shape(london_buff_projected, bbox = st_bbox(london_buff_s2_100_cells)) + 
+    tm_grid(lwd = 0.2) +
+    tm_borders(col = "black", lwd = 0.5) + 
+    tm_shape(uk) +
+    tm_polygons(lty = 3, fill_alpha = 0.2, fill = "#567D46") +
+    tm_shape(london_proj) +
+    tm_symbols()
+  
+  tm3 = tm_shape(london_buff_lonlat, bbox = st_bbox(london_buff_s2_100_cells)) + 
+    tm_graticules(lwd = 0.2) +
+    tm_borders(col = "black", lwd = 0.5) + 
+    tm_shape(uk) +
+    tm_polygons(lty = 3, fill_alpha = 0.2, fill = "#567D46") +
+    tm_shape(london_proj) +
+    tm_symbols()
+  
+  tmap_arrange(tm1, tm2, tm3, nrow = 1)
+}
 ```
 
 `s2` と適切に予測された CRS に基づくバッファは、バッファの境界のすべての部分がロンドンから等距離にあることを意味し、「つぶされた」ものではないことは、Figure \@ref(fig:crs-buf) から明らかである。
@@ -426,10 +456,7 @@ CRS の重要性（主に投影か地理的か）と、緯度経度に対して�
 このセクションでは、決定する際に役立つ一般原則を紹介しよう。 
 
 まず最初に、<u>いつ変換するべきか</u>を考える。
-<!--toDo:rl-->
-<!--not longer valid-->
-Figure \@ref(fig:crs-buf) が示すように、`st_buffer()` など幾何学的な関数を使う場合、投影型 CRS への変換が不可欠な場合がある。
-逆に、**leaflet** パッケージでデータをオンライン公開する場合は、地理的 CRS が必要になる。
+**leaflet** パッケージでデータをオンライン公開する場合など、地理的 CRS が必要になる。
 また、異なる CRS を持つ2つのオブジェクトの距離を求める場合のように、異なる CRS を持つ2つのオブジェクトを比較したり、組み合わせたりする必要がある場合もある。
 
 ```{r 06-reproj-9, eval=FALSE}
@@ -877,7 +904,6 @@ world_tpers_complete = world_tpers[st_is_valid(world_tpers), ]
 world_tpers_complete = world_tpers_complete[!st_is_empty(world_tpers_complete), ] 
 plot(world_tpers_complete["pop"]) 
 ```
-
 
 ```{r wintriproj, fig.cap="世界のヴィンケル第 3 図法。", echo=FALSE}
 world_wintri_gr = st_graticule(lat = c(-89.9, seq(-80, 80, 20), 89.9)) |>
