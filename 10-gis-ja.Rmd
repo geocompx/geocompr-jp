@@ -314,7 +314,7 @@ knitr::include_graphics("figures/10-sliver.png")
 ここでは、DEM ラスタから統計学習における予測因子として利用可能な新しい情報を導き出してみたい。
 例えば、様々な地形パラメータは、地滑りの予測に役立つ (Chapter \@ref(spatial-cv) 参照)。
 
-このセクションでは、`dem.tif` を使用することにする。これは、 Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照)。
+このセクションでは、`dem.tif` を使用することにする。これは、Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照)。
 解像度は約 30 m × 30 m で、投影型 CRS を使用している。
 
 ```{r, eval=FALSE}
@@ -368,7 +368,7 @@ Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マッ�
 また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon)\index{geomorphons} に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である [@jasiewicz_geomorphons_2013] 。
 これらの表現型は、地滑りしやすさ、生態系サービス、人間の移動性、デジタル土壌マッピングなど、多くの研究で利用されている。 
 
-geomorphons のアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess**のリストで `"grass7:r.geomorphon"` として見つけることができる。
+geomorphons のアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass7:r.geomorphon"` として見つけることができる。
 
 ```{r, eval=FALSE}
 grep("geomorphon", qgis_algo$algorithm, value = TRUE)
@@ -387,16 +387,16 @@ dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon", elevation = dem,
 ```
 
 出力される `dem_geomorph$forms` は、10個のカテゴリーからなるラスタファイルで、それぞれが地形形状を表している。
-これを `qgis_as_terra()` でRに読み込んで可視化したり ( Figure \@ref(fig:qgis-raster-map) の右パネル)、その後の計算で使ったりすることができる。
+これを `qgis_as_terra()` で R に読み込んで可視化したり (Figure \@ref(fig:qgis-raster-map) の右パネル)、その後の計算で使うことができる。
 
 ```{r, eval=FALSE}
 dem_geomorph_terra = qgis_as_terra(dem_geomorph$forms)
 ```
 
 興味深いことに、Figure \@ref(fig:qgis-raster-map) に示すように、いくつかの地形と TWI 値の間にはつながりがある。
-TWI値が最も大きいのは谷や窪地であり、最も小さいのは予想通り尾根であった。
+TWI 値が最も大きいのは谷や窪地であり、最も小さいのは予想通り尾根であった。
 
-```{r qgis-raster-map, echo=FALSE, fig.cap="研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) とジオモーフォン (パネル右)。"}
+```{r qgis-raster-map, echo=FALSE, fig.cap="研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) とジオモルフォン (パネル右)。"}
 knitr::include_graphics("figures/10-qgis-raster-map.png")
 ```
 
@@ -416,7 +416,7 @@ ndvi = rast(system.file("raster/ndvi.tif", package = "spDataLarge"))
 この関数は主に2つの目的がある。
 
 - 有効な SAGA-GIS ライブラリやツールへのリンクを含む新しいオブジェクトを動的に作成すること^[つまり、SAGA GIS バージョンによってう使用できるライブラリが変わる。]
-- `raster_backend` (ラスタデータを扱う際に用いる R パッケージ)、`vector_backend` (ベクトルデータを扱う際に用いる R パッケージ)、`cores` (処理に用いる CPU コアの最大数、デフォルトは all) など、一般的なパッケージオプションを設定すること
+- `raster_backend` (ラスタデータを扱う際に用いる R パッケージ)、`vector_backend` (ベクタデータを扱う際に用いる R パッケージ)、`cores` (処理に用いる CPU コアの最大数、デフォルトは all) など、一般的なパッケージオプションを設定すること
 
 ```{r, eval=FALSE}
 library(Rsagacmd)
@@ -446,9 +446,9 @@ ndvi_seeds = sg(ndvi, band_width = 2)
 #plot(ndvi_seeds$seed_grid)
 ```
 
-この出力は、3つのオブジェクトからなるリストである。`variance` -- 局所分散のラスタマップ、 `seed_grid` -- 生成されたシードを含むラスタマップ、 `seed_points` -- 生成されたシードを含む空間ベクトルオブジェクト。
+この出力は、3つのオブジェクトからなるリストである。`variance` -- 局所分散のラスタマップ、 `seed_grid` -- 生成されたシードを含むラスタマップ、 `seed_points` -- 生成されたシードを含む空間ベクタオブジェクト。
 
-2つ目のSAGA GISツールは `seeded_region_growing` である。^[詳細は https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html を参照]
+2つ目の SAGA GISツールは `seeded_region_growing` である。^[詳細は https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html を参照]
 `seed_region_growing` ツールは、前のステップで計算した `seed_grid` と `ndvi` ラスタオブジェクトの 2 つの入力を必要とする。
 さらに、入力フィーチャを標準化するための `normalize` や `neighbour`  (4または8-neighborhood)、 `method` などのパラメータを指定することができる。
 最後のパラメータには、`0` または `1` を指定することができる (ラスタセルの値とその位置に基づいて領域を成長させるか、値のみを成長させるか)。
@@ -462,9 +462,9 @@ ndvi_srg = srg(ndvi_seeds$seed_grid, ndvi, method = 1)
 plot(ndvi_srg$segments)
 ```
 
-このツールは、3つのオブジェクトのリストを返す。このツールは、 `segments`, `similarity`, `table` という 3 つのオブジェクトのリストを返す。
+このツールは、3つのオブジェクトのリストを返す。このツールは、`segments`、`similarity`、`table` という 3 つのオブジェクトのリストを返す。
 `similarity` オブジェクトは、シードと他のセルとの類似性を示すラスタであり、`table` は入力シードに関する情報を格納したデータフレームである。
-最後に、`ndvi_srg$segments`は、結果として得られた領域 (Figure  \@ref(fig:sagasegments) の右側のパネル) を表すラスタである。
+最後に、`ndvi_srg$segments` は、結果として得られた領域 (Figure  \@ref(fig:sagasegments) の右側のパネル) を表すラスタである。
 これをポリゴンに変換するには、`as.polygons()` と `st_as_sf()` を使用する (Section \@ref(spatial-vectorization))。
 
 ```{r, eval=FALSE}
@@ -478,7 +478,7 @@ knitr::include_graphics("figures/10-saga-segments.png")
 ```
 
 結果として得られるポリゴン (セグメント) は、類似した値を持つ領域を表す。
-また、クラスタリング (*k*-meansなど)、地域化 (SKATER など)、教師あり分類法など、さまざまな手法でさらに大きなポリゴンに集約することができる。
+また、クラスタリング (*k*-means など)、地域化 (SKATER など)、教師あり分類法など、さまざまな手法でさらに大きなポリゴンに集約することができる。
 演習で試すことができる。
 
 R には、似たような値を持つポリゴン (いわゆるセグメント) を作成するという目的を達成するための他のツールもある。
@@ -486,13 +486,13 @@ R には、似たような値を持つポリゴン (いわゆるセグメント)
 
 ## GRASS GIS  {#grass}
 
-米国陸軍建設工学研究所 (U.S. Army - Construction Engineering Research Laboratory, USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (Geographical Resources Analysis Support System, GRASS)\index{GRASS}  の中核となるシステムを作成した [Table \@ref(tab:gis-comp) ; @neteler_open_2008]。 
+米国陸軍建設工学研究所 (U.S. Army - Construction Engineering Research Laboratory, USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (Geographical Resources Analysis Support System, GRASS)\index{GRASS}  の中核となるシステムを作成した [Table \@ref(tab:gis-comp); @neteler_open_2008]。 
 アカデミアは1997年からこの作業を継続した。
-SAGA\index{SAGA}  と同様、グラスも当初はラスタ処理に注力し、その後、GRASS 6.0以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
+SAGA\index{SAGA}  と同様、グラスも当初はラスタ処理に注力し、その後、GRASS 6.0 以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
 
 GRASS は、入力データを GRASS GIS データベースに格納する。
 ベクタデータに関して、GRASS はデフォルトでトポロジカル GIS、すなわち隣接するフィーチャのジオメトリを一度だけ保存する。
-ベクトル属性の管理にはデフォルトで SQLite を用い、属性はキーによってジオメトリ、すなわち GRASS GIS データベースにリンクされる ([GRASS GIS vector management](https://grasswiki.osgeo.org/wiki/Vector_Database_Management#GRASS_GIS_vector_management_model))。
+ベクタ属性の管理にはデフォルトで SQLite を用い、属性はキーによってジオメトリ、すなわち GRASS GIS データベースにリンクされる ([GRASS GIS vector management](https://grasswiki.osgeo.org/wiki/Vector_Database_Management#GRASS_GIS_vector_management_model))。
 
 GRASS を使う前に、GRASS GIS データベース\index{spatial database}を (R からも) セットアップする必要があるが、このプロセスに少し戸惑うかもしれない。
 まず、GRASS のデータベースは専用のディレクトリを必要とし、そのディレクトリには location を置く必要がある (詳しくは [grass.osgeo.org](https://grass.osgeo.org/grass-stable/manuals/index.html) の [GRASS GIS Database](https://grass.osgeo.org/grass-stable/manuals/grass_database.html) ヘルプページを参照)。
@@ -523,9 +523,9 @@ points = cycle_hire[1:25, ]
 ```
 
 自転車ハイヤーポイントのデータの他に、この地域の道路網が必要である。
-OpenStreetMap\index{OpenStreetMap} から **osmdata** \index{osmdata (package)}  パッケージの助けを借りてダウンロードすることができる (Section \@ref(retrieving-data) も参照)。
+OpenStreetMap\index{OpenStreetMap} から **osmdata**\index{osmdata (package)}  パッケージの助けを借りてダウンロードすることができる (Section \@ref(retrieving-data) も参照)。
 そのために、道路網のクエリ (OSM 言語では "highway" とラベル付けされている) を `points` の bounding box \index{bounding box} に制限し、対応するデータを `sf`\index{sf} オブジェクトとして読み込む。
-`osmdata_sf()` は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連IDのみを保持する。^[As a convenience to the reader, one can attach `london_streets` to the global environment using `data("london_streets", package = "spDataLarge")`.]
+`osmdata_sf()` は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連IDのみを保持する。^[読者のために、 `london_streets` は、`data("london_streets", package = "spDataLarge")` で使用できるようにしてある。]
 
 ```{r 09-gis-25, eval=FALSE}
 library(osmdata)
@@ -540,7 +540,7 @@ london_streets = select(london_streets, osm_id)
 これでデータが揃ったので、次に GRASS\index{GRASS} のセッションを開始する。
 幸い、**link2GI** パッケージの `linkGRASS()` を使えば、たった一行のコードで GRASS 環境をセットアップできる。
 空間オブジェクトは、空間データベースの投影と範囲を決定するものである。
-まず、`linkGRASS()`　は、あなたのコンピュータにインストールされている全ての　GRASS\index{GRASS} を検索する。
+まず、`linkGRASS()` は、あなたのコンピュータにインストールされている全ての GRASS\index{GRASS} を検索する。
 ここでは `ver_select` を `TRUE` に設定しているので、見つかった GRASS-installation の中から対話的に一つを選択することができる。
 もし、インストールが一つしかない場合は、`linkGRASS()` が自動的にそれを選択する。
 次に、`linkGRASS()` は、GRASS GIS への接続を確立する。
@@ -561,7 +561,7 @@ write_VECT(terra::vect(points[, 1]), vname = "points")
 ```
 
 **rgrass** パッケージは、入力と出力が **terra** オブジェクトであることを想定している。
-したがって、 `write_VECT()` を使用するためには、 `vect()` 関数を使用して `sf` 空間ベクトルを **terra** の `SpatVector` に変換する必要がある。^[R における空間クラスの変換については (Conversions between different spatial classes in R)[https://geocompx.org/post/2021/spatial-classes-conversion/] というブログと、
+したがって、 `write_VECT()` を使用するためには、`vect()` 関数を使用して `sf` 空間ベクタを **terra** の `SpatVector` に変換する必要がある。^[R における空間クラスの変換については (Conversions between different spatial classes in R)[https://geocompx.org/post/2021/spatial-classes-conversion/] というブログと、
 (Coercion between object formats)[https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html] vignette を参照。] 
 
 現在、両方のデータセットが GRASS GIS のデータベースに存在している。
@@ -632,8 +632,8 @@ mapview::mapshot(m_1,
 現在利用可能なデータセットを調べるには、`execGRASS("g.list", type = "vector,raster", flags = "p")` を実行する。
 - また、R から既にある GRASS 空間データベースにアクセスすることも可能である。
 R にデータをインポートする前に、いくつかの (空間) 部分集合を作成したい場合がある。
-ベクトルデータには `"v.select"` と `"v.extract"` を使用する。
-`"db.select"` を使用すると、対応するジオメトリを返さずにベクトルレイヤーの属性テーブルのサブセットを選択することができる。
+ベクタデータには `"v.select"` と `"v.extract"` を使用する。
+`"db.select"` を使用すると、対応するジオメトリを返さずにベクタレイヤの属性テーブルの部分集合を選択することができる。
 - また、実行中の GRASS のセッションから R を起動することもできる [詳細は @bivand_applied_2013 を参照]。
 - GRASS で提供されて入るジオアルゴリズム\index{geoalgorithm}の素晴らしいドキュメントは、 [GRASS online help](https://grass.osgeo.org/grass-stable/manuals/) または `execGRASS("g.manual", flags = "i")` を参照。
 
