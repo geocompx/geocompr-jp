@@ -450,11 +450,11 @@ ndvi_seeds = sg(ndvi, band_width = 2)
 
 2つ目のSAGA GISツールは `seeded_region_growing` である。^[詳細は https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html を参照]
 `seed_region_growing` ツールは、前のステップで計算した `seed_grid` と `ndvi` ラスタオブジェクトの 2 つの入力を必要とする。
-さらに、入力の特徴量を標準化するための `normalize` や `neighbour`  (4または8-neighborhood)、 `method` などのパラメータを指定することができます。
+さらに、入力フィーチャを標準化するための `normalize` や `neighbour`  (4または8-neighborhood)、 `method` などのパラメータを指定することができる。
 最後のパラメータには、`0` または `1` を指定することができる (ラスタセルの値とその位置に基づいて領域を成長させるか、値のみを成長させるか)。
 このメソッドの詳細な説明は、 @bohner_image_2006 を参照。
 
-ここでは、`method` を `1` に変更するだけです。つまり、出力される地域は、NDVI 値の類似性に基づいてのみ作成されることを意味する。
+ここでは、`method` を `1` に変更するだけである。つまり、出力される地域は、NDVI 値の類似性に基づいてのみ作成されることを意味する。
 
 ```{r, eval=FALSE}
 srg = saga$imagery_segmentation$seeded_region_growing
@@ -550,7 +550,7 @@ library(rgrass)
 link2GI::linkGRASS(london_streets, ver_select = TRUE)
 ```
 
-GRASS の geoalgorithm を使用する前に、GRASS の空間データベースにデータを追加する必要があります。
+GRASS の geoalgorithm を使用する前に、GRASS の空間データベースにデータを追加する必要がある。
 幸いなことに、便利な関数 `write_VECT()` がこれを代行してくれる。
 (ラスタデータには `write_RAST()` を使用する。)
 この例では、最初の属性カラムのみを使用して、道路と自転車レンタルポイントデータを追加し、GRASS で `london_streets` と `points` という名前を付けている。
@@ -627,7 +627,7 @@ mapview::mapshot(m_1,
 その際、いくつか注意すべき点がある。
 
 - GRASSの空間データベース\index{spatial database}を使えば、より高速に処理できる。
-つまり、最初に地理データを書き出しただけです。
+つまり、最初に地理データを書き出しただけである。
 そして、新しいオブジェクトを作成し、最終結果だけを R にインポートした。
 現在利用可能なデータセットを調べるには、`execGRASS("g.list", type = "vector,raster", flags = "p")` を実行する。
 - また、R から既にある GRASS 空間データベースにアクセスすることも可能である。
@@ -741,7 +741,7 @@ PostGIS \index{PostGIS} のような空間 DBMS への R ブリッジは重要�
 ]
 
 QGIS Cloud (https://qgiscloud.com/) にある PostgreSQL/PostGIS\index{PostGIS}  データベースにアクセスしているため、この後のコードはインターネット接続している必要がある。^[
-QGIS \index{QGIS}  Cloud は、地理データや地図をクラウド上に保存することができる。 
+QGIS\index{QGIS} Cloud は、地理データや地図をクラウド上に保存することができる。 
 バックグラウンドでは、QGIS Server と PostgreSQL/PostGIS を使用している。
 こうすることで、読者はローカルマシンに PostgreSQL/PostGIS をインストールすることなく、PostGIS の例を追うことができるのである。
 この例をホストしている QGIS Cloud チームに感謝する。
@@ -755,7 +755,7 @@ conn = dbConnect(drv = PostgreSQL(),
                  port = "5432", user = "rtafdf_zljbqm", password = "d3290ead")
 ```
 
-新しいオブジェクト `conn` は、Rセッションとデータベースの間のリンクを確立したに過ぎない。
+新しいオブジェクト `conn` は、R セッションとデータベースの間のリンクを確立したに過ぎない。
 データを保存することはない。
 
 多くの場合、最初の質問は「データベースからどのテーブルが見つかるか」である。
@@ -780,9 +780,9 @@ dbListFields(conn, "highways")
 
 さて、利用可能なデータセットがわかったところで、いくつかのクエリを実行し、データベースに質問することができる。
 クエリーは、データベースが理解できる言語 (通常はSQL) で提供される必要がある。
-最初のクエリは、`highways` テーブルから Maryland 州の `US Route 1` ( `MD` ) を選択する。
+最初のクエリは、`highways` テーブルから Maryland 州 (`MD`) の `US Route 1` を選択する。
 なお、`read_sf()` は、データベースへのオープンな接続とクエリが提供されれば、データベースから地理データを読み込むことができる。
-さらに、`read_sf()` は、どの列がジオメトリを表すかを知る必要がある (ここでは、`wkb_geometry` )。
+さらに、`read_sf()` は、どの列がジオメトリを表すかを知る必要がある (ここでは、`wkb_geometry`)。
 
 ```{r 09-gis-40, eval=FALSE}
 query = paste(
@@ -805,13 +805,13 @@ query = paste(
 buf = read_sf(conn, query = query)
 ```
 
-なお、これはすでにお馴染みの関数 (`ST_Union()`\index{vector!union}、`ST_Buffer()` \index{vector!buffers}) を使った空間クエリであった。
-また、**sf** パッケージにもあるが、こちらは小文字で書かれている( `st_union()` , `st_buffer()` )。
+なお、これはすでにお馴染みの関数 (`ST_Union()`\index{vector!union}、`ST_Buffer()`\index{vector!buffers}) を使った空間クエリであった。
+また、**sf** パッケージにもあるが、こちらは小文字で書かれている (`st_union()`、`st_buffer()`)。
 実際、**sf** パッケージの関数名は、PostGIS \index{PostGIS}  の命名規則にほぼ従っている。^[
 接頭語 `st` は、空間／時間を意味する。
 ]
 
-最後のクエリは、35 km のバッファーゾーン (Figure \@ref(fig:postgis)) 内にあるすべてのハーディーズレストラン (`HDE`) を検索する。
+最後のクエリは、35 km のバッファゾーン (Figure \@ref(fig:postgis)) 内にあるすべてのハーディーズレストラン (`HDE`) を検索する。
 
 ```{r 09-gis-42, eval=FALSE, warning=FALSE}
 query = paste(
@@ -882,7 +882,7 @@ if (packageVersion("tmap") >= "4.0"){
 PostGIS とは異なり、**sf**は空間ベクタデータのみをサポートしている。
 <!--toDo:jn-->
 <!-- reconsider referening to rpostgis -- https://github.com/r-spatial/discuss/issues/58 -->
-PostGIS データベースに格納されたラスタデータを照会・操作するには、**rpostgis**パッケージ[@bucklin_rpostgis_2018]、または PostGIS\index{PostGIS} インストールの一部に含まれる `rastertopgsql` などのコマンドラインツールを使用する必要がある。
+PostGIS データベースに格納されたラスタデータを照会・操作するには、**rpostgis** パッケージ [@bucklin_rpostgis_2018]、または PostGIS\index{PostGIS} インストールの一部に含まれる `rastertopgsql` などのコマンドラインツールを使用する必要がある。
 
 このサブセクションでは、PostgreSQL/PostGIS の簡単な紹介にとどめる。
 それでも、地理的および非地理的データを空間 DBMS で保存しながら、さらなる (地理) 統計解析に必要なそれらのサブセットだけを R のグローバル環境にアタッチするという実践を奨励したい。
@@ -891,7 +891,7 @@ PostgreSQL/PostGIS は、非常に難解なオープンソースの空間デー�
 しかし、軽量なデータベースエンジンである SQLite/SpatiaLite や、バックグラウンドで SQLite を使用する GRASS\INDEX{GRASS} も同様と言える (Section \@ref(grass) 参照)。
 
 データセットが PostgreSQL/PostGIS では大きすぎる場合、大規模な空間データ管理とクエリ性能を必要とする場合、分散コンピューティングシステム上での大規模な地理クエリを検討する価値があるかもしれない。
-このようなシステムは本書の範囲外ではあるが、この機能を提供するオープンソースソフトウェアが存在することは触れておく価値があります。
+このようなシステムは本書の範囲外ではあるが、この機能を提供するオープンソースソフトウェアが存在することは触れておく価値がある。
 この分野の著名なプロジェクトには、[GeoMesa](http://www.geomesa.org/) と [Apache Sedona](https://sedona.apache.org/) がある。
 後者については、[**apache.sedona**](https://cran.r-project.org/package=apache.sedona) パッケージがインタフェースを提供している。
 
@@ -911,11 +911,11 @@ OpenEO の詳細については、Section \@ref(openeo) を参照。
 
 ### クラウドの STAC、COG、その他のデータキューブ {#staccog}
 
-STAC (SpatioTemporal Asset Catalog) \index{STAC}は、時空間データの汎用記述フォーマットで、画像、合成開口レーダー (synthetic aperture radar, SAR) データ、点群など、クラウド上の様々なデータセットの記述に使用されている。
+STAC (SpatioTemporal Asset Catalog)\index{STAC} は、時空間データの汎用記述フォーマットで、画像、合成開口レーダー (synthetic aperture radar, SAR) データ、点群など、クラウド上の様々なデータセットの記述に使用されている。
 STAC-API は、単純な静的カタログ記述の他に、カタログのアイテム (画像など) を空間、時間、その他のプロパティで照会するウェブサービスを提供している。
 R では、**rstac** パッケージ\index{rstac (package)} [@simoes_rstac_2021] が STAC-API エンドポイントに接続し、アイテムを検索することができる。
 以下の例では、[Sentinel-2 Cloud-Optimized GeoTIFF (COG) dataset on Amazon Web Services](https://registry.opendata.aws/sentinel-2-l2a-cogs)\index{COG} から、事前に定義した関心領域と時間に交差するすべての画像を要求している。
-結果は、見つかったすべての画像とそのメタデータ (雲量など)、および AWS 上の実際のファイルを指す URL を含んでいます。
+結果は、見つかったすべての画像とそのメタデータ (雲量など)、および AWS 上の実際のファイルを指す URL を含んでいる。
 
 ```{r 09-stac-example, eval = FALSE}
 library(rstac)
