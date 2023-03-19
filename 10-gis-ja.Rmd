@@ -2,7 +2,7 @@
 
 ## 必須パッケージ  {- #prerequisites-10}
 
-- 本章では、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS\index{GRASS}  がインストールされていること、および以下のパッケージが添付されていることを条件とする。
+- 本章では、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS\index{GRASS} がインストールされていること、および以下のパッケージが添付されていることを条件とする。
 
 ```{r 09-gis-1, message=FALSE}
 library(sf)
@@ -25,20 +25,20 @@ library(gdalcubes)
 
 R の特徴は、その使い方にある。
 コマンドを入力し、`Enter` (RStudio のソースエディタでコードを書いている場合は `Ctrl+Enter` \index{RStudio}) を押すと、対話的にコマンドが実行される。
-このようなコンピュータとの対話方法は、コマンドラインインターフェイス (CLI)  \index{command-line interface}  と呼ばれる (下記の注の定義参照)。
+このようなコンピュータとの対話方法は、コマンドラインインターフェイス (CLI)\index{command-line interface}  と呼ばれる (下記の注の定義参照)。
 CLI は R だけのものではない。^[
 他の「コマンドライン」としては、オペレーティングシステムと対話するためのターミナルや、Python などのインタプリタ言語が含まれる。
 そもそも、多くの GIS は CLI が発祥である。
-GUI \index{graphical user interface}  が一般的になったのは、1990年代にコンピューターのマウスと高解像度スクリーンが普及してからのことである。
-例えば、最も長い歴史を持つ GIS \index{GIS}  プログラムの一つである GRASS は、洗練された GUI [@landa_new_2008]  を獲得するまでは、主にコマンドラインでの対話に依存していた。
+GUI\index{graphical user interface}  が一般的になったのは、1990年代になりコンピューターのマウスと高解像度スクリーンが普及してからのことである。
+例えば、最も長い歴史を持つ GIS\index{GIS}  プログラムの一つである GRASS は、洗練された GUI [@landa_new_2008]  を獲得するまでは、主にコマンドラインでの対話に依存していた。
 ]
-一方、専用の GIS \index{GIS} パッケージでは、グラフィカルユーザーインターフェイス (Grafical User Interface, GUI\index{graphical user interface) に重点が置かれる傾向がある。
-QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS\index{GRASS}、gvSIG をシステムターミナルや組み込み CLI\index{command-line interface} から操作することは<u>可能</u>であるが、「マウス操作」が一般的である。
-QGIS\index{QGIS} [@sherman_desktop_2008] の作成者である Gary Sherman によれば、これは多くの GIS\index{GIS}  ユーザーがコマンドラインの利点を見逃していることを意味するとのことである。
+一方、専用の GIS\index{GIS} パッケージでは、グラフィカルユーザーインターフェイス (Grafical User Interface, GUI\index{graphical user interface} に重点が置かれる傾向がある。
+QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS\index{GRASS}、gvSIG を、システムターミナルや組み込み CLI\index{command-line interface} から操作することも<u>可能</u>であるが、「マウス操作」が一般的である。
+QGIS\index{QGIS} [@sherman_desktop_2008] の作成者である Gary Sherman によれば、これは多くの GIS\index{GIS}  ユーザーがコマンドラインの利点を見逃していることを意味すると述べている。
 
 > 「近代的」GIS ソフトウェアの発展に伴い、マウス操作を好む人がほとんどである。それはいいことであるが、コマンドラインには、とてつもない量の柔軟性とパワーが待っている。繰り返しコマンドラインで作業をする場合、同じことを GUI で行う場合よりも短い時間で行うことができる。
 
-「CLI vs GUI」\index{graphical user interface}  の議論は逆境になることもあるが、その必要はない。どちらの選択肢も、目の前のタスクとユーザーのスキルセットに応じて、互換的に使用することができる^[GRASS GIS や PostGIS は、アカデミックや産業界で人気があり、コマンドラインを中心に構築されているため、この流れに逆行する製品ともいえる。] 。
+「CLI vs GUI」\index{graphical user interface}  の議論は、敵対的になることもあるが、実はその必要はない。どちらの選択肢も、目の前のタスクとユーザーのスキルセットに応じて、互換的に使用することができる^[GRASS GIS や PostGIS は、アカデミックや産業界で人気があり、コマンドラインを中心に構築されているため、この流れに逆行する製品ともいえる。] 。
 R が提供するような優れた CLI\index{command-line interface} (そして RStudio\index{RStudio} のような IDE\index{IDE}  によって強化されている) の利点は数多くある。
 良い CLI とは、
 
@@ -76,7 +76,7 @@ R は GIS として設計されたものではない。
 しかし、専用の GIS とのインターフェイスが可能なため、驚異的な地理空間能力を発揮する。
 R は統計プログラミング言語としてよく知られているが、GIS のワークフローを再現することができ、さらに (比較的) 一貫した CLI という利点があることを知らない人が多いようである。
 さらに、R は、インタラクティブ/アニメーションマップ作成 (Chapter \@ref(adv-map) 参照) や空間統計モデリング ( Chapter \@ref(spatial-cv) 参照) など、ジオコンピューティング\index{geocomputation}のいくつかの分野では GIS を凌駕する性能を有している。
-この章では、3つの成熟したオープンソース GIS 製品への「ブリッジ」 (Table \@ref(tab:gis-comp) 参照) に焦点を当てる。QGIS\index{QGIS} (**qgisprocess**\index{qgisprocess (package)}; Section \@ref(rqgis) )、SAGA\index{SAGA} (**Rsagacmd**\index{Rsagacmd (package)}; Section \@ref(saga))、GRASS\index{GRASS} (**rgrass**\index{rgrass (package)}; Section \@ref(grass))である。^[
+この章では、3つの成熟したオープンソース GIS 製品への「ブリッジ」(Table \@ref(tab:gis-comp) 参照) に焦点を当てる: QGIS\index{QGIS} (**qgisprocess**\index{qgisprocess (package)}; Section \@ref(rqgis) )、SAGA\index{SAGA} (**Rsagacmd**\index{Rsagacmd (package)}; Section \@ref(saga))、GRASS\index{GRASS} (**rgrass**\index{rgrass (package)}; Section \@ref(grass))。^[
 もうメンテナンスされていない R パッケージの **RPyGeo** は、R から ArcGIS のジオリファレンス機能への接続を確立した。
 ここでは取り上げないが、ArcGIS\index{ArcGIS} から R を使用するための R-ArcGIS ブリッジ (https://github.com/R-ArcGIS/r-bridge 参照) も知っておくとよいだろう。
 また、QGIS\index{QGIS} 内から R スクリプトを使用することもできる (https://docs.qgis.org/3.22/en/docs/training_manual/processing/r_intro.html 参照)。
@@ -98,7 +98,7 @@ knitr::kable(x = d,
   # kableExtra::add_footnote(label = "Comparing downloads of different providers is rather difficult (see http://spatialgalaxy.net/2011/12/19/qgis-users-around-the-world), and here also useless since every Windows QGIS download automatically also downloads SAGA and GRASS.", notation = "alphabet")
 ```
 
-また、R-GIS ブリッジを補完するために、第 2 部では空間ライブラリへのインタフェース (Section \@ref(gdal)、空間データベース\index{spatial database} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。) 
+また、R-GIS ブリッジを補完するために、第 2 部では空間ライブラリへのインタフェース (Section \@ref(gdal))、空間データベース\index{spatial database} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。 
 
 ## **qgisprocess** から QGIS  {#rqgis}
 
@@ -110,7 +110,7 @@ QGIS \index{QGIS}  は、最も人気のあるオープンソース GIS の 1 �
 つまり、QGIS\index{QGIS} から、GDAL\index{GDAL}、GRASS\index{GRASS}、SAGA\index{SAGA}   を利用することができるのである [@graser_processing_2015]。 
 バージョン 3.14 以降、QGIS はコマンドライン API \index{API} `qgis_process` を提供しており、QGIS GUI の外でこれらのすべてのジオアルゴリズム (セットアップによっては 1000 以上) を実行することが可能である。
 
-**qgisprocess**\index{qgisprocess (package)} パッケージは、QGIS コマンドラインユーティリティをラップ (訳注：プログラミング用語で、機能を使いやすく覆い隠す wrap こと) しているため、R セッションから QGIS、GDAL、GRASS、SAGA アルゴリズムを呼び出すことが可能である。
+**qgisprocess**\index{qgisprocess (package)} パッケージは、QGIS コマンドラインユーティリティをラップ (訳注：プログラミング用語で、機能を使いやすく覆い隠すこと) しているため、R セッションから QGIS、GDAL、GRASS、SAGA アルゴリズムを呼び出すことが可能である。
 **qgisprocess**\index{qgisprocess (package)}  を実行する前に、QGIS\index{QGIS} と、SAGA \index{SAGA} や GRASS \index{GRASS} などの (サードパーティの) 依存パッケージがすべてインストールされていることを確認してみよう。
 
 ```{r, eval=FALSE}
@@ -121,7 +121,7 @@ library(qgisprocess)
 ```
 
 このパッケージは、QGISのインストールを自動的に検出しようとし、検出できない場合は警告を発する。 ^[検出プロセスの詳細は、`qgis_configure()` を実行すると表示される。] 
-設定に失敗した場合の解決策としては、`options(qgisprocess.path = "path/to/your_qgis_process")`、環境変数 `R_ QGISPROCESS_PATH` を設定する方法が考えられる。
+設定に失敗した場合の解決策としては、`options(qgisprocess.path = "path/to/your_qgis_process")`、環境変数 `R_QGISPROCESS_PATH` を設定する方法が考えられる。
 <!--toDo:jn-->
 <!-- link to the vignette https://github.com/paleolimbot/qgisprocess/pull/31/files when it is online -->
 上記の方法は、複数の QGIS がインストールされており、どれを使うかを決めたい場合にも使える。
@@ -249,8 +249,8 @@ union_sf = st_as_sf(union)
 QGIS\index{QGIS} の和集合 (union \index{vector!union}) の操作は、2つの入力レイヤーの交差 (intersect)\index{vector!intersection}  と対称差 (symmetrical difference) を用いて、2つの入力レイヤを1つのレイヤにマージすることに注意 (ちなみに、これは GRASS\index{GRASS} と SAGA\index{SAGA} でユニオン操作をするときのデフォルトでもある)。
 これは `st_union(incongr_wgs, aggzone_wgs)`  (演習参照) とは**違う**！
 
-その結果、`union_sf`、2つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
-しかし、これらのポリゴンの多くは小さく、実際の領域を表しているわけではなく、2つのデータセットの詳細度が異なるために生じたものであることに注意しておこう。
+その結果である `union_sf` は、2つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
+しかし、これらのポリゴンの多くは小さく、実際の領域を表しているわけではなく、2つのデータセットの細部が異なるために生じたものであることに注意しておこう。
 こうした誤差によってできたものは、スライバー (sliver) ポリゴンと呼ばれている (Figure \@ref(fig:sliver) の左側のパネルにある赤い色のポリゴンを参照)。
 スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25000 m^2^ を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。
@@ -473,7 +473,7 @@ ndvi_segments = ndvi_srg$segments |>
   st_as_sf()
 ```
 
-```{r sagasegments, echo=FALSE, fig.cap="正規化差分植生指数 (NDVI、左図) と、Mongón調査地域のシード領域成長アルゴリズムを用いて得られたNDViベースのセグメント。"}
+```{r sagasegments, echo=FALSE, fig.cap="正規化差分植生指数 (NDVI、左図) と、Mongón調査地域のシード領域成長アルゴリズムを用いて得られた NDVI ベースのセグメント。"}
 knitr::include_graphics("figures/10-saga-segments.png")
 ```
 
@@ -486,15 +486,15 @@ R には、似たような値を持つポリゴン (いわゆるセグメント)
 
 ## GRASS GIS  {#grass}
 
-米国陸軍建設工学研究所 (USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (GRASS)  \index{GRASS}  の中核となるシステムを作成した [Table \@ref(tab:gis-comp) ; @neteler_open_2008]。 
+米国陸軍建設工学研究所 (U.S. Army - Construction Engineering Research Laboratory, USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (Geographical Resources Analysis Support System, GRASS)\index{GRASS}  の中核となるシステムを作成した [Table \@ref(tab:gis-comp) ; @neteler_open_2008]。 
 アカデミアは1997年からこの作業を継続した。
-SAGA \index{SAGA}  と同様、グラスも当初はラスタ処理に注力し、その後、GRASS 6.0以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
+SAGA\index{SAGA}  と同様、グラスも当初はラスタ処理に注力し、その後、GRASS 6.0以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
 
 GRASS は、入力データを GRASS GIS データベースに格納する。
 ベクタデータに関して、GRASS はデフォルトでトポロジカル GIS、すなわち隣接するフィーチャのジオメトリを一度だけ保存する。
 ベクトル属性の管理にはデフォルトで SQLite を用い、属性はキーによってジオメトリ、すなわち GRASS GIS データベースにリンクされる ([GRASS GIS vector management](https://grasswiki.osgeo.org/wiki/Vector_Database_Management#GRASS_GIS_vector_management_model))。
 
-GRASS を使う前に、GRASS GIS データベース\index{spatial database} (同じく R から) をセットアップする必要があるが、このプロセスに少し戸惑うかもしれない。
+GRASS を使う前に、GRASS GIS データベース\index{spatial database}を (R からも) セットアップする必要があるが、このプロセスに少し戸惑うかもしれない。
 まず、GRASS のデータベースは専用のディレクトリを必要とし、そのディレクトリには location を置く必要がある (詳しくは [grass.osgeo.org](https://grass.osgeo.org/grass-stable/manuals/index.html) の [GRASS GIS Database](https://grass.osgeo.org/grass-stable/manuals/grass_database.html) ヘルプページを参照)。
 location には、1 つのプロジェクトまたは 1 つの領域のジオデータが格納される。
 通常、1つの場所の中に、異なるユーザや異なるタスクを参照するいくつかのマップセットを存在させることができる。
@@ -629,12 +629,12 @@ mapview::mapshot(m_1,
 - GRASSの空間データベース\index{spatial database}を使えば、より高速に処理できる。
 つまり、最初に地理データを書き出しただけです。
 そして、新しいオブジェクトを作成し、最終結果だけを R にインポートした。
-現在利用可能なデータセットを調べるには、 `execGRASS("g.list", type = "vector,raster", flags = "p")` を実行してみてください。
+現在利用可能なデータセットを調べるには、`execGRASS("g.list", type = "vector,raster", flags = "p")` を実行する。
 - また、R から既にある GRASS 空間データベースにアクセスすることも可能である。
-R にデータをインポートする前に、いくつかの (空間) サブセット化を行いたい場合がある。
+R にデータをインポートする前に、いくつかの (空間) 部分集合を作成したい場合がある。
 ベクトルデータには `"v.select"` と `"v.extract"` を使用する。
 `"db.select"` を使用すると、対応するジオメトリを返さずにベクトルレイヤーの属性テーブルのサブセットを選択することができる。
-- また、実行中の GRASS のセッションから R を起動することもできます [詳細は @bivand_applied_2013 を参照]。
+- また、実行中の GRASS のセッションから R を起動することもできる [詳細は @bivand_applied_2013 を参照]。
 - GRASS で提供されて入るジオアルゴリズム\index{geoalgorithm}の素晴らしいドキュメントは、 [GRASS online help](https://grass.osgeo.org/grass-stable/manuals/) または `execGRASS("g.manual", flags = "i")` を参照。
 
 ## いつ、何を使うべきか？
@@ -759,7 +759,7 @@ conn = dbConnect(drv = PostgreSQL(),
 データを保存することはない。
 
 多くの場合、最初の質問は「データベースからどのテーブルが見つかるか」である。
-これには、`dbListTables()`、次のように答えることができる。
+これには、`dbListTables()`  で次のように答えることができる。
 
 ```{r 09-gis-38, eval=FALSE}
 dbListTables(conn)
@@ -965,7 +965,7 @@ cube = raster_cube(collection, v) |>
 STAC\index{STAC}、COGs\index{COG}、data cube\index{data cube} を組み合わせて、衛星画像の (大規模) コレクションをクラウド上\index{cloud computing}で解析するクラウドネイティブワークフローを形成する. 
 これらのツールは、例えば、大規模な地球観測データの土地利用や土地被覆の分類を可能にする **sits** R パッケージ\index{sits (package)}のバックボーンを既に形成している。
 このパッケージは、クラウドサービスで利用可能な画像コレクションからEOデータキューブを構築し、様々な機械学習アルゴリズムを用いてデータキューブの土地分類を実行するものである。
-**sits** の詳細については、https://e-sensing.github.io/sitsbook/ をご覧いただくか、関連記事 [@rs13132428] を参照。
+**sits** の詳細については、https://e-sensing.github.io/sitsbook/ または関連記事 [@rs13132428] を参照。
 
 ### openEO
 
