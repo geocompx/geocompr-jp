@@ -561,7 +561,7 @@ write_VECT(terra::vect(points[, 1]), vname = "points")
 ```
 
 **rgrass** パッケージは、入力と出力が **terra** オブジェクトであることを想定している。
-したがって、 `write_VECT()` を使用するためには、`vect()` 関数を使用して `sf` 空間ベクタを **terra** の `SpatVector` に変換する必要がある。^[R における空間クラスの変換については (Conversions between different spatial classes in R)[https://geocompx.org/post/2021/spatial-classes-conversion/] というブログと、
+したがって、`write_VECT()` を使用するためには、`vect()` 関数を使用して `sf` 空間ベクタを **terra** の `SpatVector` に変換する必要がある。^[R における空間クラスの変換については (Conversions between different spatial classes in R)[https://geocompx.org/post/2021/spatial-classes-conversion/] というブログと、
 (Coercion between object formats)[https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html] vignette を参照。] 
 
 現在、両方のデータセットが GRASS GIS のデータベースに存在している。
@@ -665,14 +665,14 @@ QGIS は、複数の GIS\index{GIS}  ソフトウェアパッケージへの統�
 これらの橋を強調したのは、専用の GIS ソフトウェアがよく知られており、地理データを理解するための一般的な「入り口」であることがある。
 また、多くのジオアルゴリズム\index{geoalgorithm}にアクセスすることができる。
 
-その他の「ブリッジ」には、空間ライブラリへのインタフェース ( Section \@ref(gdal) は R から GDAL \index{GDAL}  CLI \index{command-line interface}  にアクセスする方法を示している)、空間データベース \index{spatial database}   ( Section \@ref(postgis) 参照)、ウェブマッピングサービス ( Chapter \@ref(adv-map) 参照) などがある。
+その他の「ブリッジ」には、空間ライブラリへのインタフェース (Section \@ref(gdal) は R から GDAL\index{GDAL} CLI\index{command-line interface}  にアクセスする方法を示している)、空間データベース\index{spatial database}   ( Section \@ref(postgis) 参照)、ウェブマッピングサービス ( Chapter \@ref(adv-map) 参照) などがある。
 このセクションでは、可能なことのほんの一端を紹介する。
-システムから他のプログラムを呼び出したり、他の言語と統合したり (特に **Rcpp** と **reticulate** \index{reticulate (package)} を介して)、R の \index{R}  の柔軟性のおかげで、他の多くのブリッジが可能になっている。
+システムから他のプログラムを呼び出したり、他の言語と統合したり (特に **Rcpp** と **reticulate**\index{reticulate (package)} を介して)、R\index{R} の柔軟性のおかげで、他の多くのブリッジが可能になっている。
 目的は包括的なものではなく、章の冒頭で @sherman_desktop_2008 が引用した「柔軟性とパワー」にアクセスする他の方法を示すことである。
 
-### GDALへのブリッジ  {#gdal}
+### GDAL へのブリッジ  {#gdal}
 
-Chapter \@ref(read-write) で述べたように、GDAL \index{GDAL}  は多くの地理データ形式をサポートする低レベルのライブラリである。
+Chapter \@ref(read-write) で述べたように、GDAL\index{GDAL}  は多くの地理データ形式をサポートする低レベルのライブラリである。
 GDAL は非常に効果的なので、ほとんどのGISプログラムは、車輪の再発明や特注の読み書きコードを使用するのではなく、地理データのインポートとエクスポートのためにバックグラウンドで GDAL\index{GDAL}  を使用している。
 しかし、GDAL\index{GDAL} が提供するのは、データ入出力だけではない。
 ベクタデータとラスタデータの [geoprocessing tools](https://gdal.org/programs/index.html)、ラスタデータをオンラインで提供するための[タイル](https://gdal.org/programs/gdal2tiles.html#gdal2tiles)を作成する機能、ベクタデータの高速[ラスタ化](https://gdal.org/programs/gdal_rasterize.html#gdal-rasterize)がある。
@@ -712,13 +712,13 @@ system(cmd)
 - `gdalwarp`: ラスタデータセットの再投影、変換、切り抜き (clip)
 - `gdaltransform`: 座標変換
 
-GDALツールの全リストとそのヘルプファイルは https://gdal.org/programs/ 。
+GDAL ツールの全リストとそのヘルプファイルは https://gdal.org/programs/ 。
 
 **link2GI** が提供する GDAL への「リンク」は、R やシステムの CLI からより高度な GDAL の作業を行うための基盤として利用することができるだろう。
 TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-toolbox.org/) は、コマンドラインインタフェースを提供する空間データ処理ライブラリ/プログラムである -- 上記の例は、Rを介してシステムのコマンドラインからこれらのライブラリにアクセスする方法である。
-これは、新しいRパッケージという形で、これらのライブラリへの適切なインタフェースを作成するための出発点となる可能性がある。
+これは、新しい R パッケージという形で、これらのライブラリへの適切なインタフェースを作成するための出発点となる可能性がある。
 
-しかし、新しいブリッジを作成するプロジェクトに飛び込む前に、既存のRパッケージのパワーと、`system()` の呼び出しがプラットフォームに依存しない (一部のコンピュータで失敗する) 可能性があることを認識しておくことが重要である。
+しかし、新しいブリッジを作成するプロジェクトに飛び込む前に、既存の R パッケージのパワーと、`system()` の呼び出しがプラットフォームに依存しない (一部のコンピュータで失敗する) 可能性があることを認識しておくことが重要である。
 さらに、**sf** は GDAL \index{GDAL} , GEOS \index{GEOS} , PROJ \index{PROJ}  が提供するパワーのほとんどを **Rcpp** が提供する R/C++ \index{C++}  インターフェイスを介して R にもたらし、`system()` の呼び出しを回避しているのである。
 
 ### 空間データベースへのブリッジ  {#postgis}
