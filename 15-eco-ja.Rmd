@@ -11,16 +11,16 @@
 library(sf)
 library(terra)
 library(dplyr)
-library(data.table)        # fast data.frame manipulation (used by mlr3)
-library(mlr3)              # machine learning (see Chapter 12)
-library(mlr3spatiotempcv)  # spatio-temporal resampling 
-library(mlr3tuning)        # hyperparameter tuning package
-library(mlr3learners)      # interface to most important machine learning packages
-library(paradox)           # defining hyperparameter spaces
-library(ranger)            # random forest package
-library(qgisprocess)       # bridge to QGIS (Chapter 10)
-library(tree)              # decision tree package
-library(vegan)             # community ecology package
+library(data.table)        # 高速な data.frame 操作 (mlr3 が使用)
+library(mlr3)              # 機械学習 (Chapter 12 参照)
+library(mlr3spatiotempcv)  # 時空間リサンプリング
+library(mlr3tuning)        # ハイパーパラメータのチューニング
+library(mlr3learners)      # 最重要の機械学習へのインターフェイス
+library(paradox)           # ハイパーパラメータ空間を定義
+library(ranger)            # ランダムフォレスト
+library(qgisprocess)       # bridge to QGIS へのブリッジ (Chapter 10)
+library(tree)              # 決定木
+library(vegan)             # 生態学
 ```
 
 ## イントロダクション  {#introduction-15}
@@ -78,7 +78,7 @@ ndvi = rast(system.file("raster/ndvi.tif", package = "spDataLarge"))
 `comm` はワイドデータ形式 の群集行列で、行はフィールドで訪問した場所、列は観察された種を表している。^[統計学では、分割表やクロス表とも呼ばれる。]
 
 ```{r 15-eco-3, eval=FALSE}
-# 35から40のサイトと、それに対応する群集マトリックスの
+# サイト 35 から 40 と、それに対応する群集マトリックスの
 # 最初の5種の発生状況
 comm[35:40, 1:5]
 #>    Alon_meri Alst_line Alte_hali Alte_porr Anth_eccr
@@ -91,7 +91,7 @@ comm[35:40, 1:5]
 ```
 
 数値はサイトごとの種の被度を表し、サイト面積に対する種の被度の割合 (％；ひとつのサイトでは、個々の植物間の被度の重複により100％を超える場合があることに注意) で記録された。
-`comm` の rownames は `random_points` の `id` 列に対応する。
+`comm` の列名は `random_points` の `id` 列に対応する。
 `dem` は調査地域の数値標高モデル (digital elevation model, DEM\index{digital elevation model}) は Landsat シーンの赤色および近赤外チャネルから算出した正規化植生指標 (NDVI`ndvi`) である (Section \@ref(local-operations) および `?spDataLarge::ndvi.tif` を参照)。
 Figure \@ref(fig:sa-mongon) に示すように、`dem` に `random_points` と `study_area` を重ねて表示すことで、データをより身近なものにすることができる。
 
@@ -221,7 +221,7 @@ ep = c(dem, ndvi, ep) # 多層 SpatRaster オブジェクトに dem と ndvi を
 ```
 
 さらに、集水域\index{catchment area} の値は右側に大きく偏っている (`hist(ep$carea)`)。
-対数10変換をすると、より正規分布に近くなる。
+常用対数変換をすると、より正規分布に近くなる。
 
 ```{r 15-eco-8, eval=FALSE}
 ep$carea = log10(ep$carea)
@@ -431,17 +431,17 @@ knitr::include_graphics("figures/15_tree.png")
 結果として得られる木は、3つの内部ノードと4つの終端ノード( Figure \@ref(fig:tree) )で構成される。
 木の一番上にある最初の内部ノードは、328.5 m 以下のすべてのオブザベーションを左に、それ以外のすべてのオブザベーションを右の枝に割り当てる。
 <!-- `r # gsub("<", "", as.character(as.data.frame(tree_mo$fram$splits)[1, "cutleft"]))` -->
-
+<!-- comment tag for translation purpose -->
 左の枝に入るオブザベーションは、平均 NMDS\index{NMDS} スコアが -1.198 である。
-<!-- `r # round(tree_mo$frame$yval[2], 3)` -->-1.198.
+<!-- `r # round(tree_mo$frame$yval[2], 3)` -->
 全体として、標高が高いほどNMDS\index{NMDS}  のスコアが高くなる、というように解釈できる。
 つまり、単純な決定木によって、すでに4つの異なる植物群像が明らかにされているのである。
-詳しく学びたい方は、Section \@ref(predictive-mapping) を参照。
-決定木は \index{overfitting}  に過剰に適合する傾向がある。つまり、ノイズを含む入力データを忠実に反映しすぎるため、予測性能が低下するのである。  [ Section \@ref(intro-cv) ; @james_introduction_2013] .
-ブートストラップ集計 (バギング) は、この問題を克服するためのアンサンブル手法である。
+詳しく学びたい方は Section \@ref(predictive-mapping) を参照。
+決定木は、過剰に適合\index{overfitting}する傾向がある。つまり、ノイズを含む入力データを忠実に反映しすぎるため、予測性能が低下するのである [ Section \@ref(intro-cv) ; @james_introduction_2013]。
+ブートストラップ集計 (*b*ootstrap *agg*regat*ing*, bagging, バギング) は、この問題を克服するためのアンサンブル手法である。
 アンサンブル技術は、複数のモデルの予測値を単純に結合するものである。
 このように、バギングでは同じ入力データから繰り返しサンプルを取り、その予測値を平均化する。
-これにより、分散とオーバーフィッティング\index{overfitting}、決定木と比較してはるかに優れた予測精度を実現する。
+これにより、分散とオーバーフィッティング\index{overfitting}を減らし、決定木と比較してはるかに優れた予測精度を実現する。
 最後に、ランダムフォレスト\index{random forest}は、相関の高い木の予測を平均化すると、相関の低い木の予測を平均化するよりも分散が大きく、信頼性が低くなるので、バギングを拡張して改良することが望ましい [@james_introduction_2013]。
 これを実現するために、ランダムフォレスト\index{random forest}はバギングを使用するが、従来のバギングでは各木が利用可能なすべての予測子を使用できるのとは対照的に、ランダムフォレストは利用可能なすべての予測子のランダムサンプルだけを使用する。
 
@@ -522,18 +522,18 @@ search_space = paradox::ps(
 ```{r 15-eco-23, eval=FALSE}
 autotuner_rf = mlr3tuning::AutoTuner$new(
   learner = lrn_rf,
-  resampling = mlr3::rsmp("spcv_coords", folds = 5), # spatial partitioning
-  measure = mlr3::msr("regr.rmse"), # performance measure
-  terminator = mlr3tuning::trm("evals", n_evals = 50), # specify 50 iterations
-  search_space = search_space, # predefined hyperparameter search space
-  tuner = mlr3tuning::tnr("random_search") # specify random search
+  resampling = mlr3::rsmp("spcv_coords", folds = 5), # 空間分割
+  measure = mlr3::msr("regr.rmse"), # パフォーマンス測定
+  terminator = mlr3tuning::trm("evals", n_evals = 50), # 繰り返しを 50 回に指定
+  search_space = search_space, # 指定済みハイパーパラメータの探索
+  tuner = mlr3tuning::tnr("random_search") # ランダム探索の指定
 )
 ```
 
 `AutoTuner` -オブジェクトの `train()` -メソッドを呼び出すと、最終的にハイパーパラメータ\index{hyperparameter}のチューニングが実行され、指定したパラメータに対して最適なハイパーパラメータ\index{hyperparameter}の組み合わせが見つかる。
 
 ```{r 15-eco-24, eval=FALSE, cache=TRUE, cache.lazy=FALSE}
-# hyperparameter tuning
+# ハイパーパラメータのチューニング
 set.seed(0412022)
 autotuner_rf$train(task)
 ```
@@ -572,7 +572,7 @@ autotuner_rf$predict(task)
 pred = terra::predict(ep, model = autotuner_rf, fun = predict)
 ```
 
-```{r rf-pred, eval=TRUE, fig.cap="植物相の勾配を予測するマッピングにより、はっきりとした植生帯が明らかになった。", out.width="60%", fig.scap="Predictive mapping of the floristic gradient."}
+```{r rf-pred, echo=FALSE, eval=TRUE, fig.cap="植物相の勾配を予測するマッピングにより、はっきりとした植生帯が明らかになった。", out.width="60%", fig.scap="Predictive mapping of the floristic gradient."}
 # hs = terra::shade(terra::terrain(dem, v = "slope", unit = "radians"),
 #                   terra::terrain(dem, v = "aspect", unit = "radians"),
 #                   10, 200) |>
