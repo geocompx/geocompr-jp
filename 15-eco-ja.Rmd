@@ -3,7 +3,7 @@
 ## 必須パッケージ  {- #prerequisites-15}
 
 この章では、Chapter \@ref(spatial-class) ～ Chapter \@ref(geometry-operations) で説明した地理データ解析\index{geographic data analysis}と処理について十分に理解していることを前提に説明する。
-また、、Chapters \@ref(gis) で解説した R\index{R} の専用 GIS\index{GIS} インタフェースや、Chapter \@ref(spatial-cv) の空間クロスバリデーション (cross-validation, CV)\index{cross-validation!spatial CV} も活用することができる。
+また、Chapters \@ref(gis) で解説した R\index{R} の専用 GIS\index{GIS} インタフェースや、Chapter \@ref(spatial-cv) の空間クロスバリデーション (cross-validation, CV)\index{cross-validation!spatial CV} も活用していこう。
 
 この章では、以下のパッケージを使用する。
 
@@ -26,10 +26,10 @@ library(vegan)             # 生態学
 ## イントロダクション  {#introduction-15}
 
 本章では、霧のオアシスの植生勾配をモデル化し、水の利用可能性に明らかに支配されている特徴的な植生帯を明らかにする。
-そのために、これまでの章で紹介した概念をまとめ、さらに拡張していく (Chapter \@ref(spatial-class)〜\@ref(geometry-operations)、Chapters \@ref(gis)、Chapter \@ref(spatial-cv))。
+そのために、これまでの章 (Chapter \@ref(spatial-class)〜\@ref(geometry-operations)、Chapter \@ref(gis)、Chapter \@ref(spatial-cv)) で紹介した概念をまとめ、さらに拡張していく。
 
-霧のオアシスは、これまでに出会った中で最も魅力的な植生形態の一つである。このような地層は、地元では *lomas* と呼ばれ、ペルーやチリの海岸砂漠に沿った山々に発達している。^[同様の植生形態は、ナミビアやイエメン、オマーンの海岸沿いなど他の地域でも見られる [@galletti_land_2016]。] 
-砂漠の極限状態と遠隔地であることが、霧のオアシスの固有種を含むユニークな生態系の生息地となっている。
+霧のオアシスは、これまでに出会った中で最も魅力的な植生形態の一つである。このような現象は、地元では *lomas* と呼ばれ、ペルーやチリの海岸砂漠に沿った山々に発達している。^[同様の植生形態は、ナミビアやイエメン、オマーンの海岸沿いなど他の地域でも見られる [@galletti_land_2016]。] 
+砂漠の極限状態と隔絶された地であることが、霧のオアシスの固有種を含むユニークな生態系の生息地となっている。
 年間平均 30〜50 mm 程度の降水量と乾燥した条件にもかかわらず、霧の発生により、南半球の冬の間に植物が利用できる水量が増加する。
 その結果、ペルーの海岸線に沿った南向きの山の斜面が緑色になる (Figure \@ref(fig:study-area-mongon))。 
 冬のフンボルト海流がもたらす逆転現象の下に発生する霧が、この生息地の名前の由来となっている。
@@ -42,14 +42,14 @@ library(vegan)             # 生態学
 例えば、ペルー人の多くは海岸沿いの砂漠に住んでいて、「緑」に一番近いのはロマス山であることが多い。
 
 この章では、前の章で学んだ技術を生態学的に実際に応用していこう。
-事例として、ペルー中央北岸のカスマ近郊にある *lomas* のある山、モンゴン山の南斜面における維管束植物の構成と空間分布を分析する (Figure \@ref(fig:study-area-mongon))。
+事例として、ペルー中央北岸のカスマ近郊にある *lomas* のある山、Mongón 山の南斜面における維管束植物の構成と空間分布を分析する (Figure \@ref(fig:study-area-mongon))。
 
 ```{r study-area-mongon, echo=FALSE, fig.cap="Mongón 山調査地、Muenchow, Schratz, and Brenning (2017) より。", out.width="60%", fig.scap="The Mt. Mongón study area."}
 knitr::include_graphics("figures/15_study_area_mongon.png")
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/38989956-6eae7c9a-43d0-11e8-8f25-3dd3594f7e74.png")
 ```
 
-モンゴル山への野外調査において、2011年の冬、ランダムにサンプルした 4x4 m^2^ の 100 区画に生息するすべての維管束植物を記録した [@muenchow_predictive_2013]。
+Mongón 山への野外調査において、2011年の冬、ランダムにサンプルした 4x4 m^2^ の 100 区画に生息するすべての維管束植物を記録した [@muenchow_predictive_2013]。
 サンプル採取は、その年の強いラニーニャ現象に重なった (ENSO monitoring of [NOASS Climate Prediction Center](http://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php)を参照)。
 そのため、沿岸部の砂漠は通常よりもさらに高い乾燥度を示すようになった。
 一方、ペルーの *lomas* のある山脈の南斜面では、霧の活動も活発になっている。
@@ -58,7 +58,7 @@ knitr::include_graphics("figures/15_study_area_mongon.png")
 最初の仮説は、標高勾配に沿って4つの植物帯が見られるというものだ。低標高の*チランジア*帯、草本帯、ブロメリアド帯、そして最上部の多肉植物帯である。 [@muenchow_soil_2013] .
 -->
 
-Ordinations\index{ordination}  は、 (ノイズの多い) データセットから主要な勾配を抽出するための次元削減技術であり、私たちの場合は南山斜面に沿って発達した植物学的勾配である (次のセクションを参照)。
+Ordinations\index{ordination} は、 (ノイズの多い) データセットから主要な勾配を抽出するための次元削減技術であり、私たちの場合は南山斜面に沿って発達した植物学的勾配である (次のセクションを参照)。
 本章では、最初の序列軸である植物相の勾配を、標高、傾斜、集水域\index{catchment area}および NDVI\index{NDVI}  といった環境予測因子の関数としてモデル化することにする。
 このために、非常に有名な機械学習\index{machine learning}アルゴリズムであるランダムフォレストモデル\index{random forest}を利用する [@breiman_random_2001]。
 このモデルを使えば、調査地のどこでも植物組成の空間分布図作成が可能になる。
@@ -92,7 +92,7 @@ comm[35:40, 1:5]
 
 数値はサイトごとの種の被度を表し、サイト面積に対する種の被度の割合 (％；ひとつのサイトでは、個々の植物間の被度の重複により100％を超える場合があることに注意) で記録された。
 `comm` の列名は `random_points` の `id` 列に対応する。
-`dem` は調査地域の数値標高モデル (digital elevation model, DEM\index{digital elevation model}) は Landsat シーンの赤色および近赤外チャネルから算出した正規化植生指標 (NDVI`ndvi`) である (Section \@ref(local-operations) および `?spDataLarge::ndvi.tif` を参照)。
+`dem` は調査地域の数値標高モデル (digital elevation model, DEM\index{digital elevation model}) で、`ndvi` は Landsat シーンの赤色および近赤外チャネルから算出した正規化植生指標 (Normalized Difference Vegetation Index, NDVI) である (Section \@ref(local-operations) および `?spDataLarge::ndvi.tif` を参照)。
 Figure \@ref(fig:sa-mongon) に示すように、`dem` に `random_points` と `study_area` を重ねて表示すことで、データをより身近なものにすることができる。
 
 \index{hillshade}
@@ -470,7 +470,7 @@ knitr::include_graphics("figures/15_tree.png")
 答えは簡単で、全くない。 
 このチューニングは、バイアスを低減した性能推定値を得るために行われたものであり、最良の空間予測を行うために行われたものではないことに留意してみよう。
 後者については、完全なデータセットから最適なハイパーパラメータ\index{hyperparameter}の組み合わせを推定する。
-これは、内部のハイパーパラメータ\index{hyperparameter}のチューニング・レベルがもはや必要ないことを意味する。これは、真のアウトカムが利用できない新しいデータ (未訪問のフィールド観測) に私たちのモデルを適用するので、完全に理にかなっており、したがってテストはいかなる場合でも不可能なのである。 
+これは、内部のハイパーパラメータ\index{hyperparameter}のチューニング・レベルがもはや必要ないことを意味する。なぜなら、真のアウトカムが不明の新しいデータ (未訪問のフィールド観測) にこのモデルを適用するので、テストはいかなる場合でも不可能なのである。 
 そこで、5回繰り返しの空間 CV\index{cross-validation!spatial CV}  によって、完全なデータセットで良好な空間予測を行うためにハイパーパラメータ\index{hyperparameter}を調整することにした。
 <!-- If we used more than one repetition (say 2) we would retrieve multiple optimal tuned hyperparameter combinations (say 2) -->
 
