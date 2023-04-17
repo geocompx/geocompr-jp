@@ -134,7 +134,8 @@ revdeps_spatstat = devtools::revdep(pkg = "spatstat", dependencies = c("Depends"
 'Earth observation cloud back-ends' は、[openeo.org](https://openeo.org/) で解説されている通り、**openeo** パッケージを使うことで R でアクセスすることができる。
 [Apache Sedona](https://sedona.apache.org/) などのソフトウェアを使ったビッグデータの地理的解析については、使用が限定にも関わらず環境構築のハードウェアと時間のコストが非常に高いため、詳細は割愛した。
 
-## Getting help?  {#questions}
+## ヘルプはどこ？  {#questions}
+
 <!-- Now wondering if this should be an appendix, or even a new chapter?? -->
 
 <!-- Chapter \@ref(intro) states that the approach advocated in this book "can help remove constraints on your creativity imposed by software". -->

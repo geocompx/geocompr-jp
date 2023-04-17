@@ -9,8 +9,11 @@ library(sf)
 library(terra)
 ```
 
+
+
+
 ```{r 09-gis-1-2, message=FALSE, eval=FALSE}
-# remotes::install_github("r-spatial/qgisprocess")
+remotes::install_github("r-spatial/qgisprocess")
 library(qgisprocess)
 library(Rsagacmd)
 library(rgrass)
@@ -18,8 +21,13 @@ library(rstac)
 library(gdalcubes)
 ```
 
-
-
+```{r 09-gis-1-3, echo=FALSE, message=FALSE}
+# Only run code if qgis is installed
+has_qgis = FALSE
+if ("qgisprocess" %in% installed.packages()) {
+  has_qgis = qgisprocess::has_qgis()
+}
+```
 
 ## イントロダクション  {#introduction-10}
 
@@ -45,16 +53,14 @@ GRASS は、CLI をベースとしながらも GUI がある GIS の良い例で
 - 繰り返し作業の自動化
 - 透明性と再現性を可能にする
 - 既存の機能を修正したり、新しい機能を実装するためのツールを提供することで、ソフトウェア開発を促進する
-- 将来性のあるプログラミングスキルを身につけることができる
-- 効率的な作業
+- 将来性があり、かつ効率的なプログラミングスキルを身につけることができる
 - デジタル時代に必須のタッチタイピング
 
 一方、GUI ベースの GIS\index{GIS} システムにも有利な点がある。
 
 - 学習曲線が「浅い」ので、新しい言語を何時間も学ぶことなく、地理データを探索し、可視化することができる
-- トレース、スナップ、トポロジーツールなど、「デジタイジング」 (新しいベクタデータセットの作成) のための優れたサポートを提供する^[
-**mapedit** パッケージは、R から開いたブラウザウィンドウでフィーチャを素早く編集することができるが、専門的で大規模な地図製作のデジタイズはできない。
-]
+- トレース、スナップ、トポロジーツールなど、「デジタイジング」 (新しいベクタデータセットの作成) のための優れたサポートを提供する
+(**mapedit** パッケージは、R から開いたブラウザウィンドウでフィーチャを素早く編集することができるが、専門的で大規模な地図製作のデジタイズはできない。)。
 - 地上基準点によるジオリファレンス (georeference、ラスタ画像と既存地図とのマッチング)、オルソレクティフィケーション (orthorectification) が可能である
 - 立体視マッピング (LiDAR、Structure from Motion など) に対応する
 
@@ -72,7 +78,7 @@ R (および、その前身である S) は、他の言語 (特に FORTRAN\index
 R はこの伝統を受け継ぎ、特に C++\index{C++}  などの多くの言語へのインタフェースを提供している。
 
 R は GIS として設計されたものではない。しかし、専用の GIS とのインターフェイスが可能なため、驚異的な地理空間能力を発揮する。
-GIS ブリッジを通すことで、R は洗練された GIS 作業を実行できるにし、さらには CLI の持っている再現可能性、拡張性、生産性といった付加価値をもたらす。
+GIS ブリッジを通すことで、R はさまざまな作業を実行でき、さらには CLI の持っている再現可能性、拡張性、生産性といった付加価値をもたらす。
 さらに、R は、インタラクティブ/アニメーションマップ作成 (Chapter \@ref(adv-map) 参照) や空間統計モデリング ( Chapter \@ref(spatial-cv) 参照) など、ジオコンピューティング\index{geocomputation}のいくつかの分野では GIS を凌駕する性能を有している。
 
 この章では、3つの成熟したオープンソース GIS 製品への「ブリッジ」(Table \@ref(tab:gis-comp) 参照) に焦点を当てる。
@@ -86,38 +92,51 @@ GIS ブリッジを通すことで、R は洗練された GIS 作業を実行で
 
 ```{r gis-comp, echo=FALSE, message=FALSE}
 library(dplyr)
-d = tibble("GIS" = c("QGIS", "SAGA", "GRASS"),
-            "First release" = c("2002", "2004", "1982"),
-            "No. functions" = c(">1000", ">600", ">500"),
-            "Support" = c("hybrid", "hybrid", "hybrid"))
-knitr::kable(x = d, 
-             caption = paste("３つのオープンソース GIS の比較。", 
-                             "hybrid とは、ベクタとラスタ", 
-                             "に対応していることを示す。"),
-             caption.short = "Comparison between three open-source GIS.", 
-             booktabs = TRUE) #|>
-  # kableExtra::add_footnote(label = "Comparing downloads of different providers is rather difficult (see http://spatialgalaxy.net/2011/12/19/qgis-users-around-the-world), and here also useless since every Windows QGIS download automatically also downloads SAGA and GRASS.", notation = "alphabet")
+d = tibble(
+  "GIS" = c("QGIS", "SAGA", "GRASS"),
+  "First release" = c("2002", "2004", "1982"),
+  "No. functions" = c(">1000", ">600", ">500"),
+  "Support" = c("hybrid", "hybrid", "hybrid")
+)
+knitr::kable(
+  x = d,
+  caption = paste(
+    "Comparison between three open-source GIS.",
+    "Hybrid refers to the support of vector and",
+    "raster operations."
+  ),
+  caption.short = "Comparison between three open-source GIS.",
+  booktabs = TRUE
+) #|>
+# kableExtra::add_footnote(label = "Comparing downloads of different providers is rather difficult (see http://spatialgalaxy.net/2011/12/19/qgis-users-around-the-world), and here also useless since every Windows QGIS download automatically also downloads SAGA and GRASS.", notation = "alphabet")
 ```
 
 また、R-GIS ブリッジを補完するために、３つのブリッジの後で空間ライブラリへのインタフェース (Section \@ref(gdal))、空間データベース\index{spatial database} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。 
 
-## **qgisprocess** から QGIS  {#rqgis}
+## **qgisprocess**: QGIS へのブリッジなど  {#rqgis}
 
 <!--toDo:jn-->
 <!-- how to mention/use the QGIS package (https://en.cahik.cz//2022/03/07/r-package-qgis/) here? -->
 
-QGIS \index{QGIS}  は、最も人気のあるオープンソース GIS の 1 つである [Table \@ref(tab:gis-comp) ; @graser_processing_2015]。 
-その最大の特徴は、他のオープンソース GIS と統一されたインターフェースを提供する点にある。
-つまり、QGIS\index{QGIS} から、GDAL\index{GDAL}、GRASS\index{GRASS}、SAGA\index{SAGA}   を利用することができるのである [@graser_processing_2015]。 
-バージョン 3.14 以降、QGIS はコマンドライン API \index{API} `qgis_process` を提供しており、QGIS GUI の外でこれらのすべてのジオアルゴリズム (セットアップによっては 1000 以上) を実行することが可能である。
+QGIS\index{QGIS}  は、最も人気のあるオープンソース GIS である [Table \@ref(tab:gis-comp); @graser_processing_2015]。 
+QGIS は、統一されたインターフェイスで、QGIS自身のジオアルゴリズム、GDAL\index{GDAL}、さらにインストールされている場合にはGRASS\index{GRASS}、SAGA\index{SAGA} を利用することができる [@graser_processing_2015]。 
+バージョン 3.14 (2020年夏にリリース) 以降、QGIS は、さまざまジオコンピュテーション機能にアクセスできる `qgis_process` コマンドラインを提供している。
+`qgis_process` は、標準的 QGIS に備わる 300 以上のジオアルゴリズムと、GRASS や SAGA など 1000 以上の外部プロバイダへのアクセスを提供している。
 
-**qgisprocess**\index{qgisprocess (package)} パッケージは、QGIS コマンドラインユーティリティをラップ (訳注：プログラミング用語で、機能を使いやすく覆い隠すこと) しているため、R セッションから QGIS、GDAL、GRASS、SAGA アルゴリズムを呼び出すことが可能である。
-**qgisprocess**\index{qgisprocess (package)}  を実行する前に、QGIS\index{QGIS} と、SAGA \index{SAGA} や GRASS \index{GRASS} などの (サードパーティの) 依存パッケージがすべてインストールされていることを確認してみよう。
+**qgisprocess**\index{qgisprocess (package)} パッケージは、R からアクセスすることも可能である。
+このパッケージは、 システム上に最低でも QGIS、また本章で使用する関連するプラグインである GRASS や SAGA を必要とする。
+インストールに関しては、**qgisprocess** [ドキュメント](https://r-spatial.github.io/qgisprocess/)を参照。
+あるいは、Docker をインストール済みの方は、本プロジェクトの `qgis` イメージから **qgisprocess** を使うこともできる。
+Docker をインストールしており、十分な実行環境のある方は、以下のコマンドで **qgisprocess** および関連プラグインを実行できる ([geocompx/docker](https://github.com/geocompx/docker) レポジトリを参照)。
 
-```{r, eval=FALSE}
+```bash
+docker run -e DISABLE_AUTH=true -p 8786:8787 ghcr.io/geocompx/docker:qgis
+```
+
+```{r, eval=has_qgis}
 library(qgisprocess)
-#> Using 'qgis_process' in the system PATH.
-#> QGIS version: 3.28.2-Firenze
+#> Attempting to load the cache ... Success!
+#> QGIS version: 3.30.1-'s-Hertogenbosch
 #> ...
 ```
 
@@ -129,25 +148,36 @@ library(qgisprocess)
 
 次に、どのプロバイダ (異なるソフトウェアを意味する) が自分のコンピュータで利用できるかを調べてみよう。
 
-```{r providers, eval=FALSE}
+```{r providers, eval=has_qgis}
 qgis_providers()
-#> # A tibble: 6 × 2
-#>   provider provider_title   
-#>   <chr>    <chr>            
-#> 1 3d       QGIS (3D)       
-#> 2 gdal     GDAL             
-#> 3 grass7   GRASS            
-#> 4 native   QGIS (native c++)
-#> 5 qgis     QGIS             
-#> 6 saga     SAGA
+#> # A tibble: 6 × 3
+#>   provider provider_title    algorithm_count
+#>   <chr>    <chr>                       <int>
+#> 1 gdal     GDAL                           56
+#> 2 grass7   GRASS                         304
+#> 3 qgis     QGIS                           50
+#> 4 3d       QGIS (3D)                       1
+#> 5 native   QGIS (native c++)             242
+#> 6 sagang   SAGA Next Gen                 509
 ```
 
 出力表から、QGIS のジオアルゴリズム (`native`, `qgis`, `3d`) と、サードパーティプロバイダの GDAL、SAGA、GRASS の外部アルゴリズムを QGIS インターフェースを通して使用できることが確認できた。
+以下のコマンドで、外部アルゴリズムを有効にしよう。
 
-これで、R から QGIS の地理計算をする準備ができた。
+```{r enable-providers, eval=has_qgis}
+qgis_enable_plugins()
+#> Trying to enable following plugin(s): grassprovider, otbprovider, processing_saga_nextgen
+#> grassprovider successfully enabled!
+#> otbprovider successfully enabled!
+#> processing_saga_nextgen successfully enabled!
+#> ...
+#> You now have access to 1162 algorithms from 6 QGIS processing providers.
+```
+
+これで、R から QGIS などの地理計算をする準備ができた。
 それでは、2つの事例を試してみよう。
-最初のものは、異なる境界線を持つ2つのポリゴンデータセットを和集合を作成 (union)\index{union} する方法を示している (Section \@ref(qgis-vector) )。
-もう一つは、ラスタ (Section \@ref(qgis-raster) ) で表現された数値標高モデルから新しい情報を導き出すことに重点を置いている。
+最初のものは、異なる境界線を持つ2つのポリゴンデータセットを和集合を作成 (union)\index{union} する方法を示している (Section \@ref(qgis-vector))。
+もう一つは、ラスタ (Section \@ref(qgis-raster)) で表現された数値標高モデルから新しい情報を導き出すことに重点を置いている。
 
 ### ベクタデータ  {#qgis-vector}
 
@@ -162,20 +192,26 @@ incongr_wgs = st_transform(incongruent, "EPSG:4326")
 aggzone_wgs = st_transform(aggregating_zones, "EPSG:4326")
 ```
 
-```{r uniondata, echo=FALSE, fig.cap="二つの地域単位の例。不一致（黒線）と集約（赤色の境界）。"}
+```{r uniondata, echo=FALSE, fig.cap="Illustration of two areal units: incongruent (black lines) and aggregating zones (red borders).", eval=has_qgis}
 library(tmap)
 tm_shape(incongr_wgs) +
   tm_polygons(border.col = "grey5") +
   tm_shape(aggzone_wgs) +
   tm_borders(alpha = 0.5, col = "red") +
-  tm_add_legend(type = "line",
-                labels = c("incongr_wgs", "aggzone_wgs"),
-                col = c("grey5", "red"),
-                lwd = 3) +
-  tm_scale_bar(position = c("left", "bottom"),
-               breaks = c(0, 0.5, 1)) +
-  tm_layout(frame = FALSE,
-            legend.text.size = 1)
+  tm_add_legend(
+    type = "line",
+    labels = c("incongr_wgs", "aggzone_wgs"),
+    col = c("grey5", "red"),
+    lwd = 3
+  ) +
+  tm_scale_bar(
+    position = c("left", "bottom"),
+    breaks = c(0, 0.5, 1)
+  ) +
+  tm_layout(
+    frame = FALSE,
+    legend.text.size = 1
+  )
 
 # toDo: jn
 # tm_add_legend is missing
@@ -195,55 +231,68 @@ if (packageVersion("tmap") >= "4.0"){
 この作業を行うアルゴリズムを見つけるには、`qgis_algorithms()` 関数の出力を検索すればよい。
 この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。^[したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。]
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}}
 qgis_algo = qgis_algorithms()
 ```
 
 `qgis_algo` オブジェクトには多くの列があるが、通常、私たちが関心を持つのは、プロバイダとアルゴリズム名の情報を組み合わせた `algorithm` 列だけである。
 関数の短い説明文に "union"\index{union}という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}
 grep("union", qgis_algo$algorithm, value = TRUE)
-#> [1] "native:multiunion" "native:union"      "saga:fuzzyunionor" "saga:polygonunion"
 ```
 
 上記のリストにあるアルゴリズムの1つ、`"native:union"` は、探している機能の可能性が高そうである。
 次のステップは、このアルゴリズムが何をするのか、どう使えばいいのかを知ることである。
 `qgis_show_help()` がそのためにある。これは、アルゴリズムが何をし、引数や出力についての要約を返す。^[`qgis_description()`、`qgis_arguments()`、`qgis_outputs()` それぞれからの情報の一部のみ示す。]
 これによって、出力が長くなる。
-ここでは、`"native:union"` という引数で得られる結果を示す。
+以下のコマンドは、各行に `"native:union"` が必要とする引数を表すデータフレームを返し、各列は名前、説明、種類、デフォルト値、とりうる値を示す。
 
-```{r 09-gis-6, eval=FALSE}
+```{r 09-gis-6, eval=has_qgis}
 alg = "native:union"
-qgis_arguments(alg) |> 
-  dplyr::mutate(acceptable_values = unlist(acceptable_values)) |>
-  select(name, description, acceptable_values)
+union_arguments = qgis_arguments(alg)
+union_arguments
+#> # A tibble: 5 × 6
+#>   name    description qgis_type default_value available_values acceptable_values
+#>   <chr>   <chr>       <chr>     <list>        <list>           <list>           
+#> 1 INPUT   Input layer source    <NULL>        <NULL>           <chr [1]>        
+#> 2 OVERLAY Overlay la… source    <NULL>        <NULL>           <chr [1]>        
+#> 3 OVERLA… Overlay fi… string    <NULL>        <NULL>           <chr [3]>        
+#> 4 OUTPUT  Union       sink      <NULL>        <NULL>           <chr [1]>        
+#> 5 GRID_S… Grid size   number    <NULL>        <NULL>           <chr [3]>  
+
+#> [[1]]
+#> [1] "A numeric value"                                                                                 
+#> [2] "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field"                    
+#> [3] "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression"
 ```
 
-`INPUT`、`OVERLAY`、`OVERLAY_FIELDS_PREFIX`、`OUTPUT`があることがすぐに分かる。
-これらの引数は、ベクタレイヤへのパスを期待しているようである (列名: `acceptaple_values`)。
-ただし、**qgisprocess** パッケージでは、このような場合にも `sf` オブジェクトを提供することが可能となる。^[ラスタレイヤへのパスの場合、パッケージ **terra** と **stars** が使われる。] 
-この機能は便利だが、もしすでに R セッション中に空間データがある場合、**qgisprocess** にそのパスを送る時のみ使用することを勧める。なぜなら、**qgisprocess** がジオアルゴリズムを実行する際に最初にすることは、R セッション中の空間データを QGIS が分かる .gpkg または .tif に変換することだからである。
+`union_arguments$name` の引数は、`INPUT`、`OVERLAY`、`OVERLAY_FIELDS_PREFIX`、`OUTPUT` である。
+`union_arguments$acceptable_values` は、各引数に対して、とりうる値のリストを持っている。
+多くの関数は、ベクタレイヤへのパスを入力に必要としているが、**qgisprocess** の関数は `sf` オブジェクトも受けることができる。
+ラスタへのパスが必要とされる場合は、**terra** と **stars** のオブジェクトも対応している。
+これは便利であるが、もし **qgisprocess** アルゴリズムに引き渡しだけであれば、パスを渡すことをお薦めする。というのも、**qgisprocess** はジオアルゴリズムの最初に、QGIS が読める形式である .gpkg や .tif に変換しているからである。
+これはアルゴリズムの実行時間を長くしてしまう。
 
-最後に、QGIS\index{QGIS} に作業させてみよう。
-**qgisprocess** の主な機能は `qgis_run_algorithm()` である。
-使用するアルゴリズム名とヘルプに示される名前付き引数のセットを受け取り、期待される計算を実行する。
+**qgisprocess** の主な機能は `qgis_run_algorithm()` であり、QGIS に入力を送り、出力を受け取る。
+これは、使用するアルゴリズム名とヘルプに示される名前付き引数のセットを受け取り、期待される計算を実行する。
 今回のケースでは、`INPUT`、`OVERLAY`、`OUTPUT` の3つの引数が重要だと思われる。
 最初の `INPUT` は、主なベクタオブジェクト `incongr_wgs` であり、2番目の `OVERLAY` は、`aggzone_wgs` である。
-最後の引数、`OUTPUT` は新しいベクタファイルへのパスを期待する。しかし、パスを提供しない場合、**qgisprocess**は自動的に一時ファイルを作成する。
-引数 `.quiet` は、**qgisprocess** のメッセージを減らす。
+最後の引数、`OUTPUT` は出力ファイル名だが、指定されていない場合、**qgisprocess** は自動的に `tempdir()` に一時ファイルを作成する。
 
-```{r 09-gis-7, eval=FALSE}
-union = qgis_run_algorithm(alg, INPUT = incongr_wgs, OVERLAY = aggzone_wgs, 
-                           .quiet = TRUE)
+```{r 09-gis-7, eval=has_qgis}
+union = qgis_run_algorithm(alg,
+  INPUT = incongr_wgs, OVERLAY = aggzone_wgs
+)
 union
+#>  $ OUTPUT: 'qgis_outputVector' chr "/tmp/...gpkg"
 ```
 
 上記のコードを実行すると、2つの入力オブジェクトが一時的な .gpkg ファイルに保存され、選択されたアルゴリズムがそれらに実行され、一時的な .gpkg ファイルが出力として返される。
 **qgisprocess** パッケージは、`qgis_run_algorithm()` の結果を、この場合は出力ファイルへのパスを含むリストとして保存する。
 このファイルを R に読み戻すには、`read_sf()` (例,  `union_sf = read_sf(union[[1]])` を使うか、`st_as_sf()` を使って直接読み込むことができる。
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}
 union_sf = st_as_sf(union)
 ```
 
@@ -256,7 +305,7 @@ QGIS\index{QGIS} の和集合 (union \index{vector!union}) の操作は、2つ�
 スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25000 m^2^ を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}
 grep("clean", qgis_algo$algorithm, value = TRUE)
 ```
 
@@ -279,11 +328,11 @@ qgis_arguments("grass7:v.clean") |>
   select(name, description) |>
   dplyr::slice_head(n = 4)
 #> # A tibble: 4 × 2
-#>   name      description                              
-#>   <chr>     <chr>                                    
-#> 1 input     Layer to clean                           
-#> 2 type      Input feature type                       
-#> 3 tool      Cleaning tool                            
+#>   name      description
+#>   <chr>     <chr>
+#> 1 input     Layer to clean
+#> 2 type      Input feature type
+#> 3 tool      Cleaning tool
 #> 4 threshold Threshold (comma separated for each tool)
 ```
 
@@ -296,15 +345,17 @@ qgis_arguments("grass7:v.clean") |>
 
 このアルゴリズムを実行し、その出力を新しい `sf` オブジェクト `clean_sf` に変換してみよう。
 
-```{r 09-gis-7c, eval=FALSE}
-clean = qgis_run_algorithm("grass7:v.clean", input = union_sf,
-                           tool = "rmarea", threshold = 25000, .quiet = TRUE)
+```{r 09-gis-7c, eval=has_qgis}
+clean = qgis_run_algorithm("grass7:v.clean",
+  input = union_sf,
+  tool = "rmarea", threshold = 25000
+)
 clean_sf = st_as_sf(clean)
 ```
 
 その結果、\@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
 
-```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。"}
+```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。", eval=has_qgis}
 knitr::include_graphics("figures/10-sliver.png")
 ```
 
@@ -318,7 +369,7 @@ DEM は、衛星航法、水流モデル、表面分析、可視化など、さ�
 このセクションでは、`dem.tif` を使用することにする。これは、Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照)。
 解像度は約 30 m × 30 m で、投影型 CRS を使用している。
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}
 library(qgisprocess)
 library(terra)
 dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
@@ -329,38 +380,44 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 例えば、地形湿潤指数 (Topologic Wetness Index, TWI) は、水文・生物学的プロセスの研究に有用であることがわかっている [@sorensen_calculation_2006]。
 このインデックスのアルゴリズムリストを、`"wetness"` というキーワードで検索してみよう。
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}
 qgis_algo = qgis_algorithms()
 grep("wetness", qgis_algo$algorithm, value = TRUE)
-#> [1] "saga:sagawetnessindex"           "saga:topographicwetnessindextwi"
+#> [1] "sagang:sagawetnessindex"              
+#> [2] "sagang:topographicwetnessindexonestep"
+#> ...
 ```
 
 上記のコードの出力は、目的のアルゴリズムが SAGA GIS\index{SAGA} ソフトウェアに存在することを示唆するものである。^[TWI は、 GRASS GIS 関数 `r.topidx` でも計算可能。]
 SAGA はハイブリッド GIS であるが、主にラスタ処理、ここでは特にデジタル標高モデル \index{digital elevation model}   (土壌特性、地形属性、気候パラメータ) に重点を置いている。 
 したがって、SAGA は大規模な (高解像度の) ラスタ\index{raster}データセットの高速処理に特に優れている [@conrad_system_2015]。
 
-`"saga:sagawetnessindex"` アルゴリズムは、実際には修正された TWI であり、谷底に位置するセルに対してより現実的な土壌水分ポテンシャルをもたらすものである [@bohner_spatial_2006]。
+`"sagang:sagawetnessindex"` アルゴリズムは、実際には修正された TWI であり、谷底に位置するセルに対してより現実的な土壌水分ポテンシャルをもたらすものである [@bohner_spatial_2006]。
 
 ```{r, eval=FALSE}
-qgis_show_help("saga:sagawetnessindex")
-# 出力は非表示
+qgis_show_help("sagang:sagawetnessindex")
+#> Saga wetness index (sagang:sagawetnessindex)
+#> Description
 ```
 
 ここでは、デフォルトの引数を使用する。
 与える引数は、入力となる `DEM` だけである。
-このアルゴリズムを使う際は、デフォルト値が研究の目的にあっているか確認する必要がある。^[`"saga:sagawetnessindex"` の追加引数は、 https://gis.stackexchange.com/a/323454/20955 で詳しく解説されている。] 
-`"saga:sagawetnessindex"` は、集水域、集水勾配、修正集水域、地形湿潤指数という4つのラスタを返す。
+このアルゴリズムを使う際は、デフォルト値が研究の目的にあっているか確認する必要がある。^[`"sagang:sagawetnessindex"` の追加引数は、 https://gis.stackexchange.com/a/323454/20955 で詳しく解説されている。] 
+`"sagang:sagawetnessindex"` は、集水域、集水勾配、修正集水域、地形湿潤指数という4つのラスタを返す。
 
-```{r, eval=FALSE}
-dem_wetness = qgis_run_algorithm("saga:sagawetnessindex", DEM = dem, 
-                                 .quiet = TRUE)
+```{r, eval=has_qgis}
+dem_wetness = qgis_run_algorithm("sagang:sagawetnessindex",
+  DEM = dem
+)
 ```
 
 <!-- その結果、`dem_wetness`、4つの出力へのファイルパスが記載されたリストが得られる。 -->
 `qgis_as_terra()` 関数で出力名を指定することで、選択した出力を読み出すことができる。
 
-```{r, eval=FALSE}
-dem_wetness_twi = qgis_as_terra(dem_wetness$TWI)
+```{r, eval=has_qgis}
+dem_wetness_twi_sdat = gsub("tif", "sdat", dem_wetness$TWI)
+dem_wetness_twi = qgis_as_terra(dem_wetness_twi_sdat)
+# plot(dem_wetness_twi)
 ```
 
 Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マップを見ることができる。
@@ -371,9 +428,9 @@ Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マッ�
 
 ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass7:r.geomorphon"` として見つけることができる。
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}
 grep("geomorphon", qgis_algo$algorithm, value = TRUE)
-#> [1] "grass7:r.geomorphon"
+#> [1] "grass7:r.geomorphon" "sagang:geomorphons" 
 qgis_show_help("grass7:r.geomorphon")
 # 出力は非表示
 ```
@@ -382,15 +439,17 @@ qgis_show_help("grass7:r.geomorphon")
 `search` -- 視線距離を計算する長さ、および ``-m`` -- 検索値を(セル数ではなく)メートル単位で提供することを指定するフラグが含まれている。
 追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html)に記載されている。
 
-```{r, eval=FALSE}
-dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon", elevation = dem, 
-                                    `-m` = TRUE, search = 120, .quiet = TRUE)
+```{r, eval=has_qgis}
+dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
+  elevation = dem,
+  `-m` = TRUE, search = 120
+)
 ```
 
 出力される `dem_geomorph$forms` は、10個のカテゴリーからなるラスタファイルで、それぞれが地形形状を表している。
 これを `qgis_as_terra()` で R に読み込んで可視化したり (Figure \@ref(fig:qgis-raster-map) の右パネル)、その後の計算で使うことができる。
 
-```{r, eval=FALSE}
+```{r, eval=has_qgis}
 dem_geomorph_terra = qgis_as_terra(dem_geomorph$forms)
 ```
 
@@ -469,8 +528,8 @@ plot(ndvi_srg$segments)
 これをポリゴンに変換するには、`as.polygons()` と `st_as_sf()` を使用する (Section \@ref(spatial-vectorization))。
 
 ```{r, eval=FALSE}
-ndvi_segments = ndvi_srg$segments |> 
-  as.polygons() |> 
+ndvi_segments = ndvi_srg$segments |>
+  as.polygons() |>
   st_as_sf()
 ```
 
@@ -533,7 +592,7 @@ library(osmdata)
 b_box = st_bbox(points)
 london_streets = opq(b_box) |>
   add_osm_feature(key = "highway") |>
-  osmdata_sf() 
+  osmdata_sf()
 london_streets = london_streets[["osm_lines"]]
 london_streets = select(london_streets, osm_id)
 ```
@@ -571,8 +630,10 @@ GRASS の `"v.clean"` は、重複、小角、ダングルの除去などを行�
 ここでは、後続のルーティングアルゴリズムが実際に交差点で右折または左折できるように、各交差点で改行し、その出力を `streets_clean` という名前の GRASS オブジェクトに保存している。
 
 ```{r 09-gis-32, eval=FALSE}
-execGRASS(cmd = "v.clean", input = "london_streets", output = "streets_clean",
-          tool = "break", flags = "overwrite")
+execGRASS(
+  cmd = "v.clean", input = "london_streets", output = "streets_clean",
+  tool = "break", flags = "overwrite"
+)
 ```
 
 ```{block2 06-raster-vector-22, type='rmdnote'}
@@ -586,9 +647,11 @@ GRASS GIS モジュールの引数やフラグについて学ぶには、`help` 
 その出力を `streets_points_con` に保存する。
 
 ```{r 09-gis-32b, eval=FALSE}
-execGRASS(cmd = "v.net", input = "streets_clean", output = "streets_points_con",
-          points = "points", operation = "connect", threshold = 0.001,
-          flags = c("overwrite", "c"))
+execGRASS(
+  cmd = "v.net", input = "streets_clean", output = "streets_points_con",
+  points = "points", operation = "connect", threshold = 0.001,
+  flags = c("overwrite", "c")
+)
 ```
 
 得られたクリーンなデータセットは `"v.net.salesman"` アルゴリズムの入力となり、最終的にすべての自転車レンタルステーション間の最短経路を見つけることができる。
@@ -598,9 +661,11 @@ execGRASS(cmd = "v.net", input = "streets_clean", output = "streets_points_con",
 巡回セールスマンアルゴリズムの GRASS ヘルプページを参照するには、 `execGRASS("g.manual", entry = "v.net.salesman")` を実行する。
 
 ```{r 09-gis-33, eval=FALSE}
-execGRASS(cmd = "v.net.salesman", input = "streets_points_con",
-          output = "shortest_route", center_cats = paste0("1-", nrow(points)),
-          flags = "overwrite")
+execGRASS(
+  cmd = "v.net.salesman", input = "streets_points_con",
+  output = "shortest_route", center_cats = paste0("1-", nrow(points)),
+  flags = "overwrite"
+)
 ```
 
 この結果を見るために、結果をRに読み込み、形状だけを残してsf-objectに変換し、**mapview**パッケージを使って可視化しました (Figure \@ref(fig:grass-mapview) と Section \@ref(interactive-maps))。
@@ -618,11 +683,14 @@ knitr::include_graphics("figures/10_shortest_route.png")
 
 ```{r 09-gis-35, eval=FALSE, echo=FALSE}
 library(mapview)
-m_1 = mapview(route) +  points
+m_1 = mapview(route) + points
 mapview::mapshot(m_1,
-                 file = file.path(getwd(), "figures/09_shortest_route.png"),
-                 remove_controls = c("homeButton", "layersControl",
-                                     "zoomControl"))
+  file = file.path(getwd(), "figures/09_shortest_route.png"),
+  remove_controls = c(
+    "homeButton", "layersControl",
+    "zoomControl"
+  )
+)
 ```
 
 その際、いくつか注意すべき点がある。
@@ -696,7 +764,7 @@ cmd = paste("ogrinfo -al -so", our_filepath)
 system(cmd)
 #> INFO: Open of `.../spData/shapes/world.gpkg'
 #>       using driver `GPKG' successful.
-#> 
+#>
 #> Layer name: world
 #> Geometry: Multi Polygon
 #> Feature Count: 177
@@ -751,9 +819,11 @@ QGIS\index{QGIS} Cloud は、地理データや地図をクラウド上に保存
 
 ```{r 09-gis-37, eval=FALSE}
 library(RPostgreSQL)
-conn = dbConnect(drv = PostgreSQL(), 
-                 dbname = "rtafdf_zljbqm", host = "db.qgiscloud.com",
-                 port = "5432", user = "rtafdf_zljbqm", password = "d3290ead")
+conn = dbConnect(
+  drv = PostgreSQL(),
+  dbname = "rtafdf_zljbqm", host = "db.qgiscloud.com",
+  port = "5432", user = "rtafdf_zljbqm", password = "d3290ead"
+)
 ```
 
 新しいオブジェクト `conn` は、R セッションとデータベースの間のリンクを確立したに過ぎない。
@@ -764,8 +834,8 @@ conn = dbConnect(drv = PostgreSQL(),
 
 ```{r 09-gis-38, eval=FALSE}
 dbListTables(conn)
-#> [1] "spatial_ref_sys" "topology"        "layer"           "restaurants"    
-#> [5] "highways" 
+#> [1] "spatial_ref_sys" "topology"        "layer"           "restaurants"
+#> [5] "highways"
 ```
 
 答えは、5つのテーブルである。
@@ -775,8 +845,8 @@ dbListTables(conn)
 
 ```{r 09-gis-39, eval=FALSE}
 dbListFields(conn, "highways")
-#> [1] "qc_id"        "wkb_geometry" "gid"          "feature"     
-#> [5] "name"         "state"   
+#> [1] "qc_id"        "wkb_geometry" "gid"          "feature"
+#> [5] "name"         "state"
 ```
 
 さて、利用可能なデータセットがわかったところで、いくつかのクエリを実行し、データベースに質問することができる。
@@ -789,7 +859,8 @@ dbListFields(conn, "highways")
 query = paste(
   "SELECT *",
   "FROM highways",
-  "WHERE name = 'US Route 1' AND state = 'MD';")
+  "WHERE name = 'US Route 1' AND state = 'MD';"
+)
 us_route = read_sf(conn, query = query, geom = "wkb_geometry")
 ```
 
@@ -802,7 +873,8 @@ us_route = read_sf(conn, query = query, geom = "wkb_geometry")
 query = paste(
   "SELECT ST_Union(ST_Buffer(wkb_geometry, 35000))::geometry",
   "FROM highways",
-  "WHERE name = 'US Route 1' AND state = 'MD';")
+  "WHERE name = 'US Route 1' AND state = 'MD';"
+)
 buf = read_sf(conn, query = query)
 ```
 
@@ -852,17 +924,25 @@ tm_shape(buf) +
   tm_lines(col = "black", lwd = 3) +
   tm_shape(hardees) +
   tm_symbols(col = "#F10C26") +
-  tm_add_legend(type = "line", col = "black", lwd = 3,
-                labels = "The US Route 1 highway") +
-  tm_add_legend(type = "fill", col = "#FFFDD0",
-                border.alpha = 0.3, label = "35km buffer") +
-  tm_add_legend(type = "symbol", col = "#F10C26",
-                labels = "Restaurants") +
-  tm_layout(frame = FALSE,
-            legend.outside = TRUE,
-            legend.outside.size = 0.3) 
+  tm_add_legend(
+    type = "line", col = "black", lwd = 3,
+    labels = "The US Route 1 highway"
+  ) +
+  tm_add_legend(
+    type = "fill", col = "#FFFDD0",
+    border.alpha = 0.3, label = "35km buffer"
+  ) +
+  tm_add_legend(
+    type = "symbol", col = "#F10C26",
+    labels = "Restaurants"
+  ) +
+  tm_layout(
+    frame = FALSE,
+    legend.outside = TRUE,
+    legend.outside.size = 0.3
+  )
 
-if (packageVersion("tmap") >= "4.0"){
+if (packageVersion("tmap") >= "4.0") {
   library(tmap)
   tm_shape(buf) +
     tm_polygons(fill = "#FFFDD0", col_alpha = 0.3) +
@@ -876,7 +956,7 @@ if (packageVersion("tmap") >= "4.0"){
     #               border.alpha = 0.3, label = "35km buffer") +
     # tm_add_legend(type = "symbol", col = "#F10C26",
     #               labels = "Restaurants") +
-    tm_layout(frame = FALSE) 
+    tm_layout(frame = FALSE)
 }
 ```
 
@@ -918,16 +998,19 @@ R では、**rstac** パッケージ\index{rstac (package)} [@simoes_rstac_2021]
 以下の例では、[Sentinel-2 Cloud-Optimized GeoTIFF (COG) dataset on Amazon Web Services](https://registry.opendata.aws/sentinel-2-l2a-cogs)\index{COG} から、事前に定義した関心領域と時間に交差するすべての画像を要求している。
 結果は、見つかったすべての画像とそのメタデータ (雲量など)、および AWS 上の実際のファイルを指す URL を含んでいる。
 
-```{r 09-stac-example, eval = FALSE}
+```{r 09-stac-example, eval=FALSE}
 library(rstac)
 # Sentinel-2 データの STAC-API endpoint に接続し、
 # AOI と交差する画像を検索
 s = stac("https://earth-search.aws.element84.com/v0")
 items = s |>
-  stac_search(collections = "sentinel-s2-l2a-cogs",
-              bbox = c(7.1, 51.8, 7.2, 52.8), 
-              datetime = "2020-01-01/2020-12-31") |>
-  post_request() |> items_fetch()
+  stac_search(
+    collections = "sentinel-s2-l2a-cogs",
+    bbox = c(7.1, 51.8, 7.2, 52.8),
+    datetime = "2020-01-01/2020-12-31"
+  ) |>
+  post_request() |>
+  items_fetch()
 ```
 
 クラウドストレージはローカルのハードディスクとは異なり、従来の画像ファイル形式はクラウドベースのジオプロセシングではうまく機能しない。
@@ -941,14 +1024,19 @@ items = s |>
 
 以下のコードは、前回の STAC-API 検索で返された Sentinel-2 画像から、低解像度 (250m) の最大 NDVI コンポジットを作成する最小限の例を示している。
 
-```{r 09-gdalcubes-example, eval = FALSE}
+```{r 09-gdalcubes-example, eval=FALSE}
 library(gdalcubes)
 # クラウドカバーで画像をフィルタし、画像コレクションを生成
-collection = stac_image_collection(items$features, 
-                  property_filter = function(x) {x[["eo:cloud_cover"]] < 10})
+collection = stac_image_collection(items$features,
+  property_filter = function(x) {
+    x[["eo:cloud_cover"]] < 10
+  }
+)
 # データキューブの範囲、解像度 (250m、毎日)、CRS を定義
-v = cube_view(srs = "EPSG:3857", extent = collection, dx = 250, dy = 250,
-              dt = "P1D") # "P1D" は ISO 8601 期間文字列
+v = cube_view(
+  srs = "EPSG:3857", extent = collection, dx = 250, dy = 250,
+  dt = "P1D"
+) # "P1D" は ISO 8601 期間文字列
 # データキューブを生成し処理
 cube = raster_cube(collection, v) |>
   select_bands(c("B04", "B08")) |>
@@ -970,13 +1058,11 @@ STAC\index{STAC}、COGs\index{COG}、data cube\index{data cube} を組み合わ�
 
 ### openEO
 
-地球観測データを処理するためのクラウドサービスは、大規模なデータアーカイブの他に、ここ数年で数多く提供されるようになった。
 OpenEO [@schramm_openeo_2021]\index{openEO} は、データ処理のための共通言語を定義することによって、クラウドサービス間の相互運用性を支援するイニシアチブである。
 最初のアイデアは[r-spatial.org blog post](https://r-spatial.org/2016/11/29/openeo.html)で説明されており、ユーザーができるだけ少ないコード変更で簡単にクラウドサービス間を変更できるようにすることを目的としている。
 [標準化プロセス](https://processes.openeo.org)では、データへのインタフェースとして多次元データキューブモデル\index{data cube}を使用している。
 8種類のバックエンドの実装が用意されており (https://hub.openeo.org)、ユーザーは R、Python、JavaScript、QGIS、Web エディタで接続し、コレクションに対してプロセスを定義 (およびチェーン) することができる。
 バックエンドによって機能や利用できるデータが異なるため、**openeo** R パッケージ [@lahn_openeo_2021] は接続されたバックエンドから利用できるプロセスとコレクションを動的にロードする。
-
 その後、ユーザーは画像コレクションのロード、プロセスの適用と連鎖、ジョブの送信、結果の探索とプロットを行うことができる。
 
 以下のコードは、[openEO platform backend](https://openeo.cloud/) に接続し、利用可能なデータセット、プロセス、出力フォーマットを要求し、Sentinel-2 データから最大 NDVI 画像を計算するプロセスグラフを定義し、最後にバックエンドにログインした後にグラフを実行する。
@@ -989,19 +1075,29 @@ p = processes() # 利用可能なプロセスをロード
 collections = list_collections() # 利用可能なコレクションをロード
 formats = list_file_formats() # 利用可能な出力フォーマットをロード
 # Sentinel-2 コレクションをロード
-s2 = p$load_collection(id = "SENTINEL2_L2A",
-                       spatial_extent = list(west = 7.5, east = 8.5,
-                                             north = 51.1, south = 50.1),
-                       temporal_extent = list("2021-01-01", "2021-01-31"),
-                       bands = list("B04","B08")) 
+s2 = p$load_collection(
+  id = "SENTINEL2_L2A",
+  spatial_extent = list(
+    west = 7.5, east = 8.5,
+    north = 51.1, south = 50.1
+  ),
+  temporal_extent = list("2021-01-01", "2021-01-31"),
+  bands = list("B04", "B08")
+)
 # NDVI vegetation index を計算
-compute_ndvi = p$reduce_dimension(data = s2, dimension = "bands",
-                                  reducer = function(data, context) {
-                                    (data[2] - data[1]) / (data[2] + data[1])
-                                  })
+compute_ndvi = p$reduce_dimension(
+  data = s2, dimension = "bands",
+  reducer = function(data, context) {
+    (data[2] - data[1]) / (data[2] + data[1])
+  }
+)
 # maximum over time を計算
-reduce_max = p$reduce_dimension(data = compute_ndvi, dimension = "t",
-                                reducer = function(x, y) {max(x)})
+reduce_max = p$reduce_dimension(
+  data = compute_ndvi, dimension = "t",
+  reducer = function(x, y) {
+    max(x)
+  }
+)
 # GeoTIFF で出力
 result = p$save_result(reduce_max, formats$output$GTiff)
 # ログイン https://docs.openeo.cloud/getting-started/r/#authentication 参照
@@ -1014,7 +1110,9 @@ compute_result(graph = result, output_file = tempfile(fileext = ".tif"))
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child('_10-ex.Rmd', quiet = TRUE, 
-                        options = list(include = FALSE, eval = FALSE))
-cat(res, sep = '\n')
+res = knitr::knit_child("_10-ex.Rmd",
+  quiet = TRUE,
+  options = list(include = FALSE, eval = FALSE)
+)
+cat(res, sep = "\n")
 ```
