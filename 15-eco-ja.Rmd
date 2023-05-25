@@ -2,8 +2,8 @@
 
 ## 必須パッケージ  {- #prerequisites-15}
 
-この章では、Chapter \@ref(spatial-class) ～ Chapter \@ref(geometry-operations) で説明した地理データ解析\index{geographic data analysis}と処理について十分に理解していることを前提に説明する。
-また、Chapters \@ref(gis) で解説した R\index{R} の専用 GIS\index{GIS} インタフェースや、Chapter \@ref(spatial-cv) の空間クロスバリデーション (cross-validation, CV)\index{cross-validation!spatial CV} も活用していこう。
+この章では、Chapter \@ref(spatial-class) ～ Chapter \@ref(geometry-operations) で説明した地理データ解析と処理について十分に理解していることを前提に説明する。
+また、Chapters \@ref(gis) と Chapter \@ref(spatial-cv) で解説した GIS へのブリッジと空間クロスバリデーション (cross-validation, CV)\index{cross-validation!spatial CV} も活用していこう。
 
 この章では、以下のパッケージを使用する。
 
@@ -26,23 +26,18 @@ library(vegan)             # 生態学
 ## イントロダクション  {#introduction-15}
 
 本章では、霧のオアシスの植生勾配をモデル化し、水の利用可能性に明らかに支配されている特徴的な植生帯を明らかにする。
-そのために、これまでの章 (Chapter \@ref(spatial-class)〜\@ref(geometry-operations)、Chapter \@ref(gis)、Chapter \@ref(spatial-cv)) で紹介した概念をまとめ、さらに拡張していく。
+ケーススタディでは、R におけるジオコンピュテーションスキルを磨くため、これまでの章で紹介した概念をまとめ、さらに拡張していく。
 
-霧のオアシスは、これまでに出会った中で最も魅力的な植生形態の一つである。このような現象は、地元では *lomas* と呼ばれ、ペルーやチリの海岸砂漠に沿った山々に発達している。^[同様の植生形態は、ナミビアやイエメン、オマーンの海岸沿いなど他の地域でも見られる [@galletti_land_2016]。] 
-砂漠の極限状態と隔絶された地であることが、霧のオアシスの固有種を含むユニークな生態系の生息地となっている。
-年間平均 30〜50 mm 程度の降水量と乾燥した条件にもかかわらず、霧の発生により、南半球の冬の間に植物が利用できる水量が増加する。
+霧のオアシスは、地元では *lomas* と呼ばれ、ペルーやチリの海岸砂漠に沿った山々に発達している。
+同様の植生形態は、ナミビアやイエメン、オマーンの海岸沿いなど他の地域でも見られる [@galletti_land_2016]。
+年間の降水量平均は 30〜50 mm 程度であり乾燥した条件にもかかわらず、霧の発生により、南半球の冬の間に植物が利用できる水量が増加する。
 その結果、ペルーの海岸線に沿った南向きの山の斜面が緑色になる (Figure \@ref(fig:study-area-mongon))。 
-冬のフンボルト海流がもたらす逆転現象の下に発生する霧が、この生息地の名前の由来となっている。
-数年に一度、エルニーニョ現象によって、この太陽の降り注ぐ環境に集中豪雨がもたらされる [@dillon_lomas_2003]。
-その結果、砂漠に花が咲き、木の苗が次の乾燥した環境を生き抜くために十分な長さの根を張ることが可能になる。
+数年に一度、エルニーニョ現象によって、この太陽の降り注ぐ環境に集中豪雨がもたらされ、苗木はその後の乾燥した環境を生き抜くための根を長く張るチャンスを得ることができる [@dillon_lomas_2003]。
 
-残念ながら、霧のオアシスは、主に人間の活動 (農業と気候変動) により、大きく危機に瀕している。
-このユニークな植生生態系の最後の残りを効果的に保護するためには、原生植物相の構成と空間分布に関するエビデンスが必要である [@muenchow_predictive_2013; @muenchow_soil_2013]。
-また、*lomas* のある山には観光地としての経済的な価値もあり、レクリエーションを通じて地域住民の幸福にも貢献する。
-例えば、ペルー人の多くは海岸沿いの砂漠に住んでいて、「緑」に一番近いのはロマス山であることが多い。
-
+残念ながら、霧のオアシスは、主に人間の活動により、大きく危機に瀕している。
+残されたユニークな植生生態系を効果的に保護するためには、原生植物相の構成と空間分布に関するエビデンスが必要である [@muenchow_predictive_2013; @muenchow_soil_2013]。
 この章では、前の章で学んだ技術を生態学的に実際に応用していこう。
-事例として、ペルー中央北岸のカスマ近郊にある *lomas* のある山、Mongón 山の南斜面における維管束植物の構成と空間分布を分析する (Figure \@ref(fig:study-area-mongon))。
+その中で、ペルー中央北岸のカスマ近郊にある *lomas* のある山、Mongón 山の南斜面における維管束植物の構成と空間分布を分析する (Figure \@ref(fig:study-area-mongon))。
 
 ```{r study-area-mongon, echo=FALSE, fig.cap="Mongón 山調査地、Muenchow, Schratz, and Brenning (2017) より。", out.width="60%", fig.scap="The Mt. Mongón study area."}
 knitr::include_graphics("figures/15_study_area_mongon.png")
@@ -51,8 +46,7 @@ knitr::include_graphics("figures/15_study_area_mongon.png")
 
 Mongón 山への野外調査において、2011年の冬、ランダムにサンプルした 4x4 m^2^ の 100 区画に生息するすべての維管束植物を記録した [@muenchow_predictive_2013]。
 サンプル採取は、その年の強いラニーニャ現象に重なった (ENSO monitoring of [NOASS Climate Prediction Center](http://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php)を参照)。
-そのため、沿岸部の砂漠は通常よりもさらに高い乾燥度を示すようになった。
-一方、ペルーの *lomas* のある山脈の南斜面では、霧の活動も活発になっている。
+そのため、沿岸部の砂漠は通常よりもさらに高い乾燥度を示すようになり、ペルーの *lomas* のある山脈の南斜面では、霧の活動も活発になっている。
 
 <!--
 最初の仮説は、標高勾配に沿って4つの植物帯が見られるというものだ。低標高の*チランジア*帯、草本帯、ブロメリアド帯、そして最上部の多肉植物帯である。 [@muenchow_soil_2013] .

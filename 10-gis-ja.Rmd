@@ -22,10 +22,17 @@ library(gdalcubes)
 ```
 
 ```{r 09-gis-1-3, echo=FALSE, message=FALSE}
-# Only run code if qgis is installed
-has_qgis = FALSE
+# Only run code if qgis and relevant plugins are installed
+has_qgis_plugins = FALSE
+# Check to see that the qgisprocess package is installed:
 if ("qgisprocess" %in% installed.packages()) {
-  has_qgis = qgisprocess::has_qgis()
+  # Check that QGIS is available to prevent errors in subsequent checks:
+  if (qgisprocess::has_qgis()) {
+    # Check that the plugins are installed (they will loaded later):
+    has_grass = qgisprocess::qgis_has_provider("grass7")
+    has_saga = qgisprocess::qgis_has_provider("sagang")
+    has_qgis_plugins = has_grass && has_saga
+  }
 }
 ```
 
@@ -115,10 +122,7 @@ knitr::kable(
 
 ## **qgisprocess**: QGIS へのブリッジなど  {#rqgis}
 
-<!--toDo:jn-->
-<!-- how to mention/use the QGIS package (https://en.cahik.cz//2022/03/07/r-package-qgis/) here? -->
-
-QGIS\index{QGIS}  は、最も人気のあるオープンソース GIS である [Table \@ref(tab:gis-comp); @graser_processing_2015]。 
+QGIS\index{QGIS} は、最も人気のあるオープンソース GIS である [Table \@ref(tab:gis-comp); @graser_processing_2015]。 
 QGIS は、統一されたインターフェイスで、QGIS自身のジオアルゴリズム、GDAL\index{GDAL}、さらにインストールされている場合にはGRASS\index{GRASS}、SAGA\index{SAGA} を利用することができる [@graser_processing_2015]。 
 バージョン 3.14 (2020年夏にリリース) 以降、QGIS は、さまざまジオコンピュテーション機能にアクセスできる `qgis_process` コマンドラインを提供している。
 `qgis_process` は、標準的 QGIS に備わる 300 以上のジオアルゴリズムと、GRASS や SAGA など 1000 以上の外部プロバイダへのアクセスを提供している。
@@ -129,11 +133,11 @@ QGIS は、統一されたインターフェイスで、QGIS自身のジオア�
 あるいは、Docker をインストール済みの方は、本プロジェクトの `qgis` イメージから **qgisprocess** を使うこともできる。
 Docker をインストールしており、十分な実行環境のある方は、以下のコマンドで **qgisprocess** および関連プラグインを実行できる ([geocompx/docker](https://github.com/geocompx/docker) レポジトリを参照)。
 
-```bash
+```{bash, eval=FALSE}
 docker run -e DISABLE_AUTH=true -p 8786:8787 ghcr.io/geocompx/docker:qgis
 ```
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 library(qgisprocess)
 #> Attempting to load the cache ... Success!
 #> QGIS version: 3.30.1-'s-Hertogenbosch
@@ -143,12 +147,12 @@ library(qgisprocess)
 このパッケージは、QGISのインストールを自動的に検出しようとし、検出できない場合は警告を発する。 ^[検出プロセスの詳細は、`qgis_configure()` を実行すると表示される。] 
 設定に失敗した場合の解決策としては、`options(qgisprocess.path = "path/to/your_qgis_process")`、環境変数 `R_QGISPROCESS_PATH` を設定する方法が考えられる。
 <!--toDo:jn-->
-<!-- link to the vignette https://github.com/paleolimbot/qgisprocess/pull/31/files when it is online -->
+<!-- link to the vignette https://github.com/r-spatial/qgisprocess/pull/31/files when it is online -->
 上記の方法は、複数の QGIS がインストールされており、どれを使うかを決めたい場合にも使える。
 
 次に、どのプロバイダ (異なるソフトウェアを意味する) が自分のコンピュータで利用できるかを調べてみよう。
 
-```{r providers, eval=has_qgis}
+```{r providers, eval=has_qgis_plugins}
 qgis_providers()
 #> # A tibble: 6 × 3
 #>   provider provider_title    algorithm_count
@@ -192,7 +196,7 @@ incongr_wgs = st_transform(incongruent, "EPSG:4326")
 aggzone_wgs = st_transform(aggregating_zones, "EPSG:4326")
 ```
 
-```{r uniondata, echo=FALSE, fig.cap="Illustration of two areal units: incongruent (black lines) and aggregating zones (red borders).", eval=has_qgis}
+```{r uniondata, echo=FALSE, fig.cap="Illustration of two areal units: incongruent (black lines) and aggregating zones (red borders).", eval=has_qgis_plugins}
 library(tmap)
 tm_shape(incongr_wgs) +
   tm_polygons(border.col = "grey5") +
@@ -231,14 +235,14 @@ if (packageVersion("tmap") >= "4.0"){
 この作業を行うアルゴリズムを見つけるには、`qgis_algorithms()` 関数の出力を検索すればよい。
 この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。^[したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。]
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 qgis_algo = qgis_algorithms()
 ```
 
 `qgis_algo` オブジェクトには多くの列があるが、通常、私たちが関心を持つのは、プロバイダとアルゴリズム名の情報を組み合わせた `algorithm` 列だけである。
 関数の短い説明文に "union"\index{union}という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 grep("union", qgis_algo$algorithm, value = TRUE)
 ```
 
@@ -248,7 +252,7 @@ grep("union", qgis_algo$algorithm, value = TRUE)
 これによって、出力が長くなる。
 以下のコマンドは、各行に `"native:union"` が必要とする引数を表すデータフレームを返し、各列は名前、説明、種類、デフォルト値、とりうる値を示す。
 
-```{r 09-gis-6, eval=has_qgis}
+```{r 09-gis-6, eval=has_qgis_plugins}
 alg = "native:union"
 union_arguments = qgis_arguments(alg)
 union_arguments
@@ -280,7 +284,7 @@ union_arguments
 最初の `INPUT` は、主なベクタオブジェクト `incongr_wgs` であり、2番目の `OVERLAY` は、`aggzone_wgs` である。
 最後の引数、`OUTPUT` は出力ファイル名だが、指定されていない場合、**qgisprocess** は自動的に `tempdir()` に一時ファイルを作成する。
 
-```{r 09-gis-7, eval=has_qgis}
+```{r 09-gis-7, eval=has_qgis_plugins}
 union = qgis_run_algorithm(alg,
   INPUT = incongr_wgs, OVERLAY = aggzone_wgs
 )
@@ -305,7 +309,7 @@ QGIS\index{QGIS} の和集合 (union \index{vector!union}) の操作は、2つ�
 スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25000 m^2^ を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 grep("clean", qgis_algo$algorithm, value = TRUE)
 ```
 
@@ -355,7 +359,7 @@ clean_sf = st_as_sf(clean)
 
 その結果、\@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
 
-```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。", eval=has_qgis}
+```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。", eval=has_qgis_plugins}
 knitr::include_graphics("figures/10-sliver.png")
 ```
 
@@ -369,7 +373,7 @@ DEM は、衛星航法、水流モデル、表面分析、可視化など、さ�
 このセクションでは、`dem.tif` を使用することにする。これは、Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照)。
 解像度は約 30 m × 30 m で、投影型 CRS を使用している。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 library(qgisprocess)
 library(terra)
 dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
@@ -380,7 +384,7 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 例えば、地形湿潤指数 (Topologic Wetness Index, TWI) は、水文・生物学的プロセスの研究に有用であることがわかっている [@sorensen_calculation_2006]。
 このインデックスのアルゴリズムリストを、`"wetness"` というキーワードで検索してみよう。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 qgis_algo = qgis_algorithms()
 grep("wetness", qgis_algo$algorithm, value = TRUE)
 #> [1] "sagang:sagawetnessindex"              
@@ -405,7 +409,7 @@ qgis_show_help("sagang:sagawetnessindex")
 このアルゴリズムを使う際は、デフォルト値が研究の目的にあっているか確認する必要がある。^[`"sagang:sagawetnessindex"` の追加引数は、 https://gis.stackexchange.com/a/323454/20955 で詳しく解説されている。] 
 `"sagang:sagawetnessindex"` は、集水域、集水勾配、修正集水域、地形湿潤指数という4つのラスタを返す。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 dem_wetness = qgis_run_algorithm("sagang:sagawetnessindex",
   DEM = dem
 )
@@ -414,7 +418,7 @@ dem_wetness = qgis_run_algorithm("sagang:sagawetnessindex",
 <!-- その結果、`dem_wetness`、4つの出力へのファイルパスが記載されたリストが得られる。 -->
 `qgis_as_terra()` 関数で出力名を指定することで、選択した出力を読み出すことができる。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 dem_wetness_twi_sdat = gsub("tif", "sdat", dem_wetness$TWI)
 dem_wetness_twi = qgis_as_terra(dem_wetness_twi_sdat)
 # plot(dem_wetness_twi)
@@ -428,7 +432,7 @@ Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マッ�
 
 ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass7:r.geomorphon"` として見つけることができる。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 grep("geomorphon", qgis_algo$algorithm, value = TRUE)
 #> [1] "grass7:r.geomorphon" "sagang:geomorphons" 
 qgis_show_help("grass7:r.geomorphon")
@@ -439,7 +443,7 @@ qgis_show_help("grass7:r.geomorphon")
 `search` -- 視線距離を計算する長さ、および ``-m`` -- 検索値を(セル数ではなく)メートル単位で提供することを指定するフラグが含まれている。
 追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html)に記載されている。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
   elevation = dem,
   `-m` = TRUE, search = 120
@@ -449,7 +453,7 @@ dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
 出力される `dem_geomorph$forms` は、10個のカテゴリーからなるラスタファイルで、それぞれが地形形状を表している。
 これを `qgis_as_terra()` で R に読み込んで可視化したり (Figure \@ref(fig:qgis-raster-map) の右パネル)、その後の計算で使うことができる。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 dem_geomorph_terra = qgis_as_terra(dem_geomorph$forms)
 ```
 
@@ -791,9 +795,6 @@ TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-to
 さらに、**sf** は GDAL \index{GDAL} , GEOS \index{GEOS} , PROJ \index{PROJ}  が提供するパワーのほとんどを **Rcpp** が提供する R/C++ \index{C++}  インターフェイスを介して R にもたらし、`system()` の呼び出しを回避しているのである。
 
 ### 空間データベースへのブリッジ  {#postgis}
-
-<!--toDo:jn-->
-<!--consider referencing to 3rd edition of the PostGIS book-->
 
 \index{spatial database}
 空間データベース管理システム (空間DBMS) は、空間および非空間データを構造化して保存する。

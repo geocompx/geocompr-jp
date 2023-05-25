@@ -17,7 +17,7 @@ library(spData)
 <!--revise and update the following section-->
 
 この章では、地理データの読み書きの方法について説明する。
-地理データ<u>入力</u> (Import) はジオコンピューテーション\index{geocomputation}に不可欠である。 実世界のアプリケーションはデータなしには不可能である。
+地理データ<u>入力</u> (Input) はジオコンピューテーション\index{geocomputation}に不可欠である。 実世界のアプリケーションはデータなしには不可能である。
 データ<u>出力</u> (Output) も重要で、研究の結果得られた価値ある新しいデータセットや改良されたデータセットを他の人が利用できるようにすることができる。
 これらの入力/出力の処理をまとめて、データ I/O と呼ぶことができる。
 
@@ -37,10 +37,9 @@ Section \@ref(retrieving-data) では、このトピックについて合計で�
 
 <!--toDo:RL-->
 <!--revise and update the following section-->
-<!-- we should add http://freegisdata.rtwilson.com/ somewhere -->
 
 \index{open data}
-インターネット上には膨大かつ増え続ける地理データがあり、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。
+インターネット上には膨大かつ増え続ける地理データがあり、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。^[例えば、自由に使える地理データが https://freegisdata.rtwilson.com/ に多数ある。]
 同じデータセットにアクセスする場所が複数あるという意味で、ある意味、データは<u>多すぎる</u>くらいにある。
 一部のデータセットは品質が低い。
 そこで、最初に最も重要な情報源をいくつか紹介する。
@@ -75,14 +74,13 @@ usa_parks = read_sf(dsn = "nps_boundary.shp")
 地理データにアクセスするための R パッケージが多数開発されており、その一部を Table \@ref(tab:datapackages) で紹介している。
 これらのパッケージは、1つまたは複数の空間ライブラリやジオポータルへのインターフェースを提供し、コマンドラインからのデータアクセスをさらに高速化することを目的としている。
 
-<!--toDo:JN-->
-<!-- update the table -->
 ```{r datapackages, echo=FALSE, warning=FALSE}
 datapackages = tibble::tribble(
   ~`パッケージ`, ~説明,
+  "FedData", "米国連邦政府のデータセット。標高や地表などのデータがある。",
+  "geodata", "行政データ、標高データ、WorldClim データのダウンロードとインポート。",
   "osmdata", "OpenStreetMap の小さなデータセットをダウンロードし、インポート。",
   "osmextract", "OpenStreetMap の大きなデータセットをダウンロードし、インポート。",
-  "geodata", "行政データ、標高データ、WorldClim データのダウンロードとインポート。",
   "rnaturalearth", "Natural Earth ベクタ・ラスタデータ。",
   "rnoaa", "米国海洋大気庁 (National Oceanic and Atmospheric Administration, NOAA) の気候データをインポート。"
 )
@@ -93,25 +91,21 @@ knitr::kable(datapackages,
   kableExtra::kable_styling(latex_options="scale_down")
 ```
 
-<!--toDo:JN-->
-<!-- add to the table: -->
-<!-- - elevatr - https://github.com/jhollist/elevatr/issues/64 -->
-<!-- https://github.com/ropensci/rsat -->
-<!-- https://github.com/mikejohnson51/climateR/issues/44 -->
-<!-- maybe: -->
-<!-- - https://github.com/ErikKusch/KrigR -->
-<!-- https://cran.r-project.org/web/packages/FedData/index.html -->
-<!-- https://github.com/VeruGHub/easyclimate -->
-<!-- mention: -->
-<!-- - https://github.com/ropensci/MODIStsp -->
+
+
+
+
+
+
+
+
+
+
 
 Table \@ref(tab:datapackages) は、利用可能な地理データパッケージのごく一部に過ぎないことを強調しておく。
 この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
 同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czechia)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
 その他の注目すべきパッケージは、R で Global Summary Daily Weather Data を提供する **GSODR** である (気象データソースの概要についてはパッケージの [README](https://github.com/ropensci/GSODR)を参照)。
-<!--toDo:JN-->
-<!-- ; and **hddtools**, which provides access to a range of hydrological datasets. --> 
-<!-- not on CRAN anymore -->
 
 各データパッケージは、データにアクセスするためのコードの書き方がそれぞれ異なる。
 Table \@ref(tab:datapackages) の3つのパッケージについて、データを取得するコードチャンクを示すので、その違いを確認していただきたい。^[R 専用パッケージを使用したデータダウンロードの他の例は、以下を参照。 https://rspatialdata.github.io/] 
@@ -206,15 +200,14 @@ geo_sf = st_as_sf(geo_df, coords = c("long", "lat"), crs = "EPSG:4326")
 ```
 
 また、このパッケージは、一組の座標に基づいて一連の情報 (名前、住所など) を取得するために使用される逆ジオコーディングと呼ばれる逆の処理を実行することもできる。
-<!-- https://github.com/jessecambon/tidygeocoder -->
 
-<!--toDo:jn-->
-<!-- we should add a rgee section in the bridges chapter and add a reference here -->
-<!-- consider data from rgee -->
-<!-- rgee - see https://github.com/loreabad6/30DayMapChallenge/blob/main/scripts/day08_blue.R -->
-<!-- Finally, there are some packages that allows to download spatial data among many other functions.  -->
-<!-- Prominent example here is the **rgee** package  -->
-<!-- ee_imagecollection_to_local -->
+
+
+
+
+
+
+
 
 ## 地理ウェブサービス  {#geographic-web-services}
 
@@ -230,7 +223,7 @@ geo_sf = st_as_sf(geo_df, coords = c("long", "lat"), crs = "EPSG:4326")
 PostGIS などの地図サーバーはこれらのプロトコルを採用し、クエリの標準化を進めている。
 他のウェブ API と同様に、OWS API はデータを要求するために `?` に続く「ベース URL」と「エンドポイント」および「URL クエリ引数」を使う (**httr** パッケージ内の [`best-practices-api-packages`](https://httr.r-lib.org/articles/api-packages.html) vignette を参照)。
 
-OWS のサービスには、さまざまな要望がある。
+OWS のサービスへのリクエスト方法はたくさんある。
 最も基本的なものの1つが `getCapabilities` であり、以下の **httr** 関数 `GET()` と `modify_url()` で示されている。
 このコードチャンクは、API\index{API}  のクエリを作成しデータ取得する方法を示している。この場合、国連食糧農業機関 (Food and Agriculture Organization, FAO) が運営するサービスの能力を発見することもできる。
 
@@ -243,7 +236,7 @@ res = GET(url = modify_url(base_url, path = endpoint), query = q)
 res$url
 ```
 
-上記のコードチャンクは、API\index{API}  リクエストを `GET()` 関数でプログラム的に構築する方法を示している。この関数は、ベース URL とクエリパラメータのリストを受け取り、簡単に拡張することができる。
+上記のコードチャンクは、API\index{API} リクエストを `GET()` 関数でプログラム的に構築する方法を示している。この関数は、ベース URL とクエリパラメータのリストを受け取り、簡単に拡張することができる。
 リクエストの結果を、**httr** パッケージで定義されたクラス `response` のオブジェクト `res` に保存し、URL を含むリクエストの情報を含むリストとなる。
 `browseURL(res$url)` を実行するとわかるように、結果はブラウザで直接読むこともできる。
 リクエストの内容を抽出する一つの方法として、次のようなものがある。
@@ -303,7 +296,7 @@ OWS サービスを利用する **ows4R** というパッケージが開発さ�
 \index{GDAL}
 GDAL (Geospatial Data Abstraction Library、「グードル」と発音する。「グー」の goo の oo 部分は、Object Oeirneted を表す) は、2000年のリリース以来、地理ファイルフォーマット間の非互換性に関連する多くの問題を解決した。
 GDAL は、多くのラスタおよびベクタデータフォーマットの読み書きのための統一された高性能なインタフェースを提供する。^[Chapter \@ref(geometry-operations) で解説する通り、GDAL には、ラスタのモザイク処理、リサンプリング、クロッピング、再投影などを可能にするユーティリティ関数群もある。] 
-GRASS、ArcGIS\index{ArcGIS}、QGIS\index{QGIS}  など、多くのオープンおよびプロプライエタリな GIS プログラムは、GUI\index{graphical user interface} の背後に GDAL\index{GDAL}  を使用して、地理データを取り込み、適切な形式で出力するという足回りの作業を行なっている。
+GRASS、ArcGIS\index{ArcGIS}、QGIS\index{QGIS} など、多くのオープンおよびプロプライエタリな GIS プログラムは、GUI\index{graphical user interface} の背後に GDAL\index{GDAL}  を使用して、地理データを取り込み、適切な形式で出力するという足回りの作業を行なっている。
 
 GDAL\index{GDAL} は、200 以上のベクタおよびラスタデータフォーマットへのアクセスを提供する。
 Table \@ref(tab:formats) では、よく使われる空間ファイルフォーマットについての基本情報を紹介している。
@@ -329,10 +322,6 @@ knitr::kable(file_formats,
   kableExtra::column_spec(3, width = "14em") |> 
   kableExtra::column_spec(5, width = "7em")
 ```
-<!-- additional suggestions from our readers: -->
-<!-- - KEA - https://gdal.org/drivers/raster/kea.html -->
-<!-- - sfarrow & geoparquet/pandas/GeoFeather -->
-<!-- Zarr - long term time series raster cloud format -->
 
 \index{Shapefile}
 \index{GeoPackage}
@@ -358,13 +347,14 @@ GeoPackage 以外にも、調べる価値のある地理空間データ交換フ
 TIFF ファイル内に CRS などの空間情報を埋め込むことができる。 
 ESRI Shapefile と同様に1990年代に開発されたフォーマットで、オープンなフォーマットである。
 さらに、GeoTIFF は現在も拡張・改良が続けられている。
-GeoTIFF フォーマットに最近追加された最も重要なものの1つが、COG (*Cloud Optimized GeoTIFF*) と呼ばれるバージョンである。
+GeoTIFF フォーマットに最近追加された最も重要なものの1つが、[COG](https://www.cogeo.org/) (*Cloud Optimized GeoTIFF*) と呼ばれるバージョンである。
 COG として保存されたラスタオブジェクトは、HTTP サーバーでホストすることで、他の人がファイル全体をダウンロードすることなく、ファイルの一部だけを読むことができる (Section \@ref(raster-data-read) と Section \@ref(raster-data-write) を参照)。
 
-その他にも、書籍の制限上、詳細な説明や Table \@ref(tab:formats) に掲載していない空間データフォーマットが多数存在する。
-他のフォーマットを使用する必要がある場合は、[ベクタ](https://gdal.org/drivers/vector/index.html)および[ラスタ](https://gdal.org/drivers/raster/index.html)ドライバに関する GDAL のドキュメントを読むことを勧める。
+この他にも、書籍の都合上、詳細な説明や Table \@ref(tab:formats) で触れていない空間データフォーマットが多数存在する。
+さらに、新しい空間データフォーマットが開発され (例えば、[GeoParquet](https://geoparquet.org/) や [Zarr](https://zarr.dev/))、既存のフォーマットも改良されている。
+他のフォーマットについて詳しく知りたい場合は、[ベクタ](https://gdal.org/drivers/vector/index.html)や[ラスタ](https://gdal.org/drivers/raster/index.html)ドライバに関する GDAL ドキュメントを読むことを勧める。
 さらに、空間データフォーマットの中には、ベクタやラスタ以外のデータモデル (タイプ) を格納できるものもある。
-ライダー点群を格納するための LAS、LAZ 形式、多次元配列を格納するための NetCDF、HDF 形式が含まれる。
+LiDAR点群を格納するための LAS、LAZ 形式、多次元配列を格納するための NetCDF、HDF 形式が含まれる。
 <!-- do we mention them anywhere in the book and can reference to? -->
 
 また、空間データは、CSV ファイルや Excel スプレッドシートなど、表形式 (非空間) のテキスト形式で保存されることも多い。
@@ -404,8 +394,6 @@ knitr::kable(head(sf_drivers, n = 6),
   kableExtra::column_spec(2, width = "7em")
 ```
 
-<!-- One of the major advantages of **sf** is that it is fast. -->
-<!-- reference to the vignette -->
 `read_sf()` の第一引数は `dsn` で、これはテキスト文字列または単一のテキスト文字列を含むオブジェクトであるべきである。
 テキスト文字列の内容は、ドライバによって異なる可能性がある。
 多くの場合、ESRI Shapefile\index{Shapefile} (`.shp`) や `GeoPackage`\index{GeoPackage} 形式 (`.gpkg`) と同様に、`dsn` はファイル名となる。
@@ -623,7 +611,6 @@ snow_rey
 詳しくは、https://gdal.org/user/virtual_file_systems.html。
 
 <!-- ### Databases -->
-
 <!-- jn:toDo-->
 <!-- postgis input example -->
 
@@ -739,7 +726,6 @@ writeRaster(x = single_layer, filename = "my_raster.tif",
 writeRaster(x = single_layer, filename = "my_raster.tif",
             filetype = "COG", overwrite = TRUE)
 ```
-
 
 ## ビジュアル出力  {#visual-outputs}
 

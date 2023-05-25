@@ -168,8 +168,8 @@ waldo::compare(new_vector_crs, st_crs(new_vector))
 ```
 
 \index{raster!CRS}
-CRS の取得と設定は、**ラスタ** 地理データオブジェクトと同様の方法で行われる。
-`terra` パッケージの `crs()` 関数は `SpatRaster` オブジェクトから CRS 情報にアクセスする （きれいに印刷するために `cat()` 関数を使用していることに注意）。 
+CRS の取得と設定は、ラスタ地理データオブジェクトと同様の方法で行われる。
+`terra` パッケージの `crs()` 関数は `SpatRaster` オブジェクトから CRS 情報にアクセスする (きれいに印刷するために `cat()` 関数を使用していることに注意)。 
 
 ```{r 02-spatial-data-55}
 raster_filepath = system.file("raster/srtm.tif", package = "spDataLarge")
@@ -198,26 +198,16 @@ london = data.frame(lon = -0.1, lat = 51.5) |>
 st_is_longlat(london)
 ```
 
-この出力 `NA` は、**sf** が CRS が何であるかを知らず、推測するつもりがないことを示している（`NA` は、"Not Applicable/Available" の略語で、文字通り「利用できない」という意味）。
+この出力 `NA` は、**sf** が CRS が何であるかを知らず、推測するつもりがないことを示している (`NA` は、"Not Applicable/Available" の略語で、文字通り「利用できない」という意味)。
 CRS を手動で指定するか、CRS メタデータを持つソースから読み込まれない限り、**sf** は座標系について「わからない」と言う以外の明示的な仮定をしない。
-この動作は、利用可能な CRS の多様性を考えると理にかなっているが、GeoJSON ファイルフォーマット仕様のような、すべての座標が lon/lat CRS（EPSG:4326`）を持つという単純化した仮定をするいくつかのアプローチとは異なる。
-
-\index{vector!CRS}
-`sf` オブジェクトに CRS を追加するには、主に 3 つの方法がある。
-
-- CRS をあらかじめ存在するオブジェクトに割り当てる。例えば `st_crs(london) = "EPSG:4326"` 
-- `st_as_sf(... crs = "EPSG:4326")` などのジオメトリオブジェクトを作成する **sf** 関数の `crs` 引数に CRS を渡すことで、ジオメトリオブジェクトを作成することができる。また、ラスタデータセットを作成する際にも、同じ引数で CRS を設定することができる（例：`rast(crs = "EPSG:4326")`）。
-- 新しい CRS を持つデータのバージョンを返す `st_set_crs()`、例を次のコードチャンクで示す。
+この動作は、利用可能な CRS の多様性を考えると理にかなっているが、GeoJSON ファイルフォーマット仕様のような、すべての座標が lon/lat CRS (`EPSG:4326`) を持つという単純化した仮定をするいくつかのアプローチとは異なる。
+すべての地理座標には座標系があり、ソフトウェアがプロットやジオメトリの操作を正しく判断できるのは、扱う CRS の種類がわかっている場合のみである。
+したがって、データセットの CRS を常に確認し、不足している場合は設定することが重要である。
 
 ```{r 06-reproj-3}
 london_geo = st_set_crs(london, "EPSG:4326")
 st_is_longlat(london_geo)
 ```
-
-<!-- The following example demonstrates how to add CRS metadata to raster datasets. -->
-<!-- Todo: add this -->
-
-CRS の指定されていないデータセットは、問題を起こすことがある。すべての地理座標には座標系があり、ソフトウェアでは、使用する CRS の種類がわかっている場合にのみ、プロットやジオメトリ操作に関する適切な判断を行うことができる。
 
 ## 投影データおよび非投影データに対する幾何学操作  {#geom-proj}
 
@@ -307,8 +297,6 @@ sf::sf_use_s2(TRUE)
 これは、投影された CRS にデータを<u>再投影</u>することを提案したと理解するのがよいだろう。
 ただし、この提案に常に耳を傾ける必要もない。空間演算と幾何演算を実行しても、ほとんど違いがない場合もある（例えば、空間的な部分集合作成など）。
 しかし、バッファ作成など距離を伴う操作では、（球面幾何エンジンを使わずに）良い結果を得るには、データの投影コピーを作成し、それに対して操作を実行するしかない。
-<!--toDo:rl-->
-<!-- jn: idea -- maybe it would be add a table somewhere in the book showing which operations are impacted by s2? -->
 これは、以下のコードチャンクで行われる。
 
 ```{r 06-reproj-6}
@@ -554,8 +542,6 @@ lonlat2UTM(st_coordinates(london))
 
 \index{CRS!custom}
 カスタム CRS を決定する際には、以下を勧める。^[
-<!--toDo:rl-->
-<!-- jn:I we can assume who is the "anonymous reviewer", can we ask him/her to use his/her name? -->
 このアドバイスの基礎となるコメントを下さった匿名の査読者の方に感謝する。
 ]
 
@@ -913,15 +899,11 @@ tm_shape(world_wintri_gr) + tm_lines(col = "gray") +
   tm_shape(world_wintri) + tm_borders(col = "black")
 ```
 
-<!--jn:toDO-->
-<!--check if the following block is still correct-->
-
 ```{block2 06-reproj-24, type='rmdnote', echo=FALSE}
-The three main functions for transformation of simple features coordinates are `sf::st_transform()`, `sf::sf_project()`, and `lwgeom::st_transform_proj()`.
-`st_transform()` uses the GDAL interface to PROJ, while `sf_project()` (which works with two-column numeric matrices, representing points) and `lwgeom::st_transform_proj()` use PROJ directly.
-`st_tranform()` is appropriate for most situations, and provides a set of the most often used parameters and well-defined transformations.
-`sf_project()` may be suited for point transformations when speed is important.
-`st_transform_proj()` allows for greater customization of a projection, which includes cases when some of the PROJ parameters (e.g., `+over`) or projection (`+proj=wintri`) is not available in `st_transform()`.
+シンプルフィーチャの変換をする２つの関数は、`sf::st_transform()`、`sf::sf_project()`、`lwgeom::st_transform_proj()` である。
+`st_transform()` は GDAL から PROJ を使用し、`sf_project()` は PROJ を直接使う (点を表す２列の数値行列に作用)。
+`st_tranform()` がほとんどの場合適切であり、よく使われるパラメータと定義された変換を提供する。
+`sf_project()` は、速度が重要な点を変換するのに適している。
 ```
 
 ```{r 06-reproj-25, eval=FALSE, echo=FALSE}
@@ -951,13 +933,6 @@ tm_shape(world_laea2_g) + tm_lines(col = "gray") +
 ```
 
 CRS の変更に関する詳しい情報は、[Using PROJ](https://proj.org/usage/index.html) のドキュメントに記載されている。
-
-<!--toDo:jn-->
-<!--revise the last paragraph-->
-
-<!-- There is more to learn about CRSs. -->
-<!-- An excellent resource in this area, also implemented in R, is the website R Spatial. -->
-<!-- Chapter 6 from this free online book is recommended reading --- see: [rspatial.org/terra/spatial/6-crs.html](https://rspatial.org/terra/spatial/6-crs.html) -->
 
 ## 演習
 

@@ -1152,20 +1152,18 @@ Visibility と viewshed の計算もグローバル操作に属する ( Chapter 
 ただし、表現には注意が必要である。
 ラスタデータモデルとベクタデータモデルでは、同じ言葉でも微妙に意味が異なることがある。
 集計とは、ベクタデータの場合はポリゴンを分解することであり、ラスタデータの場合は解像度を上げることである。
-実際、ポリゴンを分解したり集約したりすると、解像度が下がるという見方もできる。 
-しかし、ゾーン演算は、セル解像度の変更と比較して、より優れたラスタ同等物である可能性がある。 
 ゾーン演算は、あるラスタのセルを、別のラスタのゾーン（カテゴリ）に合わせて、集約関数（上記参照）を使って分解することができる。
 
 ### ラスタのマージ  {#merging-rasters}
 
 \index{raster!merge}
-NDVI を計算し（Section \@ref(local-operations) 参照）、さらに、調査地域内の観測の標高データから地形属性を計算したいとする。
+NDVI を計算し (Section \@ref(local-operations) 参照)、さらに、調査地域内の観測の標高データから地形属性を計算したいとする。
 このような計算には、リモートセンシングの情報が必要である。 
 リモートセンシング画像は、特定の空間範囲をカバーするシーンに分割されることが多く、1つの調査エリアが複数のシーンにまたがっていることがよくある。
 そして、調査対象シーンをマージする必要がある。 
 一番簡単なのは、これらのシーンをマージする、つまり並べることである。
-これは例えば、デジタル標高データ（SRTM、ASTER）で可能である。
-以下のコードでは、まずオーストリアとスイスの SRTM 標高データをダウンロードする（国番号については、**geodata** 関数 `country_codes()` を参照）。
+これは例えば、デジタル標高データ (SRTM、ASTER) で可能である。
+以下のコードでは、まずオーストリアとスイスの SRTM 標高データをダウンロードする (国番号については、**geodata** 関数 `country_codes()` を参照)。
 第二段階では、2つのラスタを1つに統合する。
 
 ```{r 04-spatial-operations-44, eval = FALSE}
@@ -1175,18 +1173,13 @@ aut_ch = merge(aut, ch)
 ```
 
 **terra** の `merge()` コマンドは、2つの画像を合成し、重なった場合は、最初のラスタの値を使用する。
-<!--jn:toDo-->
-<!-- gdalUtils is slower (for this files): -->
-<!-- two_rast = c(terra::sources(aut)$source, terra::sources(ch)$source) -->
-<!-- tf = tempfile(fileext = ".tif") -->
-<!-- bench::mark({gdalUtils::mosaic_rasters(two_rast, tf)}) -->
-<!-- You can do exactly the same with `gdalUtils::mosaic_rasters()` which is faster, and therefore recommended if you have to merge a multitude of large rasters stored on disk. -->
 
 重複する値が互いに対応しない場合、マージアプローチはほとんど意味がない。
 このようなケースは、撮影日が異なるシーンの分光画像を合成する場合によくある。
 `merge()` コマンドはそのまま使え、出来上がった画像にはっきりとした枠が表示される。
 一方、`mosaic()` コマンドでは、オーバーラップする領域に対して関数を定義することができる。 
 例えば、平均値を計算することもできる。この場合、マージされた結果における明確な境界線は滑らかになるだろうが、ほとんどの場合、それを消すことはできない。
+
 <!-- The following sentences have been commented out and can be removed because the packages, and info, is now out of date -->
 <!-- See https://github.com/Robinlovelace/geocompr/pull/424 for discussion -->
 <!-- To do so, we need a more advanced approach.  -->
@@ -1197,7 +1190,6 @@ R によるリモートセンシングの詳しい紹介は、@wegmann_remote_20
 <!--update the above reference to the 2nd edition-->
 
 ## 演習
-
 
 ```{r, echo=FALSE, results='asis'}
 res = knitr::knit_child('_04-ex.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))

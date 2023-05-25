@@ -13,7 +13,7 @@ R の最新版（R [4.2.0](https://stat.ethz.ch/pipermail/r-announce/2022/000683
 
 R のスクリプト、出力、その他ジオコンピュテーションに関連するものを保存するために、コンピュータに新しいフォルダを作成することから始めるとよいだろう。
 また、学習をサポートするため、[ソースコード](https://github.com/Robinlovelace/geocompr)を[ダウンロード](https://github.com/Robinlovelace/geocompr/archive/refs/heads/main.zip) または[クローン](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)しておくと良い。
-R コードを書く/実行する/テストする際には、 [RStudio](https://www.rstudio.com/products/rstudio/download/#download)（ほとんどの人に推奨）または [VS Code](https://github.com/REditorSupport/vscode-R) などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める^[
+R コードを書く/実行する/テストする際には、 [RStudio](https://posit.co/download/rstudio-desktop/#download)（ほとんどの人に推奨）または [VS Code](https://github.com/REditorSupport/vscode-R) などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める^[
 プロジェクト管理には、[RStudio projects](https://r4ds.had.co.nz/workflow-projects.html)、[VS Code workspaces](https://code.visualstudio.com/docs/editor/workspaces) などのシステムを利用することを勧める。
 RStudio でこれを行うには、**rstudioapi** パッケージを使用するのが手っ取り早い方法である。
 RStudio の R コンソールから以下のコマンドで、ホームディレクトリに 'geocompr-learning' という新しいプロジェクトを開く（例： `rstudioapi::openProject("~/geocompr-learning")`

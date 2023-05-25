@@ -4,7 +4,6 @@
 knitr::opts_chunk$set(warning = FALSE)
 ```
 
-
 ## 必須パッケージ  {- #prerequisites-12}
 
 本章では、Chapter \@ref(spatial-class) から Chapter \@ref(reproj-geo-data) までの内容を学習し、演習を行うなどして、地理データ解析 \index{geographic data analysis}  に習熟していることを前提としている。

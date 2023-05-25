@@ -112,8 +112,8 @@ if (!file.exists("required_geo_data.gpkg")) {
 
 ```{r 10-algorithms-2, eval=FALSE}
 poly_mat = cbind(
-  x = c(0, 0, 9, 9, 0),
-  y = c(0, 9, 9, 0, 0)
+  x = c(0, 9, 9, 0, 0),
+  y = c(0, 0, 9, 9, 0)
 )
 # geocompr レポジトリの code/11-centroid-alg.R の短い URL
 source("https://t.ly/0nzj")
@@ -121,8 +121,8 @@ source("https://t.ly/0nzj")
 
 ```{r 10-algorithms-3, echo=FALSE}
 poly_mat = cbind(
-  x = c(0, 0, 9, 9, 0),
-  y = c(0, 9, 9, 0, 0)
+  x = c(0, 9, 9, 0, 0),
+  y = c(0, 0, 9, 9, 0)
 )
 if(curl::has_internet()) {
   source("https://raw.githubusercontent.com/geocompx/geocompr/main/code/11-centroid-alg.R")
