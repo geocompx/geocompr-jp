@@ -1,17 +1,13 @@
 # 結論  {#conclusion}
 
-## 必須パッケージ  {- #prerequisites-16}
+## イントロダクション  {- #introduction-16}
 
 序章と同様、この結論の章にもコードチャンクはほとんどない。
-しかし、以下のように、読み進めるにはとても厳しい前提条件がある。
+その目的は、繰り返されるテーマ/概念に言及しながら、本書の内容を総合し、今後の応用や開発の方向性を鼓舞することである。
+この章では、前提条件はない。
+しかし、第I部 (基礎編) の練習問題を読んで挑戦し、第III部 (応用編) の章を参考に、ジオコンピューティングが仕事、研究、その他の問題の解決にどのように役立つかを考えていれば、より多くのものを得ることができるであろう。
 
-
-- Part I (Foundations)の全章の練習問題を読み、挑戦したこと。
-- 第 III 部 (応用編) では、ジオコンピュテーション\index{geocomputation}を使って、仕事やそれ以外の場面で、どのように実社会の問題を解決できるかを考えてみた。
-
-## イントロダクション {#introduction-16}
-
-本章の目的は、繰り返されるテーマや概念に言及しながら内容をまとめ、今後の応用や開発の方向性を示唆することである。
+本章は、以下のように構成されている。
 Section \@ref(package-choice) は、R で地理データを扱うための幅広いオプションについて説明した。
 選択は、オープンソースソフトウェアの重要な特徴である。このセクションでは、様々なオプションの中から選択するためのガイダンスを提供する。
 Section \@ref(gaps) には、本書の内容とのギャップを説明し、ある研究分野が意図的に省略され、ある分野が強調された理由を説明している。
@@ -22,10 +18,10 @@ Section \@ref(benefit) は、Chapter \@ref(intro) で提起されたより広範
 
 ## パッケージの選択  {#package-choice}
 
-R\index{R} の特徴として、同じ結果を得るために複数の方法が存在することが多い。
+オープンソース全般に言えることだが、R\index{R} の特徴として、同じ結果を得るために複数の方法が存在することが多い。
 下記のコードでは、Chapter \@ref(attr) と Chapter \@ref(geometry-operations) にある 3 つの関数を使って、ニュージーランドの 16 の地域を 1 つの幾何学的形状にまとめている。
 
-```{r 15-synthesis-1}
+```{r 16-synthesis-1}
 library(spData)
 nz_u1 = sf::st_union(nz)
 nz_u2 = aggregate(nz["Population"], list(rep(1, nrow(nz))), sum)
@@ -34,108 +30,109 @@ identical(nz_u1, nz_u2$geometry)
 identical(nz_u1, nz_u3$geom)
 ```
 
-出来上がったオブジェクトのクラス、属性、列名は `nz_u1` から `nz_u3` まで異なるが、その幾何学的な形状は同一である。
-これは、baseR 関数 `identical()` を使って検証している。^[
+作成されたクラス、属性、列の名称は `nz_u1` から `nz_u3` まで異なるが、その幾何学的な形状は同一であることを baseR 関数 `identical()` を使って検証している。^[
 最初の操作は、関数 `st_union()` \index{vector!union}  によって行われ、クラス `sfc` のオブジェクト（シンプルフィーチャ列）が作成される。
 後者の2つの操作は、`sf` オブジェクトを作成し、その各オブジェクトはシンプルフィーチャ列を<u>含んでいる</u>。
 したがって、同一なのはシンプルフィーチャ列の中に含まれる形状であって、物体そのものではない。
 ]
 どの方法を使うべきかは、ケースバイケースである。
 １番目の方法は `nz` に含まれるジオメトリデータのみを処理するので高速であるが、２・３番目の方法は属性操作を行うので、この後の処理に役立つ可能性がある。
+baseR の `aggregate()` 関数を使うか、**dplyr** の `summarise()` を使うかは好みの問題であるが、後者の方が読みやすいだろう。
 
 つまり、R で地理データを扱う場合、たとえ 1 つのパッケージであっても、複数の選択肢から選ぶことができる場合が多いということである。
 R のパッケージが増えれば、さらに選択肢は広がる。例えば、古いパッケージの **sp** を使っても同じ結果を得ることができる。
-Chapter \@ref(spatial-class) で説明している理由から、本書で紹介している **sf** やその他のパッケージの使用を推奨しているが、代替ソフトの存在を知っておき、自分の選んだソフトを正当化できるようにしておくとよいだろう。
+しかしながら、良いアドバイスをしたいという本書のゴールに従うと、パフォーマンスもよく将来性のある **sf** パッケージを推奨する。
+このことは、本書のすべてのパッケージに当てはまるが、他の手段の存在を知って自分の選択について正当化できることは、(邪魔にならない程度に) 役に立つことがある。
 
-よくある（そして時には論争の的になる）選択は、**tidyverse**\index{tidyverse (package)} と baseR のアプローチのどちらを取るかということである。
-私たちは両方をカバーし、さまざまなタスクにどちらが適しているかを決定する前に、両方を試すことを勧める。
-Chapter \@ref(attr) で説明されている次のコードチャンクは、基本的なR演算子 `[` と **tidyverse** パッケージ **dplyr** の `select()` 関数を使用して、属性データのサブセットがそれぞれのアプローチでどのように機能するかを示している。
-構文は異なるが、結果は（本質的に）同じである。
+ジオコンピュテーションをする際の選択で困ることと言えば、 **tidyverse**\index{tidyverse (package)} と baseR の間という、簡単に答えられない問題がある。
+例えば、次のコードチャンクは、Chapter \@ref(attr) で説明したした `nz` オブジェクトから `Name` 列を抽出する操作を、**tidyverse** と baseR の２つの方法を示している。
 
 ```{r 15-synthesis-2, message=FALSE}
 library(dplyr)                          # tidyverse パッケージをアタッチ
 nz_name1 = nz["Name"]                   # base R による方法
-nz_name2 = nz |> select(Name)           # tidyverse による方法
+nz_name2 = nz |>                        # tidyverse による方法
+  select(Name)
 identical(nz_name1$Name, nz_name2$Name) # 結果の確認
 ```
 
-ここでまた、「どちらを使うか」という問題が出てくる。
+ここで、「どちらを使うべきか？」という問題が出てくる。
 答えは、「人それぞれ」である。
-それぞれのアプローチには利点がある。パイプ構文は人気があり一部の人には魅力的であるが、base R\index{R!base} はより安定していて、多くの人に知られている。
-そのため、どちらを選ぶかは好みの問題である。
-しかし、地理データを扱うのに **tidyverse**\index{tidyverse (package)} 関数を使う場合は、いくつかの落とし穴に注意する必要がある（本書のサポートサイトにある補足記事 [`tidyverse-pitfalls` ](https://geocompr.github.io/geocompkg/articles/tidyverse-pitfalls.html) を参照。）
+それぞれのアプローチには利点がある。baseR\index{R!base} は、安定でよく知られており、依存関係が最小である傾向があるため、ソフトウェア（パッケージ）開発に好まれることが多い。
+一方、Tidyverse アプローチは、対話型プログラミングに好まれている。
+したがって、2つのアプローチのどちらを選ぶかは、好みと用途の問題である。
 
-R の部分集合演算子 `[` や **dplyr** 関数 `filter()` など、一般的に必要とされる演算子や関数について詳しく説明したが、他のパッケージの地理データを扱うための関数で、これまで言及されていないものが数多くある。
-Chapter \@ref(intro) は、地理データを扱うための有力なパッケージを20以上紹介したが、この後の章ではそのうちの一部のパッケージについて紹介する。
-実際には、このほかにも数百ものパッケージがある。
-2022年半ばの時点で、Spatial [Task View](https://cran.r-project.org/web/views/)に記載されているパッケージは約200個ある。
-地理データに関するパッケージや関数は年々増え続けており、一冊の本ですべてを網羅することは現実的ではない。
+本書では、Rの基本演算子である `[` サブセット演算子や、上のコードで示した **dplyr** 関数 `select()` など、一般的に必要とされる関数を取り上げているが、地理データを扱うための、他のパッケージの関数には触れていないものが多くある。
+Chapter \@ref(intro) では、地理データを扱うための20以上の有力なパッケージが紹介したが、この本ではそのうちのほんの一握りしか紹介されていない。
+R で地理データを扱うためのパッケージは他にも何百とあり、毎年多くのパッケージが開発されている。
+2023年半ば現在、Spatial [Task View](https://cran.r-project.org/web/views/)で紹介されているパッケージは160以上あり、地理データ解析のための無数の関数が毎年開発されている。
 
-```{r 15-synthesis-3, eval=FALSE, echo=FALSE}
+```{r 16-synthesis-3, eval=FALSE, echo=FALSE}
 # aim: find number of packages in the spatial task view
 # how? see:
 # vignette("selectorgadget")
 stv_pkgs = xml2::read_html("https://cran.r-project.org/web/views/Spatial.html")
-pkgs = rvest::html_nodes(stv_pkgs, "ul:nth-child(5) a")
+pkgs = rvest::html_nodes(stv_pkgs, "#reading-and-writing-spatial-data---gis-software-connectors+ ul li , #geographic-metadata+ ul li , #raster-data+ ul li , #specific-geospatial-data-sources-of-interest+ ul li , #data-processing---general+ ul li , #data-cleaning+ ul li , #data-processing---specific+ ul li , #spatial-sampling+ ul li , #base-visualization-packages+ ul li , #thematic-cartography-packages+ ul li , #packages-based-on-web-mapping-frameworks+ ul li , #building-cartograms+ ul li , p+ ul li , #spatial-data---general+ ul li")
 pkgs_char = rvest::html_text(pkgs)
 length(pkgs_char)
 ```
 
-R の空間エコシステムの進化速度に圧倒されるだろうが、幅広い選択肢に対応するための戦略がある。
-私たちのアドバイスとしては、まず一つの手法を深く学ぶことから始め、利用可能な選択肢の広さについて一般的に理解することである。
-このアドバイスは、他の知識やアプリケーションの分野と同様に、R（Section \@ref(next) 他の言語での開発もカバーしている）で地理的な問題を解決する場合にも当てはまる。
+R の空間生態系の進化のスピードは速いが、幅広い選択肢に対応するための戦略がある。
+アドバイスは、まず1つのアプローチを<u>深く</u>学び、利用可能なオプションの<u>広さ</u>を知っておく。
+このアドバイスは、R で地理的な問題を解決する際にも他の分野の知識や応用と同様に適用される。
+他の言語での開発については、Section \@ref(next) で説明する。
 
-もちろん、パッケージによって性能は大きく異なるので、パッケージ選びは重要な判断材料になる。
-この多様性の中から、将来性があり（将来まで長く使える）、高性能（他の R パッケージと比較して）、補完性のあるパッケージに焦点を当てることとした。
-しかし、例えば地図を作るためのパッケージの多様性に示されるように、私たちが使ってきたパッケージにはまだ重複がある（Chapter \@ref(adv-map) 参照）。
+もちろん、同じタスクでもパッケージによっては他のパッケージより性能が良いものもあり、その場合はどのパッケージを使うべきかを知ることが重要です。
+この本では、将来性があり (将来も使える)、(他の R パッケージと比較して) 高性能で、(ユーザーや開発者のコミュニティがあり) よくメンテナンスされており、補完的なパッケージに焦点を当てることを目的としている。
+また、本書で取り上げたパッケージの中には、重複しているものもあり、例えば、「地図作成用パッケージの多様性」については、本章の「地図作成用パッケージの多様性」で紹介している。
 
-パッケージの重複は必ずしも悪いことではない。
-レジリエンスやパフォーマンス（開発者間の切磋琢磨と相互学習が一因）、そしてオープンソースソフトウェアの重要なフィーチャである選択肢を増やすことができるのである。
-この文脈では、本書で提唱されている **sf**/**tidyverse**/**raster** エコシステムのような特定のアプローチを使うかどうかは、代替手段を知った上で決定されるべきである。
-例えば、**sf** \index{sf}  が後継として設計された **sp**/**rgdal**/**rgeos** エコシステムは、この本でカバーする多くのことが可能で、その古さゆえに、他の多くのパッケージによって構築されている^[
-執筆時点で452パッケージ `Depend` または `Import` **sp** があり、そのデータ構造が広く利用され、多方面に拡張されていることがわかる。
-2018年10月の **sf** に相当する数値は 69 であり、**sf** の人気が高まっていることから、今後も増加することが予想される。
-]
-点パターン解析でよく知られているが、 **spatstat** パッケージは、ラスタ\index{raster}  やその他のベクタ幾何学もサポートしている [@baddeley_spatstat_2005]。
-執筆時（2018年10月）には69のパッケージが依存しており、パッケージ以上の存在となっている。**spatstat** は、R-spatial の代替エコシステムである。
+機能が重複することは良いことである。
+既存のパッケージと同様の（しかし同一ではない）機能を持つ新しいパッケージは、オープンソースソフトウェアでジオコンピューティングを行う重要な利点である回復力、パフォーマンス（開発者間の切磋琢磨と相互学習による部分もある）、選択肢を増やすことができます。
+この文脈では、**sf**、**tidyverse**、**terra** や他のパッケージのどの組み合わせを使用するかを決めることは、代替案を知った上で行うべきです。
+例えば、**sf**\index{sf} が取って代わるように設計されている **sp** エコシステムは、本書で取り上げたことの多くを行うことができ、その古さゆえに他の多くのパッケージによって構築されている。
+2023年5月の執筆時点で、463 のパッケージが **sp** を `Depend` または `Import`しており、2018年10月の452からわずかに増加しており、そのデータ構造が広く使われ、多くの方向に拡張されていることを示している。
+**sf** に相当する数字は2018年に69、2023年に431であり、このパッケージが将来性を持ち、ユーザーベースと開発者コミュニティが拡大していることを強調している [@bivand_progress_2021]。
+点パターン解析でよく知られている **spatstat** パッケージは、ラスタ\index{raster}やその他のベクトルジオメトリもサポートし、空間統計などのための強力な機能を提供する [@baddeley_spatstat_2005]。
+また、既存のパッケージでは満たされないニーズがある場合は、開発中の新しい選択肢を研究する価値があるかもしれない。
 
-また、現在開発中の有望な代替品も意識している。
-例えば、**stars**というパッケージは、時空間データを扱うための新しいクラスシステムを提供する。
-このトピックに興味があれば、パッケージの[ソースコード](https://github.com/r-spatial/stars)やより広範な [SpatioTemporal Task View](https://cran.r-project.org/web/views/SpatioTemporal.html) で更新を確認することができる。
-他の領域でも同じことが言える。ソフトウェアの選択を正当化し、最新の情報に基づいてソフトウェアの決定を見直すことが重要である。 
-
-```{r 15-synthesis-4, echo=FALSE, eval=FALSE}
-revdeps_sp = devtools::revdep(pkg = "sp", dependencies = c("Depends", "Imports"))
-revdeps_sf = devtools::revdep(pkg = "sf", dependencies = c("Depends", "Imports"))
-revdeps_spatstat = devtools::revdep(pkg = "spatstat", dependencies = c("Depends", "Imports"))
+```{r 16-synnthesis-4, eval=FALSE, echo=FALSE}
+# aim: find number of packages that depend on sp, sf and spatstat
+sfdeps = devtools::revdep(pkg = "sf", dependencies = c("Depends", "Imports"))
+spatstatdeps = devtools::revdep(pkg = "spatstat", dependencies = c("Depends", "Imports"))
+spdeps = devtools::revdep(pkg = "sp", dependencies = c("Depends", "Imports"))
+length(sfdeps) # 431
+length(spatstatdeps) # 34
+length(spdeps) # 463
+431 / 69
 ```
 
 ## ギャップとオーバーラップ  {#gaps}
 
-本書で扱うトピックには、多くのギャップがあり、また重複している部分もある。
-あるトピックを強調し、あるトピックを省略するなど、選択的に行っている。
-地理データの操作、投影、データの読み書き、可視化など、実際のアプリケーションで最も必要とされるトピックを重視するよう心がけることとした。
-これらのトピックは各章に繰り返し登場し、重複する部分が多いため、ジオコンピュテーション\index{geocomputation}に不可欠なスキルを身につけることができる。 
+ジオコンピュテーションは巨大な分野であり、多くのギャップがあることは避けられない。
+特定にトピックやテクニック、パッケージを意図的に強調し、あるいは省略するなど、選択的に行っている。
+地理データの操作、座標系の基礎、データの読み書き、可視化など、実際のアプリケーションで最も必要とされるトピックを重視するよう心がけることとした。
+地理データの操作、座標参照系の基本、データの読み書き、可視化技術など、実際のアプリケーションで最もよく必要とされるトピックを重視するよう努めた。
+また、本書は、ジオコンピュテーションに必要なスキルを身につけ、さらに高度なトピックや特定のアプリケーションに進む方法を紹介することを目的としており、いくつかのトピックやテーマは何度も登場する。
 
-一方、あまり使われていないトピックや、他で深く扱っているトピックは割愛した。
-例えば、点パターン解析、空間補間（クリギング）、空間疫学などの統計的なトピックは、Chapter \@ref(spatial-cv) でカバーされている機械学習 \index{machine learning}  テクニックなどの他のトピックに関連して言及されているだけである（まったく言及されていない場合）。
-これらの手法については、@bivand_applied_2013 の統計的指向の章や、@baddeley_spatial_2015 によるポイントパターン解析の本など、既に優れた資料がある。
-その他、リモートセンシングや、GIS専用ソフト\index{GIS} と並行してのRの利用など、注目されたトピックは限られていた。
+また、他で深く取り上げられているトピックをあえて省略した。
+例えば、点パターン解析、空間補間（クリギング）、空間回帰といった空間データの統計的モデリングは、機械学習の文脈で Chapter \@ref(spatial-cv) で触れているが、詳細には触れていない。
+これらの手法については、@pebesma_spatial_2023 の統計学的指向の章や、ポイントパターン分析に関する書籍 [@baddeley_spatial_2015]、空間データに適用するベイズ手法 [@gomez-rubio_bayesian_2020]、健康 [@moraga_geospatial_2019] や[山火事深刻度分析](https://bookdown.org/mcwimberly/gdswr-book/application---wildfire-severity-analysis.html) など特定のアプリケーションに焦点を当てた書籍といった優れた資料がすでに存在している [@wimberly_geographic_2023]。
+その他の話題としては、リモートセンシングや、GIS専用ソフトと並行してのRの利用（ブリッジとしてではなく）などが挙げられますが、これらは限定的なものでした。
 これらの話題については、@wegmann_remote_2016 や [Marburg University](https://moc.online.uni-marburg.de/doku.php) から入手できる GIS 関連教材など、多くの資料がある。
 
-本書は、空間統計モデリングや推論技術ではなく、機械学習\index{machine learning}に重点を置いている。
-繰り返しになるが、これらのトピック、特に生態系のユースケースについては、@zuur_mixed_2009、@zuur_beginners_2017 や、David Rossiter による *Geostatistics &amp; Open-source Statistical Computing* の自由に使える教材やコードなどが既にあり、 [css.cornell.edu/faculty/dgr2](http://www.css.cornell.edu/faculty/dgr2/teach/) でホストされており、[*R for Geographic Data Science*](https://sdesabbata.github.io/r-for-geographic-data-science/) プロジェクトでは [レスター大学](https://le.ac.uk/people/stefano-de-sabbata) の [Stefano De Sabbata](https://stefanodesabbata.com/) による地理データ科学向けの R\index{R} の導入\index{data science} などがある。
-また、モデリングと不確実性推定の強力なフレームワークであるベイズモデリングを使用した空間統計\index{spatial!statistics}に関する優れたリソースもある [@blangiardo_spatial_2015;@krainski_advanced_2018]。
+空間統計推論よりも機械学習に焦点を当てたのは、このトピックに関する質の高いリソースが豊富にあるためである。
+これらのリソースには、生態系のユースケースに焦点を当てた @zuur_mixed_2009、@zuur_beginners_2017、そして [css.cornell.edu/faculty/dgr2](http://www.css.cornell.edu/faculty/dgr2/teach/) でホストされている *Geostatistics & Open-source Statistical Computing* の自由に利用できる教材とコードがある。
+[*R for Geographic Data Science*](https://sdesabbata.github.io/r-for-geographic-data-science/) では、地理データサイエンスとモデリングのための R の紹介をしている。
 
-最後に、ビッグデータ\index{big data}のジオコンピュテーションについては避けた。ここでビッグデータとは、個人 PC に保存できないデータセットや一つの CPU で処理しきれないデータセットを指す。
-しかし、通常の研究や政策決定に必要とされる地理データの大多数は、個人 PC で保存できる大きさであり、また巨大なデータセットの問題を解決するには小さなデータセットでの解決方法を学ぶ必要があるため、このように決断した。場合によっては、PC に RAM を増設 (あるいは [Github Codespaces](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=84222786&machine=basicLinux32gb&devcontainer_path=.devcontainer.json&location=WestEurope) のような処理を「レンタル」できるプラットフォームを一時的に使用する) 必要があるかもしれない。
+また、「ビッグデータ」（ハイスペックなラップトップに収まらないデータセットという意味）に対するジオコンピュテーションはほとんど省略している。
+この決定は、一般的な研究や政策アプリケーションに必要な地理的データセットの大部分は、個人用ハードウェアに収まるという事実によって正当化される。
+コンピュータの RAM を増やしたり、[GitHub Codespaces: 本書のコードを実行可能](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=84222786&machine=basicLinux32gb&devcontainer_path=.devcontainer.json&location=WestEurope) のようなプラットフォームで利用できる計算能力を一時的に「借りる」ことは可能である。
+さらに、小さなデータセットで問題を解くことを学ぶことは、巨大なデータセットで問題を解くための前提条件であり、本書で強調しているのは「始めること」であり、ここで学んだスキルは大きなデータセットに移行したときに役立つものである。
 「ビッグデータ」の解析には、特定の統計解析のためデータベースからデータを抽出することもある。
-Chapter \ref(gis) で紹介した空間データベース\index{spatial database}は、メモリで処理しきれないデータセットの解析に有用である。
+Chapter \ref(gis) で紹介した空間データベースは、メモリで処理しきれないデータセットの解析に有用である。
 'Earth observation cloud back-ends' は、[openeo.org](https://openeo.org/) で解説されている通り、**openeo** パッケージを使うことで R でアクセスすることができる。
-[Apache Sedona](https://sedona.apache.org/) などのソフトウェアを使ったビッグデータの地理的解析については、使用が限定にも関わらず環境構築のハードウェアと時間のコストが非常に高いため、詳細は割愛した。
+大きな地理データを扱う必要がある場合は、[Apache Sedona](https://sedona.apache.org/) などのプロジェクトや、[GeoParquet](https://paleolimbot.github.io/geoarrow/) などの新しいファイルフォーマットについて調べることを勧める。
 
-
-## ヘルプはどこ？  {#questions}
+## ヘルプを求める  {#questions}
 
 <!-- Now wondering if this should be an appendix, or even a new chapter?? -->
 
@@ -146,13 +143,14 @@ Chapter \ref(gis) で紹介した空間データベース\index{spatial database
 <!-- In Chapter \@ref(intro) we set out our aim of providing strong foundations on which a wide range of data analysis, research and methodological and software development projects can build. -->
 <!-- Geocomputation is about not only using existing techniques but developing new tools which, by definition, involves generating new knowledge. -->
 
-ジオコンピュテーションは大きな分野であり、目指すアウトカムに到達できない可能性が高い。
-多くの場合、データ分析ワークフローの特定のポイントで「立ち往生」し、不可解なエラーメッセージや予期せぬ結果で何が起こっているのかほとんど分からないことがある。
+ジオコンピュテーションは大規模で困難な分野であるため、問題や一時的な作業中断は避けられない。
+多くの場合、データ解析のワークフローの特定の時点で、デバッグが困難な不可解なエラーメッセージに直面し、「立ち往生」することがある。
+また、何が起こっているのかほとんどわからないまま、予期せぬ結果が出ることもある。
 このセクションでは、そのような問題を克服するために、問題を明確に定義し、解決策に関する既存の知識を検索し、それらのアプローチで問題が解決されない場合は、良い質問をする技術によって、ポイントを提供する。
 <!-- generating new open knowledge by engaging with the community. -->
 
 ある地点で行き詰まったとき、まず一歩下がって、どのようなアプローチが最も解決につながるかを考えてみるのもよいだろう。
-以下のステップを順番に試すことで、問題解決のための構造的なアプローチが得られる（すでに試している場合はステップをスキップすることもできる）。
+以下のステップを順番に試すことで、問題解決のための構造的なアプローチが得られる (すでに試している場合はステップをスキップすることもできる)。
 
 1. 第一原理から始めて、何を達成しようとしているのかを正確に定義する（多くの場合、以下のようなスケッチも必要）。
 2. コードの個々の行や個々のコンポーネントの出力を実行し、調べることによって、コードのどこで予期せぬ結果が発生したかを正確に診断する（例えば、RStudioでカーソルで選択し、Ctrl+Enterを押すことによって、複雑なコマンドの個々の部分を実行することができる）。
@@ -170,41 +168,70 @@ Chapter \ref(gis) で紹介した空間データベース\index{spatial database
 また、詳細な情報を記載することで、オンライン検索をより効果的にすることができる。
 <!-- To provide a concrete example, imagine you want to know how to use custom symbols in an interactive map. -->
 
-- 引用符を使用すると、返される結果の数を減らすことで、お客様が抱えている問題に関連する「ヒット」する可能性を最大限に高めることができる。
-<!-- todo: add example -->
-- [time restraints](https://uk.pcmag.com/software-services/138320/21-google-search-tips-youll-want-to-learn)を設定する。例えば、過去1年以内に作成されたコンテンツのみを返すようにすれば、進化するパッケージのヘルプを検索する際に便利である。
-- 追加の [search engine features](https://www.makeuseof.com/tag/6-ways-to-search-by-date-on-google/) を利用する。例えば、site:r-project.org で CRAN にホストされているコンテンツに検索を限定する。
+- 引用符を使用すると、返される結果の数を減るため、検索結果が問題に関連する確率を上げる。たとえば、GeoJSON ファイルをすでに存在する場所に保存しようとして失敗した場合、"GDAL Error 6: DeleteLayer() not supported by this dataset" というメッセージを含むエラーが表示される。引用符を使わずに `GDAL Error 6` を検索するよりも、`"GDAL Error 6" sf` のような特定の検索クエリを使用したほうが、解決策が見つかる可能性が高くなる。
+- [期間の制限](https://uk.pcmag.com/software-services/138320/21-google-search-tips-youll-want-to-learn)を設定する。例えば、過去1年以内に作成されたコンテンツのみを返すようにすれば、進化するパッケージのヘルプを検索する際に便利である。
+- 追加の[検索エンジン機能](https://www.makeuseof.com/tag/6-ways-to-search-by-date-on-google/)を利用する。例えば、site:r-project.org で CRAN にホストされているコンテンツに検索を限定する。
 
 ### 助けを求めるための検索(依頼)場所  {#help}
+
+ネットで検索しても解決しない場合は、助けを求めてもよい。
+これを行うには、以下のような多くのフォーラムがある.
 
 - R's Special Interest Group on Geographic data email list ( [R-SIG-GEO](https://stat.ethz.ch/mailman/listinfo/r-sig-geo))
 - GIS Stackexchangeのウェブサイト ([gis.stackexchange.com](https://gis.stackexchange.com/))
 - 大型・汎用プログラミングQ&amp;Aサイト [stackoverflow.com](https://stackoverflow.com/)
 - [RStudio Community](https://community.rstudio.com/)、[rOpenSci Discuss](https://discuss.ropensci.org/) ウェブフォーラム、 [Stan](https://discourse.mc-stan.org/) フォーラムなど、特定のソフトウェアツールに関連するフォーラムなど、特定のエンティティに関連するオンラインフォーラム。
 - GitHubなどのソフトウェア開発プラットフォームは、R-spatialパッケージの大半の課題トラッカーや、最近では**sfnetworks**パッケージに関する議論 (バグ報告だけでなく) を促すために作られた組み込みの議論ページなどをホストしている ([luukvdmeer/sfnetworks/discussions](https://github.com/luukvdmeer/sfnetworks/discussions/)を参照)。
+- チャットルームやフォーラム [rOpenSci](https://ropensci.org/blog/2022/09/13/contributing-ropensci/) や [geocompx](https://geocompx.org) コミュニティ (これには質問をすることができる [Discord server](https://discord.gg/PMztXYgNxp) もある)。本書もここに関係している。
 - [OSGeoJapan のメーリングリスト](https://www.osgeo.jp/mailing_list) (日本語)
 - [r-wakalang Slack](https://github.com/tokyor/r-wakalang) (日本語)
 
-### 再現性のある例で良い質問をする方法  {#reprex}
+### **reprex** による再現性の例  {#reprex}
 
-良い質問をするという点では、アクセスしやすく、完全に再現可能な例によってサポートされた、明確に述べられた質問が鍵となる。
-また、ユーザーの視点から「うまくいかなかった」コードを示した後に、「こうしてほしい」ということを説明すると効果的である。
-再現性のあるサンプルを作成するために非常に便利なツールが **reprex** パッケージである。
-<!-- Todo: show how reprex works. -->
+良い質問とは、明確に述べられた質問で、さらにアクセスしやすい完全に再現可能な例があるとよい (https://r4ds.hadley.nz/workflow-help.html も参照)。
+また、ユーザーの視点から「うまくいかなかった」コードを示した後、何を見たいかを説明することも有効である。
+再現可能な例を作成するための非常に便利なツールが、**reprex** パッケージである。
+予期せぬ動作を強調するために、問題を示す完全に再現可能なコードを書き、`reprex()`関数を使って、フォーラムや他のオンラインスペースに貼り付けられるようなコードのコピーを作成することができる。
+
+青い海と緑の陸地がある世界地図を作ろうとしているとしよう。
+前項で説明したような場所で、その方法を尋ねることもできできる。
+しかし、あなたがこれまでに試したことの再現可能な例を示すことで、より良い回答が得られる可能性がある。
+次のコードは、青い海と緑の陸地がある世界地図を作成するが、陸地は塗りつぶされない。
+
+```r
+library(sf)
+library(spData)
+plot(st_geometry(world), col = "green")
+```
+
+このコードをフォーラムに投稿すれば、より具体的で有用な回答が得られる可能性がある。
+例えば、Figure \@ref(fig:16-synthesis-reprex) のように、問題を解決する以下のようなコードを投稿してくれる人がいるかもしれない。
+
+```r
+library(sf)
+library(spData)
+# use the bg argument to fill in the land
+plot(st_geometry(world), col = "green", bg = "lightblue")
+```
 
 
+```{r 16-synthesis-reprex, out.width="49%", fig.show="hold", fig.cap="A map of the world with green land, illustrating a question with a reproducible example (left) and the solution (right).", echo=FALSE, message=FALSE, warning=FALSE}
+library(sf)
+library(spData)
+plot(st_geometry(world), col = "green")
+plot(st_geometry(world), col = "green", bg = "lightblue")
+```
 
-<!-- A strength of open source and collaborative approaches to geocomputation is that they generate a vast and ever evolving body on knowledge, of which this book is a part. -->
-<!-- Thousands of exchanges have taken place in publicly accessible fora, demonstrating the importance of knowing how to search for answers and, perhaps more importantly, show how beginners can support open source software communities by asking good questions. -->
-<!-- This section covers these interrelated topics, with a focus on common places to search for answers and ask questions and how to ask good questions. -->
-<!-- Should we divide these topics in 2? RL 2022-02 -->
+読者のための練習：上記のコードをコピーし、コマンド `reprex::reprex()` を実行し (またはコマンドを `reprex()` の関数呼び出しにペーストし)、その出力をフォーラムや他のオンラインスペースにペーストしてください。
 
-<!-- Key fora for discussing methods and code for working with geographic data in R include: -->
-<!-- I was thinking of saying "in descening order of ease of use" or something but not sure that's a good idea (RL 2022-02) -->
+オープンソースとコラボレーションによるジオコンピュテーションの強さは、膨大で進化し続ける知識体系を生み出すことであり、本書はその一部である。
+問題を解決するための自分自身の努力を示し、問題の再現可能な例を提供することは、この知識体系に貢献する方法である。
 
 ### 問題の定義とスケッチ  {#defining-and-sketching-the-problem}
 
+場合によっては、ネット上で問題解決策を見つけることができなかったり、検索エンジンで答えられるような質問を立てることができないこともある。
 新しいジオコンピュテーションの方法論やアプローチを開発するときの最良の出発点は、しばしばペンと紙（または共同スケッチやアイデアの迅速な共有を可能にする [Excalidraw](https://excalidraw.com/) や [tldraw](https://www.tldraw.com/) などの同等のデジタルスケッチツール）である。方法論開発の作業の最も創造的な初期段階においては、<u>どのような</u>ソフトウェアも思考の速度を落とし、重要な抽象概念から思考を遠ざけることになる。
+方法論開発の最も創造的な初期段階において、ソフトウェア（あらゆる種類のもの）は、思考を鈍らせ、重要な抽象的思考から思考を遠ざけることができる。
 また、数値的に「前と後」をスケッチできる最小限の例を参照しながら、数学で質問を組み立てることも強く推奨される。
 もし、あなたにスキルがあり、問題がそれを必要とするならば、代数的にアプローチを記述することは、場合によっては効果的な実装を開発するのに役立つ。
 
@@ -221,14 +248,14 @@ R の基本クラスである `data.frame` や `matrix` は、`sf` や `raster` 
 
 また、ソフトウェア関連の今後の学習方向としては、**他の言語によるジオコンピュテーションの発見**が挙げられる。
 Chapter \@ref(intro) で紹介されているように、ジオコンピュテーションのための言語として R を学習することには理由があるが、R が唯一の選択肢というわけではない。^[
-ジオコンピュテーションの定義に関連する R の強みは、科学的再現性の重視 \index{reproducibility}、学術研究での幅広い使用、地理データの統計的モデリングに対する比類のないサポートである。
-さらに、他の言語やフレームワークを学ぶ際には時間も労力もかかるため、ジオコンピュテーション\index{geocomputation}のための1つの言語 (R) を深く学ぶことを勧めている。
-多くの言語の基礎知識を持つよりも、一つの言語の専門知識を持つことが望ましい。
+R の強みは、科学的な再現性を重視し、学術研究において広く使用され、地理データの統計的モデリングを比類なくサポートすることから、特にジオコンピュテーションの定義に関連しています。
+さらに、他の言語やフレームワークに手を出す前に、ジオコンピュテーションのための1つの言語を深く学ぶことを推奨する (コンテキストスイッチに関連するコストがかかるため)。
 ]
-*Python*\index{Python}、*C++*\index{C++}、*JavaScript*\index{JavaScript}、*Scala*\index{Scala}、*Rust*\index{Rust} を使っても、同じ深さでジオコンピュテーションを勉強することができる。
+*Python*、*C++*、*JavaScript*、*Scala*\index{Scala}、*Rust*\index{Rust} を使っても、同じ深さでジオコンピュテーションを勉強することができる。
 それぞれが進化した地理空間能力を有している。
-例えば、Pythonのパッケージ [**rasterio**](https://github.com/mapbox/rasterio) は、
-この本で使われている **raster** パッケージを補足/置換できるものである。 Python\index{Python} のエコシステムについては @garrard_geoprocessing_2016 や [automating-gis-processes](https://automating-gis-processes.github.io/CSC18) などのオンラインチュートリアルを参照。
+例えば、Pythonのパッケージ [**rasterio**](https://github.com/mapbox/rasterio) は、この本で使われている **terra** パッケージを補足/置換できるものである。
+See [*Geocomputation with Python*](https://py.geocompx.org/), for an introduction to geocomputation with Python.
+
 C++\index{C++} では、GDAL\index{GDAL} や GEOS\index{GEOS}  などのよく知られたライブラリから、リモートセンシング（ラスタ）データを処理する **[Orfeo Toolbox](https://github.com/orfeotoolbox/OTB)** などのあまり知られていないライブラリなど、数十の地理空間ライブラリが開発されている。
 [**Turf.js**](https://github.com/Turfjs/turf) は、JavaScriptでジオコンピュテーションを行う可能性を示す一例である。
 \index{Scala}
@@ -284,9 +311,9 @@ Section \@ref(what-is-geocomputation) は、地理データ科学 (geographic da
 
 特に GitHub のような、コミュニケーションとコラボレーションを促進するコードホスティングサイトの出現により、このコミュニティに参加する方法はたくさんある。
 手始めに、興味のある地理的なパッケージのソースコード、issues、commits のいくつかに目を通すとよいだろう。
-`r-spatial/sf` GitHub リポジトリをざっと見ると、**sf**\index{sf} パッケージの基礎となるコードをホストしており、40 人以上がコードベースとドキュメントに貢献していることがわかる。
+`r-spatial/sf` GitHub リポジトリをざっと見ると、**sf**\index{sf} パッケージの基礎となるコードをホストしており、100 人以上がコードベースとドキュメントに貢献していることがわかる。
 さらに何十人もの人が、質問をしたり、**sf** が使っている「上流」のパッケージに貢献するのあどの方法で、貢献している。
-その [issue tracker](https://github.com/r-spatial/sf/issues) には 600 以上の問題がクローズされ、より速く、より安定した、ユーザーフレンドリーな **sf** を実現するための膨大な作業が行われている。
+その [issue tracker](https://github.com/r-spatial/sf/issues) には 1,600 以上の問題がクローズされ、より速く、より安定した、ユーザーフレンドリーな **sf** を実現するための膨大な作業が行われている。
 この例は、数十のパッケージのうちのたった一つの例であるが、R を非常に効果的で継続的に進化する地理計算用言語とするために行われている知的作業の規模を表している。
 
 GitHub のようなパブリックな場で絶え間なく起こる開発活動を見るのも勉強になるが、自分が積極的に参加することでより大きな収穫を得ることができる。
@@ -294,5 +321,4 @@ GitHub のようなパブリックな場で絶え間なく起こる開発活動�
 この本自体もオープンソース化した結果である。
 これは、過去 20 年間の R の地理的機能の驚くべき発展によって動機づけられたが、共同作業のためのプラットフォーム上での対話とコード共有によって、現実的に可能になった。
 本書が、地理データを扱うための有用な手法を広めるだけでなく、よりオープンソースに近いアプローチをとるきっかけになればと願っている。
-建設的な問題を提起して開発者にパッケージの問題を警告する、自分や自分が働く組織の仕事をオープンにする、学んだ知識を伝えて他の人を助けるなど、参加することはやりがいのある経験になるはずである。
 
