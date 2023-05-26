@@ -16,16 +16,16 @@ build: ## Make Build
 	Rscript -e 'browseURL("_book/index.html")'
 
 pdf: ## Render book in pdf
-	Rscript -e 'bookdown::render_book("index.Rmd", output_format = "bookdown::pdf_book")'
+	Rscript -e 'bookdown::render_book("index.Rmd", output_format = "rmdja::pdf_book_ja")'
 
 md: ## Generate Markdown
-	Rscript -e 'bookdown::render_book("index.Rmd", output_format = "bookdown::pdf_book", clean = FALSE)'
+	Rscript -e 'bookdown::render_book("index.Rmd", output_format = "rmdja::pdf_book_ja", clean = FALSE)'
 
 install: ## Perform install
 	Rscript -e 'remotes::install_github("geocompx/geocompr")'
 
 deploy: ## Perform deployment
-	Rscript -e 'bookdown::publish_book(render = "local", account = "robinlovelace")'
+	Rscript -e 'bookdown::publish_book(render = "local", account = "babayoshihiko")'
 
 clean:
 	Rscript -e "bookdown::clean_book(TRUE)"

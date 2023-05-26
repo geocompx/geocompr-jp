@@ -168,7 +168,7 @@ qgis_providers()
 出力表から、QGIS のジオアルゴリズム (`native`, `qgis`, `3d`) と、サードパーティプロバイダの GDAL、SAGA、GRASS の外部アルゴリズムを QGIS インターフェースを通して使用できることが確認できた。
 以下のコマンドで、外部アルゴリズムを有効にしよう。
 
-```{r enable-providers, eval=has_qgis}
+```{r enable-providers, eval=has_qgis_plugins}
 qgis_enable_plugins()
 #> Trying to enable following plugin(s): grassprovider, otbprovider, processing_saga_nextgen
 #> grassprovider successfully enabled!
@@ -296,7 +296,7 @@ union
 **qgisprocess** パッケージは、`qgis_run_algorithm()` の結果を、この場合は出力ファイルへのパスを含むリストとして保存する。
 このファイルを R に読み戻すには、`read_sf()` (例,  `union_sf = read_sf(union[[1]])` を使うか、`st_as_sf()` を使って直接読み込むことができる。
 
-```{r, eval=has_qgis}
+```{r, eval=has_qgis_plugins}
 union_sf = st_as_sf(union)
 ```
 
@@ -349,7 +349,7 @@ qgis_arguments("grass7:v.clean") |>
 
 このアルゴリズムを実行し、その出力を新しい `sf` オブジェクト `clean_sf` に変換してみよう。
 
-```{r 09-gis-7c, eval=has_qgis}
+```{r 09-gis-7c, eval=has_qgis_plugins}
 clean = qgis_run_algorithm("grass7:v.clean",
   input = union_sf,
   tool = "rmarea", threshold = 25000
