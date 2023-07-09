@@ -145,12 +145,15 @@ knitr::include_graphics("figures/15_sa_mongon_sampling.png")
 具体的には、R-GIS ブリッジを用いて、デジタル標高モデル\index{digital elevation model}から集水勾配と集水面積\index{catchment area}を計算する (Chapter \@ref(gis) 参照)。
 曲率も重要な予測因子である可能性があり、「演習」セクションで、それらがモデリング結果にどのような影響を与えるかを確認することができる。
 
-集水域\index{catchment area}と集水勾配を計算するには、`saga:sagawetnessindex` 関数を利用することができる。^[残念ながら、`sagawetnessindex` で望ましい地形属性を計算するには SAGA\index{SAGA} に詳しくなければならない。] 
+集水域\index{catchment area}と集水勾配を計算するには、`sagang:sagawetnessindex` 関数を利用することができる。^[残念ながら、`sagawetnessindex` で望ましい地形属性を計算するには SAGA\index{SAGA} に詳しくなければならない。] 
 `qgis_show_help()` 特定のジオアルゴリズム\index{geoalgorithm}のすべての関数\index{function}パラメータとデフォルト値を返す。
 ここでは、その一部のみを紹介する。
 
 ```{r 15-eco-5, eval=FALSE}
-qgisprocess::qgis_show_help("saga:sagawetnessindex")
+# saga next generation プラグインを有効化していない場合に有効化
+qgisprocess::qgis_enable_plugins("processing_saga_nextgen")
+# ヘルプを表示
+qgisprocess::qgis_show_help("sagang:sagawetnessindex")
 #> Saga wetness index (saga:sagawetnessindex)
 #> ...
 #> ----------------
@@ -185,14 +188,14 @@ qgisprocess::qgis_show_help("saga:sagawetnessindex")
 ```
 
 次に、R の名前付き引数を使って、必要なパラメータを指定する (Section \@ref(rqgis) を参照)。
-R\index{R} のグローバル環境に住んでいる `SpatRaster` を使って、入力ラスタ `DEM` を指定できることを思い出そう (Section \@ref(rqgis) 参照)。
+ディスク上のファイルへのパス、あるいは R\index{R} のグローバル環境に住んでいる `SpatRaster` を使って、入力ラスタ `DEM` を指定できることを思い出そう (Section \@ref(rqgis) 参照)。
 `SLOPE_TYPE` に 1 を指定することで、アルゴリズムが集水勾配を返すようになる。
-出来上がったラスタ\index{raster}は、SAGA\index{SAGA}  のラスタフォーマットである `.sdat` という拡張子で一時ファイルに保存される。
+生成されたラスタ\index{raster}は、SAGA\index{SAGA} のラスタ形式である `.sdat` という拡張子で一時ファイルに保存される。
 
 ```{r 15-eco-6, eval=FALSE}
 # 環境予測因子：集水勾配と集水面積
 ep = qgisprocess::qgis_run_algorithm(
-  alg = "saga:sagawetnessindex",
+  alg = "sagang:sagawetnessindex",
   DEM = dem,
   SLOPE_TYPE = 1, 
   SLOPE = tempfile(fileext = ".sdat"),

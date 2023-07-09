@@ -102,6 +102,7 @@ knitr::kable(datapackages,
 
 
 
+
 Table \@ref(tab:datapackages) は、利用可能な地理データパッケージのごく一部に過ぎないことを強調しておく。
 この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
 同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czechia)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
