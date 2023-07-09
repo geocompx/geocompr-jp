@@ -20,4 +20,9 @@ bookdown::bs4_book:
     in_header: style/ga.html
   template: style/bs4_book.html
   css: style/style.css
-rmdja::pdf_book_ja: default
+rmdja::pdf_book_ja:
+  keep_tex: true
+  keep_md: true
+  includes:
+    in_header:  preamble.tex
+    after_body: after_body.tex
