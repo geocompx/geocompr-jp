@@ -14,10 +14,10 @@ biblio-style: apalike
 link-citations: yes
 colorlinks: yes
 graphics: yes
-description: "Geocomputation with R is for people who want to analyze, visualize and model geographic data with open source software. It is based on R, a statistical programming language that has powerful data processing, visualization, and geospatial capabilities. The book equips you with the knowledge and skills to tackle a wide range of issues manifested in geographic data, including those with scientific, societal, and environmental implications. This book will interest people from many backgrounds, especially Geographic Information Systems (GIS) users interested in applying their domain-specific knowledge in a powerful open source language for data science, and R users interested in extending their skills to handle spatial data."
+description: "Geocomputation with R は、オープンソースソフトウェアを使って地理データを分析、視覚化、モデル化するために書かれた。本書は、強力なデータ処理、可視化、地理空間機能を持つ統計プログラミング言語である R をベースにしている。本書は、科学的、社会的、環境的な意味合いを含む、地理データに現れるさまざまな問題に取り組むための知識とスキルを身につけることができる。地理情報システム (Geographic Information Systems, GIS) のユーザーで、データサイエンスのための強力なオープンソース言語での専門分野の知識の応用に興味がある人、R のユーザーで空間データを扱うスキルの拡張に興味がある人など、さまざまな立場の人が本書に興味を持つだろう。"
 github-repo: "geocompx/geocompr-ja"
 cover-image: "images/cover.png"
-url: https://geocompr.robinlovelace.net/
+url: http://124.219.182.167/geo/
 ---
 
 ```{r index-1, echo=FALSE}
@@ -56,7 +56,7 @@ if (is_html) {
 [![](https://img.shields.io/github/stars/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr)
 [![](https://img.shields.io/github/contributors/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr/graphs/contributors)
 
-本書のオンライン版は、[geocompr.robinlovelace.net](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されている。（訳注：日本語版は、[https://babayoshihiko.ddns.net/geo](https://babayoshihiko.ddns.net/geo) と[http://124.219.182.167/geo/](http://124.219.182.167/geo/)でホストされている。）
+本書のオンライン版は、[r.geocompx.org](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されている。（訳注：日本語版は、[https://babayoshihiko.ddns.net/geo](https://babayoshihiko.ddns.net/geo) と[http://124.219.182.167/geo/](http://124.219.182.167/geo/)でホストされている。）
 現在の「ビルド状況」は以下の通りである。
 
 [![Actions](https://github.com/geocompx/geocompr/workflows/Render/badge.svg)](https://github.com/geocompx/geocompr/actions)
@@ -276,7 +276,7 @@ Section \@ref(why-use-r-for-geocomputation)  で概説したように、ジオ�
 R は、他の言語と比較して、多くの地理データ解析ワークフローで必要とされる対話的な使用に適している。
 R は、データサイエンス（データ加工、統計学習技術、データの可視化など）やビッグデータ（データベースや分散コンピューティングシステムとの効率的なインターフェースによる）の分野で急速に発展している分野に優れている。
 さらに、R は再現性のあるワークフローを可能にする。分析の基礎となるスクリプトを共有することで、他の人があなたの研究を発展させることができるのである。
-本書での再現性を確保するために、ソースコードを [github.com/Robinlovelace/geocompr](https://github.com/Robinlovelace/geocompr#geocomputation-with-r) で公開している。
+本書での再現性を確保するために、ソースコードを [github.com/geocompx/geocompr](https://github.com/geocompx/geocompr#geocomputation-with-r) で公開している。
 上記サイトでは、`code/` フォルダに数値を生成するスクリプトファイルがある。
 図を生成するコードが書籍の本文に記載されていない場合、図を生成したスクリプトファイル名をキャプションに記載する（例えば、 Figure \@ref(fig:zones)  のキャプションを参照）。
 
