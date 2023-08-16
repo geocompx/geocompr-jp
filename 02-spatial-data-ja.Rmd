@@ -35,6 +35,10 @@ install.packages("spData")
 install.packages("spDataLarge", repos = "https://nowosad.r-universe.dev")
 ```
 
+```{r}
+remotes::install_github("r-tmap/tmap@v4")
+```
+
 \index{R!installation}
 ```{block2 02-spatial-data-2, type='rmdnote'}
 [CRAN](https://cran.r-project.org/) に書かれている R の解説を推奨する。
@@ -43,9 +47,9 @@ Mac/Linux には、パッケージの [README](https://github.com/r-spatial/sf) 
 また、ブログ [rtask.thinkr.fr](https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/) の記事 *Installation of R 4.2 on Ubuntu 22.04.1 LTS* など、他の OS 向けの解説もオンラインで見つけることができる。
 ```
 
-本書の第1部を再現するために必要なパッケージは、以下のコマンドでインストールできる。 `remotes::install_github("geocompr/geocompkg")` 。
+本書の第1部を再現するために必要なパッケージは、以下のコマンドでインストールできる。 `remotes::install_github("geocompx/geocompkg")` 。
 このコマンドは、**remotes** パッケージの関数 `install_packages()` を使用して、GitHub コードホスティング、バージョン、およびコラボレーション プラットフォームでホストされているソース コードをインストールする。
-以下のコマンドを実行すると、本書全体を再現するために必要な**すべて**の依存関係がインストールされる（警告：数分かかる場合がある）。 `remotes::install_github("geocompr/geocompkg", dependencies = TRUE)` 
+以下のコマンドを実行すると、本書全体を再現するために必要な**すべて**の依存関係がインストールされる（警告：数分かかる場合がある）。 `remotes::install_github("geocompx/geocompkg", dependencies = TRUE)` 
 
 この章で紹介するコードを実行するために必要なパッケージは、以下のように `library()` 関数で「読み込み」（厳密には attach）をすることができる。
 
@@ -829,39 +833,20 @@ india_buffer_without_s2 = st_buffer(india, 1)
 ```{r s2example, echo=FALSE, fig.cap="S2 ジオメトリエンジンをオフにした場合の結果の例。インド周辺のバッファを同じコマンドで作成したが、紫色のポリゴンオブジェクトは S2 をオンにして作成したため、バッファは 1 m になった。大きい薄緑色のポリゴンは S2 をオフにして作成したため、バッファは不正確な経度/緯度の単位となった。", fig.asp=0.75}
 library(tmap)
 tm1 = tm_shape(india_buffer_with_s2) +
-  tm_fill(col = hcl.colors(4, palette = "purple green")[3]) +
+  tm_fill(fill = hcl.colors(4, palette = "purple green")[3]) +
   tm_shape(india) +
-  tm_fill(col = "grey95") +
-  tm_layout(main.title = "st_buffer() with dist = 1",
-            title = "s2 switched on (default)")
+  tm_fill(fill = "grey95") +
+  tm_title("st_buffer() with dist = 1") +
+  tm_title("s2 switched on (default)", position = tm_pos_in(), size = 1)
 
 tm2 = tm_shape(india_buffer_without_s2) +
-  tm_fill(col = hcl.colors(4, palette = "purple green")[3]) +
+  tm_fill(fill = hcl.colors(4, palette = "purple green")[3]) +
   tm_shape(india) +
-  tm_fill(col = "grey95") +
-  tm_layout(main.title = " ",
-            title = "s2 switched off")
+  tm_fill(fill = "grey95") +
+  tm_title(" ") +
+  tm_title("s2 switched off", position = tm_pos_in(), size = 1)
 
 tmap_arrange(tm1, tm2, ncol = 2)
-
-if (packageVersion("tmap") >= "4.0"){
-  library(tmap)
-  tm1 = tm_shape(india_buffer_with_s2) +
-    tm_fill(fill = hcl.colors(4, palette = "purple green")[3]) +
-    tm_shape(india) +
-    tm_fill(fill = "grey95") +
-    tm_title("st_buffer() with dist = 1") +
-    tm_title("s2 switched on (default)", position = tm_pos_in(), size = 1)
-  
-  tm2 = tm_shape(india_buffer_without_s2) +
-    tm_fill(fill = hcl.colors(4, palette = "purple green")[3]) +
-    tm_shape(india) +
-    tm_fill(fill = "grey95") +
-    tm_title(" ") +
-    tm_title("s2 switched off", position = tm_pos_in(), size = 1)
-  
-  tmap_arrange(tm1, tm2, ncol = 2)
-}
 ```
 
 本書では、特に明記していない限り、S2 がオンになっていることを前提に説明する。
