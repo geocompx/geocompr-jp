@@ -58,30 +58,21 @@ canterbury_height = nz_height[canterbury, ]
 
 ```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="赤い三角形はニュージーランドの 101 の High Point を表し、中央のカンタベリー地域付近に集まっている（左）。カンタベリーのポイントは、`[`部分集合演算子で作成された（グレーでハイライト、右）。", fig.scap="Illustration of spatial subsetting.", message=FALSE}
 library(tmap)
-p_hpnz1 = tm_shape(nz) + tm_polygons(col = "white") +
-  tm_shape(nz_height) + tm_symbols(shape = 2, col = "red", size = 0.25) +
-  tm_layout(main.title = "ニュージーランドの High Point", main.title.size = 1,
-            bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
-p_hpnz2 = tm_shape(nz) + tm_polygons(col = "white") +
-  tm_shape(canterbury) + tm_fill(col = "gray") + 
-  tm_shape(canterbury_height) + tm_symbols(shape = 2, col = "red", size = 0.25) +
-  tm_layout(main.title = "カンタベリーの High Point", main.title.size = 1,
-            bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
+p_hpnz1 = tm_shape(nz) + 
+  tm_polygons(fill = "white") +
+  tm_shape(nz_height) + 
+  tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
+  tm_title("ニュージーランドの High Point") +
+  tm_layout(bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
+p_hpnz2 = tm_shape(nz) + 
+  tm_polygons(fill = "white") +
+  tm_shape(canterbury) +
+  tm_fill(col = "gray") + 
+  tm_shape(canterbury_height) + 
+  tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
+  tm_title("カンタベリーの High Point") +
+  tm_layout(bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_hpnz1, p_hpnz2, ncol = 2)
-
-if (packageVersion("tmap") >= "4.0"){
-  library(tmap)
-  p_hpnz1 = tm_shape(nz) + tm_polygons(fill = "white") +
-    tm_shape(nz_height) + tm_symbols(shape = 2, col = "red", size = 0.25) +
-    tm_title("High points in New Zealand") +
-    tm_layout(bg.color = "lightblue")
-  p_hpnz2 = tm_shape(nz) + tm_polygons(fill = "white") +
-    tm_shape(canterbury) + tm_fill(col = "gray") + 
-    tm_shape(canterbury_height) + tm_symbols(shape = 2, col = "red", size = 0.25) +
-    tm_title("High points in Canterbury") +
-    tm_layout(bg.color = "lightblue")
-  tmap_arrange(p_hpnz1, p_hpnz2, ncol = 2)
-}
 ```
 
 属性による部分集合と同様に、コマンド  `x[y, ]` （`nz_height[canterbury, ]` と同等）は、<u>ソース</u> オブジェクトの内容を使用して、<u>ターゲット</u>のフィーチャの部分集合を返す。
@@ -521,22 +512,14 @@ plot(grid, col = grid_sf$rooks)
 ```
 
 ```{r queens, fig.cap="9つの形状を持つグリッドの中央の正方形に対する「クイーン」（左）と「ルーク」（右）の関係を見つけるためのカスタムバイナリ空間述語のデモ。", echo=FALSE, warning=FALSE}
+st_crs(grid_sf) = "EPSG:2180"
 tm_shape(grid_sf) +
-  tm_fill(col = c("queens", "rooks"), palette = c("white", "black")) +
+  tm_fill(fill = c("queens", "rooks"), 
+          fill.scale = tm_scale(values = c("white", "black"))) +
   tm_shape(grid_sf) +
   tm_borders(col = "grey", lwd = 2) +
   tm_layout(frame = FALSE, legend.show = FALSE,
             panel.labels = c("クィーン (queen)", "ルーク (rook)"), fontfamily = "HiraginoSans-W3")
-
-if (packageVersion("tmap") >= "4.0"){
-  tm_shape(grid_sf) +
-    tm_fill(fill = c("queens", "rooks"), 
-            fill.scale = tm_scale(values = c("white", "black"))) +
-    tm_shape(grid_sf) +
-    tm_borders(col = "grey", lwd = 2) +
-    tm_layout(frame = FALSE, legend.show = FALSE,
-              panel.labels = c("queen", "rook"))
-}
 ```
 
 <!-- Another of a custom binary spatial predicate is 'overlapping lines' which detects lines that overlap for some or all of another line's geometry. -->
@@ -628,9 +611,7 @@ random_joined = st_join(random_points, world["name_long"])
 ```
 
 ```{r spatial-join, echo=FALSE, fig.cap="空間結合の図解。ソースワールドオブジェクト（右上）からランダムポイント（左上）に新しい属性変数が追加され、最後のパネルで表されるデータになる。", fig.asp=0.5, warning=FALSE, message=FALSE, out.width="100%", fig.scap="Illustration of a spatial join."}
-# source("https://github.com/Robinlovelace/geocompr/raw/main/code/04-spatial-join.R")
-source("code/04-spatial-join.R")
-tmap_arrange(jm1, jm2, jm3, jm4, nrow = 2, ncol = 2)
+source("code/04-spatial-join.R", print.eval = TRUE)
 ```
 
 デフォルトでは、`st_join()` は左結合を行う。つまり、結果は `y` にマッチしない行を含む `x` の全ての行を含むオブジェクトとなる（ Section \@ref(vector-attribute-joining) を参照）。Inner Join をする場合には、`left = FALSE` とする。
@@ -680,7 +661,7 @@ if (knitr::is_latex_output()){
   leaflet() |>
     # addProviderTiles(providers$OpenStreetMap.BlackAndWhite) |>
     addCircles(data = cycle_hire) |>
-    addCircles(data = cycle_hire_osm, col = "red") 
+    addCircles(data = cycle_hire_osm, col = "red")
 }
 ```
 
@@ -764,16 +745,9 @@ nz_agg = aggregate(x = nz_height, by = nz, FUN = mean)
 ```{r spatial-aggregation, echo=FALSE, fig.cap="ニュージーランドの各地域の上位 101 の高さの平均値。", fig.asp=1, message=FALSE, out.width="50%"}
 library(tmap)
 tm_shape(nz_agg) +
-  tm_fill("elevation", breaks = seq(27, 30, by = 0.5) * 1e2) +
+  tm_fill("elevation", 
+          fill.scale = tm_scale(breaks = seq(27, 30, by = 0.5) * 1e2)) +
   tm_borders()
-
-if (packageVersion("tmap") >= "4.0"){
-  library(tmap)
-  tm_shape(nz_agg) +
-    tm_fill("elevation", 
-            fill.scale = tm_scale(breaks = seq(27, 30, by = 0.5) * 1e2)) +
-    tm_borders()
-}
 ```
 
 ```{r 04-spatial-operations-29}
@@ -805,7 +779,7 @@ plot(nz_agg2)
 面積補間は、単純な面積加重法や「ピクノフィラティック」 (pycnophylactic) 法などのより洗練されたアプローチを含む様々なアルゴリズムを使用して、1セットの面積単位から別の単位に値を転送することによってこの問題を克服している [@tobler_smooth_1979]。
 
 ```{r areal-example, echo=FALSE, fig.cap="大きな凝集帯（半透明の青い枠）に対して、一致する面単位（左）と不一致する面単位（右）を示した図。", fig.asp=0.2, fig.scap="Illustration of congruent and incongruent areal units."}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/04-areal-example.R", print.eval = TRUE)
+source("code/04-areal-example.R", print.eval = TRUE)
 ```
 
 **spData** パッケージには、`incongruent` ( Figure \@ref(fig:areal-example) の右側のパネルにある黒い縁取りのある色のついたポリゴン) と `aggregating_zones` ( Figure \@ref(fig:areal-example) の右側のパネルにある半透明の青い縁取りのある二つのポリゴン) という名前のデータセットが含まれている。
