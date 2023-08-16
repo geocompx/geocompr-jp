@@ -12,7 +12,6 @@ library(spData)
 ```
 
 ## イントロダクション  {#introduction-08}
-
 <!--toDo:RL-->
 <!--revise and update the following section-->
 
@@ -34,7 +33,6 @@ Section \@ref(retrieving-data) では、このトピックについて合計で�
 最後の Section \@ref(visual-outputs) では、ビジュアライゼーションに関する Chapter \@ref(adv-map) に備えて、ビジュアル出力 (地図) を保存するための方法を紹介する。
 
 ## オープンデータの取得  {#retrieving-data}
-
 <!--toDo:RL-->
 <!--revise and update the following section-->
 
@@ -65,7 +63,6 @@ usa_parks = read_sf(dsn = "nps_boundary.shp")
 ```
 
 ## 地理データパッケージ  {#geographic-data-packages}
-
 <!--toDo:RL-->
 <!--revise and update the following section-->
 <!-- JN: btw -- should we add references to these packages? -->
@@ -291,7 +288,7 @@ OWS サービスを利用する **ows4R** というパッケージが開発さ�
 
 \index{file formats}
 地理データセットは通常、ファイルまたは空間データベースとして保存される。
-ファイル形式はベクタデータとラスタデータのどちらかを保存できるが、 [PostGIS](https://postgis.net/) のような空間データベースは両方を保存できる ( Section \@ref(postgis) も参照)。
+ファイル形式はベクタデータとラスタデータのどちらかを保存できるが、 [PostGIS](https://postgis.net/) のような空間データベースは両方を保存できる (Section \@ref(postgis) も参照)。
 今日、ファイル形式の多様性は困惑するほどある。しかし、1960年代には、ハーバード大学で空間解析のための最初の広く配布されたプログラム ([SYMAP](https://news.harvard.edu/gazette/story/2011/10/the-invention-of-gis/)) などの初期の GIS ソフトウェアが開発された。それ以降、多くの統合と標準化が行われてきた [@coppock_history_1991]。
 
 \index{GDAL}
@@ -331,9 +328,9 @@ OGC は、シンプルフィーチャというデータモデル (Section \@ref(
 OGC が推奨するオープンなファイルフォーマットは、プロプライエタリなフォーマットと比較して、いくつかの利点がある。標準が公開され、透明性が確保され、ユーザーがファイルフォーマットをさらに開発し、特定のニーズに合わせて調整する可能性が開かれることである。
 
 ESRI Shapefile\index{Shapefile}  は最も一般的なベクタデータ交換フォーマットであるが、オープンフォーマットではない (仕様はオープン)。
-1990年代初頭に開発されたもので、多くの制約がある。
-まず、少なくとも3つのファイルで構成されるマルチファイル形式であること。
-255列までしかサポートしておらず、列名は10文字まで、ファイルサイズは 2 GB までと制限されている。
+1990 年代初頭に開発されたもので、多くの制約がある。
+まず、少なくとも 3 つのファイルで構成されるマルチファイル形式であること。
+255 列までしかサポートしておらず、列名は 10 文字まで、ファイルサイズは 2 GB までと制限されている。
 さらに、ESRI Shapefile\index{Shapefile}  は、ポリゴンと複合ポリゴンの区別ができないなど、可能なすべてのジオメトリタイプをサポートしていない。^[ESRI Shapefile の制限と可能な代替ファイルフォーマットについては、http://switchfromshapefile.org/ 参照。] 
 このような制約があるにもかかわらず、長い間、有力な代替手段が見つかっていなかった。 
 最近では、[GeoPackage](https://www.geopackage.org/)\index{GeoPackage} が登場し、ESRI Shapefile に取って代わろうとしている。
@@ -356,7 +353,6 @@ COG として保存されたラスタオブジェクトは、HTTP サーバー�
 他のフォーマットについて詳しく知りたい場合は、[ベクタ](https://gdal.org/drivers/vector/index.html)や[ラスタ](https://gdal.org/drivers/raster/index.html)ドライバに関する GDAL ドキュメントを読むことを勧める。
 さらに、空間データフォーマットの中には、ベクタやラスタ以外のデータモデル (タイプ) を格納できるものもある。
 LiDAR点群を格納するための LAS、LAZ 形式、多次元配列を格納するための NetCDF、HDF 形式が含まれる。
-<!-- do we mention them anywhere in the book and can reference to? -->
 
 また、空間データは、CSV ファイルや Excel スプレッドシートなど、表形式 (非空間) のテキスト形式で保存されることも多い。
 例えば、GIS ツールを使わない人と空間サンプルを共有したり、空間データ形式を受け付けない他のソフトウェアとデータを交換したりする際に便利である。 
@@ -447,52 +443,27 @@ tanzania_neigh = read_sf(f, wkt_filter = tanzania_buf_wkt)
 
 Figure \@ref(fig:readsfquery) :B に示すように、この結果はタンザニアとその 50 km バッファ内のすべての国を含めている。
 
-```{r readsfquery, echo=FALSE, message=FALSE, fig.cap="クエリ (A) と wkt フィルターを用いて、ベクタデータのサブセットを読み込む (B)。"}
+```{r readsfquery, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="クエリ (A) と wkt フィルターを用いて、ベクタデータのサブセットを読み込む (B)。"}
 library(tmap)
 tm1 = tm_shape(tanzania) +
   tm_polygons(lwd = 2) +
   tm_text(text = "name_long") + 
-  tm_scale_bar(c(0, 200, 400), position = c("left", "bottom")) +
-  tm_layout(main.title = "A. query")
-tanzania_neigh[tanzania_neigh$iso_a2 == "CD", "name_long"] = "Democratic\nRepublic\nof the Congo"
+  tm_scalebar(c(0, 200, 400), position = c("left", "bottom")) +
+  tm_title("A. クエリ") + tm_layout(fontfamily = "HiraginoSans-W3")
+tanzania_neigh[tanzania_neigh$iso_a2 == "CD", "name_long"] = "Democratic\nRepublic\nof the ongo"
 tm2 = tm_shape(tanzania_neigh) +
   tm_polygons() +
-  tm_text(text = "name_long", size = "AREA",
-          auto.placement = FALSE, remove.overlap = FALSE,
-          root = 6, legend.size.show = FALSE) +
+  tm_text(text = "name_long", 
+          text.scale = tm_scale(auto.placement = FALSE, remove.overlap = FALSE), 
+          size = "AREA", size.legend = tm_legend_hide(), root = 6) +
   tm_shape(tanzania_buf) +
-  tm_polygons(col = "red", border.col = "red", alpha = 0.05) +
-  tm_add_legend(type = "fill", labels = "50km buffer around Tanzania",
-                col = "red", alpha = 0.1, border.col = "red") +
-  tm_scale_bar(c(0, 200, 400), position = c("right", "bottom")) +
-  tm_layout(legend.width = 0.5,
-            legend.position = c("left", "bottom"),
-            main.title = "B. wkt_filter")
+  tm_polygons(col = "red", fill = "red", fill_alpha = 0.05) +
+  tm_add_legend(type = "fill", labels = "タンザニア 50 km バッファ",
+                col = "red", fill_alpha = 0.1, fill = "red")  +
+  tm_scalebar(c(0, 200, 400), position = c("right", "bottom")) +
+  tm_title("B. wkt_filter") +
+  tm_layout(legend.position = c("left", "bottom"), fontfamily = "HiraginoSans-W3")
 tmap_arrange(tm1, tm2)
-
-# toDo: jn
-# tm_add_legend is missing
-if (packageVersion("tmap") >= "4.0"){
-  tm1 = tm_shape(tanzania) +
-    tm_polygons(lwd = 2) +
-    tm_text(text = "name_long") + 
-    tm_scale_bar(c(0, 200, 400), position = c("left", "bottom")) +
-    tm_title("A. query")
-  tanzania_neigh[tanzania_neigh$iso_a2 == "CD", "name_long"] = "Democratic\nRepublic\nof the Congo"
-  tm2 = tm_shape(tanzania_neigh) +
-    tm_polygons() +
-    tm_text(text = "name_long", size = "AREA",
-            auto.placement = FALSE, remove.overlap = FALSE,
-            root = 6, legend.size.show = FALSE) +
-    tm_shape(tanzania_buf) +
-    tm_polygons(col = "red", fill = "red", fill_alpha = 0.05) +
-    # tm_add_legend(type = "fill", labels = "50km buffer around Tanzania",
-    #               col = "red", alpha = 0.1, border.col = "red")  +
-    tm_scale_bar(c(0, 200, 400), position = c("right", "bottom")) +
-    tm_title("B. wkt_filter") +
-    tm_layout(legend.width = 0.5, legend.position = c("left", "bottom"))
-  tmap_arrange(tm1, tm2)
-}
 ```
 
 当然ながら、一部のオプションは特定のドライバに固有のものである。^[
