@@ -56,19 +56,10 @@ seine_simp = st_simplify(seine, dTolerance = 2000) # 2000 m
 ```{r seine-simp, echo=FALSE, fig.cap="seine のオリジナルと簡略化した形状の比較。", warning=FALSE, fig.scap="Simplification in action.", message=FALSE}
 library(tmap)
 p_simp1 = tm_shape(seine) + tm_lines() +
-  tm_layout(main.title = "オリジナルデータ", fontfamily = "HiraginoSans-W3")
+  tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
 p_simp2 = tm_shape(seine_simp) + tm_lines() +
-  tm_layout(main.title = "st_simplify")
+  tm_title("st_simplify")
 tmap_arrange(p_simp1, p_simp2, ncol = 2)
-
-if (packageVersion("tmap") >= "4.0"){
-  library(tmap)
-  p_simp1 = tm_shape(seine) + tm_lines() +
-    tm_title("Original data")
-  p_simp2 = tm_shape(seine_simp) + tm_lines() +
-    tm_title("st_simplify")
-  tmap_arrange(p_simp1, p_simp2, ncol = 2)
-}
 ```
 
 ここでできた `seine_simp` オブジェクトは、元の `seine` のコピーであるが、頂点の数は少なくなっている。
@@ -131,21 +122,12 @@ Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 
 
 ```{r us-simp, echo=FALSE, fig.cap="ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。", warning=FALSE, fig.scap="Polygon simplification in action."}
 library(tmap)
-p_ussimp1 = tm_shape(us_states2163) + tm_polygons() + tm_layout(main.title = "オリジナルデータ", fontfamily = "HiraginoSans-W3")
-p_ussimp2 = tm_shape(us_states_simp1) + tm_polygons() + tm_layout(main.title = "st_simplify")
-p_ussimp3 = tm_shape(us_states_simp2) + tm_polygons() + tm_layout(main.title = "ms_simplify")
-p_ussimp4 = tm_shape(us_states_simp3) + tm_polygons() + tm_layout(main.title = 'smooth(method = "ksmooth")')
-tmap_arrange(p_ussimp1, p_ussimp2, p_ussimp3, p_ussimp4, ncol = 2, nrow = 2)
-
-if (packageVersion("tmap") >= "4.0") {
-  library(tmap)
-  p_ussimp1 = tm_shape(us_states2163) + tm_polygons() + tm_title("Original data")
-  p_ussimp2 = tm_shape(us_states_simp1) + tm_polygons() + tm_title("st_simplify")
-  p_ussimp3 = tm_shape(us_states_simp2) + tm_polygons() + tm_title("ms_simplify")
-  p_ussimp4 = tm_shape(us_states_simp3) + tm_polygons() + tm_title('smooth(method = "ksmooth")')
-  tmap_arrange(p_ussimp1, p_ussimp2, p_ussimp3, p_ussimp4,
-               ncol = 2, nrow = 2)
-}
+p_ussimp1 = tm_shape(us_states2163) + tm_polygons() + tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
+p_ussimp2 = tm_shape(us_states_simp1) + tm_polygons() + tm_title("st_simplify")
+p_ussimp3 = tm_shape(us_states_simp2) + tm_polygons() + tm_title("ms_simplify")
+p_ussimp4 = tm_shape(us_states_simp3) + tm_polygons() + tm_title('smooth(method = "ksmooth")')
+tmap_arrange(p_ussimp1, p_ussimp2, p_ussimp3, p_ussimp4,
+             ncol = 2, nrow = 2)
 ```
 
 ### 重心  {#centroids}
@@ -209,25 +191,15 @@ seine_buff_50km = st_buffer(seine, dist = 50000)
 ```
 
 ```{r buffs, echo=FALSE, fig.cap="Seine データセット周辺の 5 km (左) と 50 km (右) のバッファ。ジオメトリフィーチャごとに 1 つのバッファが作成されることを反映した色に注目。", fig.show='hold', out.width="75%", fig.scap="Buffers around the seine dataset."}
-p_buffs1 = tm_shape(seine_buff_5km) + tm_polygons(col = "name") +
+p_buffs1 = tm_shape(seine_buff_5km) + tm_polygons(fill = "name") +
   tm_shape(seine) + tm_lines() +
-  tm_layout(main.title = "5 km バッファ", legend.show = FALSE, fontfamily = "HiraginoSans-W3")
-p_buffs2 = tm_shape(seine_buff_50km) + tm_polygons(col = "name") +
+  tm_title("5 km バッファ") + 
+  tm_layout(legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+p_buffs2 = tm_shape(seine_buff_50km) + tm_polygons(fill = "name") +
   tm_shape(seine) + tm_lines() +
-  tm_layout(main.title = "50 km バッファ", legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_title("50 km バッファ") + 
+  tm_layout(legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_buffs1, p_buffs2, ncol = 2)
-
-if (packageVersion("tmap") >= "4.0"){
-  p_buffs1 = tm_shape(seine_buff_5km) + tm_polygons(fill =   "name") +
-    tm_shape(seine) + tm_lines() +
-    tm_title("5 km buffer") +
-    tm_layout(legend.show = FALSE)
-  p_buffs2 = tm_shape(seine_buff_50km) + tm_polygons(fill =   "name") +
-    tm_shape(seine) + tm_lines() +
-    tm_title("50 km buffer") +
-    tm_layout(legend.show = FALSE)
-  tmap_arrange(p_buffs1, p_buffs2, ncol = 2)  
-}
 ```
 
 ```{block2 05-geometry-operations-10, type = "rmdnote"}
@@ -324,27 +296,14 @@ st_crs(nz_scale) = st_crs(nz_sfc)
 st_crs(nz_rotate) = st_crs(nz_sfc)
 p_at1 = tm_shape(nz_sfc) + tm_polygons() +
   tm_shape(nz_shift) + tm_polygons(col = "red") +
-  tm_layout(main.title = "シフト", fontfamily = "HiraginoSans-W3")
+  tm_title("シフト") + tm_layout(fontfamily = "HiraginoSans-W3")
 p_at2 = tm_shape(nz_sfc) + tm_polygons() +
   tm_shape(nz_scale) + tm_polygons(col = "red") +
-  tm_layout(main.title = "拡大縮小", fontfamily = "HiraginoSans-W3")
+  tm_title("拡大縮小") + tm_layout(fontfamily = "HiraginoSans-W3")
 p_at3 = tm_shape(nz_sfc) + tm_polygons() +
   tm_shape(nz_rotate) + tm_polygons(col = "red") +
-  tm_layout(main.title = "回転", fontfamily = "HiraginoSans-W3")
+  tm_title("回転") + tm_layout(fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_at1, p_at2, p_at3, ncol = 3)
-
-if (packageVersion("tmap") >= "4.0"){
-  p_at1 = tm_shape(nz_sfc) + tm_polygons() +
-    tm_shape(nz_shift) + tm_polygons(fill = "red") +
-    tm_title("Shift")
-  p_at2 = tm_shape(nz_sfc) + tm_polygons() +
-    tm_shape(nz_scale) + tm_polygons(fill = "red") +
-    tm_title("Scale")
-  p_at3 = tm_shape(nz_sfc) + tm_polygons() +
-    tm_shape(nz_rotate) + tm_polygons(fill = "red") +
-    tm_title("Rotate")
-  tmap_arrange(p_at1, p_at2, p_at3, ncol = 3)
-}
 ```
 
 ```{r 05-geometry-operations-17, echo=FALSE,eval=FALSE}
@@ -409,8 +368,7 @@ par(op)
 次のコードチャンクは、`x` と `y` を表すベン図のすべての組み合わせに対して、これがどのように機能するかを示している。これは、書籍 *R for Data Science* の [Figure 5.1](http://r4ds.had.co.nz/transform.html#logical-operators) から着想を得ている [@grolemund_r_2016]。
 
 ```{r venn-clip, echo=FALSE, fig.cap="論理演算子の空間的等価性。", warning=FALSE}
-source("https://github.com/geocompx/geocompr/raw/main/code/05-venn-clip.R")
-# source("code/05-venn-clip.R") # for testing local version, todo: remove or change
+source("code/05-venn-clip.R")
 ```
 
 ### 部分集合と切り取り (clip)
@@ -504,7 +462,7 @@ regions2 = us_states |>
 ```
 
 ```{r us-regions, fig.cap="連続したポリゴンに対する空間的な集計。アメリカの州の人口を地域に集計し、人口を色で表した。この操作により、州間の境界が自動的に解消されることに注意。", echo=FALSE, warning=FALSE, fig.asp=0.2, out.width="100%", fig.scap="Spatial aggregation on contiguous polygons."}
-source("https://github.com/geocompx/geocompr/raw/main/code/05-us-regions.R", print.eval = TRUE)
+source("code/05-us-regions.R", print.eval = TRUE)
 ```
 
 ジオメトリ的にはどうなっているのだろうか？
@@ -551,26 +509,16 @@ polyg = st_cast(multipoint, "POLYGON")
 ```
 
 ```{r single-cast, echo = FALSE, fig.cap="多点ジオメトリからキャストされた線とポリゴンの例。", warning=FALSE, fig.asp=0.3, fig.scap="Examples of casting operations."}
-p_sc1 = tm_shape(st_sfc(multipoint)) + tm_symbols(shape = 1, col = "black", size = 0.5) +
-  tm_layout(main.title = "複合点", inner.margins = c(0.05, 0.05, 0.05, 0.05), fontfamily = "HiraginoSans-W3")
+p_sc1 = tm_shape(st_sfc(multipoint)) + tm_symbols(shape = 1, 
+                                                  col = "black", 
+                                                  size = 0.5) +
+  tm_title("複合点") +
+  tm_layout(inner.margins = c(0.05, 0.05, 0.05, 0.05), fontfamily = "HiraginoSans-W3")
 p_sc2 = tm_shape(st_sfc(linestring)) + tm_lines() +
-  tm_layout(main.title = "線", fontfamily = "HiraginoSans-W3")
+  tm_title("線") + tm_layout(fontfamily = "HiraginoSans-W3")
 p_sc3 = tm_shape(st_sfc(polyg)) + tm_polygons(border.col = "black") +
-  tm_layout(main.title = "ポリゴン", fontfamily = "HiraginoSans-W3")
+  tm_title("ポリゴン") + tm_layout(fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_sc1, p_sc2, p_sc3, ncol = 3)
-
-if (packageVersion("tmap") >= "4.0"){
-  p_sc1 = tm_shape(st_sfc(multipoint)) + tm_symbols(shape = 1,
-                                                    col = "black",
-                                                    size = 0.5) +
-    tm_title("MULTIPOINT") +
-    tm_layout(inner.margins = c(0.05, 0.05, 0.05, 0.05))
-  p_sc2 = tm_shape(st_sfc(linestring)) + tm_lines() +
-    tm_title("LINESTRING")
-  p_sc3 = tm_shape(st_sfc(polyg)) + tm_polygons(border.col = "black") +
-    tm_title("POLYGON")
-  tmap_arrange(p_sc1, p_sc2, p_sc3, ncol = 3)  
-}
 ```
 
 複合点から線への変換は、GPS 測定やジオタグ付きメディアなど、順序付けられたポイント観測から線オブジェクトを作成する一般的な操作である。
@@ -644,7 +592,7 @@ multilinestring_sf
 ```
 
 道路や河川のネットワークをイメージしていただきたい。 
-新しいオブジェクトは、すべてのラインを定義する1つの行だけを持っている。
+新しいオブジェクトは、すべての線を定義する1つの行だけを持っている。
 このため、各線分に名前を付けたり、1本の線の長さを計算したりすることができないなど、実行できる操作に制限がある。
 このような場合、1つのマルチ線を3つの線に分離する `st_cast()` 関数を使用することができる。
 
@@ -655,21 +603,12 @@ linestring_sf2
 
 ```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間のタイプキャスティングの例。", warning=FALSE, fig.scap="Examples of type casting."}
 p_lc1 = tm_shape(multilinestring_sf) + tm_lines(lwd = 3) +
-  tm_layout(main.title = "複合線", fontfamily = "HiraginoSans-W3")
+  tm_title("複合線") + tm_layout(fontfamily = "HiraginoSans-W3")
 linestring_sf2$name = c("Riddle Rd", "Marshall Ave", "Foulke St")
 p_lc2 = tm_shape(linestring_sf2) + tm_lines(lwd = 3, col = "name", palette = "Set2") +
-  tm_layout(main.title = "線", legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_title("線") + 
+  tm_layout(legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_lc1, p_lc2, ncol = 2)
-
-if (packageVersion("tmap") >= "4.0"){
-  p_lc1 = tm_shape(multilinestring_sf) + tm_lines(lwd = 3) +
-    tm_title("MULTILINESTRING")
-  linestring_sf2$name = c("Riddle Rd", "Marshall Ave", "Foulke St")
-  p_lc2 = tm_shape(linestring_sf2) + tm_lines(lwd = 3, col = "name", col.scale = tm_scale(values = "Set2")) +
-    tm_title("LINESTRING") +
-    tm_layout(legend.show = FALSE)
-  tmap_arrange(p_lc1, p_lc2, ncol = 2)
-}
 ```
 
 新しく作成されたオブジェクトでは、属性の作成 (詳しくは Section \@ref(vec-attr-creation) を参照) や長さの測定が可能である。
@@ -735,7 +674,7 @@ elev_2 = extend(elev, c(1, 2))
 ```
 
 ```{r extend-example, fig.cap = "元のラスタ (左) と同じラスタ (右) を上下 1 行ずつ、左右 2 列ずつに拡張したもの。", fig.scap="Extending rasters.", echo=FALSE, fig.asp=0.5}
-source("https://github.com/geocompx/geocompr/raw/main/code/05-extend-example.R", print.eval = TRUE)
+source("code/05-extend-example.R", print.eval = TRUE)
 ```
 
 R の **terra** パッケージで、範囲が異なる2つのオブジェクトに対して代数演算を実行するとエラーが発生する。
@@ -779,23 +718,11 @@ elev4_poly = st_as_sf(as.polygons(elev_4, dissolve = FALSE))
 
 tm_shape(elev4_poly) +
   tm_grid() +
-  tm_polygons(col = "elev") +
-  tm_shape(elev_poly) +
-  tm_polygons(col = "elev") +
-  tm_layout(frame = FALSE, legend.show = FALSE,
-            inner.margins = c(0.1, 0.12, 0, 0))
-
-if (packageVersion("tmap") >= "4.0"){
-  tm_shape(elev4_poly) +
-  tm_grid() +
-  tm_polygons(fill = "elev") +
+  tm_polygons(fill = "elev", lwd = 0.5) +
   tm_shape(elev_poly) +
   tm_polygons(fill = "elev") +
   tm_layout(frame = FALSE, legend.show = FALSE,
             inner.margins = c(0.1, 0.12, 0, 0))
-}
-# # See https://github.com/geocompx/geocompr/issues/695
-# knitr::include_graphics("https://user-images.githubusercontent.com/1825120/146618199-786fe3ad-9718-4dd0-a640-41180fc17e63.png")
 ```
 
 なお、解像度を変更すると (次節)、原点も頻繁に変更される。
@@ -820,24 +747,14 @@ dem_agg = aggregate(dem, fact = 5, fun = mean)
 
 ```{r aggregate-example, fig.cap = "オリジナル (左) と aggregate 後 (右)。", echo=FALSE}
 p_ar1 = tm_shape(dem) +
-  tm_raster(style = "cont", legend.show = FALSE) +
-  tm_layout(main.title = "A. オリジナル", frame = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_raster(col.scale = tm_scale_continuous()) +
+  tm_title("A. オリジナル") + 
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 p_ar2 = tm_shape(dem_agg) +
-  tm_raster(style = "cont", legend.show = FALSE) +
-  tm_layout(main.title = "B. Aggregate 後", frame = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_raster(col.scale = tm_scale_continuous()) +
+  tm_title("B. Aggregate 後") +
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_ar1, p_ar2, ncol = 2)
-
-if (packageVersion("tmap") >= "4.0"){
-  p_ar1 = tm_shape(dem) +
-    tm_raster(col.scale = tm_scale_continuous()) +
-    tm_title("A. Original") + 
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  p_ar2 = tm_shape(dem_agg) +
-    tm_raster(col.scale = tm_scale_continuous()) +
-    tm_title("B. Aggregated") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tmap_arrange(p_ar1, p_ar2, ncol = 2)
-}
 ```
 
 \index{raster!disaggregation}
@@ -852,7 +769,7 @@ identical(dem, dem_disagg)
 ```
 
 ```{r bilinear, echo = FALSE, fig.width=8, fig.height=10, fig.cap="双一次補間法で分解する場合は、最も近い4つの入力セルの距離加重平均で出力を決定。", fig.scap="Bilinear disaggregation in action.", warning=FALSE}
-source("https://github.com/geocompx/geocompr/raw/main/code/05-bilinear.R", print.eval = TRUE)
+source("code/05-bilinear.R", print.eval = TRUE)
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/146619205-3c0c2e3f-9e8b-4fda-b014-9c342a4befbb.png")
 ```
 
@@ -874,40 +791,24 @@ target_rast = rast(xmin = 794650, xmax = 798250,
                    resolution = 150, crs = "EPSG:32717")
 target_rast_p = st_as_sf(as.polygons(target_rast))
 dem_resampl1 = resample(dem, target_rast, method = "near")
+
 tm1 = tm_shape(dem) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "Original raster")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("Original raster") +
+  tm_layout(frame = FALSE, legend.show = FALSE)
 tm2 = tm_shape(dem) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "Target raster") +
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("Target raster") +
+  tm_layout(frame = FALSE, legend.show = FALSE) +
   tm_shape(target_rast_p) +
   tm_borders()
 tm3 = tm_shape(dem) +
-  tm_raster(alpha = 0, legend.show = FALSE) +
+  tm_raster(col_alpha = 0) +
   tm_shape(dem_resampl1) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "Resampled raster")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("Resampled raster") +
+  tm_layout(frame = FALSE, legend.show = FALSE)
 tmap_arrange(tm1, tm2, tm3, nrow = 1)
-
-if (packageVersion("tmap") >= "4.0"){
-  tm1 = tm_shape(dem) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("Original raster") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tm2 = tm_shape(dem) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("Target raster") +
-    tm_layout(frame = FALSE, legend.show = FALSE) +
-    tm_shape(target_rast_p) +
-    tm_borders()
-  tm3 = tm_shape(dem) +
-    tm_raster(col_alpha = 0) +
-    tm_shape(dem_resampl1) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("Resampled raster") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tmap_arrange(tm1, tm2, tm3, nrow = 1)
-}
 ```
 
 \index{raster!resampling}
@@ -954,53 +855,30 @@ dem_resampl5 = resample(dem, target_rast, method = "lanczos")
 
 library(tmap)
 tm1 = tm_shape(dem) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "オリジナル", fontfamily = "HiraginoSans-W3")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("オリジナル") +
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tm2 = tm_shape(dem_resampl1) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "最近傍", fontfamily = "HiraginoSans-W3")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("最近傍 (near)") +
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tm3 = tm_shape(dem_resampl2) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "双一次補間", fontfamily = "HiraginoSans-W3")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("双一次補間 (bilinear)") +
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tm4 = tm_shape(dem_resampl3) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "三次補間", fontfamily = "HiraginoSans-W3")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("三次補間 (cubic)") +
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tm5 = tm_shape(dem_resampl4) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "三次スプライン補間", fontfamily = "HiraginoSans-W3")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("三次スプライン補間 (cubicspline)") +
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
 tm6 = tm_shape(dem_resampl5) +
-  tm_raster(breaks = seq(200, 1100, by = 150), legend.show = FALSE) +
-  tm_layout(frame = FALSE, main.title = "lanczos")
+  tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
+  tm_title("lanczos") +
+  tm_layout(frame = FALSE, legend.show = FALSE)
 tmap_arrange(tm1, tm2, tm3, tm4, tm5, tm6)
-
-if (packageVersion("tmap") >= "4.0"){
-  library(tmap)
-  tm1 = tm_shape(dem) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("Original raster") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tm2 = tm_shape(dem_resampl1) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("near") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tm3 = tm_shape(dem_resampl2) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("bilinear") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tm4 = tm_shape(dem_resampl3) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("cubic") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tm5 = tm_shape(dem_resampl4) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("cubicspline") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tm6 = tm_shape(dem_resampl5) +
-    tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-    tm_title("lanczos") +
-    tm_layout(frame = FALSE, legend.show = FALSE)
-  tmap_arrange(tm1, tm2, tm3, tm4, tm5, tm6)
-}
 ```
 
 `resample()` 関数には、さらに、`sum`、`min`、`q1`、`med`、`q3`、`max`、`average`、`mode`、`rms` などのリサンプリング手法も用意されている。
