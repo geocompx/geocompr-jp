@@ -78,57 +78,30 @@ library(tmap)
 library(rcartocolor)
 terrain_colors = carto_pal(7, "Geyser")
 pz1 = tm_shape(srtm) + 
-  tm_raster(palette = terrain_colors, legend.show = FALSE, style = "cont") + 
+  tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) + 
   tm_shape(zion) + 
   tm_borders(lwd = 2) + 
-  tm_layout(main.title = "A. オリジナル", inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_title("A. オリジナル") + 
+  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
 pz2 = tm_shape(srtm_cropped) +
-  tm_raster(palette = terrain_colors, legend.show = FALSE, style = "cont") + 
+  tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) + 
   tm_shape(zion) +
   tm_borders(lwd = 2) + 
-  tm_layout(main.title = "B. 切り落とし (crop)", inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_title("B. 切り落とし (crop)") + 
+  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
 pz3 = tm_shape(srtm_masked) + 
-  tm_raster(palette = terrain_colors, legend.show = FALSE, style = "cont") + 
+  tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) + 
   tm_shape(zion) + 
   tm_borders(lwd = 2) + 
-  tm_layout(main.title = "C. マスク", inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_title("C. マスク") + 
+  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
 pz4 = tm_shape(srtm_inv_masked) +
-  tm_raster(palette = terrain_colors, legend.show = FALSE, style = "cont") + 
+  tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) + 
   tm_shape(zion) +
   tm_borders(lwd = 2) + 
-  tm_layout(main.title = "D. Inverse マスク", inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_title("D. Inverse マスク") + 
+  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
 tmap_arrange(pz1, pz2, pz3, pz4, ncol = 4, asp = NA)
-
-if (packageVersion("tmap") >= "4.0"){
-  library(tmap)
-  library(rcartocolor)
-  terrain_colors = carto_pal(7, "Geyser")
-  pz1 = tm_shape(srtm) + 
-    tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) +
-    tm_shape(zion) + 
-    tm_borders(lwd = 2) + 
-    tm_title("A. Original") +
-    tm_layout(legend.show = FALSE)
-  pz2 = tm_shape(srtm_cropped) +
-    tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) +
-    tm_shape(zion) +
-    tm_borders(lwd = 2) + 
-    tm_title("B. Crop") +
-    tm_layout(legend.show = FALSE)
-  pz3 = tm_shape(srtm_masked) + 
-    tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) +
-    tm_shape(zion) + 
-    tm_borders(lwd = 2) + 
-    tm_title("C. Mask") +
-    tm_layout(legend.show = FALSE)
-  pz4 = tm_shape(srtm_inv_masked) +
-    tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) +
-    tm_shape(zion) +
-    tm_borders(lwd = 2) + 
-    tm_title("D. Inverse mask") +
-    tm_layout(legend.show = FALSE)
-  tmap_arrange(pz1, pz2, pz3, pz4, ncol = 4, asp = NA)
-}
 ```
 
 ## ラスタ抽出  {#raster-extraction}
@@ -160,7 +133,7 @@ zion_points = cbind(zion_points, elevation)
 ```
 
 ```{r pointextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="ラスタ抽出に使用した点の位置。", fig.asp=0.57}
-source("https://github.com/geocompx/geocompr/raw/main/code/06-pointextr.R", print.eval = TRUE)
+source("code/06-pointextr.R", print.eval = TRUE)
 ```
 
 \index{raster extraction!lines}
@@ -232,32 +205,17 @@ zion_transect_points = st_cast(zion_transect, "POINT")[c(1, nrow(zion_transect))
 zion_transect_points$name = c("start", "end")
 
 rast_poly_line = tm_shape(srtm) +
-  tm_raster(palette = terrain_colors, title = "標高 (m)", 
-            legend.show = TRUE, style = "cont") + 
+  tm_raster(col.scale = tm_scale_continuous(values = terrain_colors),
+            col.legend = tm_legend( "標高 (m)")) +
   tm_shape(zion) +
   tm_borders(lwd = 2) + 
   tm_shape(zion_transect_line) + 
   tm_lines(col = "black", lwd = 4) + 
   tm_shape(zion_transect_points) +                                                 
-  tm_text("name", bg.color = "white", bg.alpha = 0.75, auto.placement = TRUE) +
-  tm_layout(legend.frame = TRUE, legend.position = c("right", "top"), fontfamily = "HiraginoSans-W3")
-
-# toDo: jn
-# how to customize text
-if (packageVersion("tmap") >= "4.0"){
-  rast_poly_line = tm_shape(srtm) +
-    tm_raster(col.scale = tm_scale_continuous(values = terrain_colors),
-              col.legend = tm_legend("Elevation (m)")) + 
-    tm_shape(zion) +
-    tm_borders(lwd = 2) + 
-    tm_shape(zion_transect_line) + 
-    tm_lines(col = "black", lwd = 4) + 
-    tm_shape(zion_transect_points) +   
-    # tm_text("name", 
-            # text.scale = tm_scale(bg.color = "white", bg.alpha = 0.75, auto.placement = TRUE))
-    tm_layout(legend.frame = TRUE, legend.position = c("right", "top"),
-              legend.bg.color = "white")
-}
+  tm_text("name", 
+          text.scale = tm_scale(bg.color = "white", bg.alpha = 0.75, auto.placement = TRUE)) +
+  tm_layout(legend.frame = TRUE, legend.position = c("right", "top"), fontfamily = "HiraginoSans-W3",
+            legend.bg.color = "white")
 
 plot_transect = ggplot(zion_transect, aes(as.numeric(dist), srtm)) + 
   geom_line() +
@@ -329,42 +287,23 @@ zion_nlcd |>
 
 ```{r polyextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="連続 (左) とカテゴリ (右) のラスタ抽出に使用した範囲。"}
 rast_poly_srtm = tm_shape(srtm) + 
-  tm_raster(palette = terrain_colors, title = "標高 (m)",
-            legend.show = TRUE, style = "cont") + 
+  tm_raster(col.scale = tm_scale_continuous(values = terrain_colors),
+            col.legend = tm_legend("標高 (m)")) + 
   tm_shape(zion) +
   tm_polygons(lwd = 2, alpha = 0.3) +
-  tm_layout(main.title = "A. 連続数データ抽出",
-            main.title.size = 1, legend.frame = TRUE,
-            legend.position = c("left", "bottom"), fontfamily = "HiraginoSans-W3")
+  tm_title("A. 連続数データ抽出") +
+  tm_layout(legend.frame = TRUE, legend.position = c("left", "bottom"),
+            legend.bg.color = "white", fontfamily = "HiraginoSans-W3")
 rast_poly_nlcd = tm_shape(nlcd) +
-  tm_raster(drop.levels = TRUE, title = "土地利用", legend.show = TRUE) + 
+  tm_raster(col.scale = tm_scale_categorical(levels.drop = TRUE),
+            col.legend = tm_legend(title = "土地被覆")) + 
+  # tm_raster(drop.levels = TRUE, title = "Land cover", legend.show = TRUE) + 
   tm_shape(zion) +
-  tm_polygons(lwd = 2, alpha = 0.3) +
-  tm_layout(main.title = "B. カテゴリデータ抽出", 
-            main.title.size = 1, legend.frame = TRUE, 
-            legend.position = c("left", "bottom"), fontfamily = "HiraginoSans-W3")
+  tm_polygons(lwd = 2, fill_alpha = 0.3)  +
+  tm_title("B. カテゴリデータ抽出") +
+  tm_layout(legend.frame = TRUE, legend.position = c("left", "bottom"),
+            legend.bg.color = "white", fontfamily = "HiraginoSans-W3")
 tmap_arrange(rast_poly_srtm, rast_poly_nlcd, ncol = 2)
-
-if (packageVersion("tmap") >= "4.0"){
-  rast_poly_srtm = tm_shape(srtm) + 
-    tm_raster(col.scale = tm_scale_continuous(values = terrain_colors),
-              col.legend = tm_legend("Elevation (m)")) + 
-    tm_shape(zion) +
-    tm_polygons(lwd = 2, fill_alpha = 0.3) +
-    tm_title("A. Continuous data extraction") +
-    tm_layout(legend.frame = TRUE, legend.position = c("left", "bottom"),
-              legend.bg.color = "white")
-  rast_poly_nlcd = tm_shape(nlcd) +
-    tm_raster(col.scale = tm_scale_categorical(levels.drop = TRUE),
-              col.legend = tm_legend(title = "Land cover")) + 
-    # tm_raster(drop.levels = TRUE, title = "Land cover", legend.show = TRUE) + 
-    tm_shape(zion) +
-    tm_polygons(lwd = 2, fill_alpha = 0.3)  +
-    tm_title("B. Categorical data extraction") +
-    tm_layout(legend.frame = TRUE, legend.position = c("left", "bottom"),
-              legend.bg.color = "white")
-  tmap_arrange(rast_poly_srtm, rast_poly_nlcd, ncol = 2)
-}
 ```
 
 \index{raster extraction!exact fractions}
@@ -437,7 +376,7 @@ ch_raster3 = rasterize(vect(cycle_hire_osm_projected), raster_template,
 ```
 
 ```{r vector-rasterization1, echo=FALSE, fig.cap="点のラスタ化例。", warning=FALSE}
-source("https://github.com/geocompx/geocompr/raw/main/code/06-vector-rasterization1.R", print.eval = TRUE)
+source("code/06-vector-rasterization1.R", print.eval = TRUE)
 ```
 
 \index{rasterization!lines} 
@@ -468,7 +407,7 @@ california_raster2 = rasterize(california, raster_template2)
 ```
 
 ```{r vector-rasterization2, echo=FALSE, fig.cap="線とポリゴンのラスタ化の例。", warning=FALSE}
-source("https://github.com/geocompx/geocompr/raw/main/code/06-vector-rasterization2.R", print.eval = TRUE)
+source("code/06-vector-rasterization2.R", print.eval = TRUE)
 ```
 
 ## 空間ベクタ化  {#spatial-vectorization}
@@ -494,7 +433,7 @@ elev_point = as.points(elev) |>
 ```
 
 ```{r raster-vectorization1, echo=FALSE, fig.cap="elev オブジェクトのラスタ表現と点表現。", warning=FALSE}
-source("https://github.com/geocompx/geocompr/raw/main/code/06-raster-vectorization1.R", print.eval = TRUE)
+source("code/06-raster-vectorization1.R", print.eval = TRUE)
 ```
 
 \index{spatial vectorization!contours}
@@ -539,7 +478,7 @@ grain_poly = as.polygons(grain) |>
 ```
 
 ```{r 06-raster-vector-40, echo=FALSE, fig.cap="ラスタ(左)のベクタ化、ポリゴン (dissolve = FALSE; 中央) と集約ポリゴン (dissolve = TRUE; 右)。", warning=FALSE, fig.asp=0.4, fig.scap="Illustration of vectorization."}
-source("https://github.com/geocompx/geocompr/raw/main/code/06-raster-vectorization2.R", print.eval = TRUE)
+source("code/06-raster-vectorization2.R", print.eval = TRUE)
 ```
 
 `grain` 粒状データセットのポリゴンは、長方形のピクセルをつなぐことで定義される直方体の境界を持つ。
