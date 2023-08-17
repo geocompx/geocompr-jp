@@ -76,13 +76,14 @@ Chapter \@ref(location) では、ジオコンピュテーションの応用と�
 # summary(bristol_ways)
 # summary(bristol_ttwa)
 # summary(bristol_region)
+library(tmap)
 region_all = rbind(bristol_region, bristol_ttwa)
 tmap_mode("view")
 tm_shape(region_all[1, ], bbox = region_all) +
-  tm_fill("yellow", alpha = 0.5) +
+  tm_fill("yellow", col_alpha = 0.5) +
   tm_shape(bristol_ways) +
-  tm_lines(col = "highway", lwd = 2.1, palette = "-Set1") +
-  tm_scale_bar() +
+  tm_lines(col = "highway", lwd = 2.1, col.scale = tm_scale(values = "-Set1")) +
+  tm_scalebar() +
   tm_shape(region_all) +
   tm_borders(col = "black") +
   tm_basemap(server = leaflet::providers$Esri.WorldTopoMap)
@@ -90,7 +91,6 @@ tm_shape(region_all[1, ], bbox = region_all) +
 
 ```{r bristol, echo=FALSE, fig.cap="ブリストルの交通網は、アクティブ (緑)、公共 (鉄道、黒)、自家用車 (赤) の各移動手段を色分けして表現している。黒い境界線は、市街地の境界線 (黄色でハイライト) と、より広い TTWA (Travel To Work Area) を表している。", fig.scap="Bristol's transport network."}
 knitr::include_graphics("figures/13_bristol.png")
-# knitr::include_graphics("https://user-images.githubusercontent.com/1825120/34452756-985267de-ed3e-11e7-9f59-fda1f3852253.png")
 ```
 
 ブリストルはイングランドで 10 番目に大きい市で、人口は 50 万人であるが、その旅行キャッチメントエリア\index{catchment area}はもっと大きい (Section \@ref(transport-zones) 参照)。
@@ -245,6 +245,9 @@ zones_od = inner_join(zones_joined, zones_destinations, by = "geo_code")
 
 Figure \@ref(fig:zones) の簡易版を以下のコードで作成する (図を再現するには、本書の GitHub リポジトリの `12-zones.R` を参照。  [`code`](https://github.com/Robinlovelace/geocompr/tree/main/code) フォルダで図を再現し、**tmap**\index{tmap (package)} によるファセット・マップの詳細は Section \@ref(faceted-maps) を参照)。
 
+
+
+
 ```{r 13-transport-11, eval=FALSE}
 qtm(zones_od, c("all", "all_dest")) +
   tm_layout(panel.labels = c("Origin", "Destination"))
@@ -252,7 +255,7 @@ qtm(zones_od, c("all", "all_dest")) +
 
 ```{r zones, echo=FALSE, fig.cap="地域内に居住・勤務するトリップ (通勤者) 数。左の地図は通勤トリップの出発地、右の地図は目的地のゾーン (13-zones.Rスクリプトで生成)。", message=FALSE, fig.scap="Number of trips (commuters) living and working in the region."}
 # file.edit("code/13-zones.R")
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-zones.R", print.eval = TRUE)
+source("code/13-zones.R", print.eval = TRUE)
 ```
 
 ## 希望線  {#desire-lines}
@@ -318,7 +321,7 @@ qtm(desire_lines, lines.lwd = "all")
 ```
 
 ```{r desire, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="ブリストルのトリップパターンを表す希望線は、幅がトリップ数、色がアクティブモード (徒歩と自転車) によるトリップの割合を表している。4 本の黒い線は、Table 7.1のゾーン間 OD ペアを表している。", fig.asp=0.8, fig.scap="Desire lines representing trip patterns in Bristol."}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-desire.R", print.eval = TRUE)
+source("code/13-desire.R", print.eval = TRUE)
 ```
 
 この地図から、地域の交通パターンを支配しているのは中心市街地であり、そこに政策を優先させるべきであることがわかるが、周辺には副都心も多く見られる。
@@ -404,22 +407,17 @@ bristol_rail_points = rbind(
     col = "red"
     ), geometry = bristol_stations$geometry)
 )
-# tmaptools::palette_explorer()
 tm_shape(desire_rail_plot, bbox = bb) +
-  # legend incorrect in tmap v3.0.0: https://github.com/r-tmap/tmap/issues/672
-  # tm_lines(col = "Geometry", palette = "Set2", lty = desire_rail_plot$lty) +
-  tm_lines(col = "Geometry", palette = "Set2", lwd = "size", scale = 3, legend.lwd.show = FALSE) +
+  tm_lines(col = "Geometry",
+           col.scale = tm_scale(values = "Set2"),
+           col.legend = tm_legend(position = tm_pos_in("left", "top")),
+           lwd = 2,
+           lty = "lty",
+           lty.scale = tm_scale_categorical(),
+           lty.legend = tm_legend_hide()) +
   tm_shape(bristol_rail_points) +
-  # Try with different alpha values:
-  # tm_dots(col = "col", size = 0.3, alpha = 0.2)
-  tm_dots(col = "col", size = 0.3) +
-  tm_scale_bar()
-# tmap_mode("plot")
-# qtm(bristol_stations, basemaps = "https://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png?apikey=feae177da543411c9efa64160305212d", dots.col = "red", symbols.size = 2) +
-#   tm_shape(desire_rail) +
-#   tm_lines(col = "black", lwd = 4) +
-#   tm_shape(legs) +
-#   tm_lines()
+  tm_symbols(fill = "col", size = 0.75) +
+  tm_scalebar()
 ```
 
 ## ルート  {#routes}
@@ -557,15 +555,15 @@ routes_plot_data = rbind(
   routes_short |> transmute(Entity = "Routes") |> sf::st_set_crs("EPSG:4326")
 )
 zone_cents_routes = zone_cents[desire_lines_short, ]
-routes_plot_data |> 
-  ggplot() +
-  geom_sf(aes(color = Entity, linetype = Entity)) +
-  scale_color_manual(values = c("black", "red")) +
-  scale_linetype_manual(values = c(2, 1)) +
-  geom_sf(data = zone_cents_routes) +
-  theme_void()
-# tm_shape(desire_lines_short) + tm_lines() +
-#   tm_shape(routes_short) + tm_lines(col = "red") 
+tm_shape(desire_lines_short) + 
+  tm_lines(lty = 2) +
+  tm_shape(routes_short) +
+  tm_lines(col = "red") +
+  tm_add_legend(title = "Entity", labels = c("Desire lines", "Routes"),
+                type = "Lines", col = c("black", "red"), lty = c(2, 1),
+                position = tm_pos_in("left", "top")) +
+  tm_shape(zone_cents_routes) +
+  tm_symbols(fill = "black", size = 0.5)
 ```
 
 例えば `mapview::mapview(desire_carshort$geom_car)` でインタラクティブな地図にプロットしてみると、ブリストル中心部から約 10 km 北のブラッドリー・ストーク周辺で多くの短距離自動車旅行が行われていることがわかる。
@@ -625,7 +623,10 @@ routes_short_scenario |>
   labs(x = "ルート距離 (km)", y = NULL, title = "自動車から自転車へ変換した割合") +
   scale_y_continuous(labels = scales::percent) + theme(text = element_text(family = "HiraginoSans-W3"))
 tm_shape(route_network_scenario) +
-  tm_lines(lwd = "bicycle", scale = 9, title.lwd = "1日あたりの自転車トリップ数\n(modeled, one direction)") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_lines(lwd = "bicycle", 
+           lwd.scale = tm_scale(values.scale = 1.5),
+           lwd.legend = tm_legend(title = "1日あたりの自転車トリップ数\n(modeled, one direction)",
+                                  position = tm_pos_in("left", "top")))
 ```
 
 道路種別や幅員などの属性がセグメントレベルで記録されている交通網は、一般的な路線網の一種である。
@@ -676,11 +677,16 @@ ways_centrality = ways_sfn |>
 ```{r wayssln, fig.cap="路線ネットワークデータセットの図。グレーの線は簡略化された道路網を表し、セグメントの太さは betweenness に比例する。緑色の線は、上記のコードで計算された潜在的なサイクリングフロー (片道) である。", out.width="60%", fig.scap="Illustration of a small route network."}
 bb_wayssln = tmaptools::bb(route_network_scenario, xlim = c(0.1, 0.9), ylim = c(0.1, 0.6), relative = TRUE)
 tm_shape(ways_centrality |> st_as_sf(), bb = bb_wayssln) +
-  tm_lines(lwd = "betweenness", scale = 9, title.lwd = "Betweenness", col = "grey",
-    lwd.legend = c(5000, 10000), legend.lwd.is.portrait = TRUE) +
+  tm_lines(lwd = "betweenness", 
+           lwd.scale = tm_scale(n = 2, values.scale = 2),
+           lwd.legend = tm_legend(title = "Betweenness"),
+           col = "grey", col_alpha = 0.75) +
   tm_shape(route_network_scenario) +
-  tm_lines(lwd = "bicycle", scale = 9, title.lwd = "自転車トリップ数 (modeled, one direction)",
-    lwd.legend = c(1000, 2000), legend.lwd.is.portrait = TRUE, col = "darkgreen") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_lines(lwd = "bicycle",
+           lwd.scale = tm_scale(n = 2, values.scale = 2),
+           lwd.legend = tm_legend(title = "自転車トリップ数 (modeled, one direction)"),
+           col = "darkgreen", col_alpha = 0.75) +
+  tm_scalebar() + tm_layout(fontfamily = "HiraginoSans-W3")
 ```
 
 ```{r 13-transport-24, eval=FALSE, echo=FALSE}
@@ -750,18 +756,18 @@ qtm(route_network_no_infra, basemaps = leaflet::providers$Esri.WorldTopoMap,
     lines.lwd = 5)
 ```
 
+
+
+
 ```{r cycleways, echo=FALSE, message=FALSE, fig.cap="ブリストルにおける自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。`qtm()` 関数から生成されたインタラクティブマップのスクリーンショットは、新しいサイクルウェイから利益を得ることができる場所としてWhiteladies Roadを強調している (右)。", out.width="50%", fig.show='hold', fig.scap="Routes along which to prioritise cycle infrastructure.", fig.height=6}
 # Previous verson:
 # source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-cycleways.R")
-# m_leaflet
-# tmap_leaflet(m_leaflet) # not working
-# online figure - backup
-# u = "https://user-images.githubusercontent.com/1825120/39901156-a8ec9ef6-54be-11e8-94fb-0b5f6b48775e.png"
-# knitr::include_graphics(u)
 tm_shape(existing_cycleways_buffer, bbox = bristol_region) +
- tm_polygons(col = "lightgreen") +
+ tm_polygons(fill = "lightgreen") +
  tm_shape(route_network_scenario) +
- tm_lines(lwd = "bicycle", scale = 9, title.lwd = "自転車トリップ数 (modeled, one direction)") + tm_layout(fontfamily = "HiraginoSans-W3")
+ tm_lines(lwd = "bicycle",
+          lwd.scale = tm_scale(values.scale = 3),
+          lwd.legend = tm_legend(title = "自転車トリップ数 (modeled, one direction)")) + tm_layout(fontfamily = "HiraginoSans-W3")
 knitr::include_graphics("figures/bristol_cycleways_zoomed.png")
 ```
 
