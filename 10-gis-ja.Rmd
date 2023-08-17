@@ -142,7 +142,6 @@ library(qgisprocess)
 設定に失敗した場合の解決策としては、`options(qgisprocess.path = "path/to/your_qgis_process")`、環境変数 `R_QGISPROCESS_PATH` を設定する方法が考えられる。
 上記の方法は、複数の QGIS がインストールされており、どれを使うかを決めたい場合にも使える。
 詳細については、**qgisprocess** ['getting started' vignette](https://r-spatial.github.io/qgisprocess/articles/qgisprocess.html) を参照。ß
-
 次に、どのプラグイン (異なるソフトウェアを意味する) が自分のコンピュータで利用できるかを調べてみよう。
 
 ```{r plugins, eval=has_qgis_plugins}
@@ -186,54 +185,31 @@ incongr_wgs = st_transform(incongruent, "EPSG:4326")
 aggzone_wgs = st_transform(aggregating_zones, "EPSG:4326")
 ```
 
-```{r uniondata, echo=FALSE, fig.cap="Illustration of two areal units: incongruent (black lines) and aggregating zones (red borders).", eval=has_qgis_plugins}
+```{r uniondata, echo=FALSE, fig.cap="二つの単位の図: 不一致 (黒い線) と集合ゾーン (赤い境界)。"}
 library(tmap)
 tm_shape(incongr_wgs) +
-  tm_polygons(border.col = "grey5") +
+  tm_polygons(col = "grey5") +
   tm_shape(aggzone_wgs) +
-  tm_borders(alpha = 0.5, col = "red") +
-  tm_add_legend(
-    type = "line",
-    labels = c("incongr_wgs", "aggzone_wgs"),
-    col = c("grey5", "red"),
-    lwd = 3
-  ) +
-  tm_scale_bar(
-    position = c("left", "bottom"),
-    breaks = c(0, 0.5, 1)
-  ) +
-  tm_layout(
-    frame = FALSE,
-    legend.text.size = 1
-  )
-
-# toDo: jn
-# tm_add_legend is missing
-if (packageVersion("tmap") >= "4.0"){
-  library(tmap)
-  tm_shape(incongr_wgs) +
-    tm_polygons(col = "grey5") +
-    tm_shape(aggzone_wgs) +
-    tm_borders(col_alpha = 0.5, col = "red") +
-    # tm_add_legend(type = "line", labels = c("incongr_wgs", "aggzone_wgs"),
-    #               col = c("grey5", "red"), lwd = 3) +
-    tm_scale_bar(position = c("left", "bottom"), breaks = c(0, 0.5, 1)) +
-    tm_layout(frame = FALSE, legend.text.size = 1)
-}
+  tm_borders(col_alpha = 0.5, col = "red") +
+  tm_add_legend(type = "Lines", labels = c("incongr_wgs", "aggzone_wgs"),
+                col = c("grey5", "red"), lwd = 3, position = tm_pos_in("right", "top")) +
+  tm_scalebar(position = c("left", "bottom"), breaks = c(0, 0.5, 1)) +
+  tm_layout(frame = FALSE, legend.text.size = 1)
 ```
 
-この作業を行うアルゴリズムを見つけるには、`qgis_algorithms()` 関数の出力を検索すればよい。
+最初に、二つのベクタをマージ (merge) するアルゴリズムを探そう。
+`qgis_algorithms()` 関数は、利用可能なアルゴリズムをすべて表示する。
 この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。^[したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。]
 
 ```{r, eval=has_qgis_plugins}
 qgis_algo = qgis_algorithms()
 ```
 
-`qgis_algo` オブジェクトには多くの列があるが、通常、私たちが関心を持つのは、プロバイダとアルゴリズム名の情報を組み合わせた `algorithm` 列だけである。
+`qgis_search_algorithms()` 関数は、アルゴリズムを探すために使うことができる。
 関数の短い説明文に "union"\index{union}という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
 
 ```{r, eval=has_qgis_plugins}
-grep("union", qgis_algo$algorithm, value = TRUE)
+qgis_search_algorithms("union")
 ```
 
 上記のリストにあるアルゴリズムの1つ、`"native:union"` は、探している機能の可能性が高そうである。
@@ -286,7 +262,7 @@ QGIS\index{QGIS} の和集合 (union \index{vector!union}) の操作は、2つ�
 適切なアルゴリズムを探そう。
 
 ```{r, eval=has_qgis_plugins}
-grep("clean", qgis_algo$algorithm, value = TRUE)
+qgis_search_algorithms("clean")
 ```
 
 今回見つかったアルゴリズム (`v.clean`) は、QGIS ではなく、GRASS GIS\index{GRASS} に含まれている。
@@ -329,7 +305,7 @@ clean_sf = st_as_sf(clean)
 
 その結果、\@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
 
-```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。", eval=has_qgis_plugins}
+```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。"}
 knitr::include_graphics("figures/10-sliver.png")
 ```
 
@@ -355,8 +331,7 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 このインデックスのアルゴリズムリストを、`"wetness"` というキーワードで検索してみよう。
 
 ```{r, eval=has_qgis_plugins}
-qgis_algo = qgis_algorithms()
-grep("wetness", qgis_algo$algorithm, value = TRUE) |>
+qgis_search_algorithms("wetness") |>
   head(2)
 ```
 
@@ -407,7 +382,7 @@ Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マッ�
 ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass7:r.geomorphon"` として見つけることができる。
 
 ```{r, eval=FALSE}
-grep("geomorphon", qgis_algo$algorithm, value = TRUE)
+qgis_search_algorithms("geomorphon")
 #> [1] "grass7:r.geomorphon" "sagang:geomorphons" 
 qgis_show_help("grass7:r.geomorphon")
 # 出力は非表示
@@ -894,48 +869,21 @@ load("extdata/postgis_data.Rdata")
 # クエリ結果をプロット
 library(tmap)
 tm_shape(buf) +
-  tm_polygons(col = "#FFFDD0", border.alpha = 0.3) +
+  tm_polygons(fill = "#FFFDD0", border.alpha = 0.3) +
   tm_shape(us_route) +
   tm_lines(col = "black", lwd = 3) +
   tm_shape(hardees) +
   tm_symbols(col = "#F10C26") +
-  tm_add_legend(
-    type = "line", col = "black", lwd = 3,
-    labels = "The US Route 1 highway"
-  ) +
-  tm_add_legend(
-    type = "fill", col = "#FFFDD0",
-    border.alpha = 0.3, label = "35km buffer"
-  ) +
-  tm_add_legend(
-    type = "symbol", col = "#F10C26",
-    labels = "Restaurants"
-  ) +
-  tm_layout(
-    frame = FALSE,
-    legend.outside = TRUE,
-    legend.outside.size = 0.3
-  )
-
-if (packageVersion("tmap") >= "4.0") {
-  library(tmap)
-  tm_shape(buf) +
-    tm_polygons(fill = "#FFFDD0", col_alpha = 0.3) +
-    tm_shape(us_route) +
-    tm_lines(col = "black", lwd = 3) +
-    tm_shape(hardees) +
-    tm_symbols(fill = "#F10C26") +
-    # tm_add_legend(type = "line", col = "black", lwd = 3,
-    #               labels = "The US Route 1 highway") +
-    # tm_add_legend(type = "fill", col = "#FFFDD0",
-    #               border.alpha = 0.3, label = "35km buffer") +
-    # tm_add_legend(type = "symbol", col = "#F10C26",
-    #               labels = "Restaurants") +
-    tm_layout(frame = FALSE)
-}
+  tm_add_legend(type = "Lines", col = "black", lwd = 3,
+                labels = "The US Route 1 highway") +
+  tm_add_legend(type = "Polygons", fill = "#FFFDD0",
+                border.alpha = 0.3, labels = "35km buffer") +
+  tm_add_legend(type = "Symbols", fill = "#F10C26",
+                labels = "Restaurants", shape = 21) +
+  tm_layout(frame = FALSE)
 ```
 
-PostGIS とは異なり、**sf**は空間ベクタデータのみをサポートしている。
+PostGIS とは異なり、**sf** は空間ベクタデータのみをサポートしている。
 <!--toDo:jn-->
 <!-- reconsider referening to rpostgis -- https://github.com/r-spatial/discuss/issues/58 -->
 PostGIS データベースに格納されたラスタデータを照会・操作するには、**rpostgis** パッケージ [@bucklin_rpostgis_2018]、または PostGIS\index{PostGIS} インストールの一部に含まれる `rastertopgsql` などのコマンドラインツールを使用する必要がある。
