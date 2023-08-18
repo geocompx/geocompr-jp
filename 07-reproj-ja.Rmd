@@ -64,7 +64,7 @@ st_crs("EPSG:4326")
 ```
 
 \index{CRS!SRID}
-コマンドの出力は、CRS 識別子 (空間参照識別子または Spatial Reference Identifier  [SRID](https://postgis.net/workshops/postgis-intro/projection.html)とも呼ばれる) がどのように機能するかを示している。これは単にルックアップであり、CRS のより完全な WKT 表現に関連する一意の識別子を提供するものである。
+コマンドの出力は、CRS 識別子 (空間参照識別子または Spatial Reference Identifier [SRID](https://postgis.net/workshops/postgis-intro/projection.html) とも呼ばれる) がどのように機能するかを示している。これは単にルックアップであり、CRS のより完全な WKT 表現に関連する一意の識別子を提供するものである。
 このことは、識別子と CRS の長い WKT 表現との間にミスマッチがある場合はどうなるのか、という問題を提起している。
 この点、@opengeospatialconsortium_wellknown_2019 は明確で、冗長な WKT 表現が[識別子](https://docs.opengeospatial.org/is/18-010r7/18-010r7.html#37)より優先される。 
 
@@ -892,7 +892,7 @@ world_laea2 = st_transform(world,
                            crs = "+proj=laea +x_0=0 +y_0=0 +lon_0=-74 +lat_0=40")
 ```
 
-```{r laeaproj2, fig.cap="ニューヨークを中心とした世界のランバート方位等面積投影図。", fig.scap="Lambert azimuthal equal-area projection centered on New York City.", warning=FALSE, echo=FALSE}
+```{r laeaproj2, fig.cap="ニューヨークを中心とした世界のランベルト正積方位図法。", fig.scap="Lambert azimuthal equal-area projection centered on New York City.", warning=FALSE, echo=FALSE}
 # Currently fails, see https://github.com/Robinlovelace/geocompr/issues/460
 world_laea2_g = st_graticule(ndiscr = 10000) |>
   st_transform("+proj=laea +x_0=0 +y_0=0 +lon_0=-74 +lat_0=40.1 +ellps=WGS84 +no_defs") |>
