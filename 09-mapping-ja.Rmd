@@ -1,6 +1,6 @@
 # (PART) 拡張機能 {- #extensions}
 
-# Rで地図を作る  {#adv-map}
+# R で地図を作る  {#adv-map}
 
 ## 必須パッケージ  {- #prerequisites-09}
 
@@ -35,7 +35,7 @@ nz_elev = rast(system.file("raster/nz_elev.tif", package = "spDataLarge"))
 地図作りは、コミュニケーションと細部への注意、そして創造力を必要とする古来の技術である。
 R における静的マッピングは、Section \@ref(basic-map) で見たように、`plot()` 関数を使えば簡単にできる。
 R の基本メソッドを使って高度なマップを作成することも可能ではある [@murrell_r_2016]。
-しかし、この章の焦点は、専用の地図作成パッケージを使った地図作成である。
+しかし、この章の焦点は、専用の地図作成パッケージを使った地図作成にある。
 新しいスキルを身につけるには、1つの分野の知識を深めてから手を広げていくことが大切である。
 地図の作成も例外ではない。そのため、この章では多くのパッケージを表面的にではなく、1つのパッケージ (**tmap**) を深く掘り下げて説明する。
 
@@ -48,15 +48,15 @@ R の基本メソッドを使って高度なマップを作成することも可
 地図は数千年前からさまざまな用途に使われてきた。
 歴史的な例としては、3000年以上前の古バビロニア王朝の建物や土地所有の地図、約2000年前のプトレマイオスの代表作<u>地理学</u>の世界地図などがある [@talbert_ancient_2014] .
 
-地図は、歴史的にエリート自身が作るか、あるいはエリートのために作られる行為であった（訳注：陸軍参謀本部陸地測量部の剱岳の登攀などの歴史を思い出してほしい）。
-しかし、R パッケージの **tmap** や QGIS\index{QGIS} のPrint Composer（訳注：現在の「印刷レイアウト」）のようなオープンソースの地図作成ソフトが登場し、誰でも高品質の地図を作ることができるようになり、「市民科学」が可能になったことで、状況は一変した。
+地図は、歴史的にエリートが自分のために作るか、あるいはエリートのために誰かが作る行為であった。
+しかし、R パッケージの **tmap** や QGIS\index{QGIS} の印刷レイアウトのようなオープンソースの地図作成ソフトが登場し、誰でも高品質の地図を作ることができるようになり、「市民科学」が可能になったことで、状況は一変した。
 また、ジオコンピュテーションの研究成果をわかりやすく紹介するためには、地図が最適な方法であることが多い。
 したがって、地図作成はジオコンピュテーション\index{geocomputation}の重要な一部であり、世界を記述するだけでなく、世界を<u>変えること</u>にも重点を置いているのである。
 
 この章では、さまざまな地図の作り方を紹介する。
-次のセクションでは、美観への配慮、ファセット、インセットマップなど、さまざまな静的マップについて説明する。
-また、Section \@ref(animated-maps) から Section \@ref(mapping-applications) では、アニメーションやインタラクティブなマップ（Webマップやマッピングアプリケーションを含む）を紹介している。
-最後に、Section \@ref(other-mapping-packages) は、**ggplot2** や **cartogram** などの地図作成用パッケージの代替となるものをカバーしている。
+次のセクションでは、美観への配慮、ファセット、差し込み地図 (inset map) など、さまざまな静的マップについて説明する。
+また、Section \@ref(animated-maps) から Section \@ref(mapping-applications) では、アニメーションやインタラクティブなマップ (Web マップやマッピングアプリケーションを含む) を紹介している。
+最後に、Section \@ref(other-mapping-packages) は、**ggplot2** や **cartogram** など他の地図作成用パッケージを紹介する。
 
 ## 静的地図  {#static-maps}
 
@@ -67,9 +67,9 @@ R の基本メソッドを使って高度なマップを作成することも可
 **sp** [@pebesma_classes_2005 参照]  のリリースで状況が進展し、その後、地図作成のための多くの技術、関数、パッケージが開発された。
 しかし、インタラクティブ・マッピングがどんどん発明されてきたにもかかわらず、10年経っても R では依然として静的なプロットが地理データの可視化の重点となっていた [@cheshire_spatial_2015]。
 
-ジェネリック関数の `plot()` 関数は、ベクタやラスタの空間オブジェクトから静的マップを作成する最速の方法であることが多い（\@ref(basic-map)、\@ref(basic-map-raster) の項を参照）。
+ジェネリック関数の `plot()` 関数は、ベクタやラスタの空間オブジェクトから静的マップを作成する最速の方法であることが多い (Section \@ref(basic-map) と Section \@ref(basic-map-raster) の項を参照)。
 特にプロジェクトの開発段階では、シンプルさとスピードが優先され、`plot()` はこの点で優れている。
-ベース R のアプローチは拡張可能で、`plot()` は何十もの引数を提供している。
+Base R のアプローチは拡張可能で、`plot()` は何十もの引数を提供している。
 また、@murrell_r_2016 の Chapter  [14](https://www.stat.auckland.ac.nz/~paul/RG2e/chapter14.html) に示されているように、静的マップの低レベル制御を可能にする **grid** パッケージもアプローチの1つである。
 この章では、**tmap** に焦点を当て、重要な美観とレイアウトのオプションに重点を置いている。
 
@@ -86,7 +86,7 @@ R の基本メソッドを使って高度なマップを作成することも可
 
 \index{tmap (package)!basics}
 **ggplot2**と同様に、**tmap** は「グラフィックの文法」という考えに基づいている [@wilkinson_grammar_2005]。
-各入力データセットは、地図上の位置（データの `geometry` で定義）、色、その他の視覚的変数など、さまざまな方法で「マッピング」することができる。
+各入力データセットは、地図上の位置 (データの `geometry` で定義)、色、その他の視覚的変数など、さまざまな方法で「マッピング」することができる。
 基本的な構成要素は `tm_shape()` (入力データ、ベクタまたはラスタのオブジェクトを定義する) で、その後に `tm_fill()` や `tm_dots()` などの 1 つまたは複数のレイヤ要素が続く。
 以下のチャンクは、このようなレイヤ構成を示し、Figure \@ref(fig:tmshape) の地図を生成する。
 
@@ -103,12 +103,12 @@ tm_shape(nz) +
   tm_borders() 
 ```
 
-```{r tmshape, echo=FALSE, message=FALSE, fig.cap="ニュージーランドの形状を tmap 関数で塗りつぶし（左）、境界（中）、塗りつぶしと境界（右）のレイヤを追加してプロット。", fig.scap="New Zealand's shape plotted using tmap functions."}
+```{r tmshape, echo=FALSE, message=FALSE, fig.cap="ニュージーランドの形状を tmap 関数で塗りつぶし (左)、境界 (中)、塗りつぶしと境界 (右) のレイヤを追加してプロット。", fig.scap="New Zealand's shape plotted using tmap functions."}
 source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-tmshape.R", print.eval = TRUE)
 ```
 
-この場合、`tm_shape()` に渡されるオブジェクトは `nz` で、ニュージーランドの地域を表す `sf` オブジェクトである（`sf` オブジェクトについては Section \@ref(intro-sf) を参照）。
-`nz` を視覚的に表現するためにレイヤを追加し、`tm_fill()` と `tm_borders()` でそれぞれ Figure \@ref(fig:tmshape) の陰影部分（左図）と枠線（中図）を作成している。
+この場合、`tm_shape()` に渡されるオブジェクトは `nz` で、ニュージーランドの地域を表す `sf` オブジェクトである (`sf` オブジェクトについては Section \@ref(intro-sf) を参照)。
+`nz` を視覚的に表現するためにレイヤを追加し、`tm_fill()` と `tm_borders()` でそれぞれ Figure \@ref(fig:tmshape) の陰影部分 (左図) と枠線 (中図) を作成している。
 
 これは、直感的な地図作りの手法である。
 新しいレイヤを<u>追加する</u>一般的なタスクは、追加演算子 `+` とそれに続く `tm_*()` によって引き受けられる。
@@ -133,7 +133,7 @@ Figure \@ref(fig:tmshape) の右側のパネルでは、塗りつぶし (fill) �
 
 <!--
 ```{block2 qtm, type = 'rmdnote'}
-`qtm()` （**q**uick **t**hematic **m**aps）は、主題図を簡単に作成する関数である。
+`qtm()` (**q**uick **t**hematic **m**aps) は、主題図を簡単に作成する関数である。
 簡潔で、多くの場合、良いデフォルトの可視化を提供する。
 例えば、`qtm(nz)` は `tm_shape(nz) + tm_fill() + tm_borders()` と全く同じである。
 さらに、レイヤ追加も `qtm()` では `qtm(nz) + qtm(nz_height)` と簡単である。
@@ -151,12 +151,12 @@ map_nz = tm_shape(nz) + tm_polygons()
 class(map_nz)
 ```
 
-`map_nz` は後でプロットすることができる。例えば、レイヤを追加したり（下図参照）、コンソールで `map_nz` を実行するだけで、`print(map_nz)` と同じ意味になる。
+`map_nz` は後でプロットすることができる。例えば、レイヤを追加したり (下図参照)、コンソールで `map_nz` を実行するだけで、`print(map_nz)` と同じ意味になる。
 
 新しい *shape* は、`+ tm_shape(new_obj)` で追加することができる。
 この場合、`new_obj` は、先行するレイヤの上にプロットされる新しい空間オブジェクトを表す。
 このようにして新しい形状が追加されると、次の新しい形状が追加されるまで、それ以降のすべての美観機能はその形状を参照する。
-この構文により、複数の形状やレイヤを持つマップを作成することができる。次のコードでは、関数 `tm_raster()` を使ってラスタレイヤ（レイヤを半透明にするために `col_alpha` が設定されている）を描画している様子を示している。
+この構文により、複数の形状やレイヤを持つマップを作成することができる。次のコードでは、関数 `tm_raster()` を使ってラスタレイヤ (レイヤを半透明にするために `col_alpha` を設定している) を描画している様子を示している。
 
 ```{r 08-mapping-5, results='hide'}
 map_nz1 = map_nz +
@@ -165,7 +165,7 @@ map_nz1 = map_nz +
 
 
 
-先に作成した `map_nz` オブジェクトをベースに、新しいマップオブジェクト `map_nz1` を作成する。このオブジェクトには、ニュージーランド全土の平均標高を表す別の図形（`nz_elev`）が含まれている (Figure \@ref(fig:tmlayers) 左図)。
+先に作成した `map_nz` オブジェクトをベースに、新しいマップオブジェクト `map_nz1` を作成する。このオブジェクトには、ニュージーランド全土の平均標高を表す別の図形 (`nz_elev`) が含まれている (Figure \@ref(fig:tmlayers) 左図)。
 さらに図形やレイヤを追加することもできる。以下のコードでは、ニュージーランドの[領海](https://en.wikipedia.org/wiki/Territorial_waters)を表す `nz_water` を作成し、作成した線を既存の地図オブジェクトに追加している。
 
 ```{r 08-mapping-6}
@@ -214,7 +214,7 @@ tmap_arrange(map_nz1, map_nz2, map_nz3)
 - `size`: シンボルの大きさ
 - `shape`: シンボルの形
 
-さらに、塗りつぶしと線の色の透過率を `fill_alpha` and  `col_alpha` で指定することあできる。
+さらに、塗りつぶしと線の色の透過率を `fill_alpha` and  `col_alpha` で指定することができる。
 
 変数を美観に対応させるには、その列名を対応する引数に渡し、固定の美観を設定するには、希望の値を渡す。^[
 固定値と列名の間に衝突があった場合、列名が優先される。これは、`nz$red = 1:nrow(nz)` を実行した後に次のコードチャンクを実行することで確認できる。
@@ -248,12 +248,12 @@ tm_shape(nz) + tm_fill(col = nz$Land_area) # 失敗
 tm_shape(nz) + tm_fill(fill = "Land_area")
 ```
 
-```{r tmcol, message=FALSE, fig.cap="数値色フィールドのbase（左）とtmap（右）の処理方法の比較。", fig.scap="Comparison of base graphics and tmap", echo=FALSE, out.width="45%", fig.show='hold', warning=FALSE, message=FALSE}
+```{r tmcol, message=FALSE, fig.cap="数値色フィールドの base (左) と tmap (右) の処理方法の比較。", fig.scap="Comparison of base graphics and tmap", echo=FALSE, out.width="45%", fig.show='hold', warning=FALSE, message=FALSE}
 plot(nz["Land_area"])
 tm_shape(nz) + tm_fill(fill = "Land_area")
 ```
 
-視覚化の変数には、`.scale`、`.legend`、`.free` という文字列を後ろのつけた３つの追加引数がある。
+視覚化の変数には、`.scale`、`.legend`、`.free` という文字列を後ろにつけた３つの追加引数がある。
 例えば、`tm_fill()` には `fill`、`fill.scale`、`fill.legend`、`fill.free` といった引数がある。
 `.scale` 引数は、地図と凡例での表示方法を指定し (Section \@ref(scales))、`.legend` はタイトル、方向、位置を指定する (Section \@ref(legends))。
 `.free` 引数は、多くのファセットをもつ地図で、ファセットによって縮尺や凡例が変わる場合などに使用する (Section \@ref(faceted-maps))。
@@ -285,7 +285,7 @@ tm_shape(nz) + tm_polygons(fill = "Median_income",
                            fill.scale = tm_scale(values = "BuGn"))
 ```
 
-```{r tmpal, message=FALSE, fig.cap="色設定に影響を与える設定の説明図。結果は（左から）デフォルト設定、手動区切り、N 区切り、パレットを変更した場合の影響を示している。", fig.scap="Illustration of settings that affect color settings.", echo=FALSE, fig.asp=0.56, warning=FALSE}
+```{r tmpal, message=FALSE, fig.cap="色設定に影響を与える設定の説明図。結果は (左から) デフォルト設定、手動区切り、N 区切り、パレットを変更した場合の影響を示している。", fig.scap="Illustration of settings that affect color settings.", echo=FALSE, fig.asp=0.56, warning=FALSE}
 source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-tmpal.R", print.eval = TRUE)
 ```
 
@@ -319,8 +319,8 @@ The `tm_scale_intervals()` 関数は、入力データ値を間隔セットに�
 以下は、よく使われる縮尺関数である (Figure \@ref(fig:break-styles))。
 
 - `style = "pretty"`: デフォルトの設定では、可能な限り改行を整数に丸め、均等にスペースを取る。
-- `style = "equal"`: 、入力値を同じ範囲のビンに分割し、一様な分布を持つ変数に適している（結果のマップが色の多様性に乏しくなる可能性があるため、歪んだ分布を持つ変数には推奨されていない）。
-- `style = "quantile"`: 同じ数のオブザベーションが各カテゴリに入ることを保証する（ビンの範囲が広く変化する可能性があるというマイナス面を含む）。
+- `style = "equal"`: 、入力値を同じ範囲のビンに分割し、一様な分布を持つ変数に適している (結果のマップが色の多様性に乏しくなる可能性があるため、歪んだ分布を持つ変数には推奨されていない)。
+- `style = "quantile"`: 同じ数のオブザベーションが各カテゴリに入ることを保証する (ビンの範囲が広く変化する可能性があるというマイナス面を含む)。
 - `style = "jenks"`: データ中の類似した値のグループを識別し、カテゴリ間の差異を最大化する。
 - `style = "log10_pretty"`: 右に裾が広がっている分布の変数に使われる、pretty スタイルの対数版 (底は 10)
 
@@ -338,7 +338,7 @@ source("https://github.com/geocompx/geocompr/raw/main/code/09-break-styles.R", p
 \index{tmap (package)!categorical scale}
 最後に、`tm_scale_categorical()` は、カテゴリ値を代表し、各カテゴリに固有の色が割り当てられる (Figure \@ref(fig:concat))。
 
-```{r concat, message=FALSE, fig.cap="Illustration of continuous and categorical scales in tmap.", echo=FALSE}
+```{r concat, message=FALSE, fig.cap="tmap における連続スケールとカテゴリスケールの例", echo=FALSE}
 library(tmap)
 library(spData)
 library(spDataLarge)
@@ -360,7 +360,7 @@ tmap_arrange(m_cont1, m_cat1)
 プレフィックスとして `-` を付けると、パレットの順序を逆にすることができる。
 
 ```{block2 visual-vars-values, type='rmdnote'}
-All of the default `values` of the visual variables, such as default color palettes for different types of input variables, can be found with `tmap_options()$values.var`.
+入力データに応じた色パレットなどの美観に関わるデフォルト`値`は、`tmap_options()$values.var` で確認することができる。
 ```
 
 色パレット\index{map making!color palettes}は大きく分けて三種類ある。カテゴリ、連続、発散である (Figure \@ref(fig:colpal))。目的に応じてこの三種類を使い分ける。^[
@@ -385,7 +385,7 @@ tm_shape(nz) + tm_polygons("Median_income", fill.scale = tm_scale(values = "gree
 tm_shape(nz) + tm_polygons("Median_income", fill.scale = tm_scale(values = "yl_gn_bu"))
 ```
 
-３番目のパレットである発散型パレットは、通常3色の間（紫-白-緑： Figure \@ref(fig:colpal) ）で、通常2つの単色パレットの両端を濃い色で結合して作成される。
+3 番目のパレットである発散型パレットは、通常 3 色の間 (紫-白-緑： Figure \@ref(fig:colpal)) で、通常2つの単色パレットの両端を濃い色で結合して作成される。
 その主な目的は、ある気温、世帯収入の中央値、干ばつイベントの平均確率など、重要な基準点からの差異を可視化することである。
 参照点の値は、`midpoint` の引数を用いて **tmap** で調整することができる。
 
@@ -432,11 +432,11 @@ many_palette_plotter(c(all_default_pals$div, all_default_pals$seq, all_default_p
 ### 凡例  {#legends}
 
 \index{tmap (package)!legends}
-After we decided on our visual variable and its properties, we should move our attention toward the related map legend style.
-Using the `tm_legend()` function, we may change its title, position, orientation, or even disable it.
-The most important argument in this function is `title`, which sets the title of the associated legend.
-In general, a map legend title should provide two pieces of information: what the legend represents and what are the units of the presented variable.
-The following code chunk demonstrates this functionality by providing a more attractive name than the variable name `Land_area` (note the use of `expression()` to create superscript text):
+美観変数と設定を決定したのち、地図の判例スタイルに注意を向けよう。
+`tm_legend()` 関数を使うと、タイトル、位置、方向を変えたり、あるいは非表示することができる。
+最も重要なのは`タイトル`で、判例のタイトルとなる。
+一般に、タイトルには二つの情報を記述する。一つ目は内容で、二つ目は値の単位である。
+以下のコードは、変数名 `Land_area` よりも魅力的な名前を提供することで、この機能を示している (`expression()` は上付き文字を設定するために使用)。
 
 ```{r 08-mapping-11}
 legend_title = expression("Area (km"^2*")")
@@ -444,8 +444,8 @@ map_nza = tm_shape(nz) +
   tm_polygons(fill = "Land_area", fill.legend = tm_legend(title = legend_title))
 ```
 
-The default legend orientation in **tmap** is `"portrait"`, however, an alternative legend orientation, `"landscape"`, is also possible.
-Other than that, we can also customize the location of the legend using the `position` argument.
+デフォルトでは、**tmap** の凡例方向は `"portrait"` であるが、`"landscape"` とすることもできる。
+凡例の位置は、`position` 引数で設定する。
 
 ```{r}
 map_nza2 = tm_shape(nz) +
@@ -454,15 +454,15 @@ map_nza2 = tm_shape(nz) +
                                                           position = tm_pos_out("center", "bottom")))
 ```
 
-The legend position (and also the position of several other map elements in **tmap**) can be customized using one of a few functions.
-The two most important are:
+凡例の位置 (その他の **tmap** の地図要素の位置も) は、いくつかの関数でカスタマイズできる。
+最も重要なものを二つ紹介する。
 
-- `tm_pos_out()`: the default, adds the legend outside of the map frame area.
-We can customize its location with two values that represent the horizontal position (`"left"`, `"center"`, or `"right"`), and the vertical position (`"bottom"`, `"center"`, or `"top"`)
-- `tm_pos_in()`: puts the legend inside of the map frame area. 
-We may decided on its position using two arguments, where the first one can be `"left"`, `"center"`, or `"right"`, and the second one can be  `"bottom"`, `"center"`, or `"top"`.
+- `tm_pos_out()`: デフォルトで、凡例を地図フレーム領域の外に配置する。
+位置については、横方向 (`"left"`、`"center"`、`"right"`) と縦方向 (`"bottom"`、`"center"`、`"top"`) で指定する。
+- `tm_pos_in()`: は、地図フレーム内に配置する。
+最初の引数は `"left"`、`"center"`、`"right"` のいずれかで、２番目の引数は `"bottom"`、`"center"`、`"top"` のいずれかである。
 
-Alternatively, we may just provide a vector of two values (or two numbers between 0 and 1) here -- and in such case, the legend will be put inside the map frame.
+または、２つの値のベクトル (または 0 から 1 の２つの値) を与えても良い。この場合、凡例は地図フレーム領域の外に配置される。
 
 ### レイアウト  {#layouts}
 
@@ -478,19 +478,19 @@ map_nz +
   tm_graticules() +
   tm_compass(type = "8star", position = c("left", "top")) +
   tm_scalebar(breaks = c(0, 100, 200), text.size = 1, position = c("left", "top")) +
-  tm_title("ニュージーランド") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("ニュージーランド", fontfamily = "HiraginoSans-W3")
 ```
 
-また、**tmap** では、様々なレイアウト設定を変更することができる。その一部を、以下のコードで作成し、Figure \@ref(fig:layout1) に図示している（全リストは、`args(tm_layout)` または `?tm_layout` を参照）。
+また、**tmap** では、様々なレイアウト設定を変更することができる。その一部を、以下のコードで作成し、Figure \@ref(fig:layout1) に図示している (全リストは、`args(tm_layout)` または `?tm_layout` を参照)。
 
 ```{r 08-mapping-14, eval=FALSE}
-map_nz + tm_layout(scale = 4)
+map_nz + tm_layout(scale = 4, fontfamily = "HiraginoSans-W3")
 map_nz + tm_layout(bg.color = "lightblue")
 map_nz + tm_layout(frame = FALSE)
 ```
 
-```{r layout1, message=FALSE, fig.cap="レイアウトオプションは、（左から）title、scale、bg.color、frameの各引数で指定。", fig.scap="Layout options specified by the tmap arguments.", echo=FALSE, fig.asp=0.56}
-source("code/09-layout1-ja.R", print.eval = TRUE)
+```{r layout1, message=FALSE, fig.cap="レイアウトオプションは、(左から) title、scale、bg.color、frame の各引数で指定。", fig.scap="Layout options specified by the tmap arguments.", echo=FALSE, fig.asp=0.56}
+source("code/09-layout1.R", print.eval = TRUE)
 ```
 
 `tm_layout()` の他の引数は、マップが配置されるキャンバスとの関係で、マップの多くの側面を制御する。
@@ -517,7 +517,7 @@ source("code/09-layout2.R", print.eval = TRUE)
 時間の次元は、色などの別の<u>視覚化に関する変数</u>で表現できる。
 しかし、これは複数のポイントが重なるため、地図が乱雑になる危険性がある (都市は移動しない！)。
 
-通常、ファセット・マップの個々のファセットには、同じジオメトリ・データが複数回繰り返され、属性データの各列に対して1回ずつ含まれている（これは `sf` オブジェクトのデフォルトのプロット方法、Chapter \@ref(spatial-class) を参照）。
+通常、ファセット・マップの個々のファセットには、同じジオメトリ・データが複数回繰り返され、属性データの各列に対して1回ずつ含まれている (これは `sf` オブジェクトのデフォルトのプロット方法、Chapter \@ref(spatial-class) を参照)。
 しかし、ファセットは、点パターンの経時変化など、幾何学的な変化を表現することもできる。
 このファセット化されたプロットの使用例を Figure \@ref(fig:urban-facet) に示す。
 
@@ -542,16 +542,16 @@ tm_shape(world) +
 
 ファセット・マップは、変化する空間的関係を示すのに有用なだけでなく、アニメーション・マップの基礎としても有用である (Section \@ref(animated-maps) 参照)。
 
-### インセットマップ
+### 差し込み地図
 
 \index{map making!inset maps}
 \index{tmap (package)!inset maps}
-挿入地図（インセットマップ）とは、メインマップの中や横に描画される小さなマップのことである。 
-コンテキストを提供したり（Figure \@ref(fig:insetmap1)）、非連続な領域を接近させて比較を容易にしたり（Figure \@ref(fig:insetmap2)）、様々な目的を果たすことが可能である。
+差し込み地図とは、メインマップの中や横に描画される小さなマップのことである。 
+コンテキストを提供したり (Figure \@ref(fig:insetmap1))、非連続な領域を接近させて比較を容易にしたり (Figure \@ref(fig:insetmap2))、様々な目的を果たすことが可能である。
 また、より小さなエリアに焦点を当てたり、地図と同じエリアを別のトピックでカバーしたりすることもできる。
 
-下の例では、ニュージーランドのサザンアルプスの中央部の地図を作成している。
-挿入地図は、メインマップがニュージーランド全体に対してどのような位置にあるかを示すものである。
+下の例では、ニュージーランドの南アルプスの中央部の地図を作成している。
+差し込み地図は、メインマップがニュージーランド全体に対してどのような位置にあるかを示すものである。
 最初のステップは、関心のある領域を定義することである。これは、新しい空間オブジェクト `nz_region` を作成することで可能である。
 
 ```{r 08-mapping-16}
@@ -561,7 +561,7 @@ nz_region = st_bbox(c(xmin = 1340000, xmax = 1450000,
   st_as_sfc()
 ```
 
-ステップ 2 では、ニュージーランドのサザンアルプス周辺を示すベースマップを作成する。 
+ステップ 2 では、ニュージーランドの南アルプス周辺を示すベースマップを作成する。 
 ここは、最も重要なメッセージが述べられている場所である。 
 
 ```{r 08-mapping-17}
@@ -572,7 +572,7 @@ nz_height_map = tm_shape(nz_elev, bbox = nz_region) +
   tm_scalebar(position = c("left", "bottom"))
 ```
 
-ステップ 3 では、インセットマップの作成である。 
+ステップ 3 では、差し込み地図の作成である。 
 文脈を示し、関心のある領域を特定するのに役立つ。 
 重要なのは、この地図は、境界線を記載するなどして、メインマップの位置を明確に示す必要があることである。
 
@@ -601,7 +601,7 @@ main_dim = norm_dim(nz_region)
 ins_dim = norm_dim(nz)
 ```
 
-アスペクト比を得て、`viewport()` 関数を使い、二つの地図 (主地図とインセット地図) の大きさと位置を指定する。
+アスペクト比を得て、`viewport()` 関数を使い、二つの地図 (主地図と差し込み地図) の大きさと位置を指定する。
 A viewport is part of a graphics device we use to draw the graphical elements at a given moment.
 The viewport of our main map is just the representation of its aspect ratio.
 
@@ -609,7 +609,7 @@ The viewport of our main map is just the representation of its aspect ratio.
 main_vp = viewport(width = main_dim[1], height = main_dim[2])
 ```
 
-インセット地図の表示領域は、大きさと位置を指定する必要がある。
+差し込み地図の表示領域は、大きさと位置を指定する必要がある。
 ここでは、主地図の半分の大きさにするために幅と高さに0.5をかけ、主地図フレームの右下から 0.5 cm の位置に配置する。
 
 ```{r}
@@ -618,20 +618,20 @@ ins_vp = viewport(width = ins_dim[1] * 0.5, height = ins_dim[2] * 0.5,
                   just = c("right", "bottom"))
 ```
 
-最後に、新規にキャンバスを作り、主地図を表示し、主地図の領域内にインセット地図を配置する。
+最後に、新規にキャンバスを作り、主地図を表示し、主地図の領域内に差し込み地図を配置する。
 
-```{r insetmap1, message=FALSE, fig.cap="インセット地図で背景を説明 - ニュージーランドの南アルプスの中央部の位置。", fig.scap="Inset map providing a context."}
+```{r insetmap1, message=FALSE, fig.cap="差し込み地図で背景を説明 - ニュージーランドの南アルプスの中央部の位置。", fig.scap="Inset map providing a context."}
 grid.newpage()
 print(nz_height_map, vp = main_vp)
 pushViewport(main_vp)
 print(nz_map, vp = ins_vp)
 ```
 
-インセットマップのファイルへの保存は、グラフィックデバイス (Section \@ref(visual-outputs) 参照)、`tmap_save()` 関数とその引数 - `insets_tm` および `insets_vp` のいずれかを使用することができる。
+差し込み地図のファイルへの保存は、グラフィックデバイス (Section \@ref(visual-outputs) 参照)、`tmap_save()` 関数とその引数 - `insets_tm` および `insets_vp` のいずれかを使用することができる。
 
-また、インセットマップは、非連続なエリアを1つの地図にするために使用する。
+また、差し込み地図は、非連続なエリアを1つの地図にするために使用する。
 おそらく最もよく使われる例は、アメリカ合衆国の地図で、アメリカ本土とハワイ、アラスカで構成されている。
-このようなケースでは、個々のインセットに最適なプロジェクションを見つけることが非常に重要である (詳しくは Chapter \@ref(reproj-geo-data) を参照)。
+このようなケースでは、個々の差し込みに最適なプロジェクションを見つけることが非常に重要である (詳しくは Chapter \@ref(reproj-geo-data) を参照)。
 `tm_shape()` の引数 `projection` に US National Atlas Equal Area の EPSG コードを指定すれば、米国本土の地図に US National Atlas Equal Area を使用することができる。
 
 ```{r 08-mapping-19}
@@ -661,7 +661,7 @@ print(hawaii_map, vp = grid::viewport(0.35, 0.1, width = 0.2, height = 0.1))
 print(alaska_map, vp = grid::viewport(0.15, 0.15, width = 0.3, height = 0.3))
 ```
 
-上記で紹介したコードはコンパクトで、他のインセットマップのベースとして使用することができるが、その結果、Figure \@ref(fig:insetmap2)、ハワイとアラスカの位置がうまく表現されていないことがわかる。
+上記で紹介したコードはコンパクトで、他の差し込み地図のベースとして使用することができるが、その結果、Figure \@ref(fig:insetmap2)、ハワイとアラスカの位置がうまく表現されていないことがわかる。
 より詳細なアプローチについては、**geocompkg** の  [ `us-map` ](https://geocompx.github.io/geocompkg/articles/us-map.html) vignette を参照。
 
 ## アニメーションマップ  {#animated-maps}
@@ -674,7 +674,7 @@ Section \@ref(faceted-maps) で紹介されているファセット・マップ�
 
 アニメーション地図は、これらの問題を解決する。
 デジタル出版に依存しているが、より多くのコンテンツがオンラインに移行するにつれて、これは問題ではなくなってきている。
-印刷された地図のアニメーション（またはインタラクティブ）バージョンを含むウェブページに読者をリンクすることで、地図を生き生きとさせることができる。
+印刷された地図のアニメーション (またはインタラクティブ) バージョンを含むウェブページに読者をリンクすることで、地図を生き生きとさせることができる。
 R でアニメーションを生成する方法はいくつかあり、**ggplot2**をベースにした **ganimate** のようなアニメーションパッケージもある (Section \@ref(other-mapping-packages) を参照)。
 このセクションでは、**tmap**を使ったアニメーションマップの作成に焦点を当てる。なぜなら、その構文はこれまでのセクションでお馴染みであり、アプローチの柔軟性があることがある。
 
@@ -723,7 +723,7 @@ tmap_animation(urb_anim, filename = "urb_anim.gif", delay = 25)
 source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-usboundaries.R")
 ```
 
-```{r animus, echo=FALSE, message=FALSE, fig.cap="米国における人口増加、州形成、境界線の変化を示すアニメーション地図（1790-2010年）。アニメーション版は geocompr.robinlovelace.net でオンライン公開。", fig.scap="Animated map showing boundary changes in the United States."}
+```{r animus, echo=FALSE, message=FALSE, fig.cap="米国における人口増加、州形成、境界線の変化を示すアニメーション地図 (1790-2010年)。アニメーション版は geocompr.robinlovelace.net でオンライン公開。", fig.scap="Animated map showing boundary changes in the United States."}
 u_animus_html = "https://user-images.githubusercontent.com/1825120/38543030-5794b6f0-3c9b-11e8-9da9-10ec1f3ea726.gif"
 u_animus_pdf = "figures/animus.png"
 if (knitr::is_latex_output()){
@@ -770,8 +770,8 @@ if (knitr::is_latex_output()){
 ```
 
 
-インタラクティブモードが「オン」になったので、**tmap** で作成したすべての地図が起動する（インタラクティブな地図を作成する別の方法として、`tmap_leaflet` 機能がある）。
-このインタラクティブモードの特筆すべき点は、以下のデモのように `tm_basemap()`（または `tmap_options()`）でベースマップを指定できることである（結果は表示していない）。
+インタラクティブモードが「オン」になったので、**tmap** で作成したすべての地図が起動する (インタラクティブな地図を作成する別の方法として、`tmap_leaflet` 機能がある)。
+このインタラクティブモードの特筆すべき点は、以下のデモのように `tm_basemap()` (または `tmap_options()`) でベースマップを指定できることである (結果は表示していない)。
 
 ```{r 08-mapping-26, eval=FALSE}
 map_nz + tm_basemap(server = "OpenTopoMap")
@@ -812,11 +812,11 @@ knitr::include_graphics("figures/mapview.png")
 ```
 
 **mapview** は簡潔な構文でありながら、強力な機能を備えている。
-デフォルトでは、マウスの位置情報、（ポップアップによる）属性問い合わせ、スケールバー、レイヤへのズームボタンなどの標準的な GIS 機能が提供されている。
+デフォルトでは、マウスの位置情報、(ポップアップによる) 属性問い合わせ、スケールバー、レイヤへのズームボタンなどの標準的な GIS 機能が提供されている。
 データセットを複数のレイヤに「バースト」する機能や、`+` の後に地理的オブジェクトの名前を付けて複数のレイヤを追加する機能など、高度な制御を提供する。 
-さらに、属性の自動的な色付けも可能である（引数 `zcol` ）。
-要するに、データドリブンの**leaflet** API\index{API}  と考えることができる（**leaflet** については後述する）。 
-**mapview** は常に空間オブジェクト（`sf` と `SpatRaster`）を最初の引数として期待することから、パイプ式の末尾でうまく機能する。 
+さらに、属性の自動的な色付けも可能である (引数 `zcol`)。
+要するに、データドリブンの**leaflet** API\index{API}  と考えることができる (**leaflet** については後述する)。
+**mapview** は常に空間オブジェクト (`sf` と `SpatRaster`) を最初の引数として期待することから、パイプ式の末尾でうまく機能する。 
 次の例では、**sf** を使って直線とポリゴンを交差させ、**mapview** (Figure \@ref(fig:mapview2)) で可視化する場合を考えてみよう。
 
 ```{r 08-mapping-30, eval=FALSE}
@@ -844,9 +844,9 @@ knitr::include_graphics("figures/mapview-example.png")
 
 R でインタラクティブな地図を作成する方法は他にもある。
 例えば、**googleway**\index{googleway (package)} パッケージは、柔軟で拡張性の高いインタラクティブなマッピングインターフェイスを提供する
-（詳細は [`googleway-vignette`](https://cran.r-project.org/web/packages/googleway/vignettes/googleway-vignette.html) 参照。）。
+(詳細は [`googleway-vignette`](https://cran.r-project.org/web/packages/googleway/vignettes/googleway-vignette.html) 参照)。
 同じ著者による別のアプローチとして、**[mapdeck](https://github.com/SymbolixAU/mapdeck)** があり、Uber の `Deck.gl` フレームワーク \index{mapdeck (package)}  にアクセスできるようになっている。
-WebGL を使用することで、大規模なデータセット（最大数百万点）をインタラクティブに可視化することができる。
+WebGL を使用することで、大規模なデータセット (最大数百万点) をインタラクティブに可視化することができる。
 本パッケージは、Mapbox [access tokens](https://docs.mapbox.com/help/getting-started/access-tokens/) を使用している。本パッケージを使用する前に、登録する必要がある。
 
 ```{block2 08-mapping-31, type='rmdnote'}
@@ -896,7 +896,7 @@ mapdeck(style = ms, pitch = 45, location = c(0, 52), zoom = 4) |>
 **leaflet** は、Leaflet JavaScript ライブラリへの比較的低レベルのインタフェースを提供し、その引数の多くは、オリジナルの JavaScript ライブラリのドキュメントを読めば理解できる ( [leafletjs.com](https://leafletjs.com/) を参照)。
 
 リーフレットマップは `leaflet()` で作成され、その結果は `leaflet` マップオブジェクトとなり、他の **leaflet** 関数にパイプで渡すことができる。
-これにより、Figure \@ref(fig:leaflet) を生成する以下のコードで示すように、複数の地図レイヤや制御設定をインタラクティブに追加することができる（詳しくは [rstudio.github.io/leaflet/](https://rstudio.github.io/leaflet/) を参照）。
+これにより、Figure \@ref(fig:leaflet) を生成する以下のコードで示すように、複数の地図レイヤや制御設定をインタラクティブに追加することができる (詳しくは [rstudio.github.io/leaflet/](https://rstudio.github.io/leaflet/) を参照)。
 
 ```{r leaflet-code, echo=TRUE, eval=FALSE}
 pal = colorNumeric("RdYlBu", domain = cycle_hire$nbikes)
@@ -942,16 +942,16 @@ Section \@ref(interactive-maps) で示されたインタラクティブなウェ
 - 変数間の関係を示すグラフや「ダッシュボード」のようなインタラクティブなレイヤを追加することは、ウェブ地図のアプローチでは困難である
 
 これらの制約を克服するためには、静的なウェブ地図にとどまらず、地理空間系のフレームワークや地図サーバーを利用することが必要である。
-この分野の製品には、 [GeoDjango](https://docs.djangoproject.com/en/2.0/ref/contrib/gis/)\index{GeoDjango}（Django Web フレームワークを拡張したもので、 [Python](https://github.com/django/django)\index{Python}）、[MapServer](https://github.com/mapserver/mapserver)\index{MapServer}（Web アプリケーション開発用のフレームワークで、大部分が C と C++\index{C++} で書かれている）や [GeoServer](https://github.com/geoserver/geoserver) （Java\index{Java} で書かれた成熟した強力なマップサーバ）が含まれる。
-これらはそれぞれ拡張性があり、毎日何千人もの人々に地図を提供することが可能である（あなたの地図に対する人々の関心が十分に高ければの話であるが）。
-欠点としては、このようなサーバーサイドのソリューションは、セットアップと保守に多くの熟練した開発者の時間を必要とし、地理空間データベース管理者（[DBA](https://wiki.gis.com/wiki/index.php/Database_administrator)）などの役割を持つ人々を巻き込んでしまうこともよくある。
+この分野の製品には、 [GeoDjango](https://docs.djangoproject.com/en/2.0/ref/contrib/gis/)\index{GeoDjango} (Django Web フレームワークを拡張したもので、 [Python](https://github.com/django/django)\index{Python})、[MapServer](https://github.com/mapserver/mapserver)\index{MapServer} (Web アプリケーション開発用のフレームワークで、大部分が C と C++\index{C++} で書かれている) や [GeoServer](https://github.com/geoserver/geoserver) (Java\index{Java} で書かれた成熟した強力なマップサーバ) が含まれる。
+これらはそれぞれ拡張性があり、毎日何千人もの人々に地図を提供することが可能である (あなたの地図に対する人々の関心が十分に高ければの話であるが)。
+欠点としては、このようなサーバーサイドのソリューションは、セットアップと保守に多くの熟練した開発者の時間を必要とし、地理空間データベース管理者 ([DBA](https://wiki.gis.com/wiki/index.php/Database_administrator)) などの役割を持つ人々を巻き込んでしまうこともよくある。
 
-R の場合は幸運なことに、**shiny**\index{shiny (package)}  を使って、ウェブ地図アプリケーションを素早く作成できるようになった。
+R の場合は幸運なことに、**shiny**\index{shiny (package)} を使って、ウェブ地図アプリケーションを素早く作成できるようになった。
 オープンソース本 [Mastering Shiny](https://mastering-shiny.org/) で説明されているように、 **shiny** は、R コードをインタラクティブなウェブアプリに変換する R パッケージでありフレームワークである [@wickham_mastering_2021]。
 `tmap::renderTmap()` と [`leaflet::renderLeaflet()`](https://rstudio.github.io/leaflet/shiny.html) を使うことで、shiny アプリにインタラクティブ地図を追加することができる。
 このセクションでは、ウェブ地図の観点から **shiny** の基本を学び、100行未満のコードで全画面マッピングアプリケーションを完成させることができる。
 
-**shiny** の仕組みは、 [shiny.rstudio.com](https://shiny.rstudio.com/)に詳しく書かれている。これは「フロントエンド」（ユーザーが見る部分）と「バックエンド」コードという２つの構成要素を強調している。
+**shiny** の仕組みは、 [shiny.rstudio.com](https://shiny.rstudio.com/)に詳しく書かれている。これは「フロントエンド」 (ユーザーが見る部分) と「バックエンド」コードという２つの構成要素を強調している。
 **shiny** アプリでは、これらの要素は通常、`app フォルダ`内にある `app.R` という R スクリプト内の  `ui` と `server` というオブジェクトで作成される。
 これにより、ウェブマッピングのアプリケーションを1つのファイルで表現することができ、例えば、本書の GitHub リポジトリにある [`CycleHireApp/app.R`](https://github.com/Robinlovelace/geocompr/blob/main/apps/CycleHireApp/app.R) ファイルのような単一のファイルで表現できる。
 
@@ -964,7 +964,7 @@ R の場合は幸運なことに、**shiny**\index{shiny (package)}  を使っ�
 大規模なアプリを検討する前に、「lifeApp」と名付けた最小限の例を実際に見てみよう。^[
 ここでいう「アプリ」とは「Webアプリケーション」のことであり、一般的な意味であるスマートフォンのアプリと混同しないようにしよう。
 ]
-以下のコードでは、`shinyApp()` というコマンドで、lifeApp を定義して起動する。これは、平均寿命のレベルが低い国を表示させることができるインタラクティブなスライダーである（Figure \@ref(fig:lifeApp) を参照）。
+以下のコードでは、`shinyApp()` というコマンドで、lifeApp を定義して起動する。これは、平均寿命のレベルが低い国を表示させることができるインタラクティブなスライダーである (Figure \@ref(fig:lifeApp) を参照)。
 
 ```{r 08-mapping-37, eval=FALSE}
 library(shiny)   # shiny
@@ -988,9 +988,9 @@ shinyApp(ui, server)
 knitr::include_graphics("figures/shiny-app.png")
 ```
 
-lifeApp の **ユーザーインターフェース** ( `ui` ) は `fluidPage()` で作成されている。
-これには、入力と出力の「ウィジェット」 --- この場合、`sliderInput()`（他にも多くの `*Input()` 関数が利用できる）と `leafletOutput()` が含まれる。
-これらはデフォルトで列方向に配置されており、Figure \@ref(fig:lifeApp) でスライダーインターフェイスがマップの真上に配置されている理由を説明している（列方向にコンテンツを追加する方法については `?column` を参照）。
+lifeApp の **ユーザーインターフェース** (`ui`) は `fluidPage()` で作成されている。
+これには、入力と出力の「ウィジェット」 --- この場合、`sliderInput()` (他にも多くの `*Input()` 関数が利用できる) と `leafletOutput()` が含まれる。
+これらはデフォルトで列方向に配置されており、Figure \@ref(fig:lifeApp) でスライダーインターフェイスがマップの真上に配置されている理由を説明している (列方向にコンテンツを追加する方法については `?column` を参照)。
 
 **サーバー側** (`server`) は、`input` と `output` を引数に持つ関数である。
 `output` は、`render*()` 関数によって生成された要素を含むオブジェクトのリストである。この例では、`renderLeaflet()` が `output$map` を生成している。
@@ -998,7 +998,7 @@ lifeApp の **ユーザーインターフェース** ( `ui` ) は `fluidPage()` 
 関数 `shinyApp()` は `ui` と `server` の両要素を結合し、その結果を新しい R プロセスで対話的に提供する。
 Figure \@ref(fig:lifeApp) に表示されているマップのスライダーを動かすと、ユーザーインターフェースでは見えないようになっているが、実際にはRのコードが再実行される。
 
-この基本的な例をもとに、どこにヘルプがあるか（`?shiny` 参照）を知っておけば、あとは読むのをやめてプログラミングを始めるのが一番だろうね。
+この基本的な例をもとに、どこにヘルプがあるか (`?shiny` 参照) を知っておけば、あとは読むのをやめてプログラミングを始めるのが一番だろうね。
 次のステップとして推奨されるのは、以前に紹介した  [`CycleHireApp/app.R`](https://github.com/Robinlovelace/geocompr/blob/main/apps/CycleHireApp/app.R) スクリプトを任意の IDE で開き、それを修正して繰り返し実行することである。
 この例では、**shiny** で実装されたウェブマッピングアプリケーションのコンポーネントの一部が含まれており、それらがどのように動作するかを「照らす」べきものである。
 
@@ -1018,10 +1018,10 @@ Unix コマンドラインの場合は、`Rscript -e 'shiny::runApp("CycleHireAp
 例えば、`setView()` の内容を変更すると、アプリが起動されたときにユーザーに表示される開始バウンディングボックスが変更される。
 このような実験は、ランダムに行うのではなく、関連する文書を参照し、`?shiny` を始めとして、演習で提起されたような問題を解決したいという動機で行うべきである。
 
-このように **shiny** を使用することで、地図アプリケーションのプロトタイプ作成をこれまで以上に迅速かつ身近に行うことができる（**shiny** アプリケーションの実装は、この章の範囲を超えた別のトピック）。
-最終的にアプリケーションが異なる技術で展開されるとしても、**shiny** によって、ウェブ地図アプリケーションが比較的少ないコード行数で開発できることは間違いない（CycleHireApp の場合、76行）。
+このように **shiny** を使用することで、地図アプリケーションのプロトタイプ作成をこれまで以上に迅速かつ身近に行うことができる (**shiny** アプリケーションの実装は、この章の範囲を超えた別のトピック)。
+最終的にアプリケーションが異なる技術で展開されるとしても、**shiny** によって、ウェブ地図アプリケーションが比較的少ないコード行数で開発できることは間違いない (CycleHireApp の場合、76行)。
 しかし、shiny アプリは巨大になる傾向がある。
-例えば、[pct.bike](https://www.pct.bike/) でホストされている Propensity to Cycle Tool（PCT）は、英国運輸省の資金援助による全国規模の地図ツールである。
+例えば、[pct.bike](https://www.pct.bike/) でホストされている Propensity to Cycle Tool (PCT) は、英国運輸省の資金援助による全国規模の地図ツールである。
 PCT は毎日何十人もの人が利用しており、1000行以上の [コード](https://github.com/npct/pct-shiny/blob/master/regions_www/m/server.R) [@lovelace_propensity_2017]  に基づいた複数のインタラクティブな要素を備えている。
 
 このようなアプリの開発には時間と労力がかかるが、**shiny** は再現性のあるプロトタイプ作成のためのフレームワークを提供し、開発プロセスを支援するはずである。
@@ -1039,14 +1039,14 @@ knitr::include_graphics("figures/09_cycle_hire_app.png")
 
 ## その他のマッピングパッケージ  {#other-mapping-packages}
 
-**tmap** は、さまざまな静的マップ（Section \@ref(static-maps)）を作成するための強力なインターフェイスを提供し、インタラクティブなマップ（ection \@ref(interactive-maps)）もサポートしている。
+**tmap** は、さまざまな静的マップ (Section \@ref(static-maps)) を作成するための強力なインターフェイスを提供し、インタラクティブなマップ (Section \@ref(interactive-maps)) もサポートしている。
 しかし、R でマップを作成するためのオプションは他にもたくさんある。
 このセクションの目的は、これらの一部を紹介し、追加リソースのポインタを提供することである。マップ作成は、R パッケージの開発において驚くほど活発な分野なので、ここでカバーしきれないほど多くのことを学ぶことができる。
 
 最も成熟した選択肢は、コアな空間パッケージである **sf** と **terra** が提供する `plot()` メソッドを使用することである。
 これらのセクションで触れていないのは、ベクタとラスタのオブジェクトのプロットメソッドは、結果が同じプロットエリアに描画される場合、組み合わせることができるということである (**sf** プロットのキーやマルチバンドのラスタなどの要素はこれを邪魔する)。
 この動作は、Figure \@ref(fig:nz-plot) を生成する次のコードチャンクで説明される。
-`plot()` には他にも多くのオプションがあり、`?plot` のヘルプページと **sf** vignette [`sf5`](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html) のリンクをたどって調べることができる（訳注：[vignette 日本語版](https://www.uclmail.net/users/babayoshihiko/R/)）。
+`plot()` には他にも多くのオプションがあり、`?plot` のヘルプページと **sf** vignette [`sf5`](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html) のリンクをたどって調べることができる (訳注：[vignette 日本語版](https://www.uclmail.net/users/babayoshihiko/R/))。
 
 ```{r nz-plot, message=FALSE, fig.cap="plot() で作成したニュージーランドの地図。右の凡例は標高 (海抜 1000 m) を示している。", fig.scap="Map of New Zealand created with plot()."}
 g = st_graticule(nz, lon = c(170, 175), lat = c(-45, -40, -35))
@@ -1057,7 +1057,7 @@ plot(st_geometry(nz), add = TRUE)
 
 **tidyverse**\index{tidyverse (package)} のプロットパッケージ **ggplot2** は `sf` オブジェクトを `geom_sf()`\index{ggplot2 (package)} でサポートしている。
 構文は **tmap** で使用されているものと似ている。
-最初は `ggplot()` で、次に `+ geom_*()` を追加釣ることで、レイヤを追加する。ここで `*` は、`geom_sf()`（`sf` オブジェクトの場合）や `geom_points()`（点の場合）などのレイヤタイプを表す。
+最初は `ggplot()` で、次に `+ geom_*()` を追加釣ることで、レイヤを追加する。ここで `*` は、`geom_sf()` (`sf` オブジェクトの場合) や `geom_points()` (点の場合) などのレイヤタイプを表す。
    
 **ggplot2** はデフォルトで経緯度図郭線を描画する。
 経緯度図郭線のデフォルト設定は、`scale_x_continuous()` , `scale_y_continuous()` または  [`coord_sf(datum = NA)`](https://github.com/tidyverse/ggplot2/issues/2071) で上書きできる。
@@ -1079,7 +1079,7 @@ plotly::ggplotly(g1)
 ```
 
 **gplot2** の利点は、強力なユーザコミュニティと多くのアドオンパッケージを持っていることである。
-例えば、**ggplot2** の地図機能を強化するために、北矢印（`annotation_north_arrow()`）や縮尺バー（`annotation_scale()`）あるいは背景タイル（`annotation_map_tile()`）を追加する **ggspatial** がある。
+例えば、**ggplot2** の地図機能を強化するために、北矢印 (`annotation_north_arrow()`) や縮尺バー (`annotation_scale()`) あるいは背景タイル (`annotation_map_tile()`) を追加する **ggspatial** がある。
 また、`layer_spatial()` は様々な空間データクラスを扱うことができる。
 これによって、Figure \@ref(fig:ggterra) で示すように、**terra** の `SpatRaster` オブジェクトをプロットすることができる。
  
@@ -1150,14 +1150,14 @@ knitr::kable(map_spkg_df,
 次の段落では、**cartogram** パッケージ \index{cartogram (package)}  にのみ焦点を当てる。
 そのため、[linemap](https://github.com/rCarto/linemap)\index{linemap (package)}、[geogrid](https://github.com/jbaileyh/geogrid)\index{geogrid (package)}、 [geofacet](https://github.com/hafen/geofacet) \index{geofacet (package)}、[rayshader](https://github.com/tylermorganwall/rayshader)\index{rayshader (package)} のドキュメントを読んで、より詳しく知ることを勧める。
 
-カルトグラムとは、地図変数を表現するために一定の幾何学的な歪みを持たせた地図のことである（訳注：訳語は[東北大学空間計画科学研究室](http://www.plan.civil.tohoku.ac.jp/inoue/research/cartogram/)に準じた。）。
-このような地図の作成は、R では **cartogram** を用いることで、連続・非連続の面積カルトグラム（area cartogram）を作成することが可能である。
+カルトグラムとは、地図変数を表現するために一定の幾何学的な歪みを持たせた地図のことである (訳注：訳語は[東北大学空間計画科学研究室](http://www.plan.civil.tohoku.ac.jp/inoue/research/cartogram/)に準じた)。
+このような地図の作成は、R では **cartogram** を用いることで、連続・非連続の面積カルトグラム (area cartogram) を作成することが可能である。
 これ自体は地図製作パッケージではないが、汎用の地図製作パッケージを使用してプロットできるような歪んだ空間オブジェクトを構築することが可能である。
 
 `cartogram_cont()` 機能は、連続した面積のカルトグラムを作成する。
-入力として、`sf` オブジェクトと変数名（列）を受け取る。
-さらに、`intermax` 引数（カルトグラム変換の最大反復回数）を変更することが可能である。
-例えば、ニュージーランドの地域の所得の中央値を連続カルトグラム（Figure \@ref(fig:cartomap1) の右側のパネル）で表すと、次のようになる。
+入力として、`sf` オブジェクトと変数名 (列) を受け取る。
+さらに、`intermax` 引数 (カルトグラム変換の最大反復回数) を変更することが可能である。
+例えば、ニュージーランドの地域の所得の中央値を連続カルトグラム (Figure \@ref(fig:cartomap1) の右側のパネル) で表すと、次のようになる。
 
 ```{r 08-mapping-39, fig.show='hide', message=FALSE}
 library(cartogram)
@@ -1177,10 +1177,10 @@ carto_map2 = tm_shape(nz_carto) +
 tmap_arrange(carto_map1, carto_map2)
 ```
 
-**cartogram** では、`cartogram_ncont()` を使用して非連続面積カルトグラムを、`cartogram_dorling()` を使用してサークルエリア（Dorling）カルトグラムを作成することもできる。
+**cartogram** では、`cartogram_ncont()` を使用して非連続面積カルトグラムを、`cartogram_dorling()` を使用してサークルエリア (Dorling) カルトグラムを作成することもできる。
 非連続面積カルトグラムは、提供された重み付け変数に基づいて各面積を縮小することによって作成される。
-サークルエリア（Dorling）カルトグラムは、重み付け変数に比例した面積を持つ円から構成されている。
-以下のコードは、米国各州の人口の非連続面積とサークルエリア（Dorling）カルトグラムの作成例である（Figure \@ref(fig:cartomap2)）。
+サークルエリア (Dorling) カルトグラムは、重み付け変数に比例した面積を持つ円から構成されている。
+以下のコードは、米国各州の人口の非連続面積とサークルエリア (Dorling) カルトグラムの作成例である (Figure \@ref(fig:cartomap2))。
 
 ```{r 08-mapping-40, fig.show='hide', message=FALSE}
 us_states2163 = st_transform(us_states, "EPSG:2163")
@@ -1191,7 +1191,7 @@ us_states2163_dorling = cartogram_dorling(us_states2163, "total_pop_15")
 
 
 <!--
-```{r cartomap2, echo=FALSE, message=FALSE, fig.cap="非連続領域カルトグラム（左）と Dorling カルトグラム（右）の比較。", fig.scap="Comparison of cartograms.", fig.asp=0.32}
+```{r cartomap2, echo=FALSE, message=FALSE, fig.cap="非連続領域カルトグラム (左) と Dorling カルトグラム (右) の比較。", fig.scap="Comparison of cartograms.", fig.asp=0.32}
 carto_map3 = tm_shape(us_states2163_ncont) + 
   tm_polygons("total_pop_15", title = "合計人口", palette = "BuPu") +
   tm_layout(legend.show = FALSE)
