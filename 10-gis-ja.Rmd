@@ -48,7 +48,7 @@ QGIS\index{QGIS} [@sherman_desktop_2008] の作成者によれば、
 
 > 「近代的」GIS ソフトウェアの発展に伴い、マウス操作を好む人がほとんどである。それはいいことであるが、コマンドラインには、とてつもない量の柔軟性とパワーが待っている。繰り返しコマンドラインで作業をする場合、同じことを GUI で行う場合よりも短い時間で行うことができる。
 
-「CLI vs GUI」\index{graphical user interface}  の議論は、敵対的になる必要はない。作業の内容（フィーチャを描く時は GUI の方が優れている）、再現可能性、ユーザーのスキルセットに応じて、どちらの選択肢も利点はある。
+「CLI vs GUI」\index{graphical user interface}  の議論は、敵対的になる必要はない。作業の内容 (フィーチャを描く時は GUI の方が優れている)、再現可能性、ユーザーのスキルセットに応じて、どちらの選択肢も利点はある。
 GRASS は、CLI をベースとしながらも GUI がある GIS の良い例である。
 同様に、R は CLI\index{command-line interface} であり、そして RStudio\index{RStudio} のような IDE\index{IDE} が GUI を提供することで、アクセシビリティを向上している。
 このように、ソフトウエアは CLI または GUI というように完全に分けられるものではない。
@@ -390,7 +390,7 @@ qgis_show_help("grass7:r.geomorphon")
 
 ジオモルフォンの計算には、入力 DEM (`elevation`) が必要で、オプションの引数でカスタマイズすることができる。
 `search` -- 視線距離を計算する長さ、および ``-m`` -- 検索値を(セル数ではなく)メートル単位で提供することを指定するフラグが含まれている。
-追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html)に記載されている。
+追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html) に記載されている。
 
 ```{r, eval=has_qgis_plugins}
 dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
@@ -515,7 +515,7 @@ location には、1 つのプロジェクトまたは 1 つの領域のジオデ
 プロジェクトのすべてのユーザと地理データを共有するために、データベース所有者は PERMANENT マップセットに空間データを追加することができる。
 さらに、PERMANENT マップセットには、ラスタデータの投影法、空間範囲、およびデフォルトの解像度が格納される。
 まとめると、GRASS GIS データベースは多くの location を含み (1つのロケーションのデータはすべて同じ CRS を持つ)、それぞれの location は多くのマップセット (データセットのグループ) を格納することができる。
-GRASS 空間データベース\index{spatial database}システムの詳細は、@neteler_open_2008 と [GRASS GIS quick start](https://grass.osgeo.org/grass-stable/manuals/helptext.html)。
+GRASS 空間データベース\index{spatial database}システムの詳細は、@neteler_open_2008 と [GRASS GIS quick start](https://grass.osgeo.org/grass-stable/manuals/helptext.html) を参照。
 こkでは R から手軽に GRASS を使うため **link2GI** パッケージを使う。しかし、GRASS GIS データベースを順番に作ることもできる。
 作り方は [GRASS within R](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#GRASS_within_R) を参照。
 以下の段落で解説するコードは、初めて GRASS を使う方には難しいかもしれないが、コードを１行１行実行して途中の結果を確認することで、コードの元となる理由が明らかになる。
