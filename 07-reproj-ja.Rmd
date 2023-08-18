@@ -763,7 +763,7 @@ tibble(
 ```{block2 06-reproj-35, type='rmdnote'}
 もちろん、2次元の地球投影の限界は、ラスターデータと同様にベクターデータにも当てはまる。
 3つの空間特性 (距離、面積、方向) のうち2つを維持することしかできない。
-したがって、どのプロジェクションを選択するかは、目の前の課題によって決まる。
+したがって、どの投影法を選択するかは、目の前の課題によって決まる。
 例えば、密度 (1グリッドセルあたりの点数や1グリッドセルあたりの住民数) に興味がある場合は、等面積投影を使用する (Chapter \@ref(location) も参照)。
 ```
 
@@ -812,7 +812,7 @@ my_wkt = 'PROJCS["Custom_AEQD",
 zion_aeqd = st_transform(zion, my_wkt)
 ```
 
-カスタムプロジェクションは、例えば [Projection Wizard](https://projectionwizard.org/#) のウェブアプリケーションを使って、対話的に行うことも可能である [@savric_projection_2016]。
+カスタム投影法は、例えば [Projection Wizard](https://projectionwizard.org/#) のウェブアプリケーションを使って、対話的に行うことも可能である [@savric_projection_2016]。
 このサイトでは、データの空間的範囲と歪みのプロパティを選択すると、可能な投影のリストが返される。
 また、このリストには投影の WKT 定義が含まれており、コピーして再投影に使用することができる。
 WKT 文字列を用いたカスタム CRS 定義の作成については、@opengeospatialconsortium_wellknown_2019 を参照。
@@ -839,7 +839,7 @@ tm_shape(world_mollweide_gr) +
 ```
 
 世界地図を作成する際、すべての空間特性 (面積、方向、距離) に対して歪みを最小化することが望まれることが多い。
-これを実現するための代表的なプロジェクションとして、Figure \@ref(fig:wintriproj) に示される [ヴィンケル図法 (第 3 図法)](http://www.winkel.org/other/Winkel%20Tripel%20Projections.htm) (Winkel Tripel Projections) がある。^[
+これを実現するための代表的な投影法として、Figure \@ref(fig:wintriproj) に示される [ヴィンケル図法 (第 3 図法)](http://www.winkel.org/other/Winkel%20Tripel%20Projections.htm) (Winkel Tripel Projections) がある。^[
 この投影図は、ナショナルジオグラフィック協会などで使用されている。
 ]
 結果は、以下のコマンドで作成された。
