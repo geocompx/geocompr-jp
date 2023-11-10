@@ -279,7 +279,7 @@ knitr::include_graphics("figures/13_ml_abstraction_crop.png")
 ### 一般化線形モデル  {#glm}
 
 GLM\index{GLM} を **mlr3**\index{mlr3 (package)} で実装するためには、地すべりデータを含む **task** を作成する必要がある。
-応答は二値 (2カテゴリの変数) で、空間次元を持つので、**mlr3spatiotempcv** パッケージの `TaskClassifST$new()` を使用し、分類 \index{classification}タスクを作成する [@schratz_mlr3spatiotempcv_2021 、非空間 task には `mlr3::TaskClassif$new()`、回帰\index{regression} には `mlr3::TaskRegr$new()` を使用。他の task の詳細は、`?Task` を参照。] 。^[**mlr3** エコシステムは **data.table** と **R6** というクラスを多用する。これらのクラスの仕様を知らなくても **mlr3** を使うことはできるが、知っておくと有利である。 **data.table**, の詳細は https://rdatatable.gitlab.io/data.table/index.html 。**R6** について学びたい方は、Advanced R book (日本語版は共立出版「R 言語徹底解説」だが、旧版を元にしている)  [@wickham_advanced_2019] の [Chapter 14](https://adv-r.hadley.nz/fp.html) を参照。]
+応答は二値 (2カテゴリの変数) で、空間次元を持つので、**mlr3spatiotempcv** パッケージの `TaskClassifST$new()` を使用し、分類 \index{classification}タスクを作成する [@schratz_mlr3spatiotempcv_2021 、非空間 task には `mlr3::TaskClassif$new()`、回帰\index{regression} には `mlr3::TaskRegr$new()` を使用。他の task の詳細は、`?Task` を参照。] 。^[**mlr3** エコシステムは **data.table** と **R6** というクラスを多用する。これらのクラスの仕様を知らなくても **mlr3** を使うことはできるが、知っておくと有利である。 **data.table**, の詳細は https://rdatatable.gitlab.io/data.table/。**R6** について学びたい方は、Advanced R book (日本語版は共立出版「R 言語徹底解説」だが、旧版を元にしている)  [@wickham_advanced_2019] の [Chapter 14](https://adv-r.hadley.nz/fp.html) を参照。]
 `Task*$new()` 関数の最初の必須引数は、`backend` である。
 `backend` は、入力データが応答変数と予測変数を含んでいることを想定している。
 `target` の引数は応答変数の名前を示し (ここでは `lslpts` )、`positive` は応答変数の2つの因子レベルのうちどちらが地滑り開始点を示すかを決定する (ここでは `TRUE`)。
@@ -465,9 +465,9 @@ Section \@ref(glm) では、GLM を用いて地滑りしやすさを予測した
 ランダムフォレストモデルを適用したい方は、この章を読んでから Chapter \@ref(eco) に進むことを勧める。この章では、現在取り上げられている概念と技術を応用して、ランダムフォレストモデルに基づく空間分布図を作成する方法を説明する。
 
 SVM\index{SVM} クラスを分離するための最適な「超平面」を探索し (分類 \index{classification}  の場合)、特定のハイパーパラメータで「カーネル」を推定して、クラス間の非線形境界を作成する [@james_introduction_2013]。
-ハイパーパラメーター \index{hyperparameter}  パラメトリックモデルの係数と混同してはいけない。後者は、パラメータと呼ばれることもある ([machine mastery blog](https://machinelearningmastery.com/difference-between-a-parameter-and-a-hyperparameter/) も参照)。
-係数はデータから推定できるが、ハイパーパラメータは学習開始前に設定する。
-最適なハイパーパラメータは、通常、クロスバリデーション法を用いて定義された範囲内で決定される。
+機械学習には、ハイパーパラメータ\index{hyperparameter}とパラメータがある。
+パラメータはデータから推定できるが、ハイパーパラメータ\index{hyperparameter}は学習開始前に設定しなければならない (mlr3 本の[machine mastery blog](https://machinelearningmastery.com/difference-between-a-parameter-and-a-hyperparameter/)と[hyperparameter optimization chapter](https://mlr3book.mlr-org.com/chapters/chapter4/hyperparameter_optimization.html) も参照)。
+最適なハイパーパラメータ\index{hyperparameter}は、通常、クロスバリデーション法を用いて定義された範囲内で決定する。
 これをハイパーパラメータチューニングという。
 
 **kernlab** が提供 SVM 実装の中には、ハイパーパラメータを自動的に、通常はランダムなサンプルに基づいて調整することができるものもある (Figure \@ref(fig:partitioning) の上段を参照)。
@@ -486,7 +486,7 @@ mlr3_learners[class == "classif" & grepl("svm", id),
 オプションのうち、**kernlab** パッケージの `ksvm()` を使用することにする [@karatzoglou_kernlab_2004]。
 非線形関係を許容するために、`ksvm()` のデフォルトでもある、一般的な放射状基底関数 (またはガウス) カーネル (`"rbfdot"`) を使用する。
 `type` 引数に `"C-svc"` を設定することで、`ksvm()` が確実に分類タスクを解く。
-1 つのモデルの失敗でチューニングが止まらないように、フォールバック学習器を追加で定義している (詳細は https://mlr3book.mlr-org.com/technical.html#fallback-learners を参照)。
+1 つのモデルの失敗でチューニングが止まらないように、フォールバック学習器を追加で定義している (詳細は https://mlr3book.mlr-org.com/chapters/chapter10/advanced_technical_aspects_of_mlr3.html#sec-fallback を参照)。
 
 ```{r 12-spatial-cv-24}
 lrn_ksvm = mlr3::lrn("classif.ksvm", predict_type = "prob", kernel = "rbfdot",
@@ -623,7 +623,7 @@ round(mean(score_spcv_svm$classif.auc), 2)
 
 GLM\index{GLM} (集計された AUROC \index{AUROC} は  `r score [score $resampling_id == "repeated_spcv_coords" & score$ learner_id == "classif.log_reg", round(mean(score$classif.auc), 2)] `) は、この特定のケースでは、SVM\index{SVM} よりもわずかに優れているようである。
 絶対的に公平な比較を保証するためには、2つのモデルが全く同じパーティションを使用していることを確認する必要がある。ここでは示していないが、バックグラウンドで黙々と使用しているものである (詳しくは本書の github レポにある `code/12_cv.R` を参照)。
-そのために、**mlr3** は関数 `benchmark_grid()` と `benchmark()` を提供している [https://mlr3book.mlr-org.com/perf-eval-cmp.html#benchmarking, @becker_mlr3_2022 参照] 。 
+そのために、**mlr3** は関数 `benchmark_grid()` と `benchmark()` を提供している [https://mlr3book.mlr-org.com/chapters/chapter3/evaluation_and_benchmarking.html#sec-benchmarking, @becker_mlr3_2022 参照] 。 
 これらの機能については、「演習」でより詳しく解説する。
 また、SVM のランダムな探索に 50 回以上の反復を使用すると、おそらくより良い AUROC [@schratz_hyperparameter_2019]  を持つモデルになるハイパーパラメータ\index{hyperparameter}が得られるであろうことに注意しておこう。
 一方、ランダムサーチの反復回数を増やすと、モデルの総数も増え、その分実行時間も長くなる。
@@ -646,7 +646,7 @@ Section \@ref(intro-cv) で述べたように、空間座標を持つオブザ�
 機械学習全体、そして空間データを理解するための機械学習は大きな分野であり、この章では基本的なことを説明したが、まだまだ学ぶべきことはある。
 このような方向性で、以下の資料を勧める。
 
-- **mlr3 book** [@becker_mlr3_2022; https://mlr-org.github.io/mlr-tutorial/release/html/]  と、特に [chapter on the handling of spatio-temporal data](https://mlr3book.mlr-org.com/spatiotemporal.html) を参考。
+- **mlr3 book** [@becker_mlr3_2022; https://mlr3book.mlr-org.com/]  と、特に [chapter on the handling of spatio-temporal data](https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#sec-spatiotemporal) を参考。
 - ハイパーパラメータ\index{hyperparameter}チューニングに関する学術論文 [@schratz_hyperparameter_2019] 
 - **mlr3spatiotempcv** の使用方法に関する学術論文 [@schratz_mlr3spatiotempcv_2021] 
 - 時空間データの場合、空間的\index{autocorrelation!spatial}と時間的\index{autocorrelation!temporal}の自己相関を考慮した上で CV\index{cross-validation} を行う必要がある [@meyer_improving_2018]。

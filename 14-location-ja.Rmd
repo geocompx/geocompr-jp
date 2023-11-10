@@ -289,7 +289,7 @@ metro_names = metro_names$city |>
 この後のコードチャンクは、以下のようないくつかの関数を用いてこれを行う。
 
 - `map()`\index{loop!map} (`lapply()`\index{loop!lapply} の **tidyverse** 相当)。これは、OSM \index{OpenStreetMap}  クエリー関数 `opq()` (Section \@ref(retrieving-data) 参照) のバウンディングボックス\index{bounding box}  を定義する、8つの大都市名すべてを繰り返し処理するものである。
-- `add_osm_feature()` で、キー値が `shop` の OSM\index{OpenStreetMap} 要素を指定する (共通のキー:値のペアの一覧は [wiki.openstreetmap.org](http://wiki.openstreetmap.org/wiki/Map_Features) を参照)。
+- `add_osm_feature()` で、キー値が `shop` の OSM\index{OpenStreetMap} 要素を指定する (共通のキー:値のペアの一覧は [wiki.openstreetmap.org](https://wiki.openstreetmap.org/wiki/Map_Features) を参照)。
 - `osmdata_sf()`、これは OSM\index{OpenStreetMap} データを空間オブジェクト (クラス `sf`) に変換するものである。
 - `while()`\index{loop!while}、1回目のダウンロードに失敗すると繰り返し (今回は3回) ダウンロードを試みる。^[OSM-downloadは1回目で失敗することもあるようである。
 ]
@@ -433,9 +433,9 @@ if (knitr::is_latex_output()) {
 アプローチにいくつかの変更を加えることで、分析結果を改善することができる。
 
 - 最終的なスコアの算出には均等なウェイトを用いたが、世帯規模など他の要因も、女性の割合や平均年齢と同様に重要である可能性がある。
-- 全てのポイントオブインタレスト\index{point of interest}  を使用したが、DIY、ハードウェア、自転車、釣り、ハンティング、バイク、アウトドア、スポーツショップなど、バイクショップに関連するもののみ (ショップ値の範囲は [OSM Wiki](http://wiki.openstreetmap.org/wiki/Map_Features#Shop) で確認可能)、より洗練された結果を得ることができたかもしれない
+- 全てのポイントオブインタレスト\index{point of interest}  を使用したが、DIY、ハードウェア、自転車、釣り、ハンティング、バイク、アウトドア、スポーツショップなど、バイクショップに関連するもののみ (ショップ値の範囲は [OSM Wiki](https://wiki.openstreetmap.org/wiki/Map_Features#Shop) で確認可能)、より洗練された結果を得ることができたかもしれない
 - より高い解像度のデータにより、出力が向上する場合がある (演習参照) 
-- 私たちは限られた変数のみを使用し、[INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/discovery/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section \@ref(retrieving-data) も参照のこと)。
+- 私たちは限られた変数のみを使用し、[INSPIRE geoportal](https://inspire-geoportal.ec.europa.eu/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section \@ref(retrieving-data) も参照のこと)。
 - 男性比率と単身世帯の関係などの相互作用は考慮されていない。
 
 つまり、この分析は多方面に拡張できるのである。

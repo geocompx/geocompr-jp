@@ -13,6 +13,8 @@ library(dplyr)  # データフレーム操作用 tidyverseパッケージ
 - この章は **spData** に依存している。コード例で使用されるデータセットをロードする。
 
 ```{r 03-attribute-operations-2, results='hide'}
+#| message: FALSE
+#| results: hide
 library(spData) # Chapter 2 で紹介した空間データパッケージ
 ```
 
@@ -320,7 +322,7 @@ knitr::kable(tibble(Symbol = operators, Name = operators_exp),
 ### パイプを使ったコマンドの連鎖  {#chaining-commands-with-pipes}
 
 \index{pipe operator}
-**dplyr** 関数を使用するワークフローの鍵は、[パイプ](http://r4ds.had.co.nz/pipes.html) 演算子 `%>%` (R `4.1.0` 以降では  ネイティブパイプ `|>`) で、これは Unix パイプ `|`  [@grolemund_r_2016] から名前を取ったものである。
+**dplyr** 関数を使用するワークフローの鍵は、[パイプ](https://r4ds.had.co.nz/pipes.html) 演算子 `%>%` (R `4.1.0` 以降では  ネイティブパイプ `|>`) で、これは Unix パイプ `|`  [@grolemund_r_2016] から名前を取ったものである。
 パイプは、直前の関数の出力が次の関数の第1引数になるため、表現力豊かなコードを実現する。
 これは、`world` データセットからアジアの国だけがフィルタされ、次にオブジェクトが列 (`name_long` と `continent`) と最初の 5 行でサブセットされる様子を示している (結果は示していない)。
 
@@ -433,7 +435,7 @@ knitr::kable(
 ```
 
 ```{block2 03-attribute-operations-31, type='rmdnote'}
-詳細は、ヘルプページ (`?summary`と`vignette(package = "dplyr")`からアクセス)、および [R for Data Science](http://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarize) Chapter 5。
+詳細は、ヘルプページ (`?summary`と`vignette(package = "dplyr")`からアクセス)、および [R for Data Science](https://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarize) Chapter 5。
 ```
 
 ### ベクタ属性の結合  {#vector-attribute-joining}
@@ -441,7 +443,7 @@ knitr::kable(
 異なるソースからのデータを組み合わせることは、データ作成において一般的な作業である。 
 結合は、共有された「キー」変数に基づいてテーブルを結合することによって行われる。
 **dplyr** には、`left_join()` や `inner_join()` など、複数の結合関数がある。完全なリストは、`vignette("two-table")`を参照 (訳注：[日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html))。
-これらの関数名は、データベース言語 [SQL](http://r4ds.had.co.nz/relational-data.html) [@grolemund_r_2016, Chapter 13]  で使われている慣例に従っている。これらを使って、非空間データセットと `sf` オブジェクトを結合することが、このセクションの焦点である。
+これらの関数名は、データベース言語 [SQL](https://r4ds.had.co.nz/relational-data.html) [@grolemund_r_2016, Chapter 13]  で使われている慣例に従っている。これらを使って、非空間データセットと `sf` オブジェクトを結合することが、このセクションの焦点である。
 **dplyr** の join 関数は、データフレームと `sf` オブジェクトで同じように動作する。唯一の重要な違いは、`geometry` リスト列である。
 データ結合の結果は、`sf` または `data.frame` オブジェクトのいずれかになる。
 空間データに対する最も一般的な属性結合は、第1引数として `sf` オブジェクトを取り、第2引数として指定された `data.frame` から列を追加するものである。

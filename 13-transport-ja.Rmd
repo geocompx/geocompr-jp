@@ -134,7 +134,7 @@ View(cw0103)
 交通システムは主に線形のフィーチャやノード\index{node} (例えば、ルートや駅) に基づいているが、連続した空間を具体的な単位に分割するために、面的なデータから始めることがしばしば意味を持つ [@hollander_transport_2016]。
 調査地域 (ここではブリストル) を定義する境界線に加えて、交通研究者にとって特に関心の高い2つのゾーンタイプ、すなわち発着地ゾーンがある。
 多くの場合、発着地には同じ地理的単位が使用される。
-しかし、学校や商店などの「トリップアトラクター」が多い地域では、「 [Workplace Zones](https://data.gov.uk/dataset/workplace-zones-a-new-geography-for-workplace-statistics3)」のような異なるゾーニングシステムが、トリップ先の密度上昇を表すのに適切だろう [@office_for_national_statistics_workplace_2014]。
+しかし、学校や商店などの「トリップアトラクター」が多い地域では、「 [Workplace Zones](https://www.data.gov.uk/dataset/022e455a-b5cc-4247-bfc5-1aaf9da78379/workplace-zones-a-new-geography-for-workplace-statistics)」のような異なるゾーニングシステムが、トリップ先の密度上昇を表すのに適切だろう [@office_for_national_statistics_workplace_2014]。
 
 調査地域を定義する最も簡単な方法は、OpenStreetMap\index{OpenStreetMap} が返す最初のマッチング境界であることが多い。
 これは **osmdata** を使用して `bristol_region = osmdata::getbb("Bristol", format_out = "sf_polygon")` のようなコマンドで取得することができる。
@@ -468,7 +468,7 @@ R5 のようなマルチモーダルなルーティングエンジンは、OSRM 
 ### R のメモリ内ルーティング {#memengine}
 
 R のルーティングエンジンは、R のオブジェクトとして<u>メモリ</u>に格納されているルートネットワークをルート計算のベースとして使用することができる。
-選択肢としては、[**sfnetworks**](https://luukvdmeer.github.io/sfnetworks/) \index{sfnetworks (package)}、 [**dodgr**](https://atfutures.github.io/dodgr/)、 [**cppRouting**](https://github.com/vlarmet/cppRouting) といったパッケージがあり、それぞれ次節のテーマであるルートネットワークを表す独自のクラス体系を提供している。
+選択肢としては、[**sfnetworks**](https://luukvdmeer.github.io/sfnetworks/) \index{sfnetworks (package)}、 [**dodgr**](https://urbananalyst.github.io/dodgr/)、 [**cppRouting**](https://github.com/vlarmet/cppRouting) といったパッケージがあり、それぞれ次節のテーマであるルートネットワークを表す独自のクラス体系を提供している。
 
 R ネイティブなルーティングは高速で柔軟な反面、現実的なルート計算のための専用ルーティングエンジンに比べて、一般に設定が困難である。
 ルーティングは難しい問題であり、ダウンロードしてローカルでホストできるオープンソースのルーティングエンジンに何百時間もの時間が費やされている。
@@ -513,7 +513,7 @@ R 言語は、交通ネットワーク上のルートを表すデータを計算
 このため、この節では、ルートを計算する前に希望線をフィルタする。
 
 自転車旅行の利点は、自動車旅行を置き換えるときに最も大きく、比較的短い旅行は長い旅行よりも自転車に乗る可能性が高いという観察に基づいて、自転車旅行の可能性を推定することに重点を置いて希望線のサブセットをフィルタリングする [@lovelace_propensity_2017]。
-短い距離 (5 km 程度、時速 20 km で 15 分程度で走れる距離) は、比較的自転車で移動する確率が高く、[electric bike](https://www.sciencedirect.com/science/article/pii/S0967070X21003401) で移動すると最大距離が延びる [@lovelace_propensity_2017]。
+短い距離 (5 km 程度、時速 20 km で 15 分程度で走れる距離) は、比較的自転車で移動する確率が高く、電動自転車で移動すると最大距離が延びる [@lovelace_propensity_2017]。
 これらの考察に基づき、希望線をフィルタし、多くの (100 以上の) 短い (ユークリッド距離 2.5〜5 km) トリップを駆動する OD ペアを表すオブジェクト `desire_lines_short` を返す次のコードチャンクに反映しよう。
 
 ```{r 13-transport-17, message=FALSE}
@@ -560,7 +560,7 @@ tm_shape(desire_lines_short) +
   tm_shape(routes_short) +
   tm_lines(col = "red") +
   tm_add_legend(title = "Entity", labels = c("Desire lines", "Routes"),
-                type = "Lines", col = c("black", "red"), lty = c(2, 1),
+                type = "lines", col = c("black", "red"), lty = c(2, 1),
                 position = tm_pos_in("left", "top")) +
   tm_shape(zone_cents_routes) +
   tm_symbols(fill = "black", size = 0.5)
@@ -795,7 +795,7 @@ knitr::include_graphics("figures/bristol_cycleways_zoomed.png")
 例えば、OpenStreetMap\index{OpenStreetMap} のデータをバッファや、Chapter \@ref(attr) と Chapter \@ref(spatial-operations) で紹介した地理データ手法で集約すれば、交通ルートの近くに緑地があるかどうかを検出することも可能である。
 R\index{R} の統計モデリング機能を使えば、例えば、現在と将来のサイクリングのレベルを予測することができるだろう。
 
-この種の分析のベースには、Propensity to Cycle Tool (PCT)がある。 これは、R\index{R} で開発された一般にアクセス可能な ( [www.pct.bike](http://www.pct.bike/) 参照) マッピングツールで、イングランド全域のサイクリングへの投資を優先させるために使用されている [@lovelace_propensity_2017]。
+この種の分析のベースには、Propensity to Cycle Tool (PCT)がある。 これは、R\index{R} で開発された一般にアクセス可能な ( [www.pct.bike](https://www.pct.bike/) 参照) マッピングツールで、イングランド全域のサイクリングへの投資を優先させるために使用されている [@lovelace_propensity_2017]。
 同様のツールは、世界中の大気汚染や公共交通機関へのアクセスなど、他のテーマに関連したエビデンスに基づく交通政策を奨励するためにも使用できる。
 
 ## 演習  {#ex-transport}

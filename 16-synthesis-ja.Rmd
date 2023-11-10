@@ -22,6 +22,7 @@ Section \@ref(benefit) は、Chapter \@ref(intro) で提起されたより広範
 下記のコードでは、Chapter \@ref(attr) と Chapter \@ref(geometry-operations) にある 3 つの関数を使って、ニュージーランドの 16 の地域を 1 つの幾何学的形状にまとめている。
 
 ```{r 16-synthesis-1}
+#| message: FALSE
 library(spData)
 nz_u1 = sf::st_union(nz)
 nz_u2 = aggregate(nz["Population"], list(rep(1, nrow(nz))), sum)
@@ -117,10 +118,10 @@ length(spdeps) # 463
 例えば、点パターン解析、空間補間 (クリギング)、空間回帰といった空間データの統計的モデリングは、機械学習の文脈で Chapter \@ref(spatial-cv) で触れているが、詳細には触れていない。
 これらの手法については、@pebesma_spatial_2023 の統計学的指向の章や、ポイントパターン分析に関する書籍 [@baddeley_spatial_2015]、空間データに適用するベイズ手法 [@gomez-rubio_bayesian_2020]、健康 [@moraga_geospatial_2019] や[山火事深刻度分析](https://bookdown.org/mcwimberly/gdswr-book/application---wildfire-severity-analysis.html) など特定のアプリケーションに焦点を当てた書籍といった優れた資料がすでに存在している [@wimberly_geographic_2023]。
 その他の話題としては、リモートセンシングや、GIS 専用ソフトと並行しての R の利用 (ブリッジとしてではなく) などが挙げられますが、これらは限定的なものでした。
-これらの話題については、@wegmann_remote_2016 や [Marburg University](https://moc.online.uni-marburg.de/doku.php) から入手できる GIS 関連教材など、多くの資料がある。
+これらの話題については、[R におけるリモートセンシングについての議論](https://github.com/r-spatial/discuss/issues/56)、@wegmann_remote_2016 や [Marburg University](https://geomoer.github.io/moer-info-page/courses.html) から入手できる GIS 関連教材など、多くの資料がある。
 
 空間統計推論よりも機械学習に焦点を当てたのは、このトピックに関する質の高いリソースが豊富にあるためである。
-これらのリソースには、生態系のユースケースに焦点を当てた @zuur_mixed_2009、@zuur_beginners_2017、そして [css.cornell.edu/faculty/dgr2](http://www.css.cornell.edu/faculty/dgr2/teach/) でホストされている *Geostatistics & Open-source Statistical Computing* の自由に利用できる教材とコードがある。
+これらのリソースには、生態系のユースケースに焦点を当てた @zuur_mixed_2009、@zuur_beginners_2017、そして [css.cornell.edu/faculty/dgr2](https://css.cornell.edu/faculty/dgr2/teach/) でホストされている *Geostatistics & Open-source Statistical Computing* の自由に利用できる教材とコードがある。
 [*R for Geographic Data Science*](https://sdesabbata.github.io/r-for-geographic-data-science/) では、地理データサイエンスとモデリングのための R の紹介をしている。
 
 また、「ビッグデータ」(ハイスペックなラップトップに収まらないデータセットという意味) に対するジオコンピュテーションはほとんど省略している。
@@ -182,7 +183,7 @@ Chapter \ref(gis) で紹介した空間データベースは、メモリで処�
 - 大型・汎用プログラミングQ&amp;Aサイト [stackoverflow.com](https://stackoverflow.com/)
 - [RStudio Community](https://community.rstudio.com/)、[rOpenSci Discuss](https://discuss.ropensci.org/) ウェブフォーラム、 [Stan](https://discourse.mc-stan.org/) フォーラムなど、特定のソフトウェアツールに関連するフォーラムなど、特定のエンティティに関連するオンラインフォーラム。
 - GitHubなどのソフトウェア開発プラットフォームは、R-spatialパッケージの大半の課題トラッカーや、最近では**sfnetworks**パッケージに関する議論 (バグ報告だけでなく) を促すために作られた組み込みの議論ページなどをホストしている ([luukvdmeer/sfnetworks/discussions](https://github.com/luukvdmeer/sfnetworks/discussions/)を参照)。
-- チャットルームやフォーラム [rOpenSci](https://ropensci.org/blog/2022/09/13/contributing-ropensci/) や [geocompx](https://geocompx.org) コミュニティ (これには質問をすることができる [Discord server](https://discord.gg/PMztXYgNxp) もある)。本書もここに関係している。
+- チャットルームやフォーラム [rOpenSci](https://ropensci.org/blog/2022/09/13/contributing-ropensci/) や [geocompx](https://geocompx.org) コミュニティ (これには質問をすることができる [Discord server](https://discord.com/invite/PMztXYgNxp) もある)。本書もここに関係している。
 - [OSGeoJapan のメーリングリスト](https://www.osgeo.jp/mailing_list) (日本語)
 - [r-wakalang Slack](https://github.com/tokyor/r-wakalang) (日本語)
 
@@ -253,7 +254,7 @@ R の強みは、科学的な再現性を重視し、学術研究において広
 ]
 *Python*、*C++*、*JavaScript*、*Scala*\index{Scala}、*Rust*\index{Rust} を使っても、同じ深さでジオコンピュテーションを勉強することができる。
 それぞれが進化した地理空間能力を有している。
-例えば、Pythonのパッケージ [**rasterio**](https://github.com/mapbox/rasterio) は、この本で使われている **terra** パッケージを補足/置換できるものである。
+例えば、Pythonのパッケージ [**rasterio**](https://github.com/rasterio/rasterio) は、この本で使われている **terra** パッケージを補足/置換できるものである。
 Python のジオコンピュテーションについては、[*Geocomputation with Python*](https://py.geocompx.org/) を参照。
 
 C++\index{C++} では、GDAL\index{GDAL} や GEOS\index{GEOS}  などのよく知られたライブラリから、リモートセンシング (ラスタ) データを処理する **[Orfeo Toolbox](https://github.com/orfeotoolbox/OTB)** などのあまり知られていないライブラリなど、数十の地理空間ライブラリが開発されている。

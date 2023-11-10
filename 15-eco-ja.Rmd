@@ -45,7 +45,7 @@ knitr::include_graphics("figures/15_study_area_mongon.png")
 ```
 
 Mongón 山への野外調査において、2011年の冬、ランダムにサンプルした 4x4 m^2^ の 100 区画に生息するすべての維管束植物を記録した [@muenchow_predictive_2013]。
-サンプル採取は、その年の強いラニーニャ現象に重なった (ENSO monitoring of [NOASS Climate Prediction Center](http://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php)を参照)。
+National Oceanic and Atmospheric Administration ([NOASS](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php)を参照) の報告書にある通り、サンプル採取は、その年の強いラニーニャ現象に重なった。
 そのため、沿岸部の砂漠は通常よりもさらに高い乾燥度を示すようになり、ペルーの *lomas* のある山脈の南斜面では、霧の活動も活発になっている。
 
 <!--
@@ -218,7 +218,7 @@ random_points = cbind(random_points, ep_rp)
 
 順序付け (Ordination\index{ordination}) は、植生学において、0 で埋め尽くされた大規模な種間プロット行列から主要情報 (生態的勾配に相当することが多い) を抽出するための一般的なツールである。 
 しかし、リモートセンシング\index{remote sensing}、土壌学、ジオマーケティング\index{geomarketing} などの分野でも利用されている。
-順序付け\index{ordination}テクニックに馴染みがない場合、または復習が必要な場合は、生態学で人気の順序付けテクニックを簡単に紹介した Michael W. Palmer の [web page](http://ordination.okstate.edu/overview.htm) と R でこれらのテクニックを適用する方法について深く調べた @borcard_numerical_2011 に目を通してみよう。 
+順序付け\index{ordination}テクニックに馴染みがない場合、または復習が必要な場合は、生態学で人気の順序付けテクニックを簡単に紹介した Michael W. Palmer の [web page](https://ordination.okstate.edu/overview.htm) と R でこれらのテクニックを適用する方法について深く調べた @borcard_numerical_2011 に目を通してみよう。 
 **vegan**\index{vegan (package)} のパッケージのドキュメントも非常に有用なリソースである (`vignette(package = "vegan")`)。
 
 主成分分析 (principal component analysis, PCA\index{PCA}) は、おそらく最も有名な順序付け \index{ordination}の手法である。 
@@ -360,7 +360,7 @@ plot(rotnmds, display = "sites")
 plot(fit_2)
 ```
 
-最初の NMDS\index{NMDS} 軸のスコアは、Mont.Mongón の斜面に沿って現れる異なる植生形態、すなわち植物学的勾配を表している。
+最初の NMDS\index{NMDS} 軸のスコアは、Mont. Mongón の斜面に沿って現れる異なる植生形態、すなわち植物学的勾配を表している。
 それらを空間的に可視化するために、NMDS\index{NMDS}  のスコアを先に作成した予測因子 (Section \@ref(data-and-data-preparation)) でモデル化し、得られたモデルを予測マッピングに利用する (次節参照) ことができる。
 
 ## 植物相の勾配をモデル化  {#modeling-the-floristic-gradient}
@@ -382,7 +382,7 @@ rp = inner_join(random_points, rp, by = "id")
 ```
 
 決定木は、予測変数空間をいくつかの領域に分割する。
-これを説明するために、最初の NMDS\index{NMDS}  の軸のスコアを応答 (`sc`)、高度 (`dem`) を唯一の予測因子として、このデータに決定木を適用してみる。
+これを説明するために、最初の NMDS\index{NMDS} の軸のスコアを応答 (`sc`)、高度 (`dem`) を唯一の予測因子として、このデータに決定木を適用してみる。
 
 ```{r 15-eco-17, eval=FALSE}
 tree_mo = tree::tree(sc ~ dem, data = rp)
@@ -400,7 +400,7 @@ text(tree_mo, pretty = 0)
 knitr::include_graphics("figures/15_tree.png")
 ```
 
-結果として得られる木は、3つの内部ノードと4つの終端ノード( Figure \@ref(fig:tree) )で構成される。
+結果として得られる木は、3 つの内部ノードと 4 つの終端ノード (Figure \@ref(fig:tree)) で構成される。
 木の一番上にある最初の内部ノードは、328.5 m 以下のすべてのオブザベーションを左に、それ以外のすべてのオブザベーションを右の枝に割り当てる。
 <!-- `r # gsub("<", "", as.character(as.data.frame(tree_mo$fram$splits)[1, "cutleft"]))` -->
 <!-- comment tag for translation purpose -->
@@ -465,12 +465,12 @@ lrn_rf = lrn("regr.ranger", predict_type = "response")
 
 例えばサポートベクタマシン\index{SVM} (Section \@ref(svm) 参照) とは対照的に、ランダムフォレストはハイパーパラメータのデフォルト値で使用した場合、既に良い性能を示すことが多い (これが人気の理由の一つだろう)。
 それでも、チューニングによってモデル結果が適度に改善されることが多いので、努力する価値はある [@probst_hyperparameters_2018]。
-ランダムフォレスト\index{random forest}では、ハイパーパラメータ\index{hyperparameter}   `mtry`、`min.node.size`、`sample.fraction` がランダム性の度合いを決定するので、これらを調整する必要がある [@probst_hyperparameters_2018]。
+ランダムフォレスト\index{random forest}では、ハイパーパラメータ\index{hyperparameter} `mtry`、`min.node.size`、`sample.fraction` がランダム性の度合いを決定するので、これらを調整する必要がある [@probst_hyperparameters_2018]。
 `mtry` は、各ツリーでいくつの予測変数を使用すべきかを示す。 
 すべての予測変数が使用される場合、これは事実上バギングに相当する (Section \@ref(modeling-the-floristic-gradient) の冒頭を参照)。
 `sample.fraction` パラメータは、各ツリーで使用されるオブザベーションの割合を指定する。
 分画が小さいと多様性が増すので、相関のある樹木が少なくなり、望ましいことが多い (上記参照)。
-`min.node.size` パラメータは、端末ノードが少なくとも持つべき観測値の数を示す ( Figure \@ref(fig:tree) も参照)。
+`min.node.size` パラメータは、端末ノードが少なくとも持つべき観測値の数を示す (Figure \@ref(fig:tree) も参照)。
 当然ながら、木や演算時間が大きくなればなるほど、`min.node.size` は小さくなる。
 
 ハイパーパラメータ\index{hyperparameter}の組み合わせはランダムに選択されるが、特定のチューニング限界 (`paradox::ps()` で作成) の範囲内に収まる必要がある。
@@ -488,7 +488,7 @@ search_space = paradox::ps(
 探索空間を定義したことで、`AutoTuner()` 関数でチューニングを指定する準備が整いた。
 地理的なデータを扱うので、今回も空間クロスバリデーションを用いてハイパーパラメータ\index{hyperparameter}を調整する (Section \@ref(intro-cv) と Section \@ref(spatial-cv-with-mlr3) を参照)。
 具体的には、1回だけ繰り返す5分割の空間分割 (`rsmp()`) を使用することにする。 
-これらの空間分割のそれぞれにおいて、あらかじめ定義された限界値 (`seach_space`) の範囲内でランダムに選択されたハイパーパラメータ構成 (`tnr()` ) を用いながら50個のモデル(`trm()`)を実行し、最適なハイパーパラメータ\index{hyperparameter}の組合せを見出す [Section \@ref(svm) と https://mlr3book.mlr-org.com/optimization.html#autotuner, @becker_mlr3_2022 を参照]。
+これらの空間分割のそれぞれにおいて、あらかじめ定義された限界値 (`seach_space`) の範囲内でランダムに選択されたハイパーパラメータ構成 (`tnr()` ) を用いながら50個のモデル(`trm()`)を実行し、最適なハイパーパラメータ\index{hyperparameter}の組合せを見出す [Section \@ref(svm) と https://mlr3book.mlr-org.com/chapters/chapter4/hyperparameter_optimization.html#sec-autotuner, @becker_mlr3_2022 を参照]。
 性能指標は二乗平均平方根誤差 (root mean squared error, RMSE\index{RMSE}) である。
 
 ```{r 15-eco-23, eval=FALSE}
@@ -588,32 +588,32 @@ all(values(pred - pred_2) == 0)
 ```
 
 予測地図には、はっきりとした植生帯 (Figure \@ref(fig:rf-pred)) が描かれている。
-**ロマス**山の植生帯の詳細については、@muenchow_soil_2013 を参照。
+**lomas** 山の植生帯の詳細については、@muenchow_soil_2013 を参照。
 青い色調は、いわゆる *Tillandsia*-帯を表している。
-*Tillandsia* は、特に**ロマス**山脈の砂地やかなり砂漠的な麓で大量に見られる、高度に適応した属植物である。
+*Tillandsia* は、特に **lomas** 山脈の砂地やかなり砂漠的な麓で大量に見られる、高度に適応した属植物である。
 黄色は草本植生帯で、*Tillandsia*-植生帯に比べ植物被度が高いことを表している。
 オレンジ色はブロメリア帯を表し、種の豊富さと植物被覆率が最も高いことを特徴としている。
-霧による湿度が最も高い気温逆転地帯 (標高約750-850m) の真下で見られる。
+霧による湿度が最も高い気温逆転地帯 (標高約 750 - 850 m) の真下で見られる。
 逆転温度以上になると当然水分は減少し、再び砂漠化し、数種の多肉植物が見られるようになる (多肉植物帯；赤色)。
 興味深いのは、空間予測によってブロメリア帯が途切れていることが明らかになったことである。これは、予測マッピングなしでは発見できなかった非常に興味深い発見であった。
 
 ## 結論
 
-本章では、NMDS\index{NMDS} (Section \@ref(nmds)) を用いて、**ロマス** モンゴル山の群集行列を順序付け\index{ordination}した。
+本章では、NMDS\index{NMDS} (Section \@ref(nmds)) を用いて、**lomas** の Mongón 山の群集行列を順序付け\index{ordination}した。
 最初の軸は、調査地域の主な植物相の勾配を表し、部分的に R-GIS\index{GIS} ブリッジ ( Section \@ref(data-and-data-preparation) ) を使って導き出した環境予測因子の関数としてモデル化された。
-**mlr3** \index{mlr3 (package)}  パッケージは、ハイパーパラメータ\index{hyperparameter} `mtry`、`sample.fraction` および `min.node.size` (Section \@ref(mlr3-building-blocks) ) を空間的に調整するためのビルディングブロックを提供している。
+**mlr3**\index{mlr3 (package)}  パッケージは、ハイパーパラメータ\index{hyperparameter} `mtry`、`sample.fraction` および `min.node.size` (Section \@ref(mlr3-building-blocks) ) を空間的に調整するためのビルディングブロックを提供している。
 調整されたハイパーパラメータ\index{hyperparameter}は最終モデルの入力となり、このモデルを環境予測変数に適用して植物相の勾配を空間的に表現した (Section \@ref(predictive-mapping))。
 その結果、砂漠の真ん中にある驚異的な生物多様性を空間的に示すことができたのである。
 **ロマス**山は絶滅の危機に瀕しているため、予測地図は保護区域を定める際の判断材料となり、地域住民に身近にあるユニークな存在であることを認識させることができるのである。
 
 方法論の面では、いくつかの追加的な指摘ができる。
 
-- 2つ目の軸 \index{ordination}もモデル化し、2つの軸のモデル化されたスコアを1つの予測地図に統合して可視化する革新的な方法を見つけるのは興味深いことである。
+- 2つ目の軸\index{ordination}もモデル化し、2つの軸のモデル化されたスコアを1つの予測地図に統合して可視化する革新的な方法を見つけるのは興味深いことである。
 - もし、生態学的に意味のある方法でモデルを解釈することに興味があれば、おそらく (セミ) パラメトリックモデルを使うべきだろう [@muenchow_predictive_2013;@zuur_mixed_2009;@zuur_beginners_2017] 
-しかし、少なくともランダムフォレスト\index{random forest}のような機械学習モデルの解釈を助けるアプローチは存在する (例えば、[https://mlr-org.github.io/interpretable-machine-learning-iml-and-mlr/](https://mlr-org.github.io/interpretable-machine-learning-iml-and-mlr/) を参照) 
+しかし、少なくともランダムフォレスト\index{random forest}のような機械学習モデルの解釈を助けるアプローチは存在する (例えば、[https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/](https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/) を参照) 
 - 本章で使用したハイパーパラメータ\index{hyperparameter}のランダム化最適化よりも、逐次モデルベース最適化 (sequential model-based optimization, SMBO) の方が望ましいかもしれない [@probst_hyperparameters_2018] 
 
-最後に、ランダムフォレスト\index{random forest}と他の機械学習 \index{machine learning}  モデルは、多くのオブザベーションと多くの予測因子、この章で使われるよりもはるかに多く、どの変数と変数の相互作用が応答を説明するのに寄与するかが不明である設定で頻繁に使用されることに注意しておこう。
+最後に、ランダムフォレスト\index{random forest}と他の機械学習\index{machine learning}モデルは、多くのオブザベーションと多くの予測因子、この章で使われるよりもはるかに多く、どの変数と変数の相互作用が応答を説明するのに寄与するかが不明である設定で頻繁に使用されることに注意しておこう。
 さらに、その関係は高度に非線形である可能性もある。
 私たちのユースケースでは、レスポンスと予測変数の関係はかなり明確で、非線型はわずかであり、オブザベーションと予測変数の数は少ない。
 したがって、線形モデル\index{regression!linear}を試してみる価値はあるかもしれない。

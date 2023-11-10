@@ -30,33 +30,33 @@ is_html = knitr::is_html_output()
 # google scholar metadata
 library(metathis)
 if (is_html) {
-  meta() |> 
+  meta() |>
     meta_google_scholar(
       title = "Geocomputation with R",
       author = c("Robin Lovelace", "Jakub Nowosad", "Jannes Muenchow"),
       publication_date = "2019",
       isbn = "9780203730058"
-    ) 
+    )
 }
 ```
 
 ```{asis index-2, echo=is_html}
 # ようこそ {- #index}
 
-ここは、地理データの解析、可視化、モデリングに関する書籍である *Geocomputation with R* のオンラインホーム（日本語版）である。
+ここは、地理データの解析、可視化、モデリングに関する書籍である *Geocomputation with R* のオンラインホーム (日本語版) である。
 
 <a href="https://www.routledge.com/9781138304512"><img src="images/cover.png" width="250" height="375" alt="The geocompr book cover" align="right" style="margin: 0 1em 0 1em" /></a>
   
-**注**: 本書の初版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されている。
+**注**: 本書の原著初版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されている。
 [CRC Press](https://www.routledge.com/9781138304512) または [Amazon](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/) で購入ができる。また、**第一版** が、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) で保存されている。
 
-本書は、Free and Open Source Software for Geospatial ([FOSS4G](https://foss4g.org/)) の活動に触発され、本書の基盤となるコードと解説はオープンで、内容の再現性、透明性、アクセス性を保証している。
-[GitHub](https://github.com/geocompx/geocompr) でソースコードを公開することで、誰でも課題 (Issue) を開いたり、新しいコンテンツや誤植の修正に貢献することでプロジェクトに関わり、みんなのために役立てることができる。
+本書は、Free and Open Source Software for Geospatial ([FOSS4G](https://foss4g.org/)) の活動に触発されているため、本書の基盤となるコードと解説はオープンにしてあり、内容の再現性、透明性、アクセス性を保証している。
+[GitHub](https://github.com/geocompx/geocompr) でソースコードを公開しているため、誰でも課題 (Issue) を開いたり、新しいコンテンツや誤植の修正に貢献することでプロジェクトに関わり、みんなのために役立てることができる。
 
 [![](https://img.shields.io/github/stars/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr)
 [![](https://img.shields.io/github/contributors/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr/graphs/contributors)
 
-本書のオンライン版は、[r.geocompx.org](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されている。（訳注：日本語版は、[https://babayoshihiko.ddns.net/geo](https://babayoshihiko.ddns.net/geo) と[http://124.219.182.167/geo/](http://124.219.182.167/geo/)でホストされている。）
+本書のオンライン版は、[r.geocompx.org](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されている。(訳注: 日本語版は、[https://babayoshihiko.ddns.net/geo](https://babayoshihiko.ddns.net/geo) と[http://124.219.182.167/geo/](http://124.219.182.167/geo/)でホストされている。)
 現在の「ビルド状況」は以下の通りである。
 
 [![Actions](https://github.com/geocompx/geocompr/workflows/Render/badge.svg)](https://github.com/geocompx/geocompr/actions)
@@ -66,22 +66,22 @@ if (is_html) {
 if (is_on_ghactions){
     cat(paste0("This version of the book was built on GH Actions on ", Sys.Date(), "."))
 } else {
-    cat(paste0("本書（日本語版）は、", Sys.Date(), " にビルドされた。"))
+    cat(paste0("本書 (日本語版) は、", Sys.Date(), " にビルドされた。"))
 }
 ```
 
 ```{asis index-2-3, echo=is_html}
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />本書は、<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> ライセンスで提供されている。
 
+<a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/"><img alt="Creative Commons License" style="border-width:0" src="https://licensebuttons.net/l/zero/1.0/88x31.png"/></a><br/>本書のサンプルコードは、<a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal (CC0 1.0)</a> ライセンスで提供されている。
+
 ## 貢献するには {- #how-to-contribute}
 
-**bookdown** では、GitHub のアカウント（[sign-up at github.com](https://github.com/join)）があれば、Wiki を編集するように簡単に本を編集することが可能である。
+**bookdown** では、GitHub のアカウント ([sign-up at github.com](https://github.com/join)) があれば、Wiki を編集するように簡単に本を編集することが可能である。
 GitHub にログイン後、書籍サイトの右パネルにある「Edit this page」アイコンをクリックする。
 これで、今読んでいるこのページを生成したソース [R Markdown](http://rmarkdown.rstudio.com/) ファイルの編集可能なバージョンに移動する。
 
-<!--[![](figures/editme.png)](https://github.com/geocompx/geocompr/edit/main/index.Rmd)-->
-
-この本の内容に関する問題提起（コードが実行されないなど）や機能リクエストは、[Issue Tracker](https://github.com/geocompx/geocompr/issues) 課題追跡システムで確認できる。 
+この本の内容に関する問題提起 (コードが実行されないなど) や機能リクエストは、[Issue Tracker](https://github.com/geocompx/geocompr/issues) 課題追跡システムで確認できる。 
 
 管理者と貢献者は、このリポジトリの[行動規範](https://github.com/geocompx/geocompr/blob/main/CODE_OF_CONDUCT.md) に従っていただきたい。
 
@@ -94,15 +94,11 @@ R で初めて地理データを扱う上で、本書の内容を再現する最
 
 下の画像のようなものが表示されたら成功である。
 [mybinder.org ユーザガイドライン](https://mybinder.readthedocs.io/en/latest/about/user-guidelines.html)に従い、クラウドベースの環境で R によるジオコンピュテーションの探求を始めるよう。
-
-<!-- ![](https://user-images.githubusercontent.com/1825120/134802314-6dd368c7-f5eb-4cd7-b8ff-428dfa93954c.png) -->
 ```
-
 
 ```{r index-2-4, echo=FALSE, fig.cap="Geocomputation with R に含まれる再現可能なコードを、Binder が提供するブラウザ上の RStudio Server で実行した画面", eval=is_html}
 knitr::include_graphics("https://user-images.githubusercontent.com/1825120/134802314-6dd368c7-f5eb-4cd7-b8ff-428dfa93954c.png")
 ```
-
 
 ```{asis index-2-5, echo=is_html}
 この本のコードを自分のコンピュータで再現するには、最近のバージョンの [R](https://cran.r-project.org/) と最新のパッケージが必要である。
@@ -114,21 +110,10 @@ install.packages("remotes")
 remotes::install_github("geocompr/geocompkg")
 ```
 
-```{r, echo=FALSE, eval=FALSE}
-remotes::install_github("nowosad/spData")
-remotes::install_github("nowosad/spDataLarge")
-
-# During development work on the 2nd edition you may also need dev versions of
-# other packages to build the book, e.g.,:
-remotes::install_github("rspatial/terra")
-remotes::install_github("mtennekes/tmap")
-```
-
-
 ```{asis index-3-1a, echo=is_html}
 この本で使用するパッケージやデータをインストールした後、テストや教育目的のためにこの本を再構築することができる。
 再構築するには、この本のソースコードを [ダウンロード](https://github.com/geocompx/geocompr/archive/refs/heads/main.zip)して解凍するか、 [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) する。
-[RStudio](https://posit.co/download/rstudio-desktop/#download)（または [VS Code](https://github.com/REditorSupport/vscode-R) などの他の IDE）で `geocompr.Rproj` プロジェクトを開き、以下のコマンドで内容を再現することができるようになる。
+[RStudio](https://posit.co/download/rstudio-desktop/#download) (または [VS Code](https://github.com/REditorSupport/vscode-R) などの他の IDE) で `geocompr.Rproj` プロジェクトを開き、以下のコマンドで内容を再現することができるようになる。
 ```
 
 ```{r index-3-1, eval=FALSE, echo=is_html}
@@ -155,14 +140,14 @@ if(!geocompkg_is_installed){
 もし、この本が役に立つと思ったら、以下の方法で応援していただきたい。
 
 - この本について、人々に話す
-- 一冊[購入](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577)する
-- 再現可能な研究に向けたオープンソースを皆に広める。とくに、R における地理データを扱う（これは、自分のスキルアップに最適な方法でもある）
 - [geocompr GitHub repository](https://github.com/geocompx/geocompr) に[スターをつける](https://help.github.com/articles/about-stars/)
 - [引用](https://github.com/geocompx/geocompr/raw/main/CITATION.bib)または[リンク](https://r.geocompx.org)を貼る
-- オンラインで本書について伝える。例えば、Twitterの [#geocompr ハッシュタグ](https://twitter.com/hashtag/geocompr) を使う（[geocompr.github.ioのゲストブック](https://geocompr.github.io/guestbook/)を参照）、本書を使った[コース](https://github.com/geocompr/geocompr.github.io/edit/source/content/guestbook/index.md)について知らせる、等
+- オンラインで本書について伝える。例えば、Twitterの [#geocompr ハッシュタグ](https://twitter.com/hashtag/geocompr) を使う ([geocompr.github.ioのゲストブック](https://geocompr.github.io/guestbook/)を参照)、本書を使った[コース](https://github.com/geocompr/geocompr.github.io/edit/source/content/guestbook/index.md)について知らせる、等
+- 一冊[購入](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577)する
 - Amazon や [Goodreads](https://www.goodreads.com/book/show/42780859-geocomputation-with-r) でレビューを書く
-- [GitHub](https://github.com/geocompx/geocompr/issues) または Twitter で、質問や提案を行う
+- [GitHub](https://github.com/geocompx/geocompr/issues) または X (旧 Twitter) あるいは [Discord](https://discord.com/invite/PMztXYgNxp) で、質問や提案を行う (日本語の場合、[r-wakalang Slack](https://github.com/tokyor/r-wakalang) や [OSGeo 財団メーリングリスト](https://www.osgeo.jp/mailing_list) などがある)
 - 質問に答えたり、質問がわかりにくい場合に説明や再現例を求めるなど何らかの応答をする
+- 再現可能な研究に向けたオープンソースを皆に広める。とくに、R における地理データを扱う (これは、自分のスキルアップに最適な方法でもある)
 - コミュニティによる翻訳
   - スペイン語版: https://geocompr.github.io/es/
   - フランス語版: https://geocompr.github.io/fr/
@@ -175,6 +160,7 @@ if(!geocompkg_is_installed){
 本書で使用している地球儀のアイコンは、[Jean-Marc Viglino](https://github.com/Viglino) によって作成され、[CC-BY 4.0 International](https://github.com/Viglino/font-gis/blob/main/LICENSE-CC-BY.md) のライセンスで提供されている。
 
 <a href="https://www.netlify.com"><img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg"/></a>
+本書のウェブサイト (英語版) は、[Netlify](https://www.netlify.com/) でホストされている。
 ```
 
 ```{asis index-5a, echo=!is_html}
@@ -184,7 +170,7 @@ if(!geocompkg_is_installed){
 
 \thispagestyle{empty}
 
-\begin{center} \Large \emph{For Katy  } \end{center}
+\begin{center} \Large \emph{For Katy} \end{center}
 
 \vspace*{2cm}
 \begin{center} \Large \emph{Dla Jagody} \end{center}
@@ -193,7 +179,7 @@ if(!geocompkg_is_installed){
 \begin{center} \Large \emph{F{\"u}r meine Katharina und alle unsere Kinder  } \end{center}
 ```
 
-# 序文（第1版）  {- #foreword-1st-edition}
+# 序文 (第 1 版)  {- #foreword-1st-edition}
 
 Rで「空間的なこと」をすることは、常に幅が広い。興味がある人なら誰でも参加できるよう、地理学、ジオインフォマティクス、ジオコンピュテーション、空間統計学のツールを提供し統合することに努めてきた。
 すなわち、Rで「空間的なこと」をするということは、常にオープンソースコード、オープンデータ、そして再現性を含んでいるのである。
@@ -203,8 +189,8 @@ Rで「空間的なこと」をすることは、常に幅が広い。興味が�
 これには、オープンソース GIS や Python、Java などの補完言語に関する類似のコミュニティから学ぶことも含まれる。
 
 R の幅広い空間機能は、自分で作っているものや応用しているものを共有しようとする人たちがいなければ、決して進化しなかっただろう。
-これには、教材、ソフトウェア、研究手法（再現可能な研究、オープンデータ）、およびこれらの組み合わせが含まれる。 
-また、GDAL、GEOS、PROJといった「アップストリーム」のオープンソース地理ライブラリからも、Rユーザーは大きな恩恵を受けている。
+これには、教材、ソフトウェア、研究手法 (再現可能な研究、オープンデータ)、およびこれらの組み合わせが含まれる。 
+また、GDAL、GEOS、PROJ といった「アップストリーム」のオープンソース地理ライブラリからも、R ユーザーは大きな恩恵を受けている。
 
 本書は、好奇心と参加意欲があれば、自分の適性に合ったやるべきことが見つかるというわかりやすい例である。
 データ表現とワークフローが進歩し、定量的なコマンドラインを使用しない新しいユーザーが増え続ける中、この種の本が本当に必要とされている。
@@ -217,7 +203,7 @@ Roger Bivand
 
 ベルゲン、2018年9月
 
-# 序文（第２版） {- #forward-2nd-edition}
+# 序文 (第 2 版) {- #forward-2nd-edition}
 
 TBC.
 
@@ -229,13 +215,13 @@ TBC.
 強力なデータ処理、可視化、地理空間機能を持つ統計プログラミング言語であるRをベースにしている。
 本書は幅広いトピックをカバーしており、特に様々な背景を持つ幅広い人々に興味を持っていただけると思われる。
 
-- [QGIS](http://qgis.org/en/site/)、 [ArcGIS](http://desktop.arcgis.com/en/arcmap/)、 [GRASS](https://grass.osgeo.org/)、 [SAGA](http://www.saga-gis.org/en/index.html) などのデスクトップ地理情報システム (GIS) を使って空間分析力を身につけた人が、強力な (ジオ) 統計・視覚化プログラミング言語とコマンドラインアプローチの利点にアクセスしたい [@sherman_desktop_2008]。
+- [QGIS](https://qgis.org/en/site/)、[ArcGIS](http://desktop.arcgis.com/en/arcmap/)、 [GRASS](https://grass.osgeo.org/)、[SAGA](https://saga-gis.sourceforge.io/en/index.html) などのデスクトップ地理情報システム (GIS) を使って空間分析力を身につけた人が、強力な (ジオ) 統計・視覚化プログラミング言語とコマンドラインアプローチの利点にアクセスしたい [@sherman_desktop_2008]。
 
   > With the advent of 'modern' GIS software, most people want to point and click their way through life. That’s good, but there is a tremendous amount of flexibility and power waiting for you with the command line.
 
-- 地理学、リモートセンシング、計画、GIS、地理データ科学など、地理データを専門とする分野の大学院生・研究者
+- 地理学、リモートセンシング、計画、GIS、空間データ科学など、地理データを専門とする分野の大学院生・研究者
 - 地質学、地域科学、生物学と生態学、農業科学、考古学、疫学、輸送モデリング、および広義のデータ科学などの分野で地理データを扱っている研究者や大学院生で、研究に R のパワーと柔軟性を必要としている人。
-- 都市・交通計画、物流、ジオマーケティング（店舗立地分析）、緊急時計画など、多様な空間データを扱うアプリケーションにおいて、Rなどのコマンドライン言語の再現性、スピード、柔軟性を必要とする公共、民間、第三セクターの応用研究者やアナリストの方
+- 都市・交通計画、物流、ジオマーケティング (店舗立地分析)、緊急時計画など、多様な空間データを扱うアプリケーションにおいて、Rなどのコマンドライン言語の再現性、スピード、柔軟性を必要とする公共、民間、第三セクターの応用研究者やアナリストの方
 
 本書は、ジオコンピュテーションに興味のある中級から上級の R ユーザーと、地理データを扱ったことのある R 初心者を対象にしている。
 R も地理データも初めてという方は、Chapter \@ref(spatial-class) と下に用意したリンクで、初心者の視点から空間データの本質を解説している。
@@ -262,7 +248,7 @@ R で地理解析を行う際の大きな障壁は、その学習曲線が急で
 しかし、まずは Chapter \@ref(intro)  の *Geocomputation with R* の広い文脈を読むことを勧める。
 また、R に初めて触れる方は、各章で提供されるコードチャンクを実行しようとする前に、この言語についてもっと学ぶことを勧める（概念を理解するためにこの本を読む場合は別）。
 R の初心者にとって幸いなことに、R にはサポートするコミュニティがあり、助けとなるリソースが豊富に開発されている。
-特にお勧めのチュートリアルは、[R for Data Science](http://r4ds.had.co.nz/) [@grolemund_r_2016] と [Efficient R Programming](https://csgillespie.github.io/efficientR/) [@gillespie_efficient_2016]、特に [Chapter 2](https://csgillespie.github.io/efficientR/set-up.html#r-version) （R/RStudio のインストールと設定）と [Chapter 10](https://csgillespie.github.io/efficientR/learning.html) （学び方を学ぶ)）、そして [An introduction to R](http://colinfay.me/intro-to-r/) [@rcoreteam_introduction_2021] の3つである。
+特にお勧めのチュートリアルは、[R for Data Science](https://r4ds.had.co.nz/) [@grolemund_r_2016] と [Efficient R Programming](https://csgillespie.github.io/efficientR/) [@gillespie_efficient_2016]、そして [An introduction to R](http://colinfay.me/intro-to-r/) [@rcoreteam_introduction_2021] の3つである。
 
 ## なぜ R なのか？  {- #why-r}
 
@@ -280,7 +266,7 @@ R は、データサイエンス（データ加工、統計学習技術、デー
 上記サイトでは、`code/` フォルダに数値を生成するスクリプトファイルがある。
 図を生成するコードが書籍の本文に記載されていない場合、図を生成したスクリプトファイル名をキャプションに記載する（例えば、 Figure \@ref(fig:zones)  のキャプションを参照）。
 
-Python、Java、C++ などの他の言語もジオコンピュテーションに使用でき、 Section \@ref(software-for-geocomputation)  で説明したように、<u>R を使わずに</u>ジオコンピュテーションを学ぶための優れたリソースがある。
+Python、Java、C++ などの他の言語もジオコンピュテーションに使用でき、Section \@ref(software-for-geocomputation) で説明したように、<u>R を使わずに</u>ジオコンピュテーションを学ぶための優れたリソースがある。
 R コミュニティが提供するパッケージ・エコシステム、統計機能、可視化オプション、強力なIDEのユニークな組み合わせは、いずれも提供されていない。
 さらに、1つの言語（R）の使い方を深く学ぶことで、他の言語でジオコンピュテーションを行うために必要な概念と自信を身につけることができる。
 
@@ -302,7 +288,7 @@ contributors_text = paste0(c_txt, collapse = ", ")
 ```
 
 プルリクエストで直接貢献してくださった以下の方々をはじめ、コードのホスティングとコラボレーションサイトである GitHub を通じて直接、間接的に貢献してくださった以下の皆様に感謝する: `r contributors_text`。
-表紙画像を作成しただけでなく、それを生成するコードも公開してくれた Marco Sciaini 氏に感謝する（本書の GitHub レポの `code/frontcover.R` を参照）。 
+表紙画像を作成しただけでなく、それを生成するコードも公開してくれた Marco Sciaini 氏に感謝する (本書の GitHub レポジトリの `code/frontcover.R` を参照)。 
 さらに何十人もの人々が、問題提起やコメント、ソーシャルメディアを通じてのフィードバックなど、オンラインで貢献した。
  `#geocompr` ハッシュタグは生き続けます!
 
@@ -312,9 +298,9 @@ CRC プレス社の John Kimmel 氏には、2年以上にわたって私たち�
 また、この章では、イエナ大学の Patrick Schratz 氏と Alexander Brenning 氏との有意義な議論とご意見に感謝する。
 ウェブサービスに関するセクションで専門的なご意見をいただいた国際連合食糧農業機関の Emmanuel Blondel 氏に感謝する。
 Michael Sumnerv 氏には、本書の多くの部分、特に第10章のアルゴリズムに関する議論に重要な示唆をいただいた。
-Tim Appelhans 氏と David Cooley 氏は、可視化の章（第8章）で重要な貢献をした。
+Tim Appelhans 氏と David Cooley 氏は、可視化の章 (第8章) で重要な貢献をした。
 さらに、Katy Greggv 氏は、すべての章を校正し、本書の読みやすさを大きく向上させた。
 
 他にも数え切れないほど、さまざまな形で貢献された方がいるだろう。
 最後に、R によるジオコンピュテーションを可能にしているすべてのソフトウェア開発者に感謝する。
-Edzer Pebesma（**sf**パッケージを作成）、Robert Hijmans（**raster**を作成）、Roger Bivand（多くの R-spatial ソフトウェアの基礎を作った）は、R で高性能な地理計算を可能にした。
+Edzer Pebesma (**sf**パッケージを作成)、Robert Hijmans (**raster** を作成)、Roger Bivand (多くの R-spatial ソフトウェアの基礎を作った) は、R で高性能な地理計算を可能にした。

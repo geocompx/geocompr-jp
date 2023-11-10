@@ -157,7 +157,7 @@ Figure \@ref(fig:relations) の3番目と4番目のペア（左から右、そ�
 \index{topological relations}
 
 ```{r relations, echo=FALSE, fig.cap="Egenhofer and Herring (1990)の Figure 1 と Figure 2 を参考にした、ベクトル幾何学間のトポロジー関係。関数(x, y)が真となる関係が、各ジオメトリのペアについて印刷されており、xはピンク、yは青で表されている。各ペアの空間的関係の性質は、Dimensionally Extended 9-Intersection Model 文字列で記述されている。", fig.show='hold', message=FALSE, fig.asp=0.66, warning=FALSE}
-# source("https://github.com/Robinlovelace/geocompr/raw/c4-v2-updates-rl/code/de_9im.R")
+# source("https://github.com/Robinlovelace/geocompr/raw/main/code/de_9im.R")
 source("code/de_9im.R")
 library(sf)
 xy2sfc = function(x, y) st_sfc(st_polygon(list(cbind(x, y))))

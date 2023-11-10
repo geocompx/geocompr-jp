@@ -53,7 +53,7 @@ Figure \@ref(fig:seine-simp) は、セーヌ川とその支流を表すジオメ
 seine_simp = st_simplify(seine, dTolerance = 2000) # 2000 m
 ```
 
-```{r seine-simp, echo=FALSE, fig.cap="seine のオリジナルと簡略化した形状の比較。", warning=FALSE, fig.scap="Simplification in action.", message=FALSE}
+```{r seine-simp, echo=FALSE, fig.cap="seine のオリジナルと簡略化した形状の比較。", warning=FALSE, fig.scap="Simplification in action.", message=FALSE, fig.asp=0.5}
 library(tmap)
 p_simp1 = tm_shape(seine) + tm_lines() +
   tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
@@ -78,7 +78,6 @@ Chapter \@ref(reproj-geo-data) で示したように、GEOS はデータが投�
 
 ```{r 05-geometry-operations-4}
 us_states2163 = st_transform(us_states, "EPSG:2163")
-us_states2163 = us_states2163
 ```
 
 `st_simplify()` は、投影されたポリゴンでも同様に機能する。
@@ -365,7 +364,7 @@ plot(x_and_y, col = "lightgrey", border = "grey", add = TRUE) # 範囲を inters
 par(op)
 ```
 
-次のコードチャンクは、`x` と `y` を表すベン図のすべての組み合わせに対して、これがどのように機能するかを示している。これは、書籍 *R for Data Science* の [Figure 5.1](http://r4ds.had.co.nz/transform.html#logical-operators) から着想を得ている [@grolemund_r_2016]。
+次のコードチャンクは、`x` と `y` を表すベン図のすべての組み合わせに対して、これがどのように機能するかを示している。これは、書籍 *R for Data Science* の [Figure 5.1](https://r4ds.had.co.nz/transform.html#logical-operators) から着想を得ている [@grolemund_r_2016]。
 
 ```{r venn-clip, echo=FALSE, fig.cap="論理演算子の空間的等価性。", warning=FALSE}
 source("code/05-venn-clip.R")
@@ -461,7 +460,7 @@ regions2 = us_states |>
 # summarize(africa[buff, "pop"], pop = sum(pop, na.rm = TRUE))
 ```
 
-```{r us-regions, fig.cap="連続したポリゴンに対する空間的な集計。アメリカの州の人口を地域に集計し、人口を色で表した。この操作により、州間の境界が自動的に解消されることに注意。", echo=FALSE, warning=FALSE, fig.asp=0.2, out.width="100%", fig.scap="Spatial aggregation on contiguous polygons."}
+```{r us-regions, fig.cap="連続したポリゴンに対する空間的な集計。アメリカの州の人口を地域に集計し、人口を色で表した。この操作により、州間の境界が自動的に解消されることに注意。", echo=FALSE, warning=FALSE, out.width="100%", fig.scap="Spatial aggregation on contiguous polygons."}
 source("code/05-us-regions.R", print.eval = TRUE)
 ```
 

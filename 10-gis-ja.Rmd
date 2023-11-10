@@ -4,16 +4,14 @@
 
 - 本章では、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS\index{GRASS} がインストールされていること、および以下のパッケージが添付されていることを条件とする。
 
-```{r 09-gis-1, message=FALSE}
+```{r 09-gis-1, message=FALSE, echo=FALSE}
 library(sf)
 library(terra)
 ```
 
-
-
-
 ```{r 09-gis-1-2, message=FALSE, eval=FALSE}
-remotes::install_github("r-spatial/qgisprocess")
+library(sf)
+library(terra)
 library(qgisprocess)
 library(Rsagacmd)
 library(rgrass)
@@ -136,6 +134,9 @@ docker run -e DISABLE_AUTH=true -p 8786:8787 ghcr.io/geocompx/docker:qgis
 
 ```{r, eval=has_qgis_plugins}
 library(qgisprocess)
+#> Attempting to load the cache ... Success!
+#> QGIS version: 3.30.3-'s-Hertogenbosch
+#> ...
 ```
 
 このパッケージは、QGISのインストールを自動的に検出しようとし、検出できない場合は警告を発する。 ^[検出プロセスの詳細は、`qgis_configure()` を実行すると表示される。] 
@@ -146,6 +147,13 @@ library(qgisprocess)
 
 ```{r plugins, eval=has_qgis_plugins}
 qgis_plugins()
+#> # A tibble: 4 × 2
+#>   name                    enabled
+#>   <chr>                   <lgl>
+#> 1 grassprovider           FALSE
+#> 2 otbprovider             FALSE
+#> 3 processing              TRUE
+#> 4 processing_saga_nextgen FALSE
 ```
 
 プラグイン GRASS (`grassprovider`) と SAGA (`processing_saga_nextgen`) が存在しているが、有効になっていないことがわかる。
@@ -163,6 +171,16 @@ SAGA のほかにも、QGIS Python プラグイン Processing Saga NextGen を�
 
 ```{r providers, eval=has_qgis_plugins}
 qgis_providers()
+#> # A tibble: 7 × 3
+#>   provider provider_title    algorithm_count
+#>   <chr>    <chr>                       <int>
+#> 1 gdal     GDAL                           56
+#> 2 grass7   GRASS                         306
+#> 3 qgis     QGIS                           50
+#> 4 3d       QGIS (3D)                       1
+#> 5 native   QGIS (native c++)             243
+#> 6 pdal     QGIS (PDAL)                    17
+#> 7 sagang   SAGA Next Gen                 509
 ```
 
 出力表から、QGIS のジオアルゴリズム (`native`, `qgis`, `3d`) と、サードパーティプロバイダの GDAL、SAGA、GRASS の外部アルゴリズムを QGIS インターフェースを通して使用できることが確認できた。
@@ -186,12 +204,14 @@ aggzone_wgs = st_transform(aggregating_zones, "EPSG:4326")
 ```
 
 ```{r uniondata, echo=FALSE, fig.cap="二つの単位の図: 不一致 (黒い線) と集合ゾーン (赤い境界)。"}
+#| message: FALSE
+#| results: hide
 library(tmap)
 tm_shape(incongr_wgs) +
   tm_polygons(col = "grey5") +
   tm_shape(aggzone_wgs) +
   tm_borders(col_alpha = 0.5, col = "red") +
-  tm_add_legend(type = "Lines", labels = c("incongr_wgs", "aggzone_wgs"),
+  tm_add_legend(type = "lines", labels = c("incongr_wgs", "aggzone_wgs"),
                 col = c("grey5", "red"), lwd = 3, position = tm_pos_in("right", "top")) +
   tm_scalebar(position = c("left", "bottom"), breaks = c(0, 0.5, 1)) +
   tm_layout(frame = FALSE, legend.text.size = 1)
@@ -202,6 +222,7 @@ tm_shape(incongr_wgs) +
 この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。^[したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。]
 
 ```{r, eval=has_qgis_plugins}
+# 出力は表示せず
 qgis_algo = qgis_algorithms()
 ```
 
@@ -210,6 +231,11 @@ qgis_algo = qgis_algorithms()
 
 ```{r, eval=has_qgis_plugins}
 qgis_search_algorithms("union")
+#> # A tibble: 2 × 5
+#>   provider provider_title    group          algorithm         algorithm_title 
+#>   <chr>    <chr>             <chr>          <chr>             <chr>           
+#> 1 native   QGIS (native c++) Vector overlay native:multiunion Union (multiple)
+#> 2 native   QGIS (native c++) Vector overlay native:union      Union  
 ```
 
 上記のリストにあるアルゴリズムの1つ、`"native:union"` は、探している機能の可能性が高そうである。
@@ -222,6 +248,19 @@ qgis_search_algorithms("union")
 alg = "native:union"
 union_arguments = qgis_get_argument_specs(alg)
 union_arguments
+#> # A tibble: 5 × 6
+#>   name    description qgis_type default_value available_values acceptable_values
+#>   <chr>   <chr>       <chr>     <list>        <list>           <list>           
+#> 1 INPUT   Input layer source    <NULL>        <NULL>           <chr [1]>        
+#> 2 OVERLAY Overlay la… source    <NULL>        <NULL>           <chr [1]>        
+#> 3 OVERLA… Overlay fi… string    <NULL>        <NULL>           <chr [3]>        
+#> 4 OUTPUT  Union       sink      <NULL>        <NULL>           <chr [1]>        
+#> 5 GRID_S… Grid size   number    <NULL>        <NULL>           <chr [3]>  
+
+#> [[1]]
+#> [1] "A numeric value"                                                                                 
+#> [2] "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field"                    
+#> [3] "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression"
 ```
 
 `union_arguments$name` の引数は、`INPUT`、`OVERLAY`、`OVERLAY_FIELDS_PREFIX`、`OUTPUT` である。
@@ -242,6 +281,7 @@ union = qgis_run_algorithm(alg,
   INPUT = incongr_wgs, OVERLAY = aggzone_wgs
 )
 union
+#>  $ OUTPUT: 'qgis_outputVector' chr "/tmp/...gpkg"
 ```
 
 上記のコードを実行すると、2つの入力オブジェクトが一時的な .gpkg ファイルに保存され、選択されたアルゴリズムがそれらに実行され、一時的な .gpkg ファイルが出力として返される。
@@ -283,6 +323,13 @@ qgis_show_help("grass7:v.clean")
 qgis_get_argument_specs("grass7:v.clean") |>
   select(name, description) |>
   slice_head(n = 4)
+#> # A tibble: 4 × 2
+#>   name      description
+#>   <chr>     <chr>
+#> 1 input     Layer to clean
+#> 2 type      Input feature type
+#> 3 tool      Cleaning tool
+#> 4 threshold Threshold (comma separated for each tool)
 ```
 
 このアルゴリズムの主な引数は `input` で、これはベクタオブジェクトである。
@@ -332,7 +379,13 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 
 ```{r, eval=has_qgis_plugins}
 qgis_search_algorithms("wetness") |>
+  dplyr::select(provider_title, algorithm) |>
   head(2)
+#> # A tibble: 2 × 2
+#>   provider_title algorithm
+#>   <chr>          <chr>
+#> 1 SAGA Next Gen  sagang:sagawetnessindex
+#> 2 SAGA Next Gen  sagang:topographicwetnessindexonestep
 ```
 
 上記のコードの出力は、目的のアルゴリズムが SAGA GIS\index{SAGA} ソフトウェアに存在することを示唆するものである。^[TWI は、 GRASS GIS 関数 `r.topidx` でも計算可能。]
@@ -621,7 +674,11 @@ execGRASS(
 )
 ```
 
-この結果を見るために、結果をRに読み込み、形状だけを残してsf-objectに変換し、**mapview**パッケージを使って可視化しました (Figure \@ref(fig:grass-mapview) と Section \@ref(interactive-maps))。
+作成したクリーンなデータセットは `"v.net.salesman"` アルゴリズムの入力となる。
+その引数の一つは `center_cats` であり、入力として数値範囲を必要とする。
+この範囲は最短ルートを計算する点を表す。
+すべてのサイクルステーションのルートを計算したいので、`1-25` に設定する。
+巡回セールスマンの GRASS ヘルプページにアクセスするには、`execGRASS("g.manual", entry = "v.net.salesman")`を実行する。
 
 ```{r 09-gis-34, eval=FALSE}
 route = read_VECT("shortest_route") |>
@@ -741,7 +798,7 @@ TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-to
 これは、新しい R パッケージという形で、これらのライブラリへの適切なインタフェースを作成するための出発点となる可能性がある。
 
 しかし、新しいブリッジを作成するプロジェクトに飛び込む前に、既存の R パッケージのパワーと、`system()` の呼び出しがプラットフォームに依存しない (一部のコンピュータで失敗する) 可能性があることを認識しておくことが重要である。
-さらに、**sf** は GDAL \index{GDAL} , GEOS \index{GEOS} , PROJ \index{PROJ}  が提供するパワーのほとんどを **Rcpp** が提供する R/C++ \index{C++}  インターフェイスを介して R にもたらし、`system()` の呼び出しを回避しているのである。
+さらに、**sf** は GDAL\index{GDAL}、GEOS\index{GEOS}、PROJ\index{PROJ}  が提供するパワーのほとんどを **Rcpp** が提供する R/C++ \index{C++}  インターフェイスを介して R にもたらし、`system()` の呼び出しを回避しているのである。
 
 ### 空間データベースへのブリッジ  {#postgis}
 
@@ -866,7 +923,6 @@ load("extdata/postgis_data.Rdata")
 ```
 
 ```{r postgis, echo=FALSE, fig.cap="直前の PostGIS コマンドによる出力の例。高速道路 (黒線)、バッファ (黄色)、バッファ内の４つのレストラン (赤点)。", fig.scap="Visualization of the output of previous PostGIS commands."}
-# クエリ結果をプロット
 library(tmap)
 tm_shape(buf) +
   tm_polygons(fill = "#FFFDD0", border.alpha = 0.3) +
@@ -874,11 +930,11 @@ tm_shape(buf) +
   tm_lines(col = "black", lwd = 3) +
   tm_shape(hardees) +
   tm_symbols(col = "#F10C26") +
-  tm_add_legend(type = "Lines", col = "black", lwd = 3,
+  tm_add_legend(type = "lines", col = "black", lwd = 3,
                 labels = "The US Route 1 highway") +
-  tm_add_legend(type = "Polygons", fill = "#FFFDD0",
+  tm_add_legend(type = "polygons", fill = "#FFFDD0",
                 border.alpha = 0.3, labels = "35km buffer") +
-  tm_add_legend(type = "Symbols", fill = "#F10C26",
+  tm_add_legend(type = "symbols", fill = "#F10C26",
                 labels = "Restaurants", shape = 21) +
   tm_layout(frame = FALSE)
 ```
@@ -927,11 +983,9 @@ library(rstac)
 # AOI と交差する画像を検索
 s = stac("https://earth-search.aws.element84.com/v0")
 items = s |>
-  stac_search(
-    collections = "sentinel-s2-l2a-cogs",
-    bbox = c(7.1, 51.8, 7.2, 52.8),
-    datetime = "2020-01-01/2020-12-31"
-  ) |>
+  stac_search(collections = "sentinel-s2-l2a-cogs",
+              bbox = c(7.1, 51.8, 7.2, 52.8),
+              datetime = "2020-01-01/2020-12-31") |>
   post_request() |>
   items_fetch()
 ```
@@ -998,34 +1052,26 @@ p = processes() # 利用可能なプロセスをロード
 collections = list_collections() # 利用可能なコレクションをロード
 formats = list_file_formats() # 利用可能な出力フォーマットをロード
 # Sentinel-2 コレクションをロード
-s2 = p$load_collection(
-  id = "SENTINEL2_L2A",
-  spatial_extent = list(
-    west = 7.5, east = 8.5,
-    north = 51.1, south = 50.1
-  ),
-  temporal_extent = list("2021-01-01", "2021-01-31"),
-  bands = list("B04", "B08")
-)
+s2 = p$load_collection(id = "SENTINEL2_L2A",
+                       spatial_extent = list(west = 7.5, east = 8.5,
+                                             north = 51.1, south = 50.1),
+                       temporal_extent = list("2021-01-01", "2021-01-31"),
+                       bands = list("B04", "B08"))
 # NDVI vegetation index を計算
-compute_ndvi = p$reduce_dimension(
-  data = s2, dimension = "bands",
-  reducer = function(data, context) {
-    (data[2] - data[1]) / (data[2] + data[1])
-  }
-)
+compute_ndvi = p$reduce_dimension(data = s2, dimension = "bands",
+                                  reducer = function(data, context) {
+                                      (data[2] - data[1]) / (data[2] + data[1])
+                                  })
 # maximum over time を計算
-reduce_max = p$reduce_dimension(
-  data = compute_ndvi, dimension = "t",
-  reducer = function(x, y) {
-    max(x)
-  }
-)
+reduce_max = p$reduce_dimension(data = compute_ndvi, dimension = "t",
+                                reducer = function(x, y) {
+                                    max(x)
+                                })
 # GeoTIFF で出力
 result = p$save_result(reduce_max, formats$output$GTiff)
 # ログイン https://docs.openeo.cloud/getting-started/r/#authentication 参照
-login(login_type = "oidc", provider = "egi",
-      config = list(client_id= "...", secret = "..."))
+login(login_type = "oidc", provider = "egi", 
+      config = list(client_id = "...", secret = "..."))
 # プロセスを実行
 compute_result(graph = result, output_file = tempfile(fileext = ".tif"))
 ```

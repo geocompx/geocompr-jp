@@ -42,7 +42,7 @@ Chapter \@ref(geometry-operations) で、重心の関数\index{centroid} `st_cen
 プログラミングの初心者にとってスクリプトは敷居が高く聞こえるかもしれないが、単なるプレーンテキストファイルである。
 スクリプトは、通常はその言語を表す拡張子で保存される。例えば、Python は `.py`、Rust は `.rs` である。
 R スクリプトは一般に、`.R` 拡張子で保存され、実行内容を反映した名前が付けられる。
-例として、この本のリポジトリの `code` フォルダに格納されているスクリプトファイル [`11-hello.R`](https://github.com/geocompx/geocompr/blob/main/code/11-hello.R) がある。
+例として、この本のリポジトリの `code` フォルダに格納されているスクリプトファイル [`11-hello.R`](https://github.com/geocompx/geocompr/tree/main/code/11-hello.R) がある。
 `11-hello.R` は、次の 2 行のコードが含まれているだけの簡単なスクリプトで、そのうち１行はコメントである。
 
 ```r

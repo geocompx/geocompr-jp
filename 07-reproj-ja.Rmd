@@ -66,7 +66,7 @@ st_crs("EPSG:4326")
 \index{CRS!SRID}
 コマンドの出力は、CRS 識別子 (空間参照識別子または Spatial Reference Identifier [SRID](https://postgis.net/workshops/postgis-intro/projection.html) とも呼ばれる) がどのように機能するかを示している。これは単にルックアップであり、CRS のより完全な WKT 表現に関連する一意の識別子を提供するものである。
 このことは、識別子と CRS の長い WKT 表現との間にミスマッチがある場合はどうなるのか、という問題を提起している。
-この点、@opengeospatialconsortium_wellknown_2019 は明確で、冗長な WKT 表現が[識別子](https://docs.opengeospatial.org/is/18-010r7/18-010r7.html#37)より優先される。 
+この点、@opengeospatialconsortium_wellknown_2019 は明確で、冗長な WKT 表現が[識別子](https://docs.ogc.org/is/18-010r7/18-010r7.html#37)より優先される。 
 
 > 引用された識別子の属性や値が、WKT 記述で明示的に与えられた属性や値と矛盾する場合、 WKT の値が優先されるものとする。
 
@@ -336,6 +336,8 @@ london_buff_projected = st_buffer(london_proj, 100000)
 先に作成した CRS を<u>持つ</u> 3 つの `london_buff*` オブジェクト (`london_buff_s2`、`london_buff_lonlat`、`london_buff_projected`)の形状を Figure \@ref(fig:crs-buf) に示す。
 
 ```{r crs-buf-old, include=FALSE, eval=FALSE}
+#| message: FALSE
+#| results: hide
 uk = rnaturalearth::ne_countries(scale = 50) |> 
   st_as_sf() |> 
   filter(grepl(pattern = "United Kingdom|Ire", x = name_long))
@@ -452,7 +454,7 @@ WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 
 \index{UTM} 
 一般的に使われているデフォルトは Universal Transverse Mercator ([UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) [日本語](https://ja.wikipedia.org/w/index.php?curid=118035)) で、地球を縦 60 個のくさびと横 20 個の緯度に分割した CRS のセットである。
 UTM CRS で使用されている横メルカトル図法は等角 (conformal) であるが、UTM ゾーンの中心から離れるにつれて面積や距離の歪みがひどくなる。
-そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から6度までに制限することを提案している (出典： [manifold.net](http://www.manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
+そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から6度までに制限することを提案している (出典： [manifold.net](https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
 そのため、UTM は比較的狭い範囲での角度保存を重視する場合にのみ使用することを勧める。
 
 地球上のほとんどの場所には UTM コードがあり、例えば「60H」 は R が発明されたニュージーランド北部を指している。
@@ -687,7 +689,7 @@ unique(cat_raster)
 カテゴリ別ラスタを再投影する場合、推定値は元のラスタと同じでなければならない。
 これは、各新規セルの値を入力ラスタの最も近いセル (中心) の値に設定する最近傍法 (`near`) を使って行うことができる。
 例えば、ウェブマッピングに適した地理的 CRS である WGS84 に `cat_raster` を再投影している。
-まず、この CRS の PROJ 定義を取得する。これは、例えば、 [http://spatialreference.org](http://spatialreference.org/ref/epsg/wgs-84/) のウェブページを使用して行うことができる。 
+まず、この CRS の PROJ 定義を取得する。これは、例えば、 [https://spatialreference.org](https://spatialreference.org/ref/epsg/wgs-84/) のウェブページを使用して行うことができる。 
 最後のステップは、`project()` 関数でラスタを再投影することである。カテゴリデータの場合は、最近傍法 (`near`) を使用する。
 
 ```{r 06-reproj-31}
@@ -839,7 +841,7 @@ tm_shape(world_mollweide_gr) +
 ```
 
 世界地図を作成する際、すべての空間特性 (面積、方向、距離) に対して歪みを最小化することが望まれることが多い。
-これを実現するための代表的な投影法として、Figure \@ref(fig:wintriproj) に示される [ヴィンケル図法 (第 3 図法)](http://www.winkel.org/other/Winkel%20Tripel%20Projections.htm) (Winkel Tripel Projections) がある。^[
+これを実現するための代表的な投影法として、Figure \@ref(fig:wintriproj) に示される [ヴィンケル図法 (第 3 図法)](https://www.winkel.org/other/Winkel%20Tripel%20Projections.htm) (Winkel Tripel Projections) がある。^[
 この投影図は、ナショナルジオグラフィック協会などで使用されている。
 ]
 結果は、以下のコマンドで作成された。

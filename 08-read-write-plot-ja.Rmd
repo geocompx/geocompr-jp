@@ -45,8 +45,8 @@ Section \@ref(retrieving-data) では、このトピックについて合計で�
 
 \index{geoportals}
 グローバルなジオポータルの中には、この問題を克服しているものもある。
-例えば、[GEOSS portal](http://www.geoportal.org/) や [Copernicus Open Access Hub](https://scihub.copernicus.eu/) には、全世界をカバーするラスタデータセットを多数含んでいる。
-また、米国航空宇宙局 (NASA) が運営するポータルサイト [SEDAC](http://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
+例えば、[GEOSS portal](https://www.geoportal.org/) や [Copernicus Open Access Hub](https://scihub.copernicus.eu/) には、全世界をカバーするラスタデータセットを多数含んでいる。
+また、米国航空宇宙局 (NASA) が運営するポータルサイト [SEDAC](https://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
 
 ジオポータルは、ほとんどの場合空間的および時間的範囲などの特性に基づいてデータセットを照会できるグラフィカルなインターフェースを提供している。米国地質調査所の [EarthExplorer](https://earthexplorer.usgs.gov/) はその代表例である。
 ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤーを理解する上で効果的な方法である。
@@ -101,7 +101,7 @@ knitr::kable(datapackages,
 
 
 Table \@ref(tab:datapackages) は、利用可能な地理データパッケージのごく一部に過ぎないことを強調しておく。
-この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
+この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r/) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
 同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czechia)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
 その他の注目すべきパッケージは、R で Global Summary Daily Weather Data を提供する **GSODR** である (気象データソースの概要についてはパッケージの [README](https://github.com/ropensci/GSODR)を参照)。
 
@@ -323,7 +323,7 @@ knitr::kable(file_formats,
 
 \index{Shapefile}
 \index{GeoPackage}
-ファイルフォーマットの標準化とオープンソースを保証する重要な発展は、1994年の Open Geospatial Consortium ([OGC](http://www.opengeospatial.org/)) の設立であった。
+ファイルフォーマットの標準化とオープンソースを保証する重要な発展は、1994年の Open Geospatial Consortium ([OGC](https://www.ogc.org/)) の設立であった。
 OGC は、シンプルフィーチャというデータモデル (Section \@ref(intro-sf) 参照) を定義するだけでなく、例えば KML\index{KML} や GeoPackage\index{GeoPackage} などのファイルフォーマットで使用されているようなオープンスタンダードの開発も調整している。
 OGC が推奨するオープンなファイルフォーマットは、プロプライエタリなフォーマットと比較して、いくつかの利点がある。標準が公開され、透明性が確保され、ユーザーがファイルフォーマットをさらに開発し、特定のニーズに合わせて調整する可能性が開かれることである。
 
@@ -473,7 +473,7 @@ tmap_arrange(tm1, tm2)
 このようなファイルを空間オブジェクトとして読み込むには、当然、座標を表す列の名前 (以下の例では、`X` と `Y`) を指定しなければならない。
 これは、`options` パラメータの助けを借りて行うことができる。
 可能なオプションについては、対応する GDAL\index{GDAL}  ドライバの説明の「オープンオプション」セクションを参照。
-カンマ区切り値 (csv) 形式は、http://www.gdal.org/drv_csv.html。
+カンマ区切り値 (csv) 形式は、https://gdal.org/drv_csv.html。
 
 ```{r 07-read-write-plot-20, results='hide'}
 cycle_hire_txt = system.file("misc/cycle_hire_xy.csv", package = "spData")
@@ -683,7 +683,7 @@ knitr::kable(dT, caption = "terra パッケージが対応しているデータ�
 writeRaster(single_layer, filename = "my_raster.tif", datatype = "INT2U")
 ```
 
-ラスタファイルフォーマットによっては、追加オプションがあり、`writeRaster()` の `options` 引数に [GDAL parameters](http://www.gdal.org/formats_list.html) を与えることで設定できる。
+ラスタファイルフォーマットによっては、追加オプションがあり、`writeRaster()` の `options` 引数に [GDAL parameters](https://gdal.org/formats_list.html) を与えることで設定できる。
 GeoTIFF ファイルは、デフォルトで **terra** で記述され、LZW 圧縮が施されている `gdal = c("COMPRESS=LZW")`。
 圧縮を変更したり無効にしたりするには、この引数を変更する必要がある。
 

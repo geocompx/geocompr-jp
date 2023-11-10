@@ -74,7 +74,9 @@ srtm_inv_masked = mask(srtm, zion, inverse = TRUE)
 ```
 
 ```{r cropmask, echo = FALSE, fig.cap="ラスタクロップ、ラスタマスクの説明図。", fig.asp=0.36, fig.width = 10, warning=FALSE}
-library(tmap)
+#| message: FALSE
+#| results: hide
+library(tmap) # 3.99.9000 は、タイトルのフォント指定ができないようです。
 library(rcartocolor)
 terrain_colors = carto_pal(7, "Geyser")
 pz1 = tm_shape(srtm) + 
@@ -82,25 +84,25 @@ pz1 = tm_shape(srtm) +
   tm_shape(zion) + 
   tm_borders(lwd = 2) + 
   tm_title("A. オリジナル") + 
-  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_layout(inner.margins = 0, title.fontfamily = "HiraginoSans-W3")
 pz2 = tm_shape(srtm_cropped) +
   tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) + 
   tm_shape(zion) +
   tm_borders(lwd = 2) + 
   tm_title("B. 切り落とし (crop)") + 
-  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_layout(inner.margins = 0, title.fontfamily = "HiraginoSans-W3")
 pz3 = tm_shape(srtm_masked) + 
   tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) + 
   tm_shape(zion) + 
   tm_borders(lwd = 2) + 
   tm_title("C. マスク") + 
-  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_layout(inner.margins = 0, legend.title.fontfamily = "HiraginoSans-W3")
 pz4 = tm_shape(srtm_inv_masked) +
   tm_raster(col.scale = tm_scale_continuous(values = terrain_colors)) + 
   tm_shape(zion) +
   tm_borders(lwd = 2) + 
   tm_title("D. Inverse マスク") + 
-  tm_layout(inner.margins = 0, fontfamily = "HiraginoSans-W3")
+  tm_layout(inner.margins = 0, text.fontfamily = "HiraginoSans-W3")
 tmap_arrange(pz1, pz2, pz3, pz4, ncol = 4, asp = NA)
 ```
 

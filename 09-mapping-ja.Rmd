@@ -17,7 +17,7 @@ library(spDataLarge)
 - また、以下の可視化パッケージを使用する (インタラクティブな地図アプリケーションを開発する場合は shiny もインストールしておこう)。
 
 ```{r 08-mapping-2, message=FALSE}
-remotes::install_github("r-tmap/tmap@v4")
+remotes::install_github("r-tmap/tmap")
 library(tmap)    # 静的地図と動的地図
 library(leaflet) # 動的地図
 library(ggplot2) # tidyverse データ可視化パッケージ
@@ -41,7 +41,7 @@ R の基本メソッドを使って高度なマップを作成することも可
 
 地図製作は、楽しくてクリエイティブなだけでなく、実用的にも重要な役割を担っている。
 丁寧に作られた地図は、仕事の成果を伝えるのに最適な方法であるが、デザインの悪い地図は印象を悪くすることがある。
-よくあるデザイン上の問題点としては、Journal of Maps のスタイル[ガイド](https://www.tandf.co.uk//journals/authors/style/TJOM-suppmaterial-quick-guide.pdf)で説明されているように、文字の配置やサイズ、読みにくさ、色の選び方の不注意などが挙げられる。
+よくあるデザイン上の問題点としては、Journal of Maps のスタイル[ガイド](https://files.taylorandfrancis.com/TJOM-suppmaterial-quick-guide.pdf)で説明されているように、文字の配置やサイズ、読みにくさ、色の選び方の不注意などが挙げられる。
 さらに、地図作りが不十分だと、結果の伝達にも支障が生じることがある [@brewer_designing_2015]。
 
 > 素人が作ったような地図では、情報の重要性が伝わらず、専門家によるデータ調査をうまく表現できないことがある。
@@ -381,8 +381,10 @@ tmap_arrange(m_cont1, m_cat1)
 連続色パレットは、以下のコードで示すように、単色 (例えば、`greens` は明るいから暗い緑へ) または多色/色相 (例えば、`yl_gn_bu` は明るい黄色から緑色を経て青色へのグラデーション) である (出力は示していない)。結果を見るために自分でコードを実行してみよう。
 
 ```{r 08-mapping-13, eval=FALSE}
-tm_shape(nz) + tm_polygons("Median_income", fill.scale = tm_scale(values = "greens"))
-tm_shape(nz) + tm_polygons("Median_income", fill.scale = tm_scale(values = "yl_gn_bu"))
+tm_shape(nz) + 
+  tm_polygons("Median_income", fill.scale = tm_scale(values = "greens"))
+tm_shape(nz) + 
+  tm_polygons("Median_income", fill.scale = tm_scale(values = "yl_gn_bu"))
 ```
 
 3 番目のパレットである発散型パレットは、通常 3 色の間 (紫-白-緑： Figure \@ref(fig:colpal)) で、通常2つの単色パレットの両端を濃い色で結合して作成される。
@@ -392,7 +394,8 @@ tm_shape(nz) + tm_polygons("Median_income", fill.scale = tm_scale(values = "yl_g
 ```{r 08-mapping-13b, eval=FALSE}
 tm_shape(nz) + 
   tm_polygons("Median_income",
-              fill.scale = tm_scale_continuous(values = "pu_gn_div", midpoint = 28000))
+              fill.scale = tm_scale_continuous(values = "pu_gn_div", 
+                                               midpoint = 28000))
 ```
 
 ```{r colpal, echo=FALSE, message=FALSE, fig.cap="カテゴリ、連続色、発散のパレットの例。", out.width="50%"}
@@ -770,6 +773,7 @@ if (knitr::is_latex_output()){
 ```
 
 
+
 インタラクティブモードが「オン」になったので、**tmap** で作成したすべての地図が起動する (インタラクティブな地図を作成する別の方法として、`tmap_leaflet` 機能がある)。
 このインタラクティブモードの特筆すべき点は、以下のデモのように `tm_basemap()` (または `tmap_options()`) でベースマップを指定できることである (結果は表示していない)。
 
@@ -844,7 +848,7 @@ knitr::include_graphics("figures/mapview-example.png")
 
 R でインタラクティブな地図を作成する方法は他にもある。
 例えば、**googleway**\index{googleway (package)} パッケージは、柔軟で拡張性の高いインタラクティブなマッピングインターフェイスを提供する
-(詳細は [`googleway-vignette`](https://cran.r-project.org/web/packages/googleway/vignettes/googleway-vignette.html) 参照)。
+(詳細は [`googleway-vignette`](https://cran.r-project.org/package=googleway/vignettes/googleway-vignette.html) 参照)。
 同じ著者による別のアプローチとして、**[mapdeck](https://github.com/SymbolixAU/mapdeck)** があり、Uber の `Deck.gl` フレームワーク \index{mapdeck (package)}  にアクセスできるようになっている。
 WebGL を使用することで、大規模なデータセット (最大数百万点) をインタラクティブに可視化することができる。
 本パッケージは、Mapbox [access tokens](https://docs.mapbox.com/help/getting-started/access-tokens/) を使用している。本パッケージを使用する前に、登録する必要がある。
@@ -880,7 +884,7 @@ knitr::include_graphics("figures/mapdeck-mini.png")
 ```
 
 ブラウザでは、ズームやドラッグのほか、`Cmd` / `Ctrl` を押すと、地図を回転させたり傾けたりすることができる。
-[`mapdeck` vignette](https://cran.r-project.org/web/packages/mapdeck/vignettes/mapdeck.html) で示したように、パイプ演算子で複数のレイヤを追加することができる。
+[`mapdeck` vignette](https://cran.r-project.org/package=mapdeck/vignettes/mapdeck.html) で示したように、パイプ演算子で複数のレイヤを追加することができる。
 **mapdeck** は `sf` オブジェクトもサポートしている。先のコードチャンクの `add_grid()` 関数呼び出しを `add_polygon(data = lnd, layer_id = "polygon_layer")` に置き換えて、インタラクティブな傾いた地図にロンドンを表すポリゴンを追加してみるとわかる。
 
 ```{r 08-mapping-35, eval=FALSE, echo=FALSE}
@@ -951,7 +955,7 @@ R の場合は幸運なことに、**shiny**\index{shiny (package)} を使って
 `tmap::renderTmap()` と [`leaflet::renderLeaflet()`](https://rstudio.github.io/leaflet/shiny.html) を使うことで、shiny アプリにインタラクティブ地図を追加することができる。
 このセクションでは、ウェブ地図の観点から **shiny** の基本を学び、100行未満のコードで全画面マッピングアプリケーションを完成させることができる。
 
-**shiny** の仕組みは、 [shiny.rstudio.com](https://shiny.rstudio.com/)に詳しく書かれている。これは「フロントエンド」 (ユーザーが見る部分) と「バックエンド」コードという２つの構成要素を強調している。
+**shiny** の仕組みは、[shiny.posit.co](https://shiny.posit.co/) に詳しく書かれている。これは「フロントエンド」 (ユーザーが見る部分) と「バックエンド」コードという２つの構成要素を強調している。
 **shiny** アプリでは、これらの要素は通常、`app フォルダ`内にある `app.R` という R スクリプト内の  `ui` と `server` というオブジェクトで作成される。
 これにより、ウェブマッピングのアプリケーションを1つのファイルで表現することができ、例えば、本書の GitHub リポジトリにある [`CycleHireApp/app.R`](https://github.com/Robinlovelace/geocompr/blob/main/apps/CycleHireApp/app.R) ファイルのような単一のファイルで表現できる。
 
@@ -1014,12 +1018,12 @@ RStudio を使用している場合、最も簡単な方法は、`app.R`、`ui.R
 Unix コマンドラインの場合は、`Rscript -e 'shiny::runApp("CycleHireApp")'` コマンドでアプリを立ち上げることができる。
 ```
 
-`CycleHireApp` などのアプリを試すことで、RによるWeb地図アプリケーションの知識だけでなく、実践的なスキルも身につけることができる。
+`CycleHireApp` などのアプリを試すことで、R によるWeb地図アプリケーションの知識だけでなく、実践的なスキルも身につけることができる。
 例えば、`setView()` の内容を変更すると、アプリが起動されたときにユーザーに表示される開始バウンディングボックスが変更される。
-このような実験は、ランダムに行うのではなく、関連する文書を参照し、`?shiny` を始めとして、演習で提起されたような問題を解決したいという動機で行うべきである。
+このような実験は、ランダムに行うよりも、関連する文書を参照し、`?shiny` を始めとして、演習で提起したように問題を解決する動機で行うべきである。
 
-このように **shiny** を使用することで、地図アプリケーションのプロトタイプ作成をこれまで以上に迅速かつ身近に行うことができる (**shiny** アプリケーションの実装は、この章の範囲を超えた別のトピック)。
-最終的にアプリケーションが異なる技術で展開されるとしても、**shiny** によって、ウェブ地図アプリケーションが比較的少ないコード行数で開発できることは間違いない (CycleHireApp の場合、76行)。
+このように **shiny** を使用することで、地図アプリケーションのプロトタイプ作成をこれまで以上に迅速かつ身近に行うことができる (**shiny** アプリケーション https://shiny.posit.co/deploy/ の実装は、この章の範囲を超えた別のトピック)。
+最終的にアプリケーションが異なる技術で展開されるとしても、**shiny** によって、ウェブ地図アプリケーションが比較的少ないコード行数で開発できることは間違いない (CycleHireApp の場合、86行)。
 しかし、shiny アプリは巨大になる傾向がある。
 例えば、[pct.bike](https://www.pct.bike/) でホストされている Propensity to Cycle Tool (PCT) は、英国運輸省の資金援助による全国規模の地図ツールである。
 PCT は毎日何十人もの人が利用しており、1000行以上の [コード](https://github.com/npct/pct-shiny/blob/master/regions_www/m/server.R) [@lovelace_propensity_2017]  に基づいた複数のインタラクティブな要素を備えている。
@@ -1046,7 +1050,7 @@ knitr::include_graphics("figures/09_cycle_hire_app.png")
 最も成熟した選択肢は、コアな空間パッケージである **sf** と **terra** が提供する `plot()` メソッドを使用することである。
 これらのセクションで触れていないのは、ベクタとラスタのオブジェクトのプロットメソッドは、結果が同じプロットエリアに描画される場合、組み合わせることができるということである (**sf** プロットのキーやマルチバンドのラスタなどの要素はこれを邪魔する)。
 この動作は、Figure \@ref(fig:nz-plot) を生成する次のコードチャンクで説明される。
-`plot()` には他にも多くのオプションがあり、`?plot` のヘルプページと **sf** vignette [`sf5`](https://cran.r-project.org/web/packages/sf/vignettes/sf5.html) のリンクをたどって調べることができる (訳注：[vignette 日本語版](https://www.uclmail.net/users/babayoshihiko/R/))。
+`plot()` には他にも多くのオプションがあり、`?plot` のヘルプページと **sf** vignette [`sf5`](https://cran.r-project.org/package=sf/vignettes/sf5.html) のリンクをたどって調べることができる (訳注：[vignette 日本語版](https://www.uclmail.net/users/babayoshihiko/R/))。
 
 ```{r nz-plot, message=FALSE, fig.cap="plot() で作成したニュージーランドの地図。右の凡例は標高 (海抜 1000 m) を示している。", fig.scap="Map of New Zealand created with plot()."}
 g = st_graticule(nz, lon = c(170, 175), lat = c(-45, -40, -35))
@@ -1129,7 +1133,7 @@ knitr::kable(map_gpkg_df,
 
 Table \@ref(tab:map-gpkg) は、さまざまな地図製作パッケージが利用可能であることを示しており、この表に記載されていないものも多数ある。
 特に注目すべきは **mapsf** で、コロプレス図、プロポーショナルシンボル地図、フロー地図など、さまざまな地理的視覚化を生成することができる。
-これらは、[`mapsf`](https://cran.r-project.org/web/packages/mapsf/vignettes/mapsf.html)\index{mapsf (package)} vignette に記載されている。
+これらは、[`mapsf`](https://cran.r-project.org/package=mapsf/vignettes/mapsf.html)\index{mapsf (package)} vignette に記載されている。
 
 
 
@@ -1144,6 +1148,7 @@ knitr::kable(map_spkg_df,
              caption = "特定の目的のための地図製作パッケージを選択し、関連する指標を示す。",
              caption.short = "Selected specific-purpose mapping packages.",
              booktabs = TRUE)
+
 ```
 
 しかし、前述のパッケージはいずれも、データ準備や地図作成のアプローチが異なっている。
@@ -1165,7 +1170,7 @@ nz_carto = cartogram_cont(nz, "Median_income", itermax = 5)
 tm_shape(nz_carto) + tm_polygons("Median_income")
 ```
 
-```{r cartomap1, echo=FALSE, message=FALSE, fig.cap="標準地図 (左) と連続範囲 (右) の比較。", fig.scap="Comparison of standard map and continuous area cartogram."}
+```{r cartomap1, echo=FALSE, message=FALSE, fig.cap="標準地図 (左) と連続範囲 (右) の比較。", fig.scap="Comparison of standard map and continuous area cartogram.", warning=FALSE}
 carto_map1 = tm_shape(nz) + 
   tm_polygons("Median_income",
               fill.scale = tm_scale(values = "Greens"),
@@ -1204,6 +1209,8 @@ carto_map_34legend = tm_shape(us_states2163_dorling) +
 tmap_arrange(carto_map3, carto_map4, carto_map_34legend, ncol = 3)
 ```
 -->
+
+
 
 
 
