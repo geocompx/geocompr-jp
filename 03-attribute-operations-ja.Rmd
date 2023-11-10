@@ -251,7 +251,7 @@ names(world5)[names(world5) == "pop"] = "population" # 列めいを変更
 
 `select()` は、`contains()`、`starts_with()`、`num_range()` など、より高度な部分集合操作のための「ヘルパー関数」とも連動する (詳しくは  `?select`  のヘルプページを参照)。
 
-ほとんどの **dplyr** 動詞はデータフレームを返するが、`pull()` で単一の列をベクトルとして抽出することができる。
+ほとんどの **dplyr** 動詞はデータフレームを返すが、`pull()` で単一の列をベクトルとして抽出することができる。
 <!-- Note: I have commented out the statement below because it is not true for `sf` objects, it's a bit confusing that the behaviour differs between data frames and `sf` objects. -->
 <!-- The subsetting operator in base R (see `?[`), by contrast, tries to return objects in the lowest possible dimension. -->
 <!-- This means selecting a single column returns a vector in base R as demonstrated in code chunk below which returns a numeric vector representing the population of countries in the `world`: -->
@@ -313,8 +313,8 @@ operators_exp = c("等号", "不等号", "より大きい・小さい",
                   "以上・以下", 
                   "論理学のかつ、または、ではない")
 knitr::kable(tibble(Symbol = operators, Name = operators_exp), 
-             caption = paste("論理値を返す比較演算",
-                             "(TRUE/FALSE)."),
+             caption = paste("論理値 (TRUE/FALSE)",
+                             "を返す比較演算。"),
              caption.short = "Comparison operators that return Booleans.",
              booktabs = TRUE)
 ```
@@ -443,7 +443,7 @@ knitr::kable(
 異なるソースからのデータを組み合わせることは、データ作成において一般的な作業である。 
 結合は、共有された「キー」変数に基づいてテーブルを結合することによって行われる。
 **dplyr** には、`left_join()` や `inner_join()` など、複数の結合関数がある。完全なリストは、`vignette("two-table")`を参照 (訳注：[日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html))。
-これらの関数名は、データベース言語 [SQL](https://r4ds.had.co.nz/relational-data.html) [@grolemund_r_2016, Chapter 13]  で使われている慣例に従っている。これらを使って、非空間データセットと `sf` オブジェクトを結合することが、このセクションの焦点である。
+これらの関数名は、データベース言語 [SQL](https://r4ds.had.co.nz/relational-data.html) [@grolemund_r_2016, Chapter 13] で使われている慣例に従っている。これらを使って、非空間データセットと `sf` オブジェクトを結合することが、このセクションの焦点である。
 **dplyr** の join 関数は、データフレームと `sf` オブジェクトで同じように動作する。唯一の重要な違いは、`geometry` リスト列である。
 データ結合の結果は、`sf` または `data.frame` オブジェクトのいずれかになる。
 空間データに対する最も一般的な属性結合は、第1引数として `sf` オブジェクトを取り、第2引数として指定された `data.frame` から列を追加するものである。
