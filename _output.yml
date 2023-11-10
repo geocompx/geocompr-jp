@@ -21,7 +21,8 @@ bookdown::bs4_book:
   template: style/bs4_book.html
   css: style/style.css
 rmdja::pdf_book_ja:
-  latex_engine: lualatex 
+  latex_engine: xelatex
+  citation_package: natbib
   keep_tex: true
   keep_md: true
   includes:
