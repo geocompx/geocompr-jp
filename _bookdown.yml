@@ -18,8 +18,7 @@ rmd_files:
     - "15-eco-ja.Rmd"
     - "16-synthesis-ja.Rmd"
     - "references.Rmd"
-new_session: yes
-before_chapter_script: ["code/before_script.R"]
+new_session: true
 delete_merged_file: true
 language:
   label:
