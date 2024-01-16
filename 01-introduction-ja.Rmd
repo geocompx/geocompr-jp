@@ -4,6 +4,10 @@
 
 # はじめに  {#intro}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 本書は、コンピュータの力を使って、地理データで<u>作業をすること</u>について書かれている。
 地理データの読み書きと何らかの処理、静的およびインタラクティブな地図の作成、実世界の問題を解決するためのジオコンピュテーション\index{geocomputation} の適用、地理現象のモデリングなど、交通や環境系など多様な空間スキルを教える。
 本書は、様々な地理的操作をどのようにリンクさせることができるかを、文章に挟まれた再現可能な「コードチャンク」で示す。このことにより、透明性のある、したがって科学的なワークフローも教えてくれる。
@@ -32,7 +36,7 @@ knitr::kable(x = d,
 
 R だけが地理計算のための CLI を提供する言語ではない。
 Python、Julia、JavaScript など、強力な地理計算機能を持つコマンド環境は他にも存在する。
-好奇心旺盛な読者には、それらを試してみたり、本書の例を他の言語で再現してみたりすることをお勧めする。おそらく、[Geocomputation with Python](https://py.geocompx.org/)という本も参考になるだろう。そのオープンアクセス版は[geocompx.org](https://geocompx.org/) でもホストされている。
+興味があれば、他の言語を試してみたり、本書の例を他の言語で再現してみたりすることをお勧めする。おそらく、[Geocomputation with Python](https://py.geocompx.org/) という本も参考になるだろう。そのオープンアクセス版は [geocompx.org](https://geocompx.org/) でもホストされている。
 しかし、R にはジオコンピューティングに適したいくつかの利点がある。
 「R-spatial スタック」はインストールが簡単で、そのコアパッケージは包括的でよくメンテナンスされている。つまり、状況によって変わることが少なく、コードが動作するようにすることに集中する必要はない。
 R には、基本的なインストールに含まれる統計関数と、多くの最先端の手法を実装したメンテナンスの行き届いた数百ものパッケージが最初から含まれている。
@@ -40,8 +44,7 @@ R を使えば、驚くほど少ないコード行数で作業を開始するこ
 
 本書を執筆する動機は、科学研究における再現性の重要性\index{reproducibility} (下記注参照) である。
 再現性のある地理データ解析\index{geographic data analysis}ワークフローをより身近なものにし、コマンドラインから利用できるオープンな地理空間ソフトウェアの力を実証することを目的としている。
-「他のソフトウェアとのインターフェイスは R の一部である」 [@eddelbuettel_extending_2018]。
-つまり、R では、優れた「内蔵」機能に加え、他の多くの空間ソフトウェアライブラリにアクセスすることができる。これについては、Section \@ref(why-use-r-for-geocomputation) で簡単に説明し、Chapter \@ref(gis) で実際に実行している。
+R は、他の言語へのインターフェースを提供し [@eddelbuettel_extending_2018]、多くの空間ソフトウェアライブラリにアクセスすることができる。これについては、Section \@ref(why-use-r-for-geocomputation) で簡単に説明し、Chapter \@ref(gis) で実際に実行している。
 しかし、このソフトウェアの詳細に触れる前に、一歩下がってジオコンピュテーションとは何かを考えてみる価値がある。 \index{geocomputation}
 
 ```{block2 01-introduction-1, type='rmdnote'}
@@ -111,7 +114,7 @@ RAM を十分に (少なくとも 8 GB 以上) 搭載したノートパソコン
 現在では、このような地理的なデータの不足は考えにくい。
 すべてのスマートフォンに全地球測位 (GPS\index{GPS}) 受信機が搭載され、人工衛星や半自動運転車、市民科学者に至るまで、数多くのセンサーが世界のあらゆる場所を絶え間なく測定している。
 データの生成速度が圧倒的に速いのである。
-例えば、自律走行車は1日あたり 100 GB のデータを生成することができる [@theeconomist_autonomous_2016]。
+例えば、自律走行車は 1 日あたりテラバイト級のデータを生成することができる [@theeconomist_autonomous_2016]。
 人工衛星からのリモートセンシング\index{remote sensing}データが膨大になり、対応するデータを 1 台のコンピュータで解析することが難しくなったため、 [OpenEO](https://openeo.org/) のような取り組みが行われている。
 
 この「ジオデータ革命」は、高性能なコンピュータハードウェアと、効率的でスケーラブルなソフトウェアに対する需要を喚起し、ノイズから信号を処理・抽出することで、世界を理解し、おそらく世界を変えることができる。
@@ -186,26 +189,18 @@ R は地理計算のための強力な言語であるが、地理データ解析
 地理計算のための他の言語を理解することは、特定のタスクに別のツールがより適切である場合を決定し、より広い地理空間生態系に R を配置するのに役立つ。
 本節では、Chapter \@ref(gis) に向けて、ジオコンピュテーションのための言語 [C++](https://isocpp.org/)\index{C++}、 [Java](https://www.oracle.com/java/)\index{Java}、 [Python](https://www.python.org/)\index{Python} を簡単に紹介する。
 
-R (とPython) の重要な特徴として、インタプリタ型言語であることが挙げられる。
+R (と Python) の重要な特徴として、インタプリタ型言語であることが挙げられる。
 REPL (Read-Eval-Print Loop) \index{REPL}で対話的にプログラミングできるのがメリットである。
 コンソールに入力されたコードは、コンパイルという中間段階を待たずに、即座に実行され、結果が表示される。
 一方、C++\index{C++} や Java\index{Java} などのコンパイルされた言語は、 (一度コンパイルされると) 動作が速くなる傾向がある。
 
-C++\index{C++} は、[QGIS](https://www.qgis.org/)\index{QGIS}、 [GRASS](https://grass.osgeo.org/)\index{GRASS}、[SAGA](https://saga-gis.sourceforge.io/)\index{SAGA} などの多くの GIS パッケージの基礎を提供しているので、賢明な出発点であると言えるだろう。
+C++\index{C++} は、[QGIS](https://www.qgis.org/)\index{QGIS}、 [GRASS GIS](https://grass.osgeo.org/)\index{GRASS GIS}、[SAGA](https://saga-gis.sourceforge.io/)\index{SAGA} などの多くの GIS パッケージの基礎を提供しているので、賢明な出発点であると言えるだろう。
 よく書かれた C++\index{C++} は非常に高速で、大規模な地理データセットを処理するようなパフォーマンスが重要なアプリケーションに適しているが、Python や R に比べて習得が困難である。
 C++\index{C++} は、**Rcpp** パッケージによってよりアクセスしやすくなり、R ユーザーのために C\index{C!language}  プログラミングへの良い「入り方」を提供している。
 このような低レベルの言語を使いこなすことで、新しい高性能な「ジオアルゴリズム」を生み出す可能性や、GIS ソフトウェアの仕組みをより深く理解することができる (Chapter \@ref(algorithms) を参照)。
+しかし、R を使用してジオコンピュテーションを行う際には、必ずしも C++\index{C++} を学ぶ必要はない。
 
-Java\index{Java} もジオコンピュテーションのための重要な多用途言語である。
-GIS パッケージ gvSig、OpenJump、uDig はすべて Java\index{Java} で記述されている。
-Java で書かれた GIS ライブラリは、GeoTools や Java Topology Suite の JTS など多数ある (GEOS\index{GEOS} は JTS の C++\index{C++} 移植版)。
-さらに、Geoserver/Geonode、deegree、52°North WPS など、多くの地図サーバーアプリケーションは Java\index{Java}  を使用している。
-
-Java\index{Java} のオブジェクト指向の文法は、C++\index{C++} の文法に似ている。
-Java\index{Java} の大きな利点は、(コンパイル言語としては珍しく) プラットフォームに依存せず、拡張性が高いことで、本書を執筆した RStudio\index{RStudio} のような IDE\index{IDE} に適した言語であることが挙げられる。
-Java は、データサイエンスに使用できるものの、統計的モデリングや可視化のためのツールが Python や R に比べて少ない [@brzustowicz_data_2017]。
-
-Python\index{Python} は、特に GRASS\index{GRASS}、SAGA\index{SAGA}、QGIS\index{QGIS}  などの多くのデスクトップ GIS\index{GIS} が Python API\index{API} を提供しているので、ジオコンピュテーションには重要な言語である (Chapter \@ref(gis) を参照)。
+Python\index{Python} は、特に GRASS GIS\index{GRASS GIS}、SAGA\index{SAGA}、QGIS\index{QGIS}  などの多くのデスクトップ GIS\index{GIS} が Python API\index{API} を提供しているので、ジオコンピュテーションには重要な言語である (Chapter \@ref(gis) を参照)。
 Python\index{Python} は、R\index{R} と同様、データサイエンスのための[有名な](https://stackoverflow.blog/2017/10/10/impressive-growth-r/)ツールである。
 両言語はオブジェクト指向であり、重複する部分が多いため、R から Python\index{Python} へのアクセスを容易にする **reticulate** パッケージや、オープンソースデータサイエンスエコシステム全体の利益のためにポータブルライブラリをサポートする [Ursa Labs](https://ursalabs.org/) イニシアチブなどの取り組みに繋がっている。
 
@@ -219,7 +214,7 @@ Python の大きな利点は、<u>汎用</u>プログラミング言語である
 デスクトップソフトウェア、コンピュータゲーム、Web サイト、データサイエンス\index{data science}など、多くの領域で使用されている。
 Python\index{Python}  は、異なる (ジオコンピュテーション) コミュニティ間で唯一共有される言語であることが多く、多くの GIS\index{GIS}  プログラムをまとめる「接着剤」と見なすことができる。
 QGIS\index{QGIS} や ArcMap を含む多くのジオアルゴリズム \index{geoalgorithm} は、Python のコマンドラインからアクセスできるため、コマンドライン GIS のスターター言語として適している^[
-ジオアルゴリズム\index{geoalgorithm}へのアクセスを提供する Python モジュールには、GRASS\index{GRASS} 用の `grass.script`、
+ジオアルゴリズム\index{geoalgorithm}へのアクセスを提供する Python モジュールには、GRASS GIS\index{GRASS GIS} 用の `grass.script`、
 SAGA-GIS\index{SAGA} 用の `saga-python`、
 QGIS\index{QGIS} 用　`processing`、
 ArcGIS\index{ArcGIS} 用の `arcpy` がある。]
@@ -229,7 +224,6 @@ ArcGIS\index{ArcGIS} 用の `arcpy` がある。]
 R と同様に、Python も地理データの解析と操作をサポートしており、**shapely**、**geopandas**、**rasterio**、**xarray** などのパッケージがある。
 
 ## Rの空間エコシステム  {#r-ecosystem}
-<!--rl-->
 
 R で地理データを扱う方法はたくさんあり、この分野では何十ものパッケージ\index{R-spatial}がある。^[
 R の空間エコシステムの概要は、CRAN\index{CRAN}  Task View on Analysis of Spatial Data に掲載されている。
@@ -237,11 +231,11 @@ R の空間エコシステムの概要は、CRAN\index{CRAN}  Task View on Analy
 ] 
 本書では、この分野の最先端を学ぶと同時に、将来的にも通用する手法を確保するよう努めることとした。
 ソフトウェア開発の多くの分野と同様に、R の空間エコシステムは急速に進化している (Figure \@ref(fig:cranlogs))。
-R はオープンソースであるため、アイザック・ニュートンが [1675](http://digitallibrary.hsp.org/index.php/Detail/Object/Show/object_id/9285) で述べたように、「巨人の肩の上に立つ」ことによって、これらの開発は容易に過去の研究の上に構築することができるのである。
+R はオープンソースであるため、アイザック・ニュートンが [1675](http2://digitallibrary.hsp.org/index.php/Detail/objects/9792) で述べたように、「巨人の肩の上に立つ」ことによって、これらの開発は容易に過去の研究の上に構築することができるのである。
 この方法は、コラボレーションを促進し、「車輪の再発明」を避けることができるという利点がある。
 例えば、**sf**\index{sf}  (Chapter \@ref(spatial-class) で取り上げている) というパッケージは、前身の **sp** の上に構築されたものである。
 
-R-spatial\index{R-spatial} の開発時間が急増し、R コンソーシアムから、ベクタ形状の保存とアクセスのためのオープンソースの標準とモデルであるシンプルフィーチャのサポートの開発に対する助成金が授与された。 
+R-spatial\index{R-spatial} の開発時間が急増し、R コンソーシアムから、ベクタ形状の保存とアクセスのためのオープンソースの標準とモデルである<u>シンプルフィーチャ</u>のサポートの開発に対する助成金が授与された。 
 その結果、**sf** パッケージ (Section \@ref(intro-sf)) が誕生したのである。
 複数の場所で **sf** への絶大な関心を反映している。 
 特に、長年にわたって蓄積された R-spatial の知恵を多く含むオープンアクセスのメールリストである [R-sig-Geo Archives](https://stat.ethz.ch/pipermail/r-sig-geo/) がそうである。
@@ -257,9 +251,7 @@ knitr::include_graphics("figures/01-cranlogs.png")
 ロング型データと直感的な名前の関数に焦点を当てた **tidyverse**\index{tidyverse (package)} アプローチは、絶大な人気を誇っている。
 そのため、「整えられた地理的データ」が求められ、その一部を **sf** が担ってきている。
 **tidyverse** の明らかな特徴として、パッケージが調和して動作する傾向がある。
-<!--rl:toDo-->
-<!--is the next sentence still valid? -->
-同等の **geoverse** はないが、 [r-spatial](https://github.com/r-spatial/discuss/issues/11) 組織でホストされているパッケージ間の調和を図る試みがあり、**sf**\index{sf} を使うパッケージが増えつつある (Table \@ref(tab:revdep))。
+同等の **geoverse** はないが、 [r-spatial](https://github.com/r-spatial/discuss) 組織でホストされているパッケージ間の調和を図る試みがあり、**sf**\index{sf} を使うパッケージが増えつつある (Table \@ref(tab:revdep))。
 
 ```{r revdep, echo=FALSE, message=FALSE}
 top_dls = readr::read_csv("extdata/top_dls.csv")
@@ -279,7 +271,6 @@ knitr::kable(top_dls[1:5, 1:2], digits = 0,
 主なメンバーは、空間ラスタを扱う **terra** パッケージである (Section \@ref(an-introduction-to-terra) を参照)。
 
 ## R-spatial の歴史  {#the-history-of-r-spatial}
-<!-- jn -->
 
 最新の空間パッケージである **sf** を使うメリットはたくさんあるが、R の空間機能の歴史を知っておくことも重要である。多くの機能、ユースケース、教材は古いパッケージに含まれている。
 古いものにも、見るところさえ分かれば、今でも十分役に立つ。
@@ -289,7 +280,7 @@ knitr::kable(top_dls[1:5, 1:2], digits = 0,
 R の空間機能は、S 言語の初期の空間パッケージが起源である [@bivand_implementing_2000]。
 \index{S}
 1990年代には、数多くの S スクリプトが開発され、空間統計\index{statistics}のためのパッケージも数多く開発された。
-GeoComputation 2000 で発表された [article](http://www.geocomputation.org/2000/GC009/Gc009.htm) によると、「点パターン解析、地球統計学、探索的空間データ解析、空間経済学」という様々な空間手法のための R パッケージが 2000 年までに誕生した [@bivand_open_2000]。
+2000 年までに、「点パターン解析、地球統計学、探索的空間データ解析、空間経済学」という様々な空間手法のための R パッケージが誕生した [@bivand_open_2000]。
 これらのうち、特に **spatial**、**sgeostat**、**splancs** は CRAN\index{CRAN} でまだ利用可能である [@rowlingson_splancs_1993; @rowlingson_splancs_2017;@venables_modern_2002; @majure_sgeostat_2016]。
 
 その後の R News ([The R Journal](https://journal.r-project.org/) の前身) の記事には、当時の R の空間統計ソフトウェアの概要が掲載されており、その多くは S/S-PLUS\index{S} のために書かれた以前のコードに基づいていた [@ripley_spatial_2001]。
@@ -314,10 +305,10 @@ R News の次の号 (Volume 1/3)  では、空間系パッケージに再びス�
 
 2003 年にリリースされた **rgdal** は、R に GDAL \index{GDAL}  バインディングを提供し、これまで利用できなかった地理データ形式からデータをインポートする機能を大幅に向上させることとした。
 初期リリースではラスタドライバのみをサポートしていたが、その後の機能拡張により、座標参照系 (PROJ ライブラリ経由) 、再投影、ベクタファイル形式のインポート (ファイル形式については Chapter \@ref(read-write) を参照) をサポートするようになった。 
-これらの追加機能の多くは、Barry Rowlingson によって開発され、2006年に **rgdal** コードベースでリリースされた [コンテキストについては、 @rowlingson_rasp:_2003 と [R-help](https://stat.ethz.ch/pipermail/r-help/2003-January/028413.html) email list を参照]。
+これらの追加機能の多くは、Barry Rowlingson によって開発され、2006年に **rgdal** コードベースでリリースされた (コンテキストについては、 @rowlingson_rasp:_2003 と [R-help](https://stat.ethz.ch/pipermail/r-help/2003-January/028413.html) email list を参照)。
 
 2005年にリリースされた **sp** は、R の空間オブジェクトと非空間オブジェクトの区別ができない点を克服した [@pebesma_classes_2005]。
-**sp** は 2003 年にウィーンで開かれた[ワークショップ](http://spatial.nhh.no/meetings/vienna/index.html) から発展し、 [R-Forge](https://r-forge.r-project.org) に移行する前は sourceforge でホストされていた。
+**sp** は 2003 年にウィーンで開かれたワークショップから発展し、当初は SourceForge でホストされていたが、R-Forge、GItHub へと移行した。
 2005年以前は、地理座標は一般的に他の数値と同様に扱われていた。 
 点、線、ポリゴン、グリッド、属性データをサポートするクラスと汎用メソッドにより、**sp** はこれを変更した。
 
@@ -325,15 +316,15 @@ R News の次の号 (Volume 1/3)  では、空間系パッケージに再びス�
 データ操作で地理データを扱えるようにする (Section \@ref(why-simple-features) 参照)。
 さらに、**sp** では、地理データのための `summary()` や `plot()` などの汎用的なメソッドが用意されている。
 その後の 10 年間で **sp** クラスは R の地理データ用として急速に普及し、これに依存するパッケージの数は 2008 年の約 20 から 2013 年には 100 以上に増加した [@bivand_applied_2013]。
-現在では、**sp** に依存するパッケージは 500 を超え (これに対して、**sf** パッケージはより速く成長している) 、R のエコシステムの重要な一部となっている。 
-**sp** を使用する主な R パッケージには、空間・時空間地球統計学\index{spatial!statistics}の **gstat** 、球面三角法の **geosphere**、動物による生息地選択の分析の **adehabitat** などがある [@R-gstat; @calenge_package_2006; @hijmans_geosphere_2016]。
+2019年までに **sp** に依存するパッケージは 500 を超えたが、**sf** やその他のパッケージに移行するためその数は減少している。 
+**sp** を使用する主な R パッケージには、空間・時空間地球統計学\index{spatial!statistics}の **gstat** 、球面三角法の **geosphere** などがある [@R-gstat; @calenge_package_2006; @hijmans_geosphere_2016]。
 
 ```{r, eval=FALSE, echo=FALSE}
 # Aim: show n. pkgs that depend on sf and sp
 revdep_sp = devtools::revdep(pkg = "sp")
-length(revdep_sp) # 622 # 2022-05-29
+length(revdep_sp) # 449 # 2023-11-16
 revdep_sf = devtools::revdep(pkg = "sf")
-length(revdep_sf) # 479 # 2022-05-29
+length(revdep_sf) # 739 # 2023-11-16
 ```
 
 **rgdal** と **sp** は空間に関する多くの問題を解決したが、2010年の Google Summer of Code プロジェクト ([@R-rgeos]) で **rgeos** が開発されるまで、**sp** オブジェクトでジオメトリ操作を行うことができなかった。
@@ -342,14 +333,12 @@ length(revdep_sf) # 479 # 2022-05-29
 **sp** エコシステムの限界は、ラスタデータのサポートが限定的であることであった。
 これを克服したのが、2010年に初めてリリースされた **raster**\index{raster}  である [@R-raster]。
 Section \@ref(raster-data) にあるように、**raster** クラスシステムと関数によって、さまざまなラスタ操作が可能になり、現在では **terra** パッケージに実装されている。
-**raster** と **terra** の重要な機能は、RAMに収まらないほど大きなデータセットを扱うことができることである (R の PostGIS\index{PostGIS} へのインターフェースも、地理ベクタデータセットのディスク外操作をサポートしている)。
+**raster** と **terra** の重要な機能は、RAM に収まらないほど大きなデータセットを扱うことができることであり、ディスク外操作もサポートしている。
 **raster** および **terra** は、Section \@ref(map-algebra) で説明されているように、マップ代数もサポートしている。
 
 このようなクラスシステムや手法の開発と並行して、専用の GIS ソフトのインターフェースとして R がサポートされるようになった。
 **GRASS** [@bivand_using_2000] とそれに続くパッケージ **spgrass6** と **rgrass7** と **rgrass** (それぞれ GRASS\index{GRASS} GIS 6 と 7 と 7 + 8 に対応) は、この方向性の顕著な例であった [@bivand_rgrass7_2016;@bivand_spgrass6_2016]。
 R と GIS の橋渡しの例としては、他に **RSAGA** [@R-RSAGA, first published in 2008]\index{RSAGA (package)}、**RPyGeo** [@brenning_arcgis_2012、2008 年に初登場]、**RQGIS** [@muenchow_rqgis:_2017、2016 年に初登場]\index{RQGIS (package)}、**qgisprocess**\index{qgisprocess (package)} がある (Chapter \@ref(gis) 参照)。
-<!--toDo-->
-<!-- rqgisprocess ref! -->
 
 R-spatial の開発の大部分は解析と地理的な操作に集中しており、当初は可視化には焦点が当てられていなかった。
 base と lattice の両方のプロット方式で地図を作る方法を提供していた **sp** であるが、高度な地図作成機能への要望が高まっていた。
@@ -361,9 +350,9 @@ base と lattice の両方のプロット方式で地図を作る方法を提供
 地理的な可視化はベクタデータを中心に行われる傾向があるが、ラスタの可視化は **raster** でサポートされており、空間と時間のデータの可視化に関する書籍 [@lamigueiro_displaying_2018] で紹介されている **rasterVis** のリリースで盛り上がりを見せた。
 それ以来、R でのマップ作成は話題となり、Chapter \@ref(adv-map) で強調されているように、**tmap**、**leaflet**、**rayshader**、**mapview**などの専用パッケージが人気を博している。
 
-Geocomputation with R 第1版が出版された2018年以降、地理系 R パッケージの開発が加速している。 
+Geocomputation with R 第 1 版が出版された2018年以降、地理系 R パッケージの開発が加速している。 
 \index{terra (package)}
-**raster** パッケージの後継である **terra** は、2020年に初めてリリースされ、ラスタデータセットを扱うR ユーザーにいくつかの利点をもたらしている [@hijmans_terra_2021]。Section \@ref(raster-data) で説明されているように、前任者よりも高速でより分かりやすいユーザーインターフェイスを持っている。
+**raster** パッケージの後継である **terra** は、2020年に初めてリリースされ、ラスタデータセットを扱う R ユーザーにいくつかの利点をもたらしている [@-terra]。Section \@ref(raster-data) で説明されているように、前任者よりも高速でより分かりやすいユーザーインターフェイスを持っている。
 
 2021年半ば、**sf** パッケージに球面幾何学計算を取り入れるという大幅な (場合によっては破たんする) 変更が行われた。
 それ以来、地理的 CRS を持つデータに対する多くの空間演算は、Section \@ref(s2) で説明されているように、バックエンドとして S2 球形ジオメトリエンジンを使うのがデフォルトになっている。
@@ -387,18 +376,8 @@ R 空間パッケージを含むほとんどの空間ソフトウェアに影響
 最後に、既存のマッピングツールの中には、依存関係の最小化、ユーザーインターフェースの改善、拡張機能の作成が容易になるように書き直されたものがある。
 これには **mapsf** パッケージ (**cartography** の後継) [@giraud_mapsf_2021]  と **tmap** パッケージのバージョン 4 が含まれ、内部コードの大部分が改訂された。
 
-<!-- toDo: rl-->
-<!-- question: should we add a paragraph about the following stuff here?-->
-<!-- add info about specialized packages - sfnetworks, landscapemetrics, gdalcubes, rgee, etc. -->
-<!-- better to add review papers, including Robin's, mine, etc. -->
-<!-- interoperbility? -->
-<!-- @hesselbarth_opensource_2021 -->
-<!-- @lovelace_open_2021a -->
-
-<!-- spatstat?? -->
-
 2021 年後半、Roger Bivand が [R-sig-Geo mailing list](https://stat.ethz.ch/pipermail/r-sig-geo/2021-September/028760.html) において **rgdal**、**rgeos**、**maptools** を引退させる予定であることが発表された。
-2023 年の引退は、これらのパッケージを適用している既存のワークフローに大きな影響を与えるだけでなく、これらのパケージに依存しているパッケージにも影響を与えた。 
+2023 年にこれらのパッケージが引退したことは、パッケージを利用する作業に大きな影響を与えただけでなく、[これらのパケージに依存しているパッケージにも影響を与えた](https://geocompx.org/post/2023/rgdal-retirement/)。 
 そこで、Bivand は、本書の次の章で説明するように **sf** や **terra** などより現代的なツールへの移行を提案した。
 
 ## 演習
