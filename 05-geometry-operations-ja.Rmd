@@ -1,5 +1,9 @@
 # ジオメトリ演算  {#geometry-operations}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ## 必須パッケージ  {- #prerequisites-05}
 
 - この章では、Chapter \@ref(spatial-operations) と同じパッケージを使用するが、Chapter \@ref(spatial-class) でインストールされた **spDataLarge** を追加している。
@@ -15,12 +19,12 @@ library(spDataLarge)
 ## イントロダクション  {#introduction-05}
 
 これまで本書では、地理データセットの構造 (Chapter \@ref(spatial-class))、地理以外の属性 (Chapter \@ref(attr)) と空間関係 (Chapter \@ref(spatial-operations)) に基づく操作方法について説明してきた。
-この章では、ベクタの簡略化と変換、ラスタの切り取り、ベクタのラスタへの変換、ラスタのベクタへの変換など、地理オブジェクトの地理的要素の操作に重点を置いている。
+この章では、バッファ作成、ベクタの簡略化と変換、ラスタデータの集計や最サンプルなど、空間オブジェクトの地理的要素の操作に重点を置いている。
 この本を読めば (そして最後にある演習を試した後)、`sf` オブジェクトのジオメトリ列と、他の地理的オブジェクトとの関係でラスタに表されたピクセルの範囲と地理的位置を理解し、コントロールできるようになるはずである。
 
 Section \@ref(geo-vec) は、「単項」と「二項」演算によるベクタジオメトリの変換を扱う。
 単項演算 (unary operation) とは、単体のジオメトリに対して、線分やポリゴンの単純化、バッファや中心点の作成、「アフィン変換」による単体のジオメトリの移動・拡大・縮小・回転などを行う (Section \@ref(simplification) ～ Section \@ref(affine-transformations) を参照)。
-一方、二項変換 (binary transformations) とは、あるジオメトリを別のジオメトリの形状に基づいて変更するもので、切り取り (clip) と結合\index{vector!union} (union) を、それぞれ Section \@ref(clipping) と Section \@ref(geometry-unions) で説明する。
+一方、二項変換 (binary transformations) とは、あるジオメトリを別のジオメトリの形状に基づいて変更するもので、切り取り (clip) と結合\index{vector!union} (union) を、Section \@ref(clipping) と Section \@ref(geometry-unions) で説明する。
 ジオメトリ型の変換 (例えば、ポリゴンからラインへの変換) は、Section \@ref(type-trans) で実際に行う。
 
 Section \@ref(geo-ras) は、ラスタオブジェクトの幾何学変換を扱っている。
@@ -28,6 +32,7 @@ Section \@ref(geo-ras) は、ラスタオブジェクトの幾何学変換を扱
 ラスタの解像度 (ラスタ集計・分解ともいう)、範囲、原点を変更する方法を教える。
 これらの操作は、異なるソースのラスタデータセットの位置合わせを行う場合に特に有効である。
 整列されたラスタオブジェクトは、ピクセル間の一対一の対応を共有し、Section \@ref(map-algebra) で説明されているマップ代数演算を使用して処理することができる。
+
 Section \@ref(raster-vector) では、ベクタオブジェクトとラスタオブジェクトの間の操作をカバーする。 
 ラスタ値をベクタジオメトリで「マスク」し、「抽出」する方法を紹介する。
 重要なのは、ラスタデータを「ポリゴン化」し、ベクタデータを「ラスタ化」する方法を示し、この2つのデータモデルをより互換性のあるものにすることである。
@@ -44,7 +49,7 @@ Section \@ref(raster-vector) では、ベクタオブジェクトとラスタオ
 簡略化とは、通常、縮尺の小さい地図で使用するために、ベクタオブジェクト (線やポリゴン) を一般化する処理のことである。
 オブジェクトを単純化するもう一つの理由は、それらが消費するメモリ、ハードディスク容量、ネットワーク帯域幅の量を減らすためである。
 インタラクティブ・マップとして公開する前に、複雑な形状を簡略化することが賢明だろう。 
-**sf** パッケージは `st_simplify()` を提供する。これは GEOS の Douglas-Peucker アルゴリズムの実装を使用して、頂点数を削減するものである。
+**sf** パッケージは `st_simplify()` を提供する。これは Douglas-Peucker アルゴリズムの実装を使用して、頂点数を削減するものである。
 `st_simplify()` は、`dTolerance` を使用することで、一般化のレベルを地図で使われている単位で制御することができる  [詳細は @douglas_algorithms_1973]。
 Figure \@ref(fig:seine-simp) は、セーヌ川とその支流を表すジオメトリ `LINESTRING` を簡略化したものである。
 以下のコマンドで簡略化したジオメトリを作成してみよう。
@@ -73,32 +78,24 @@ object.size(seine_simp)
 \index{vector!simplification} 
 簡略化はポリゴンにも適用できる。
 下の例は、米国本土 `us_states` を表している。
-Chapter \@ref(reproj-geo-data) で示したように、GEOS はデータが投影型 CRS にあることを前提にしているため、地理型 CRS を使用した場合、予期せぬ結果になる可能性がある。
-したがって、まず最初に、US National Atlas Equal Area (EPSG = 2163) のような適切な投影 CRS にデータを投影する (Figure \@ref(fig:us-simp) 左上)。
-
-```{r 05-geometry-operations-4}
-us_states2163 = st_transform(us_states, "EPSG:2163")
-```
-
-`st_simplify()` は、投影されたポリゴンでも同様に機能する。
 
 ```{r 05-geometry-operations-5}
-us_states_simp1 = st_simplify(us_states2163, dTolerance = 100000) # 100 km
+us_states_simp1 = st_simplify(us_states, dTolerance = 100000) # 100 km
 ```
 
-`st_simplify()` の制限事項として、ジオメトリ単位でオブジェクトを簡略化することが挙げられる。
+`st_simplify()` の制限として、ジオメトリ単位でオブジェクトを簡略化することが挙げられる。
 このため、「トポロジー」が失われ、Figure \@ref(fig:us-simp) (パネル右上) に示すような、重なり合った「穴のあいた」面単位になってしまうのである。
-`ms_simplify()` の **rmapshaper** はこの問題を克服する代替手段を提供する。
+**rmapshaper** の `ms_simplify()` が代替となる。
 デフォルトでは、Douglas-Peucker アルゴリズムのいくつかの制限を克服した Visvalingam アルゴリズムが使用される [@visvalingam_line_1993]。
 <!-- https://bost.ocks.org/mike/simplify/ -->
-次のコードチャンクは、この関数を使用して、`us_states2163` を簡略化している。
+次のコードチャンクは、この関数を使用して、`us_states` を簡略化している。
 結果は入力 (引数 `keep` で設定) の 1% の頂点しか持たないが、`keep_shapes = TRUE` を設定したため、オブジェクトの数はそのままである。^[
 マルチポリゴンオブジェクトの簡略化では、`keep_shapes` 引数が TRUE に設定されていても、内部の小さなポリゴンが削除されることがある。これを防ぐには、`explode = TRUE` を設定する必要がある。このオプションは、単純化する前に、すべてのマルチポリゴンを個別のポリゴンに変換する。
 ]
 
 ```{r 05-geometry-operations-6, warning=FALSE, message=FALSE}
 # 保持するポイントの割合 (0～1、デフォルト 0.05)
-us_states_simp2 = rmapshaper::ms_simplify(us_states2163, keep = 0.01,
+us_states_simp2 = rmapshaper::ms_simplify(us_states, keep = 0.01,
                                           keep_shapes = TRUE)
 ```
 
@@ -112,21 +109,19 @@ us_states_simp2 = rmapshaper::ms_simplify(us_states2163, keep = 0.01,
 引数 `smoothness` は、形状を滑らかにするために使用するガウスの帯域幅を制御する。デフォルト値は 1。
 
 ```{r 05-geometry-operations-6b, warning=FALSE}
-us_states_simp3 = smoothr::smooth(us_states2163, 
-                                  method = "ksmooth", smoothness = 6)
+us_states_simp3 = smoothr::smooth(us_states, method = "ksmooth", smoothness = 6)
 ```
 
-最後に、元のデータセットと2つの簡易版を視覚的に比較してみよう。
-Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 回帰 (`smooth(method=ksmooth`) アルゴリズムの出力に違いがあることがわかる (Figure \@ref(fig:us-simp))。
+最後に、元のデータセットと 2 つの簡易版を視覚的に比較してみよう。
+Figure \@ref(fig:us-simp) で、Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 回帰 (`smooth(method=ksmooth`) アルゴリズムの出力に違いがあることがわかる 。
 
 ```{r us-simp, echo=FALSE, fig.cap="ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。", warning=FALSE, fig.scap="Polygon simplification in action."}
 library(tmap)
-p_ussimp1 = tm_shape(us_states2163) + tm_polygons() + tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
+p_ussimp1 = tm_shape(us_states) + tm_polygons() + tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
 p_ussimp2 = tm_shape(us_states_simp1) + tm_polygons() + tm_title("st_simplify")
 p_ussimp3 = tm_shape(us_states_simp2) + tm_polygons() + tm_title("ms_simplify")
 p_ussimp4 = tm_shape(us_states_simp3) + tm_polygons() + tm_title('smooth(method = "ksmooth")')
-tmap_arrange(p_ussimp1, p_ussimp2, p_ussimp3, p_ussimp4,
-             ncol = 2, nrow = 2)
+tmap_arrange(p_ussimp1, p_ussimp2, p_ussimp3, p_ussimp4, ncol = 2, nrow = 2)
 ```
 
 ### 重心  {#centroids}
@@ -159,12 +154,16 @@ seine_pos = st_point_on_surface(seine)
 ```
 
 ```{r centr, warning=FALSE, echo=FALSE, fig.cap="ニュージーランドの地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「表面上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations."}
-p_centr1 = tm_shape(nz) + tm_borders() +
+p_centr1 = tm_shape(nz) + tm_polygons(col = "grey80", fill = "grey90") +
   tm_shape(nz_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
-  tm_shape(nz_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) 
-p_centr2 = tm_shape(seine) + tm_lines() +
+  tm_shape(nz_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
+  tm_layout(scale = 1.6)
+p_centr2 = tm_shape(seine) + tm_lines(col = "grey80") +
   tm_shape(seine_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
-  tm_shape(seine_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) 
+  tm_shape(seine_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
+  tm_add_legend(type = "symbols", shape = 1, col = c("black", "red"), 
+                labels = c("重心", "表面上の点")) +
+  tm_layout(scale = 1.6)
 tmap_arrange(p_centr1, p_centr2, ncol = 2)
 ```
 
@@ -189,7 +188,7 @@ seine_buff_5km = st_buffer(seine, dist = 5000)
 seine_buff_50km = st_buffer(seine, dist = 50000)
 ```
 
-```{r buffs, echo=FALSE, fig.cap="Seine データセット周辺の 5 km (左) と 50 km (右) のバッファ。ジオメトリフィーチャごとに 1 つのバッファが作成されることを反映した色に注目。", fig.show='hold', out.width="75%", fig.scap="Buffers around the seine dataset."}
+```{r buffs, echo=FALSE, fig.cap="Seine データセット周辺の 5 km (左) と 50 km (右) のバッファ。ジオメトリフィーチャごとに 1 つのバッファが作成されることを反映した色に注目。", fig.show='hold', out.width="100%", fig.scap="Buffers around the seine dataset."}
 p_buffs1 = tm_shape(seine_buff_5km) + tm_polygons(fill = "name") +
   tm_shape(seine) + tm_lines() +
   tm_title("5 km バッファ") + 
@@ -202,9 +201,14 @@ tmap_arrange(p_buffs1, p_buffs2, ncol = 2)
 ```
 
 ```{block2 05-geometry-operations-10, type = "rmdnote"}
-`st_buffer()` の最後の第3引数は `nQuadSegs` で、これは「1象限あたりの分割数」を意味し、デフォルトでは30に設定されている (バッファで作られる円は $4 \times 30 = 120$ ラインで構成されることを意味する)。
-この引数はほとんど設定する必要がない。
+`st_buffer()` には、追加の引数がある。
+最も重要な引数は、以下の通り。
+
+- `nQuadSegs` (GEOS エンジン使用時): これは「1 象限あたりの分割数」を意味し、デフォルトでは 30 に設定されている (バッファで作られる円は $4 \times 30 = 120$ ラインで構成されることを意味する)。
 この引数が有用な例外的なケースとしては、バッファ操作の出力によって消費されるメモリが大きな懸念材料である場合 (この場合は減らす)、または非常に高い精度が必要な場合 (この場合は増やす)。
+- `max_cells` (S2 エンジン使用時): 値が大きいほどバッファが滑らかになるが、時間がかかる
+- `endCapStyle` と `joinStyle` (GEOS エンジン使用時): バッファの縁の見た目を制御する
+- `singleSide` (GEOS エンジン使用時): バッファを入力ジオメトリの片側につくるか両側につくるかを制御する
 ```
 
 ```{r nQuadSegs, eval=FALSE, echo=FALSE}
@@ -216,6 +220,20 @@ seine_points = st_cast(seine[1, ], "POINT")
 buff_single = st_buffer(seine_points[1, ], 50000, 2)
 buff_points = st_cast(buff_single, "POINT")
 plot(st_geometry(buff_single), add = TRUE)
+```
+
+```{r buffargs, eval=FALSE, echo=FALSE}
+seine_wgs = st_transform(seine, "EPSG:4326")
+plot(st_buffer(seine, 5000))
+plot(st_buffer(seine_wgs, 5000))
+plot(st_buffer(seine, 5000, nQuadSegs = 1))
+plot(st_buffer(seine_wgs, 5000, nQuadSegs = 1)) # no effect
+plot(st_buffer(seine, 5000, max_cells = 10)) # no effect
+plot(st_buffer(seine_wgs, 5000, max_cells = 100))
+plot(st_buffer(seine, 5000, endCapStyle = "FLAT", joinStyle = "MITRE"))
+plot(st_buffer(seine_wgs, 5000, endCapStyle = "FLAT", joinStyle = "MITRE")) # no effect
+plot(st_buffer(seine, 5000, singleSide = TRUE))
+plot(st_buffer(seine_wgs, 5000, singleSide = TRUE)) # no effect
 ```
 
 ### アフィン変換  {#affine-transformations}
@@ -235,7 +253,7 @@ nz_sfc = st_geometry(nz)
 
 平行移動は、すべてのポイントをマップ単位で同じ距離だけ移動させる。
 ベクタオブジェクトに数値ベクタを追加することで、実現できるだろう。
-例えば、以下のコードでは、すべての y 座標を北に 10 万メートル移動させ、x 座標はそのままにしている (Figure \@ref(fig:affine-trans) の左側のパネル)。
+例えば、以下のコードでは、すべての y 座標を北に 10 万メートル移動させ、x 座標はそのままにしている (Figure \@ref(fig:affine-trans) 左図)。
 
 ```{r 05-geometry-operations-12}
 nz_shift = nz_sfc + c(0, 100000)
@@ -251,7 +269,7 @@ nz_scale0 = nz_sfc * 0.5
 ```
 
 ローカル拡大縮小はジオメトリを独立して扱い、ジオメトリが拡大縮小されるポイント (重心など) を必要とする。
-以下の例では、各ジオメトリは重心を中心に2倍に縮小されている (Figure \@ref(fig:affine-trans) の中央のパネル)。
+以下の例では、各ジオメトリは重心を中心に2倍に縮小されている (Figure \@ref(fig:affine-trans) 中央)。
 そのために、まず各オブジェクトは、その中心が `0, 0` (`(nz_sfc - nz_centroid_sfc)`) の座標となるように移動される。 
 次に、ジオメトリのサイズを半分に縮小する (`* 0.5`)。
 最後に、各オブジェクトの重心を入力データの座標に戻す (`+ nz_centroid_sfc`)。
@@ -282,7 +300,7 @@ rotation = function(a){
 ```
 
 `rotation` 関数は、1つの引数 `a` - 回転角度 (angle) を度単位で受け取る。
-重心のような選択された点を中心に回転させることができる (Figure \@ref(fig:affine-trans) の右パネル)。
+重心のような選択された点を中心に回転させることができる (Figure \@ref(fig:affine-trans) 右図)。
 その他の例については、`vignette("sf3")` を参照 (訳注：[日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html))。
 
 ```{r 05-geometry-operations-16}
@@ -383,15 +401,15 @@ source("code/05-venn-clip.R")
 op = par(mar = rep(0, 4))
 bb = st_bbox(st_union(x, y))
 box = st_as_sfc(bb)
-set.seed(2017)
+set.seed(2024)
 p = st_sample(x = box, size = 10)
 p_xy1 = p[x_and_y]
 plot(box, border = "grey", lty = 2)
 plot(x, add = TRUE, border = "grey")
 plot(y, add = TRUE, border = "grey")
-plot(p, add = TRUE)
-plot(p_xy1, cex = 3, col = "red", add = TRUE)
-text(x = c(-0.5, 1.5), y = 1, labels = c("x", "y"), cex = 2)
+plot(p, add = TRUE, cex = 3.5)
+plot(p_xy1, cex = 5, col = "red", add = TRUE)
+text(x = c(-0.5, 1.5), y = 1, labels = c("x", "y"), cex = 3)
 ```
 
 ```{r, echo=FALSE}
@@ -401,7 +419,7 @@ par(op)
 ```{r venn-subset-to-show, eval=FALSE}
 bb = st_bbox(st_union(x, y))
 box = st_as_sfc(bb)
-set.seed(2017)
+set.seed(2024)
 p = st_sample(x = box, size = 10)
 x_and_y = st_intersection(x, y)
 ```
@@ -414,10 +432,13 @@ x_and_y = st_intersection(x, y)
 結果は (属性名の表面的な違いを除いて) 同じだが、実装は大きく異なる。
 
 ```{r 05-geometry-operations-21}
-p_xy1 = p[x_and_y] # way #1
-p_xy2 = st_intersection(p, x_and_y) # way #2
+# way #1
+p_xy1 = p[x_and_y]
+# way #2
+p_xy2 = st_intersection(p, x_and_y)
+# way #3
 sel_p_xy = st_intersects(p, x, sparse = FALSE)[, 1] & 
-  st_intersects(p, y, sparse = FALSE)[, 1] # way #3
+  st_intersects(p, y, sparse = FALSE)[, 1]
 p_xy3 = p[sel_p_xy]
 ```
 
@@ -512,11 +533,13 @@ p_sc1 = tm_shape(st_sfc(multipoint)) + tm_symbols(shape = 1,
                                                   col = "black", 
                                                   size = 0.5) +
   tm_title("複合点") +
-  tm_layout(inner.margins = c(0.05, 0.05, 0.05, 0.05), fontfamily = "HiraginoSans-W3")
+  tm_layout(inner.margins = c(0.15, 0.05, 0.15, 0.05), fontfamily = "HiraginoSans-W3")
 p_sc2 = tm_shape(st_sfc(linestring)) + tm_lines() +
-  tm_title("線") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("線") 
++ tm_layout(inner.margins = c(0.15, 0.05, 0.15, 0.05), fontfamily = "HiraginoSans-W3")
 p_sc3 = tm_shape(st_sfc(polyg)) + tm_polygons(border.col = "black") +
-  tm_title("ポリゴン") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("ポリゴン") 
++ tm_layout(inner.margins = c(0.15, 0.05, 0.15, 0.05), fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_sc1, p_sc2, p_sc3, ncol = 3)
 ```
 
@@ -551,6 +574,16 @@ t2 = cast_all(polyg)
 重要な違いの1つは、マルチタイプから非マルチタイプへの変換である。
 この処理の結果、`sfc` または `sf` のマルチオブジェクトは、多数の非マルチオブジェクトに分割される。
 
+以下のような `sf` オブジェクトを持っている。
+
+- `POI` - 点 type (定義上、一つの点)
+- `MPOI` - 4 点からなる複合点
+- `LIN` - 5 点からなる線
+- `MLIN` - 二つの線の複合線 (5 つの点と 2 つの点)
+- `POL` - ポリゴン (5 つの点)
+- `MPOL` - 二つのポリゴンからなる複合ポリゴン (どちらも 5 つの点)
+- `GC` - GEOMETRYCOLLECTION で複合点 (4 つの点) と線 (5 つの点)
+
 Table \@ref(tab:sfs-st-cast) は、シンプルフィーチャに対して可能なジオメトリタイプの変換を示したものである。
 単一のシンプルフィーチャ (表の最初の列で表される) は、Table \@ref(tab:sfs-st-cast) の列で表される複数のジオメトリタイプに変換することができる。
 例えば、1つの点から複数行の文字列やポリゴンに変換することはできない。`[1, 4:5]` のセルに NA が含まれている理由を説明する。
@@ -576,7 +609,7 @@ knitr::kable(sfs_st_cast,
                              "入力型は行、出力型は列で指定"),
              caption.short = "Geometry casting on simple feature geometries.",
              booktabs = TRUE) |> 
-  kableExtra::add_footnote("注：(1) という値はフィーチャ数を表し、NA は操作が不可能なことを表す。略語: POI、LIN、POL、GC は、POINT、LINESTRING、POLYGON、GEOMETRYCOLLECTION を意味する。これらのジオメトリタイプのMULTIバージョンは、例えば、MPOI は MULTIPOINT の頭文字をとったもので、前に M を付ける。", notation = "none")
+  kableExtra::add_footnote("注：(1) という値はフィーチャ数を表し、NA は操作が不可能なことを表す。", notation = "none")
 ```
 
 例として、新しいオブジェクトである `multilinestring_sf` にジオメトリタイプの変換を適用してみよう (Figure \@ref(fig:line-cast) の左側)。
@@ -600,7 +633,7 @@ linestring_sf2 = st_cast(multilinestring_sf, "LINESTRING")
 linestring_sf2
 ```
 
-```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間のタイプキャスティングの例。", warning=FALSE, fig.scap="Examples of type casting."}
+```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間のタイプキャスティングの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE}
 p_lc1 = tm_shape(multilinestring_sf) + tm_lines(lwd = 3) +
   tm_title("複合線") + tm_layout(fontfamily = "HiraginoSans-W3")
 linestring_sf2$name = c("Riddle Rd", "Marshall Ave", "Foulke St")
@@ -700,9 +733,9 @@ elev_4 = extend(elev, elev_2)
 origin(elev_4)
 ```
 
-2つのラスタが異なる原点を持つ場合、それらのセルは完全に重ならず、マップ代数は不可能となる。
+2 つのラスタが異なる原点を持つ場合、それらのセルは完全に重ならず、マップ代数は不可能となる。
 原点を変更する場合 `origin()` を使用する。^[
-2つのラスタデータセットの原点がわずかに離れている場合、`terra::terraOptions()` の引数 `tolerance` を増やすだけで十分な場合がある。
+2 つのラスタデータセットの原点がわずかに離れている場合、`terra::terraOptions()` の引数 `tolerance` を増やすだけで十分な場合がある。
 ]
 Figure \@ref(fig:origin-example) は、このように原点を変更した場合の効果を明らかにしたものである。
 
@@ -736,15 +769,16 @@ tm_shape(elev4_poly) +
 リモートセンシングでは、スペクトル (スペクトルバンド)、時間分解能 (同じエリアを時間をかけて観測)、ラジオメトリック (色深度) 分解能も重要である。
 ドキュメントにある `tapp()` の例で、時間的ラスタ集計の方法を確認してみよう。
 ]
+
 例として、`dem` (**spDataLarge** パッケージにある) の空間解像度を 5 倍に変更する (Figure \@ref(fig:aggregate-example))。
-さらに、出力セルの値は入力セルの平均に対応する必要がある (`median()`、`sum()` など、他の関数も使用可能)。
+さらに、出力セルの値は入力セルの平均に対応する (`median()`、`sum()` など、他の関数も使用可能)。
 
 ```{r 05-geometry-operations-40}
 dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 dem_agg = aggregate(dem, fact = 5, fun = mean)
 ```
 
-```{r aggregate-example, fig.cap = "オリジナル (左) と aggregate 後 (右)。", echo=FALSE}
+```{r aggregate-example, fig.cap = "オリジナル (左) と 集計後 (右)。", echo=FALSE}
 p_ar1 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale_continuous()) +
   tm_title("A. オリジナル") + 
@@ -756,8 +790,24 @@ p_ar2 = tm_shape(dem_agg) +
 tmap_arrange(p_ar1, p_ar2, ncol = 2)
 ```
 
+Table \@ref(tab:aggdf) は、オリジナルと集計後の比較である。
+`aggregate()` で解像度を「下げた」ことにより、$(30.85, 30.85)$ から $(154.25, 154.25)$ に上がった。
+列数 (`nrow`) と行数 (`ncol`) を減らすことで行った (Section \@ref(raster-data) 参照)。
+範囲は、新しいグリッドに合うように微調整された。
+
+```{r aggdf}
+#| echo: false
+agg_df = data.frame(
+  object = c("dem", "dem_agg"),
+  resolution = c("(30.85, 30.85)", "(154.25, 154.25)"),
+  dimensions = c("117 x 117", "24 x 24"),
+  extent = c("794599.1, 798208.6, 8931775, 8935384", "794599.1, 798301.1, 8931682, 8935384")
+)
+knitr::kable(agg_df, caption = "Properties of the original and aggregated raster.", booktabs = TRUE)
+```
+
 \index{raster!disaggregation}
-`disagg()` 関数は、ラスタオブジェクトの解像度を上げ、新しく作成されたセルに値を割り当てるための2つの方法を提供する。
+`disagg()` 関数は、ラスタオブジェクトの解像度を上げ、新しく作成されたセルに値を割り当てるための 2 つの方法を提供する。
 新たに生成されたセルの値を計算する方法は 2 つある。デフォルトの方法 (`method = "near"`) は、すべての出力セルに入力セルの値を与えるだけなので、値が重複し、「ブロック状の」出力となる。
 `bilinear` 法は、入力画像の 4 つの最近接画素中心 (Figure \@ref(fig:bilinear) のサーモン色の点) を用いて、距離で重み付けした平均値を計算する (Figure \@ref(fig:bilinear) の矢印)。
 出力セルの値は、左上の四角で表現される (Figure \@ref(fig:bilinear))。
@@ -772,6 +822,14 @@ source("code/05-bilinear.R", print.eval = TRUE)
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/146619205-3c0c2e3f-9e8b-4fda-b014-9c342a4befbb.png")
 ```
 
+```{r}
+#| echo: false
+#| eval: false
+identical(dem, dem_disagg)
+compareGeom(dem, dem_disagg)
+all.equal(dem, dem_disagg)
+```
+
 `dem` と `dem_disagg` の値を比較すると、両者が同一ではないことがわかる (`compareGeom()` や `all.equal()` を使うこともできる)。
 しかし、分解は単純な補間技術であるため、これはほとんど予想されなかった。
 分解することで解像度が上がるが、対応する値は解像度の低いソースと同程度の精度しかないことを念頭に置くことが重要である。
@@ -780,11 +838,11 @@ source("code/05-bilinear.R", print.eval = TRUE)
 
 \index{raster!resampling}
 上記の低解像度化・高解像度化の方法は、低解像度化・高解像度化係数によってラスタの解像度を変えたい場合にのみ適している。 
-しかし、解像度や原点の異なるラスタが2つ以上ある場合はどうしたらよいのだろうか。
+しかし、解像度や原点の異なるラスタが 2 つ以上ある場合はどうしたらよいのだろうか。
 これがリサンプリングの役割で、新しい画素の位置に対して値を計算する処理である。
 つまり、この処理では、元のラスタの値を受け取り、カスタム解像度と原点を持つターゲットラスタの値を新たに計算し直す (Figure \@ref(fig:resampl0))。
 
-```{r resampl0, echo=FALSE, fig.cap="オリジナルからカスタムの解像度と原点のターゲットラスタへの再サンプリング"}
+```{r resampl0, echo=FALSE, fig.cap="オリジナルからカスタムの解像度と原点のターゲットラスタへのリサンプリング", fig.asp = 0.4}
 target_rast = rast(xmin = 794650, xmax = 798250, 
                    ymin = 8931750, ymax = 8935350,
                    resolution = 150, crs = "EPSG:32717")
@@ -799,7 +857,7 @@ tm2 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("Target raster") +
   tm_layout(frame = FALSE, legend.show = FALSE) +
-  tm_shape(target_rast_p) +
+  tm_shape(target_rast_p, is.main = TRUE) +
   tm_borders()
 tm3 = tm_shape(dem) +
   tm_raster(col_alpha = 0) +
@@ -814,16 +872,17 @@ tmap_arrange(tm1, tm2, tm3, nrow = 1)
 Figure \@ref(fig:resampl) に示すように、解像度/原点の異なるラスタの値を推定する方法はいくつかある。
 主なリサンプリング方法には、以下のようなものがある。
 
-- 最近傍 (Nearest neighbor)：元のラスタの最も近いセルの値を、ターゲットのセルに割り当てる。これは高速でシンプルな手法で、通常、カテゴリラスタのリサンプリングに適している。
-- 双一次補間 (Bilinear interpolation)：元のラスタから4つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である。
-- 三次補間 (Cubic interpolation)：3次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる。
-- 三次スプライン補間 (Cubic spline interpolation)：出力セルを決定するために元のラスタの16個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される。
-- Lanczos windowed sinc resampling: 出力セルの値を決定するために、元のラスタの36個の最近接セルの値を使用する。連続的なラスタに使用される。^[
+- 最近傍 (Nearest neighbor)：元のラスタの最も近いセルの値を、ターゲットのセルに割り当てる。これは高速でシンプルな手法で、通常、カテゴリラスタのリサンプリングに適している
+- 双一次補間 (Bilinear interpolation)：元のラスタから4つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である
+- 三次補間 (Cubic interpolation)：3次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる
+- 三次スプライン補間 (Cubic spline interpolation)：出力セルを決定するために元のラスタの16個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される
+- Lanczos windowed sinc resampling: 出力セルの値を決定するために、元のラスタの36個の最近接セルの値を使用する。連続的なラスタに使用される^[
 この方法の詳細な説明は、https://gis.stackexchange.com/a/14361/20955。
 ]
 
 上記の説明では、<u>最近傍</u>リサンプリングのみがカテゴリラスタに適しており、連続ラスタにはすべてのメソッドが (異なるアウトカムで) 使用できることが強調されている。
 さらに、連続した方式を採用するごとに、処理時間が長くなる。
+さらに、リサンプリングは関連するセルの統計値 (最小値や最頻値など) を用いることもできる、
 
 リサンプリングを適用するために、**terra** パッケージは、`resample()` 関数を提供する。
 入力ラスタ( `x` )、目的の空間特性を持つラスタ( `y` )、リサンプリング方法( `method` )を受け付ける。

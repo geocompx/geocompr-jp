@@ -733,7 +733,7 @@ v_sfg_sfh # sf をロードせずに出力
 #> [1] "XY"    "POINT" "sfg" 
 ```
 
-```{r sfheaders-sfg_point, eval=FALSE} 
+```{r} 
 #| echo: false
 v = c(1, 1)
 v_sfg_sfh = sfheaders::sfg_point(obj = v)
