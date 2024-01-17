@@ -1,5 +1,9 @@
 # 属性データ操作  {#attr}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ## 必須パッケージ  {- #prerequisites-03}
 
 - この章では、以下のパッケージがインストールされ、ロードされている必要がある。
@@ -26,7 +30,7 @@ library(spData) # Chapter 2 で紹介した空間データパッケージ
 属性データとは、地理 (ジオメトリ) データに関連する非空間情報である。
 バス停を例にとると、その位置は通常、名称に加えて緯度・経度の座標 (ジオメトリデータ) で表現される。
 例えば、ロンドンの [Elephant & Castle / New Kent Road](https://www.openstreetmap.org/relation/6610626) の停留所の座標は、経度 -0.098 度、緯度 51.495 度で、Chapter \@ref(spatial-class) で説明した `sfc` の表現では `POINT (-0.098 51.495)` と表すことができる。
-POINT フィーチャの属性のうち、*attribute*\index{attribute} のような名称のもの (シンプルフィーチャの用語を使用する) が、この章のトピックである。
+POINT フィーチャの属性\index{attribute}のうち、*name* のような名称の属性 (シンプルフィーチャの用語を使用する) が、この章のトピックである。
 
 ```{r, eval=FALSE, echo=FALSE}
 # Aim: find a bus stop in central London
@@ -50,18 +54,19 @@ point_sf = sf::st_as_sf(point_df, coords = c("X", "Y"))
 ラスタマトリックスの3行4列目の画素を考えてみよう。
 その空間的な位置は、マトリックス内のインデックスで定義される。原点から x 方向に 4 セル (地図上では通常東と右)、y 方向に 3 セル (通常南と下) 移動させる。
 ラスタの<u>解像度</u>は、<u>ヘッダ</u>で指定された各 x ステップと y ステップの距離を定義する。
-ヘッダはラスタデータセットの重要な構成要素で、ピクセルと地理的座標の関係を指定する (Chapter \@ref(spatial-operations) も参照)。
+ヘッダはラスタデータセットの重要な構成要素で、ピクセルと空間座標の関係を指定する (Chapter \@ref(spatial-operations) も参照)。
 
 本章は、ベクタデータセットではバス停の名前、ラスタデータセットではピクセルの標高といった属性に基づいて地理的なオブジェクトを操作する方法を解説する。
-ベクタデータの場合は、部分集合 (subset) や属性集計 (aggregate) といった手法になる (Section \@ref(vector-attribute-subsetting) と Section \@ref(vector-attribute-aggregation) を参照)。
+ベクタデータの場合は、部分集合 (subset) や属性集計 (aggregate) といった手法になる (Section \@ref(vector-attribute-subsetting) から Section \@ref(vector-attribute-aggregation) を参照)。
 また、Section \@ref(vector-attribute-joining) では、共有 ID を用いてデータをシンプルフィーチャに結合する方法、Section \@ref(vec-attr-creation) では、新しい変数の作成方法を説明している。
 これらの操作には、それぞれ空間的な等価性がある。
-例えば、ベース R の `[` 演算子は、属性に基づくオブジェクトの部分集合と空間オブジェクトの部分集合に同じように機能する。また、空間結合を使用して2つの地理データセットの属性を結合することもできる。
+例えば、R の `[` 演算子は、属性に基づくオブジェクトの部分集合と空間オブジェクトの部分集合に同じように機能する。また、空間結合を使用して 2 つの地理データセットの属性を結合することもできる。
 この章で培ったスキルは他にも応用可能である。
-Chapter \@ref(spatial-operations) は、ここで紹介した方法を空間的な世界に拡張したものである。
 
-次のセクションでは、さまざまな<u>ベクタ</u>属性操作を深く掘り下げた後、<u>ラスタ</u>属性データ操作を Section \@ref(manipulating-raster-objects) でカバーする。これは、連続およびカテゴリ属性を含むラスタレイヤの作成方法と、1つまたは複数のレイヤからセル値を抽出する (ラスタ部分集合化) 方法を示している。 
+次のセクションでは、さまざまな<u>ベクタ</u>属性操作を深く掘り下げた後、<u>ラスタ</u>属性データ操作を Section \@ref(manipulating-raster-objects) でカバーする。
+ラスタについては、連続およびカテゴリ属性を含むラスタレイヤの作成方法と、1 つまたは複数のレイヤからセル値を抽出する (ラスタ部分集合化) 方法を示す (Section \@ref(raster-subsetting))。 
 Section \@ref(summarizing-raster-objects) は、ラスタデータセット全体を要約するために使用できる「グローバル」ラスタ操作の概要を提供する。
+Chapter \@ref(spatial-operations) は、ここで紹介した方法を空間的な世界に拡張するものである。
 
 ## ベクタ属性操作  {#vector-attribute-manipulation}
 
@@ -102,8 +107,7 @@ attributes(methods(class = "sf"))$info |>
 これにより、空間データベースからインポートしたジオメトリに、`wkb_geometry` や `the_geom` などのさまざまな名前を付けることができるようになる。
 ```
 
-`sf` オブジェクトは、データフレーム用の `tidyverse` クラスである `tbl_df` と `tbl` を拡張することも可能である。
-\index{tidyverse (package)}
+`sf` オブジェクトは、データフレーム用の `tidyverse` クラスである `tbl_df` と `tbl` を拡張することも可能である。\index{tidyverse (package)}
 このように **sf** は、データ解析に基本的な R や tidyverse 関数を使用するなど、R のデータ解析能力の全力を地理データに対して発揮することを可能にする。
 \index{tibble}
 高性能データ処理パッケージ **data.table** も **sf** オブジェクトを処理できるが、issue [`Rdatatable/data.table#2273` ](https://github.com/Rdatatable/data.table/issues/2273) で説明されているように、完全に[互換](https://github.com/Rdatatable/data.table/issues/5352)ではない。
@@ -130,7 +134,7 @@ ncol(world_df)
 `sf` オブジェクトに対する非空間データ操作は、適切な場合にのみオブジェクトのジオメトリを変更する (例：集約後に隣接するポリゴン間の境界を解消する)。
 地理的属性データの操作に習熟するということは、データフレームの操作に習熟するということである。
 
-多くのアプリケーションにおいて、tidyverse\index{tidyverse (package)} パッケージ **dplyr** は、データフレームを扱うための効果的なアプローチを提供する。
+多くのアプリケーションにおいて、tidyverse\index{tidyverse (package)} パッケージ **dplyr** [@R-dplyr] は、データフレームを扱うための効果的なアプローチを提供する。
 tidyverse との互換性は、前身の **sp** になかった **sf** の利点であるが、落とし穴もあるのでハマることもある (詳しくは [geocompx.org](https://geocompx.github.io/geocompkg/articles/tidyverse-pitfalls.html) の補足 `tidyverse-pitfalls` vignetteを参照)。
 
 ### ベクタ属性の部分集合  {#vector-attribute-subsetting}
@@ -145,8 +149,8 @@ R の基本的な部分集合 (subset) の作成方法には、演算子 `[` と
 `[` 演算子は、行と列の両方から部分集合を作成 (抽出) することができる。 
 データフレームオブジェクト名の直後の角括弧内に置かれたインデックスは、保持する要素を指定する。
 コマンド `object[i, j]` は、「`i` で表される行と、`j` で表される列を返す」という意味である。`i` と `j` は通常、整数か `TRUE` と `FALSE` を含む (インデックスは、行や列名を示す文字列でもかまいない)。
-例えば、`object[5, 1:3]` は、「5行目と1列目から3列目を含むデータを返す：結果は1行目と3列目だけのデータフレームで、`sf` オブジェクトの場合は4番目のジオメトリ列も含めなさい」という意味である。
-`i` または `j` を空白にすると、すべての行または列が返される。 `world[1:5, ]` は最初の5行と11列すべてを返す。
+例えば、`object[5, 1:3]` は、「5 行目と 1 列目から 3 列目を含むデータを返す：結果は 1 行目と 3 列目だけのデータフレームで、`sf` オブジェクトの場合は 4 番目のジオメトリ列も含めなさい」という意味である。
+`i` または `j` を空白にすると、すべての行または列が返される。 `world[1:5, ]` は最初の 5 行と 11 列すべてを返す。
 以下の例は、base R による部分集合の作成を示している。
 各コマンドが返す `sf` データフレームの行と列の数を推測し、自分のコンピュータで結果を確認してみよう (他の練習問題はこの章の最後を参照)。
 
@@ -190,11 +194,7 @@ small_countries = subset(world, area_km2 < 10000)
 \index{attribute!subsetting}
 R の基本関数は成熟し安定しており、また広く使用されているため、特に再現性と信頼性が重要視される文脈では確実な選択肢となる。
 **dplyr** の関数は、特に RStudio のような列名の[自動補完](https://support.posit.co/hc/en-us/articles/205273297-Code-Completion-in-the-RStudio-IDE) を可能にするコードエディタと組み合わせたとき、一部の人々 (本書の著者も含む) が対話式データ分析に直観的で生産的だと感じる「tidy な」ワークフローを可能にする。
-データフレームをサブセットするための主要な関数 (`sf` データフレームを含む) を **dplyr** 関数で以下に示す。
-<!-- The sentence below seems to be untrue based on the benchmark below. -->
-<!-- `dplyr` is also faster than base R for some operations, due to its C++\index{C++} backend. -->
-<!-- Something on dbplyr? I've never seen anyone use it regularly for spatial data 'in the wild' so leaving out the bit on integration with dbs for now (RL 2021-10) -->
-<!-- The main **dplyr** subsetting functions are `select()`, `slice()`, `filter()` and `pull()`. -->
+データフレームの部分集合化する主要な関数 (`sf` データフレームを含む) を **dplyr** 関数で以下に示す。
 
 ```{r, echo=FALSE, eval=FALSE}
 # Aim: benchmark base vs dplyr subsetting
@@ -252,19 +252,13 @@ names(world5)[names(world5) == "pop"] = "population" # 列めいを変更
 `select()` は、`contains()`、`starts_with()`、`num_range()` など、より高度な部分集合操作のための「ヘルパー関数」とも連動する (詳しくは  `?select`  のヘルプページを参照)。
 
 ほとんどの **dplyr** 動詞はデータフレームを返すが、`pull()` で単一の列をベクトルとして抽出することができる。
-<!-- Note: I have commented out the statement below because it is not true for `sf` objects, it's a bit confusing that the behaviour differs between data frames and `sf` objects. -->
-<!-- The subsetting operator in base R (see `?[`), by contrast, tries to return objects in the lowest possible dimension. -->
-<!-- This means selecting a single column returns a vector in base R as demonstrated in code chunk below which returns a numeric vector representing the population of countries in the `world`: -->
-R の基本関数でリスト部分集合演算子 `$` と `[[` を使っても同じ結果が得られる。以下の3つのコマンドは、同じ数値ベクトルを返す。
+Base R でリスト部分集合演算子 `$` と `[[` を使っても同じ結果が得られる。以下の 3 つのコマンドは、同じ数値ベクトルを返す。
 
 ```{r 03-attribute-operations-21, eval = FALSE}
 pull(world, pop)
 world$pop
 world[["pop"]]
 ```
-
-<!-- Commenting out the following because it's confusing and covered better in other places (RL, 2021-10) -->
-<!-- To turn off this behavior, set the `drop` argument to `FALSE`,  -->
 
 ```{r 03-attribute-operations-19, eval=FALSE, echo=FALSE}
 # create throw-away data frame
@@ -290,7 +284,7 @@ identical(x1, x2)
 slice(world, 1:6)
 ```
 
-`filter()` は、R の `subset()` 関数に相当する **dplyr** の関数である。
+`filter()` は、Base R の `subset()` 関数に相当する **dplyr** の関数である。
 例えば、面積がある閾値以下の国、平均寿命が高い国など、与えられた基準に合致する行のみを保持する。
 
 ```{r 03-attribute-operations-23, eval=FALSE}
@@ -378,7 +372,7 @@ class(world_agg1)
 **sf** は、`aggregate.sf()` というメソッドを提供している。これによって、`aggregate()` 関数の引数`x` に `sf` オブジェクトを与え、さらに `by` の引数が与えられたとき、自動的に `aggregate.sf()` が呼ばれる。
 
 ```{r 03-attribute-operations-27}
-world_agg2 = aggregate(world["pop"], list(world$continent), FUN = sum, 
+world_agg2 = aggregate(world["pop"], by = list(world$continent), FUN = sum, 
                        na.rm = TRUE)
 class(world_agg2)
 nrow(world_agg2)
@@ -411,7 +405,7 @@ world_agg4  = world |>
 \index{attribute!subsetting}
 \index{attribute!aggregation}
 これまで学んだ **dplyr** 関数を組み合わせて、複数のコマンドを連結し、世界の国々の属性データを大陸別にまとめてみよう。
-次のコマンドは、人口密度を計算し (`mutate()`)、大陸を含む国の数で並べ (`dplyr::arrange()`)、最も人口の多い3大陸だけを残し (`dplyr::slice_max()`)、その結果を Table \@ref(tab:continents) に表示する。
+次のコマンドは、人口密度を計算し (`mutate()`)、大陸を含む国の数で並べ (`arrange()`)、最も人口の多い3大陸だけを残し (`slice_max()`)、その結果を Table \@ref(tab:continents) に表示する。
 
 ```{r 03-attribute-operations-30}
 world_agg5 = world |> 
@@ -452,8 +446,8 @@ knitr::kable(
 
 結合を実証するために、コーヒー生産に関するデータを `world` のデータセットと結合する。
 コーヒーのデータは **spData** パッケージの `coffee_data` というデータフレームに入っている (詳しくは `?coffee_data` を参照)。
-以下のように、3列になっている。
-`name_long` は主要なコーヒー生産国の名前、`coffee_production_2016` と `coffee_production_2017` は各年の 60kg 袋単位のコーヒー生産量の推定値である。
+以下のように、3 列になっている。
+`name_long` は主要なコーヒー生産国の名前、`coffee_production_2016` と `coffee_production_2017` は各年の 60 kg 袋単位のコーヒー生産量の推定値である。
 最初のデータセットを保持する「左結合」で、`world` と `coffee_data` を結合する。
 
 ```{r 03-attribute-operations-32, warning=FALSE}
@@ -472,8 +466,8 @@ plot(world_coffee["coffee_production_2017"])
 
 結合を行うには、両方のデータセットで「キー変数」が供給される必要がある。
 デフォルトでは、**dplyr** は一致する名前のすべての変数を使用する。
-この場合、`world_coffee` と `world` の両方のオブジェクトに `name_long` という変数が含まれており、`Joining with `by = join_by(name_long)`` というメッセージを説明している。
-変数名が同じでない場合、おおむね2つのオプションがある。
+この場合、`coffee_data` と `world` の両方のオブジェクトに `name_long` という変数が含まれており、`Joining with 'by = join_by(name_long)'` というメッセージを説明している。
+変数名が同じでない場合、おおむね 2 つのオプションがある。
 
 1. どちらかのオブジェクトのキー変数の名前を変更し、一致するようにする。
 2. `by` 引数で結合変数を指定する。
@@ -492,7 +486,7 @@ nrow(world_coffee)
 ```
 
 なお、元のオブジェクトの名前は保持され、`world_coffee` と新しいオブジェクト `world_coffee2` は同一であることを意味する。
-結果について、元のデータセットと同じ行数であることも特筆する。
+結果について、元のデータセットと同じ行数となる。
 `coffee_data` には 47 行のデータしかないが、`world_coffee` と `world_coffee2` には 177 の国別レコードがすべてそのまま保存されている。
 これは、行が一致しない場合、新たなコーヒー生産量変数として `NA` の値を割り当てるためである。
 キー変数が一致する国だけを残したい場合はどうすればいいのだろうか？
@@ -504,7 +498,7 @@ world_coffee_inner = inner_join(world, coffee_data)
 nrow(world_coffee_inner)
 ```
 
-`coffee_data` の結果が47行であるのに対し、`inner_join()` の結果は45行しかないことに注意しておこう。
+`coffee_data` の結果が 47 行であるのに対し、`inner_join()` の結果は 45 行しかないことに注意しておこう。
 残りの列はどうなったのだろうか？
 一致しなかった行は、`setdiff()` 関数を用いて、以下のように特定することができる。
 
@@ -556,9 +550,9 @@ class(coffee_world)
 幸いなことに、ジオメトリ列を持つ非空間データフレーム (`coffee_world` など) は、以下のように `sf` オブジェクトに強制的に格納することができる。`st_as_sf(coffee_world)`
 ```
 
-ここでは、join のユースケースの大半をカバーしている。
-詳しくは、@grolemund_r_2016 の [Relational data](https://r4ds.had.co.nz/relational-data.html?q=join#relational-data) の章、本書に付属する **geocompkg** パッケージの [join vignette](https://geocompx.github.io/geocompkg/articles/join.html) 、および **data.table** などのパッケージによる結合を説明した[ドキュメント](https://asardaes.github.io/table.express/articles/joins.html)を読むことを勧める。
-空間結合については次の章で説明する (Section \@ref(spatial-joining))。
+ここでは、属性結合のほとんどのケースをカバーした。
+より詳しくは、@grolemund_r_2016 の [Relational data](https://r4ds.had.co.nz/relational-data.html?q=join#relational-data) の章、本書に付属する **geocompkg** パッケージの [join vignette](https://geocompx.github.io/geocompkg/articles/join.html) 、および **data.table** などのパッケージによる結合を説明した[ドキュメント](https://asardaes.github.io/table.express/articles/joins.html)を読むことを勧める。
+さらに、空間結合については次の章で説明する (Section \@ref(spatial-joining))。
 
 ### 属性の作成と空間情報の削除  {#vec-attr-creation}
 
@@ -661,12 +655,13 @@ elev = rast(nrows = 6, ncols = 6, resolution = 0.5,
 
 結果は、6 行 6 列 (引数 `nrow` と `ncol` で指定）のラスタオブジェクトと、XとY方向の最小と最大の空間範囲 (`xmin`、`xmax`、`ymin`、`ymax`) となる。
 `vals` 引数は、各セルが含む値を設定する。この場合、1 から 36 までの数値データである。
+
 \index{raster!manipulation}
 \index{categorical raster}
 ラスタオブジェクトは、R のクラス `logical` または `factor` 変数のカテゴリ値も含むことができる。
 次のコードでは、Figure \@ref(fig:cont-raster) に示すラスタデータセットを作成する。
 
-```{r 03-attribute-operations-53, eval = FALSE}
+```{r 03-attribute-operations-53, eval=FALSE}
 grain_order = c("clay", "silt", "sand")
 grain_char = sample(grain_order, 36, replace = TRUE)
 grain_fact = factor(grain_char, levels = grain_order)
@@ -675,7 +670,7 @@ grain = rast(nrows = 6, ncols = 6, resolution = 0.5,
              vals = grain_fact)
 ```
 
-```{r 03-attribute-operations-54, include = FALSE}
+```{r 03-attribute-operations-54, include=FALSE}
 elev = rast(system.file("raster/elev.tif", package = "spData"))
 grain = rast(system.file("raster/grain.tif", package = "spData"))
 ```
@@ -687,8 +682,9 @@ grain = rast(system.file("raster/grain.tif", package = "spData"))
 また、関数 `levels()` を使って、新しい因子レベルの取得や追加、既存の因子の置き換えを行うことも可能である。
 
 ```{r 03-attribute-operations-56, eval=F}
-levels(grain) = data.frame(value = c(0, 1, 2), wetness = c("wet", "moist", "dry"))
-levels(grain)
+grain2 = grain # 元データを書き換えない
+levels(grain2) = data.frame(value = c(0, 1, 2), wetness = c("wet", "moist", "dry"))
+levels(grain2)
 ```
 
 ```{r cont-raster, echo = FALSE, message = FALSE, fig.asp=0.5, fig.cap = "数値 (左) とカテゴリー値 (右) を持つラスタデータセット。", fig.scap="Raster datasets with numeric and categorical values.", warning=FALSE}
@@ -710,8 +706,8 @@ source("code/03-cont-raster-plot.R", print.eval = TRUE)
 
 - 行・列のインデックス作成
 - セル ID
-- 座標 ( Section \@ref(spatial-raster-subsetting) 参照)
-- 別の空間オブジェクト (Section \@ref(spatial-raster-subsetting) 参照)
+- 座標
+- 別の空間オブジェクト
 
 ここでは、非空間的な操作と考えられるので、最初の2つのオプションのみを示す。
 空間オブジェクトをサブセットする必要がある場合、あるいは出力が空間オブジェクトである場合、これを空間サブセットと呼ぶことにする。
@@ -730,7 +726,7 @@ elev[1]
 
 複数レイヤのラスタオブジェクトを部分集合作成すると、各レイヤのセル値が返される。
 例えば `two_layers = c(grain, elev); two_layers [1] ` は1行2列のデータフレームを返す。
-すべての値または完全な行を抽出するには、`values()` を使用することもできる。
+すべての値を抽出するには、`values()` を使用することもできる。
 
 部分集合作成操作と連動して、既存の値を上書きすることでセルの値を変更することができる。
 例えば、次のコードチャンクは、`elev` の左上のセルに 0 を設定する (結果は表示していない)。
@@ -775,6 +771,10 @@ global(elev, sd)
 \index{raster!summarizing}
 さらに、`freq()` 関数を使用すると、カテゴリ値の頻度表を取得することができる。
 
+```{r}
+freq(grain)
+```
+
 ラスタ値の統計は、様々な方法で可視化することができる。
 `boxplot()`、`density()`、`hist()`、`pairs()` などの特定の関数は、以下のコマンドで作成されたヒストグラムで示されるように、ラスタオブジェクトでも動作する (図示していない)。
 
@@ -790,7 +790,8 @@ hist(elev)
 
 ```{block 03-attribute-operations-65, type='rmdnote'}
 パッケージ間で関数名が衝突することがある(例えば、`extract()` という名前の関数が **terra** と **tidyr** の両方のパッケージに存在する場合など)。
-関数を冗長に参照してパッケージをロードしない (例: `tidyr::extract()`) があるが、関数名の衝突を防ぐもう一つの方法は `detach()` で、問題となるパッケージをアンロードする。
+パッケージをロードする順番を変えると、予想しない結果が発生することがある。
+関数名の衝突を防ぐには、パッケージをロードせずに名前空間を明示する方法 (例: `tidyr::extract()`) や、`detach()` で問題となるパッケージをアンロードする方法がある。
 例えば、以下のコマンドは **terra** パッケージをアンロードする (これは RStudio の右下ペインにデフォルトで存在する *Packages* タブでも行うことができる)：`detach("package:terra", unload = TRUE, force = TRUE)`。
 `force` 引数は、他のパッケージがそのパッケージに依存している場合でも、そのパッケージを切り離すことを保証する。
 しかし、これは切り離されたパッケージに依存しているパッケージの使い勝手を悪くする可能性があるため、推奨されない。
