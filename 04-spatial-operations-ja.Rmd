@@ -1,5 +1,9 @@
 # 空間データ操作  {#spatial-operations}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ## 必須パッケージ  {- #prerequisites-04}
 
 - この章では、Chapter \@ref(attr) で使用したものと同じパッケージが必要である。 
@@ -17,18 +21,20 @@ library(spData)
 この章では、空間オブジェクトがその位置と形状に基づいて、さまざまな方法で変更できることを紹介する。
 空間的な操作の多くは、非空間的 (属性的) な操作に相当するため、前の章で示したデータセットの部分集合や結合といった概念がここでも適用できる。
 これは特にベクタ操作に当てはまる。ベクタ属性の操作に関する Section \@ref(vector-attribute-manipulation) は、空間的な対応である空間部分集合 (Section \@ref(spatial-subsetting) で取り上げている) を理解するための基礎となるものである。
-空間結合 (Section \@ref(spatial-joining)) と属性集計 (Section \@ref(spatial-aggr)) には、前の章で説明した非空間的な対応関係がある。
+空間結合 (Section \@ref(spatial-joining)、\@ref(non-overlapping-joins)、 \@ref(incongruent)) と属性集計 (Section \@ref(spatial-aggr)) には、前の章で説明した非空間的な対応関係がある。
 
 しかし、空間演算は非空間演算と異なる点がいくつもある。
 例えば空間結合は、ターゲットデータセットと交差する、または一定の距離内にあるモノのマッチングなど、結合方法は多数ある。一方、前章の Section \@ref(vector-attribute-joining) で説明した属性結合は、1つの方法でしかできない　(ただし [**fuzzyjoin**](https://cran.r-project.org/package=fuzzyjoin) パッケージのドキュメントで説明した、ファジー結合を使う場合は別)。
 オブジェクト間の空間的関係のさまざまな<u>タイプ</u> (intersect と disjoint を含む) については、Section \@ref(topological-relations) で説明する。
 \index{spatial operations}
-空間オブジェクトのもう一つのユニークな側面は距離である。すべての空間オブジェクトは空間を通じて関連しており、距離計算を行うことでこの関係の強さを調べることができる。これは、Section \@ref(distance-relations) のベクタデータで説明する。
+空間オブジェクトのもう一つのユニークな側面は距離である。すべての空間オブジェクトは空間を通じて関連しており、距離計算を行うことでこの関係の強さを調べることができる。これは、Section \@ref(distance-relations) と Section \@ref(DE-9IM-strings) のベクタデータで説明する。
 
-ラスタの空間演算には、部分集合 (Section \@ref(spatial-raster-subsetting))、および複数のラスタ「タイル」を単一のオブジェクトに統合する (Section \@ref(merging-rasters)) 方法がある。
+ラスタの空間演算として、部分集合は Section \@ref(spatial-raster-subsetting) で説明する。
 <u>マップ代数</u>は、ラスタのセルの値を、周囲のセル値を参照して、あるいは参照せずに変更する操作を対象とする。
-多くのアプリケーションに不可欠なマップ代数の概念は、Section \@ref(map-algebra) で紹介している。ローカル、フォーカル、ゾーンのマップ代数演算については、それぞれ Section \@ref(local-operations)、Section \@ref(focal-operations)、Section \@ref(zonal-operations) のセクションで解説している。ラスタデータセット全体を表す要約統計量を生成するグローバルマップ代数操作と、ラスタの距離計算については、Section \@ref(global-operations-and-distances) で説明する。
-演習の前の最後の章では、2つのラスタデータセットを合成する方法について説明し、再現可能な例を挙げて実演している。
+多くのアプリケーションに不可欠なマップ代数の概念は、Section \@ref(map-algebra) で紹介している。ローカル、フォーカル、ゾーンのマップ代数演算については、それぞれ Section \@ref(local-operations)、Section \@ref(focal-operations)、Section \@ref(zonal-operations) のセクションで解説している。
+ラスタデータセット全体を表す要約統計量を生成するグローバルマップ代数操作と、ラスタの距離計算については、Section \@ref(global-operations-and-distances) で説明する。
+次に、地図代数とベクタ操作を Section \@ref(map-algebra-counterparts-in-vector-processing) で議論する。
+演習の前の最後の章では、2 つのラスタデータセットを合成する方法について説明し、再現可能な例を挙げて実演している。
 
 ```{block2 04-spatial-operations-2, type='rmdnote'}
 2つの空間オブジェクトを使用する空間操作は、両方のオブジェクトが同じ座標参照系を持つことに依存することに留意する。この点については、Section \@ref(crs-intro) で紹介し、Chapter \@ref(reproj-geo-data) でさらに詳しく解説する。
@@ -48,7 +54,7 @@ library(spData)
 \index{vector!subsetting}
 \index{spatial!subsetting}
 
-空間部分集合を示すために、**spData** パッケージの `nz` と `nz_height` データセットを使用する。これは、ニュージーランドの 16 の主要地域と 101 の最高地点に関する地理データをそれぞれ含み (Figure \@ref(fig:nz-subset))、投影座標系で表示されるものである。
+空間部分集合を示すために、**spData** パッケージの `nz` と `nz_height` データセットを使用する。これは、ニュージーランドの 16 の主要地域と 101 の最高地点に関する地理データをそれぞれ含み (Figure \@ref(fig:nz-subset))、投影座標参照系で表示されるものである。
 次のコードでは、Canterbury を表すオブジェクトを作成し、空間部分集合を使用して、対象地域のすべての High Point を返す。
 
 ```{r 04-spatial-operations-3}
@@ -82,7 +88,7 @@ tmap_arrange(p_hpnz1, p_hpnz2, ncol = 2)
 空間部分集合には、ターゲットオブジェクトのフィーチャが選択される部分集合オブジェクトとどのような空間的関係を持たなければならないかを決める、様々な<u>位相関係</u>を用いることができる。
 これには、Section \@ref(topological-relations) で見るように、*touches*、*crosses*、*within* が含まれる。 
 デフォルトの設定 `st_intersects` は、ソース「部分集合」オブジェクトに *touches*、*crosses*、*within* するターゲット内のフィーチャを返す「全て」トポロジー関係である。
-上記のように、`op =` 引数で別の空間演算子を指定することができる。次のコマンドでは、`st_intersects()` の逆で、カンタベリーと交差しない点を返す (Section \@ref(topological-relations) を参照)。
+`op =` 引数で別の空間演算子を指定することもできる。次のコマンドでは、`st_intersects()` の逆で、カンタベリーと交差しない点を返す (Section \@ref(topological-relations) を参照)。
 
 ```{r 04-spatial-operations-4, eval=FALSE}
 nz_height[canterbury, , op = st_disjoint]
@@ -91,7 +97,7 @@ nz_height[canterbury, , op = st_disjoint]
 ```{block2 04-spatial-operations-5, type='rmdnote'}
 空白の引数 (`, ,` で示される) は、`[` が、`sf` オブジェクトの3番目の引数である `op` を強調するために含まれていることに注意。
 これを使うと、部分集合操作をいろいろな方法で変更することができる。
-例えば、`nz_height[canterbury, 2, op = st_disjoint]` は同じ行を返すが、2番目の属性列のみを含む (詳細は `` sf:::`[.sf` `` and the `?sf`)。
+例えば、`nz_height[canterbury, 2, op = st_disjoint]` は同じ行を返すが、2 番目の属性列のみを含む (詳細は `` sf::`[.sf` `` and the `?sf`)。
 ```
 
 ベクタデータの空間部分集合についてこれだけ知っておけば多くの応用例を使うことができる。
@@ -101,7 +107,7 @@ nz_height[canterbury, , op = st_disjoint]
 空間部分集合を行うもう一つの方法は、位相演算子によって返されるオブジェクトを使用することである。
 これらのオブジェクトは、それ自体、例えば、連続する領域間の関係のグラフネットワークを探索する際に有用であるが、以下のコードチャンクで示されるように、部分集合にも使用できる。
 
-```{r 04-spatial-operations-6}
+```{r 04-spatial-operations-6, out.lines=9}
 sel_sgbp = st_intersects(x = nz_height, y = canterbury)
 class(sel_sgbp)
 sel_sgbp
@@ -152,7 +158,8 @@ waldo::compare(canterbury_height2, canterbury_height4)
 
 トポロジー関係は数学的な起源を持つが、一般的な空間的関係をテストするためによく使われる関数を視覚化することで、直感的に理解することが可能である。
 Figure \@ref(fig:relations) は、様々なジオメトリペアとその関連性を示している。
-Figure \@ref(fig:relations) の 3 番目と 4 番目のペア (左から右、そして下) は、ある関係では順序が重要であることを示している。関係 *equals*、*intersects*、*crosses*、*touches*、*overlaps* は対称であり、`function(x, y)` が真なら `function(y, x)` も真となるが、 *contains* と *within* など幾何学の順序が重要である関係は、そうではない。
+Figure \@ref(fig:relations) の 3 番目と 4 番目のペア (左から右、そして下) は、ある関係では順序が重要であることを示している。
+関係 *equals*、*intersects*、*crosses*、*touches*、*overlaps* は対称であり、`function(x, y)` が真なら `function(y, x)` も真となるが、 *contains* と *within* など幾何学の順序が重要である関係は、そうではない。
 各ジオメトリペアには、次節で説明する FF2F11212 のような「DE-9IM」文字列があることを確認しておこう。
 \index{topological relations}
 
@@ -253,14 +260,15 @@ st_disjoint(point_sf, polygon_sfc, sparse = FALSE)[, 1]
 
 関数 `st_is_within_distance()` は、選択オブジェクトに<u>ほぼ接触</u>しているフィーチャを検出する。この関数には、さらに `dist` という引数がある。
 ターゲットオブジェクトが選択されるまでに必要な距離を設定することができる。
-点 2 は `polygon_sfc` の最も近い頂点から 0.2 単位以上離れているが、距離を 0.2 に設定すると、まだ選択されていることに注意されたい。
-これは、距離が最も近い辺まで測定されるためで、この場合、Figure \@ref(fig:relation-objects) の点2の真上にあるポリゴンの部分である。
- (点 2 とポリゴンの実際の距離が 0.13 であることは、コマンド `st_distance(point_sf, polygon_sfc)` で確認できる。) 
 'is within distance' という二値空間述語は以下のコードチャンクで示され、その結果、すべての点がポリゴンから 0.2 単位以内にあることが示される。
 
 ```{r 04-spatial-operations-14}
 st_is_within_distance(point_sf, polygon_sfc, dist = 0.2, sparse = FALSE)[, 1]
 ```
+
+点 2 は `polygon_sfc` の最も近い頂点から 0.2 単位以上離れているが、距離を 0.2 に設定すると、まだ選択されていることに注意されたい。
+これは、距離が最も近い辺まで測定されるためで、この場合、Figure \@ref(fig:relation-objects) の点2の真上にあるポリゴンの部分である。
+ (点 2 とポリゴンの実際の距離が 0.13 であることは、コマンド `st_distance(point_sf, polygon_sfc)` で確認できる。) 
 
 ```{r, eval=FALSE, echo=FALSE}
 # verify distances to the polygon with reference to paragraph above:
@@ -311,14 +319,47 @@ plot(l, add = TRUE)
 plot(p, add = TRUE)
 ```
 
+### 距離関係  {#distance-relations}
+
+前のセクションで示したトポロジー関係はバイナリ (フィーチャが他のフィーチャと交差するかしないか) であるが、距離関係は連続である。
+2つの `sf` オブジェクト間の距離は `st_distance()` で計算される。これは、Section \@ref(non-overlapping-joins) の距離ベースの結合でも裏で使用されている。
+これは、Section \@ref(spatial-subsetting) で作成された、New Zealand で最も高い地点と Canterbury 地域の地理的な重心との間の距離を求める以下のコードチャンクに示されている。
+\index{sf!distance relations}
+
+```{r 04-spatial-operations-31, warning=FALSE}
+nz_highest = nz_height |> slice_max(n = 1, order_by = elevation)
+canterbury_centroid = st_centroid(canterbury)
+st_distance(nz_highest, canterbury_centroid)
+```
+
+結果について、2 点驚くべき点がある。
+
+- `units` がある。つまり、 100,000 メートルである。100,000 インチではない。
+- 戻り値はたとえ一つでも行列で返る。
+
+この 2 つ目の機能は、`st_distance()` のもう 1 つの便利な機能である、オブジェクト `x` と `y` のすべてのフィーチャの組み合わせ間の<u>距離行列</u>を返す機能を示唆している。
+これは、`nz_height` に含まれる最初の 3 つのフィーチャと、オブジェクト `co` で表される New Zealand の Otago と Canterbury の地域との間の距離を求める以下のコマンドに示されている。
+
+```{r 04-spatial-operations-32}
+co = filter(nz, grepl("Canter|Otag", Name))
+st_distance(nz_height[1:3, ], co)
+```
+
+`nz_height` の 2 番目と 3 番目のフィーチャーと `co` の 2 番目のフィーチャ間の距離はゼロであることに注意。
+これは、点と多角形の間の距離は、ポリゴンの<u>任意の部分</u> までの距離を指すという事実を示している：
+`nz_height` の 2 番目と 3 番目の点は Otago の<u>中</u>にあり、プロットすることで確認できる (結果は示していない)。
+
+```{r 04-spatial-operations-33, eval=FALSE}
+plot(st_geometry(co)[2])
+plot(st_geometry(nz_height)[2:3], add = TRUE)
+```
+
 ### DE-9IM 文字列  {#de-9im-strings}
 
 前節で示した二項述語の根底には、DE-9IM (Dimensionally Extended 9-Intersection Model) というものがある。
-名前からして暗号のようであり、簡単なテーマではない。
-しかし、空間的な関係をよりよく理解するために、学習する価値があるだろう。
-さらに、DE-9IM の高度な使い方として、カスタム空間述語を作成することも可能である。
-このモデルは当初、発明者によって「2つのフィーチャの境界、内部、外部の交点の次元」を意味する「DE + 9IM」と表示されていたが [@clementini_comparison_1995]、現在は「DE-9IM」と表記されている [@shen_classification_2018]。
-<!-- The model's workings can be demonstrated with reference to two intersecting polygons, as illustrated in Figure \@ref(fig:de-9im). -->
+名前からして暗号のようであり、簡単なテーマではないが、空間的な関係をよりよく理解することができ、カスタム空間述語を作成することも可能である。
+このモデルは当初、発明者によって「2 つのフィーチャの境界、内部、外部の交点の次元」を意味する「DE + 9IM」と表示されていたが [@clementini_comparison_1995]、現在は「DE-9IM」と表記されている [@shen_classification_2018]。
+DE-9IM は、ユークリッド空間の 2 次元オブジェクト (点、線、ポリゴン) に適用される。つまり、このモデル (および GEOS のようなそれを実装したソフトウェア) は、投影座標参照系でデータを扱うことを前提としている。
 
 ```{r de-9im, echo=FALSE, eval=FALSE}
 # Todo one day: revive this
@@ -578,15 +619,15 @@ sel_table
 
 ### 空間結合  {#spatial-joining}
 
-2 つの非空間データセットを結合するには、Section \@ref(vector-attribute-joining) で説明されているように、共有の「キー」変数に依存する。
-空間データ結合は同じ概念を適用するが、その代わりに前節で説明した空間関係に依存する。
+2 つの非空間データセットを結合する場合、Section \@ref(vector-attribute-joining) で説明されているように、共有の「キー」変数に依存する。
+空間データ結合も概念的には同様であるが、変数ではなく前節で説明した空間関係に依存する。
 属性データの場合と同様に、結合では、ソースオブジェクト (`y`) からターゲットオブジェクト (結合関数の引数 `x` ) に新しい列を追加する。
 \index{join!spatial}
 \index{spatial!join}
 
-例えば、地球上にランダムに分布する 10 個の点があり、そのうちの陸地にある点はどの国のものか？
-このアイデアを[再現可能な例](https://github.com/Robinlovelace/geocompr/blob/main/code/04-spatial-join.R)に実装することで、地理データを扱うスキルが身に付き、空間結合がどのように機能するかを知ることができる。
-出発点は、地表にランダムに散らばる点を作ることである。
+例として、地球上にランダムに分布する 10 個の点があり、そのうちの陸地にある点はどの国のものかを調べたいとする。
+このアイデアを[再現可能な例](https://github.com/Robinlovelace/geocompr/blob/main/code/04-spatial-join.R)として実装することで、地理データを扱うスキルが身に付き、空間結合がどのように機能するかを知ることができる。
+まず、地表にランダムに散らばる点を作ることから始めよう。
 
 ```{r 04-spatial-operations-19}
 set.seed(2018) # 再現できるように seed を設定
@@ -602,7 +643,7 @@ random_points = random_df |>
 Figure \@ref(fig:spatial-join) で示したシナリオでは、`random_points` オブジェクト (左上) には属性データがないのに対し、`world`  (右上) には凡例で示した国名のサンプルを含む属性があることがわかる。
 空間結合は、以下のコードチャンクに示すように、`st_join()` で実装されている。
 出力は、`random_joined` のオブジェクトで、Figure \@ref(fig:spatial-join)  (左下) に図示されている。
-結合データセットを作成する前に、空間部分集合を用いて、ランダムな点を含む国だけを含む `world_random` を作成し、結合データセットで返される国名の数が4であることを検証している ( Figure \@ref(fig:spatial-join) の右上のパネル参照)。
+結合データセットを作成する前に、空間部分集合を用いて、ランダムな点を含む国だけを含む `world_random` を作成し、結合データセットで返される国名の数が4であることを検証している ( Figure \@ref(fig:spatial-join) 右上)。
 
 ```{r 04-spatial-operations-20, message=FALSE}
 world_random = world[random_points, ]
@@ -619,11 +660,9 @@ source("code/04-spatial-join.R", print.eval = TRUE)
 上の例では、ポリゴンレイヤからポイントレイヤへの列の追加を示しているが、ジオメトリの種類に関係なく同じ方法で行える。
 このような場合、例えば `x` にポリゴンが含まれ、それぞれが `y` の複数のオブジェクトと一致する場合、空間結合では `y` の一致するオブジェクトごとに新しい行が作成されるため、重複フィーチャが作られる。
 
-<!-- Idea: demonstrate what happens when there are multiple matches with reprex (low priority, RL: 2021-12) -->
+### 距離結合  {#non-overlapping-joins}
 
-### 非重複結合  {#non-overlapping-joins}
-
-2 つの地理データセットが接触していなくても、地理的に強い関係がある場合がある。
+2 つの地理データセットが交差 (intersect) していなくても、近接関係により地理的に強い関係がある場合がある。
 すでに **spData** パッケージに含まれているデータセット `cycle_hire` と `cycle_hire_osm` が良い例となる。
 これらをプロットすると、Figure \@ref(fig:cycle-hire) に示すように、しばしば密接に関連しているが、接触していないことがわかる。このベースバージョンは、以下のコードで作成される。
 \index{join!non-overlapping}
@@ -633,10 +672,10 @@ plot(st_geometry(cycle_hire), col = "blue")
 plot(st_geometry(cycle_hire_osm), add = TRUE, pch = 3, col = "red")
 ```
 
-以下のように、同じ `st_intersects()` な点があるかどうかを確認することができる。
+以下のように、同じ点であるかどうかを、`st_intersects()` を使って確認することができる。
 
 ```{r 04-spatial-operations-22, message=FALSE}
-any(st_touches(cycle_hire, cycle_hire_osm, sparse = FALSE))
+any(st_intersects(cycle_hire, cycle_hire_osm, sparse = FALSE))
 ```
 
 ```{r 04-spatial-operations-23, echo=FALSE, eval=FALSE}
@@ -676,26 +715,9 @@ sel = st_is_within_distance(cycle_hire, cycle_hire_osm,
 summary(lengths(sel) > 0)
 ```
 
-```{r 04-spatial-operations-24-without-s2-test, eval=FALSE, echo=FALSE}
-sf::sf_use_s2(FALSE)
-sel = st_is_within_distance(cycle_hire, cycle_hire_osm, dist = 20)
-summary(lengths(sel) > 0)
-# still works: must be lwgeom or some other magic!
-```
-
-```{r 04-spatial-operations-24-projected, eval=FALSE, echo=FALSE}
-# This chunk contains the non-overlapping join on projected data, a step that is no longer needed:
-# Note that, before performing the relation, both objects are transformed into a projected CRS.
-# These projected objects are created below (note the affix `_P`, short for projected):
-cycle_hire_P = st_transform(cycle_hire, 27700)
-cycle_hire_osm_P = st_transform(cycle_hire_osm, 27700)
-sel = st_is_within_distance(cycle_hire_P, cycle_hire_osm_P, dist = 20)
-summary(lengths(sel) > 0)
-```
-
 これは、ターゲットオブジェクト `cycle_hire` の中に、閾値距離 `cycle_hire_osm` 内に `r sum(lengths(sel) > 0)` 個の点があることを示している。
 それぞれの `cycle_hire_osm` ポイントに関連する<u>値</u>を取得する方法は？
-解答は再び `st_join()`だが、引数 `dist` を追加する (20 m 以下に設定)。
+解答は再び `st_join()` だが、引数 `dist` を追加する (20 m 以下に設定)。
 
 ```{r 04-spatial-operations-25}
 z = st_join(cycle_hire, cycle_hire_osm, st_is_within_distance, 
@@ -747,7 +769,8 @@ library(tmap)
 tm_shape(nz_agg) +
   tm_fill("elevation", 
           fill.scale = tm_scale(breaks = seq(27, 30, by = 0.5) * 1e2)) +
-  tm_borders()
+  tm_borders() +
+  tm_layout(scale = 1.8)
 ```
 
 ```{r 04-spatial-operations-29}
@@ -778,7 +801,7 @@ plot(nz_agg2)
 これは、Figure \@ref(fig:areal-example) で説明されている空間集約 (およびその他の空間操作) において問題となる。各サブゾーンの重心を集約すると、正確な結果を得ることができない。
 面積補間は、単純な面積加重法や「ピクノフィラティック」 (pycnophylactic) 法などのより洗練されたアプローチを含む様々なアルゴリズムを使用して、1 セットの面積単位から別の単位に値を転送することによってこの問題を克服している [@tobler_smooth_1979]。
 
-```{r areal-example, echo=FALSE, fig.cap="大きな凝集帯 (半透明の青い枠) に対して、一致する面単位 (左) と不一致する面単位 (右) を示した図。", fig.asp=0.2, fig.scap="Illustration of congruent and incongruent areal units."}
+```{r areal-example, echo=FALSE, fig.cap="大きな凝集帯 (半透明の青い枠) に対して、一致する面単位 (左) と不一致する面単位 (右) を示した図。", fig.asp=0.33, fig.scap="Illustration of congruent and incongruent areal units."}
 source("code/04-areal-example.R", print.eval = TRUE)
 ```
 
@@ -798,41 +821,6 @@ agg_aw$value
 この場合、所得が小さなゾーンに均等に分布していると仮定すると、総所得はいわゆる空間的に広範な変数 (面積とともに増加する) なので、集計ゾーンに入る交差点の値を合計することは意味がある (したがって、上記の警告メッセージが表示されるの)。
 これは、<u>平均</u>所得やパーセンテージのような空間的に[集中しがちな](https://geodacenter.github.io/workbook/3b_rates/lab3b.html#spatially-extensive-and-spatially-intensive-variables)変数では異なるだろうが、面積が大きくなればなるほど増加するわけではない。
 `st_interpolate_aw()` は、空間的に集約された変数でも同様に動作する。`extensive` パラメータを `FALSE` に設定すると、集約の際に合計関数ではなく平均を使用する。
-
-### 距離の関係  {#distance-relations}
-
-位相関係が二値 (あるフィーチャが別のフィーチャと交差するかしないか) であるのに対して、距離関係は連続的である。
-2つのオブジェクト間の距離は、`st_distance()` 関数で計算される。
-これは、ニュージーランドの最高地点と、Section \@ref(spatial-subsetting) で作成したカンタベリー地域の地理的重心との間の距離を求めるコードである。
-\index{sf!distance relations}
-
-```{r 04-spatial-operations-31, warning=FALSE}
-nz_highest = nz_height |> slice_max(n = 1, order_by = elevation)
-canterbury_centroid = st_centroid(canterbury)
-st_distance(nz_highest, canterbury_centroid)
-```
-
-この結果には、2 つの驚くべきことがある。
-
-- `units`、距離は 10万インチではなく、10万メートルであることを教えてくれる。
-- 結果には 1 つの値しか含まれないが、行列として返される
-
-この 2 番目の特徴は、`st_distance()` のもう一つの便利な特徴である、オブジェクト `x` と `y` の特徴のすべての組み合わせの間の<u>距離行列</u>を返す機能を示唆するものである。
-このコマンドは、`nz_height` の最初の 3 つのフィーチャと、オブジェクト `co` で表されるニュージーランドのオタゴおよびカンタベリー地域との間の距離を求めるものである。
-
-```{r 04-spatial-operations-32}
-co = filter(nz, grepl("Canter|Otag", Name))
-st_distance(nz_height[1:3, ], co)
-```
-
-なお、`nz_height` の2番目と3番目のフィーチャと、`co` の2番目のフィーチャの距離は0である。
-これは、点とポリゴンの間の距離は、<u>ポリゴンの任意の部分</u>への距離を指すという事実を示している。
-`nz_height` の2番目と3番目の点は、オタゴ<u>内に</u>ある。これは、プロットすることで確認できる (結果は示していない)。
-
-```{r 04-spatial-operations-33, eval=FALSE}
-plot(st_geometry(co)[2])
-plot(st_geometry(nz_height)[2:3], add = TRUE)
-```
 
 ## ラスタデータに対する空間演算  {#spatial-ras}
 
@@ -910,7 +898,8 @@ values(rmask) = sample(c(NA, TRUE), 36, replace = TRUE)
 ```{r 04-spatial-operations-38b, eval=FALSE}
 # 空間的に部分集合を作成
 elev[rmask, drop = FALSE]     # [ operator を使用
-mask(elev, rmask)             # mask() を使用
+# mask も使うことができる
+# mask(elev, rmask)
 ```
 
 上記の方法は、一部の値 (例えば、間違っていると予想される値) を NA に置き換えるために使用することも可能である。 
@@ -954,8 +943,8 @@ elev[elev < 20] = NA
 ### ローカルオペレーション  {#local-operations}
 
 \index{map algebra!local operations}
-**ローカル**操作は、1つまたは複数のレイヤにおけるすべてのセル単位の操作で構成されている。
-ラスタ代数とは、ローカル操作の典型的な使用例で、ラスタからの値の加算や減算、ラスタの二乗や乗算が含まれる。
+**ローカル**操作は、1 つまたは複数のレイヤにおけるすべてのセル単位の操作で構成されている。
+これには、ラスタからの値の加算や減算、ラスタの二乗や乗算が含まれる。
 ラスタ代数では、特定の値 (下の例では 5) より大きいラスタセルをすべて見つけるなどの論理演算も可能である。
 **terra** パッケージは、以下のように、これらすべての操作に対応している (Figure \@ref(fig:04-local-operations))。
 
@@ -988,17 +977,17 @@ recl = classify(elev, rcl = rcl)
 `classify()` 関数は、カテゴリー別ラスタのクラス数を減らしたい場合にも使用できる。
 Chapter \@ref(location) では、いくつかの追加的な再分類を実施する予定である。
 
-算術演算子とは別に、`app()`、`tapp()`、`lapp()` 関数も使用することができる。
+直接算術演算子するだけでなく、`app()`、`tapp()`、`lapp()` 関数も使用することができる。
 より効率的であるため、大規模なラスタデータが存在する場合に適している。 
 さらに、出力ファイルを直接保存することも可能である。
-関数 `app()` は、ラスタの各セルに関数を適用し、複数のレイヤの値を1つのレイヤにまとめる (合計を計算するなど) ために使用される。
+関数 `app()` は、ラスタの各セルに関数を適用し、複数のレイヤの値を 1 つのレイヤにまとめる (合計を計算するなど) ために使用される。
 `tapp()` は、`app()` の拡張で、ある操作を行いたいレイヤの部分集合 (`index` の引数を参照) を選択することができるようになっている。
 最後に、関数 `lapp()` は、レイヤを引数として各セルに関数を適用することができる。`lapp()` のアプリケーションを以下に示す。
 
 正規化差分植生指数 (normalized difference vegetation index, NDVI) の算出は、よく知られたローカル (ピクセル単位) のラスタ処理である。
 正の値は生きた植物が存在することを示す(ほとんどが0.2以上)。
 NDVI は、Landsat や Sentinel などの衛星システムから得られるリモートセンシング画像の赤色および近赤外 (near-infrared、NIR) バンドから算出されるものである。
-植物は可視光線、特に赤色光を強く吸収し、近赤外光を反射するため、NVDI の計算式が成り立っている。
+植物は可視光線、特に赤色光を強く吸収し、近赤外光を反射する。以下は、NVDI の式である。
 
 $$
 \begin{split}
@@ -1013,7 +1002,21 @@ multi_raster_file = system.file("raster/landsat.tif", package = "spDataLarge")
 multi_rast = rast(multi_raster_file)
 ```
 
-ラスタオブジェクトは、青、緑、赤、近赤外 (NIR) の4つの衛星バンドを持っている。
+ラスタオブジェクトは、Landsat 8 からの青、緑、赤、近赤外 (NIR) の 4 つの衛星バンドを持っている。
+重要なのは、Landsat レベル 2 のプロダクトはディスクスペースを節約するために整数として保存されているため、計算を行う前に浮動小数点数に変換する必要があるということだ。
+そのためには、スケーリング係数 (0.0000275) を適用し、元の値にオフセット (-0.2) を加える必要がある。^[詳細は https://www.usgs.gov/faqs/how-do-i-use-a-scale-factor-landsat-level-2-science-products 。]
+
+```{r}
+multi_rast = (multi_rast * 0.0000275) - 0.2
+```
+
+適切な値は 0 から 1 の範囲にあるはずである。
+ここから外れている原因は、おそらく雲やその他の大気の影響によるものだと思われる。
+
+```{r}
+multi_rast[multi_rast < 0] = 0
+```
+
 次のステップは、NDVI の計算式を R の関数に実装することである。
 
 ```{r}
@@ -1022,10 +1025,10 @@ ndvi_fun = function(nir, red){
 }
 ```
 
-この関数は、2つの数値引数 (`nir` と `red`) を受け取り、NDVI 値を含む数値ベクタを返す。
+この関数は、2 つの数値引数 (`nir` と `red`) を受け取り、NDVI 値を含む数値ベクトルを返す。
 `lapp()` の `fun` 引数として使用することができる。
-この関数が必要とするのは2つのバンド (元のラスタの 4 つではない) であり、それらは NIR、赤の順である必要があることを覚えておく必要がある。
-そのため、入力ラスタを部分集合し、計算を行う前に  `multi_rast [[c(4, 3)] ]` で部分集合してから計算を行う。
+この関数が想定するのは 2 つのバンド (元のラスタの 4 つではない) であり、それらは NIR、赤の順である必要があることを覚えておく必要がある。
+そのため、入力ラスタを部分集合し、計算を行う前に `multi_rast [[c(4, 3)] ]` で部分集合してから計算を行う。
 
 ```{r}
 ndvi_rast = lapp(multi_rast[[c(4, 3)]], fun = ndvi_fun)
@@ -1048,9 +1051,9 @@ knitr::include_graphics("figures/04-ndvi.png")
 
 \index{map algebra!focal operations}
 ローカルな機能とは、1つのセル (複数の層からなる可能性もある) を対象とするものであるのに対し、**フォーカル**な機能とは、中心 (焦点) のセルとその近隣のセルを考慮したものである。
-近傍領域 (カーネル、フィルタ、移動窓とも呼ばれる) は、通常、3×3 セル (つまり、中心セルとその周囲8個の近傍セル) のサイズであるが、ユーザーが定義する他の形状 (必ずしも長方形ではない) をとることができる。
+近傍領域 (カーネル、フィルタ、移動窓とも呼ばれる) は、通常、3×3 セル (つまり、中心セルとその周囲 8 個の近傍セル) のサイズであるが、ユーザーが定義する他のサイズや形状 (必ずしも長方形ではない) をとることができる。
 フォーカル操作は、指定された近傍領域内のすべてのセルに集約関数を適用し、対応する出力を中心セルの新しい値として使用し、次の中心セル (Figure \@ref(fig:focal-example)) へと進む。
-この操作は、空間フィルタリング (spatial filtering) やコンボリューション (convolution) などと呼ばれることもある [@burrough_principles_2015]。
+この操作は、空間フィルタリング (spatial filtering) や畳み込み (convolution) などと呼ばれることもある [@burrough_principles_2015]。
 
 R では、`focal()` 関数で空間フィルタリングを行うことができる。 
 移動窓の形状を `matrix` で定義する。その値は重みに対応する (以下のコードチャンクの `w` パラメータを参照)。
@@ -1087,20 +1090,20 @@ Chapter \@ref(gis) は、このような GIS 機能を R 内からアクセス�
 
 \index{map algebra!zonal operations}
 ゾーン演算は、フォーカル演算と同様に、複数のラスタセルに集計関数を適用する。
-しかし、前節で紹介したフォーカル操作の場合の事前定義された近傍ウィンドウとは対照的に、ゾーン操作の場合は、通常カテゴリー値で構成される第二ラスタが<u>ゾーンフィルター</u> (または「ゾーン」) を定義する。
+しかし、前節で紹介したフォーカル操作の場合の近傍窓とは対照的に、ゾーン操作の場合は、通常カテゴリ値で構成される第二ラスタが<u>ゾーンフィルター/u> (または「ゾーン」) を定義する。
 そのため、ゾーンフィルタを定義するラスタセルは、必ずしも隣接している必要はない。
 粒径ラスタはその良い例で、Figure \@ref(fig:cont-raster) の右側のパネルに示されているように、異なる粒径がラスタ全体に不規則に広がっていることがわかる。
 最後に、ゾーン操作の結果は、ゾーンごとにグループ化された要約表となる。このため、この操作は、GIS\index{GIS} の世界では<u>ゾーン統計</u>とも呼ばれる。 
-これは、ラスタオブジェクトを返すフォーカルオペレーションとは対照的である。
+これは、デフォルトでラスタオブジェクトを返すフォーカルオペレーションとは対照的である。
 
-次のコードチャンクは、`zonal()` 関数を使用して、例えば、各粒度クラスに関連する平均標高を計算する。
+次のコードチャンクは、`zonal()` 関数を使用して、各粒度クラスに関連する平均標高を計算する。
 
 ```{r 04-spatial-operations-43}
 z = zonal(elev, grain, fun = "mean")
 z
 ```
 
-これは、各カテゴリーの統計値 \index{statistics}、ここでは各粒度クラスの平均高度を返す。
+これは、各カテゴリの統計値 \index{statistics}、ここでは各粒度クラスの平均高度を返す。
 注： `as.raster` 引数を `TRUE` に設定することで、各ゾーンの統計情報を計算したラスタを取得することも可能である。
 
 ### グローバルな操作と距離  {#global-operations-and-distances}
@@ -1136,7 +1139,7 @@ NDVI を計算し (Section \@ref(local-operations) 参照)、さらに、調査�
 リモートセンシング画像は、特定の空間範囲をカバーするシーンに分割されることが多く、1つの調査エリアが複数のシーンにまたがっていることがよくある。
 そして、調査対象シーンをマージする必要がある。 
 一番簡単なのは、これらのシーンをマージする、つまり並べることである。
-これは例えば、デジタル標高データ (SRTM、ASTER) で可能である。
+これは例えば、デジタル標高データで可能である。
 以下のコードでは、まずオーストリアとスイスの SRTM 標高データをダウンロードする (国番号については、**geodata** 関数 `country_codes()` を参照)。
 第二段階では、2 つのラスタを 1 つに統合する。
 
@@ -1154,14 +1157,7 @@ aut_ch = merge(aut, ch)
 一方、`mosaic()` コマンドでは、オーバーラップする領域に対して関数を定義することができる。 
 例えば、平均値を計算することもできる。この場合、マージされた結果における明確な境界線は滑らかになるだろうが、ほとんどの場合、それを消すことはできない。
 
-<!-- The following sentences have been commented out and can be removed because the packages, and info, is now out of date -->
-<!-- See https://github.com/Robinlovelace/geocompr/pull/424 for discussion -->
-<!-- To do so, we need a more advanced approach.  -->
-<!-- Remote sensing scientists frequently apply histogram matching or use regression techniques to align the values of the first image with those of the second image. -->
-<!-- The packages **landsat** (`histmatch()`, `relnorm()`, `PIF()`), **satellite** (`calcHistMatch()`) and **RStoolbox** (`histMatch()`, `pifMatch()`) provide the corresponding functions for the **raster**'s package objects. -->
 R によるリモートセンシングの詳しい紹介は、@wegmann_remote_2016 を参照。
-<!--jn:toDo-->
-<!--update the above reference to the 2nd edition-->
 
 ## 演習
 
