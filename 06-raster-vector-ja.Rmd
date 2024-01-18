@@ -1,5 +1,9 @@
 # ラスタとベクタの相互作用  {#raster-vector}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ## 必須パッケージ  {- #prerequisites-06}
 
 この章では、以下のパッケージが必要である。
@@ -14,7 +18,7 @@ library(dplyr)
 
 \index{raster-vector interactions} 
 この章では、Chapter \@ref(spatial-class) で紹介したラスタとベクタの地理データモデル間の相互作用に焦点を当てる。
-主に4つの技法を紹介する。
+主要な技法をいくつか紹介する。
 最初は、ベクタオブジェクトを使用したラスタの切り落とし (crop) とマスク (mask) から始める (Section \@ref(raster-cropping))。
 次に、さまざまな種類のベクタデータを使ってラスタ値を抽出する (Section \@ref(raster-extraction))。
 最後は、ラスタベクタ変換である (Section \@ref(rasterization) と Section \@ref(spatial-vectorization))。
@@ -39,7 +43,7 @@ library(dplyr)
 ```{r 06-raster-vector-2, results='hide'}
 srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
 zion = read_sf(system.file("vector/zion.gpkg", package = "spDataLarge"))
-zion = st_transform(zion, crs(srtm))
+zion = st_transform(zion, st_crs(srtm))
 ```
 
 `srtm` のラスタを切り出すために **terra** パッケージの `crop()` を使用する。
@@ -59,7 +63,7 @@ srtm_masked = mask(srtm, zion)
 ```
 
 `crop()` と `mask()` は、ほとんどの場合で一緒に使う。
-(a)ラスタの範囲を目的の領域に限定し、(b)領域外の値をすべて NA に置き換える。
+(a)ラスタの範囲を目的の領域に限定し、(b)領域外の値をすべて NA に置き換える。^[ここで示した二つの操作は `terra::crop(srtm, zion, mask = TRUE)` と一つにまとめることもできる。理解しやすくするために二つに分けた。]
 
 ```{r 06-raster-vector-5}
 srtm_cropped = crop(srtm, zion)
@@ -134,7 +138,7 @@ elevation = terra::extract(srtm, zion_points2)
 zion_points = cbind(zion_points, elevation)
 ```
 
-```{r pointextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="ラスタ抽出に使用した点の位置。", fig.asp=0.57}
+```{r pointextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="ラスタ抽出に使用した点の位置。", fig.asp=0.67}
 source("code/06-pointextr.R", print.eval = TRUE)
 ```
 
@@ -216,7 +220,7 @@ rast_poly_line = tm_shape(srtm) +
   tm_shape(zion_transect_points) +                                                 
   tm_text("name", 
           text.scale = tm_scale(bg.color = "white", bg.alpha = 0.75, auto.placement = TRUE)) +
-  tm_layout(legend.frame = TRUE, legend.position = c("right", "top"), fontfamily = "HiraginoSans-W3",
+  tm_layout(legend.frame = TRUE, legend.position = c("RIGHT", "TOP"), fontfamily = "HiraginoSans-W3",
             legend.bg.color = "white")
 
 plot_transect = ggplot(zion_transect, aes(as.numeric(dist), srtm)) + 
@@ -287,14 +291,14 @@ zion_nlcd |>
   count()
 ```
 
-```{r polyextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="連続 (左) とカテゴリ (右) のラスタ抽出に使用した範囲。"}
+```{r polyextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="連続 (左) とカテゴリ (右) のラスタ抽出に使用した範囲。", fig.width=7.5}
 rast_poly_srtm = tm_shape(srtm) + 
   tm_raster(col.scale = tm_scale_continuous(values = terrain_colors),
             col.legend = tm_legend("標高 (m)")) + 
   tm_shape(zion) +
   tm_polygons(lwd = 2, alpha = 0.3) +
   tm_title("A. 連続数データ抽出") +
-  tm_layout(legend.frame = TRUE, legend.position = c("left", "bottom"),
+  tm_layout(legend.frame = TRUE, legend.position = c("LEFT", "BOTTOM"),
             legend.bg.color = "white", fontfamily = "HiraginoSans-W3")
 rast_poly_nlcd = tm_shape(nlcd) +
   tm_raster(col.scale = tm_scale_categorical(levels.drop = TRUE),
@@ -303,7 +307,7 @@ rast_poly_nlcd = tm_shape(nlcd) +
   tm_shape(zion) +
   tm_polygons(lwd = 2, fill_alpha = 0.3)  +
   tm_title("B. カテゴリデータ抽出") +
-  tm_layout(legend.frame = TRUE, legend.position = c("left", "bottom"),
+  tm_layout(legend.frame = TRUE, legend.position = c("LEFT", "BOTTOM"),
             legend.bg.color = "white", fontfamily = "HiraginoSans-W3")
 tmap_arrange(rast_poly_srtm, rast_poly_nlcd, ncol = 2)
 ```
@@ -347,7 +351,7 @@ Chapter \@ref(spatial-class) で見たように、ラスタデータモデルに
 cycle_hire_osm = spData::cycle_hire_osm
 cycle_hire_osm_projected = st_transform(cycle_hire_osm, "EPSG:27700")
 raster_template = rast(ext(cycle_hire_osm_projected), resolution = 1000,
-                       crs = st_crs(cycle_hire_osm_projected)$wkt)
+                       crs = crs(cycle_hire_osm_projected))
 ```
 
 ラスタ化は非常に柔軟な操作で、結果はテンプレートとなるラスタの性質だけでなく、入力ベクタの種類 (点、ポリゴンなど) や、`rasterize()` 関数が取るさまざまな引数に依存する。
@@ -451,12 +455,13 @@ plot(dem, axes = FALSE)
 plot(cl, add = TRUE)
 ```
 
-`contour()`, `rasterVis::contourplot()`, `tmap::tm_iso()` などの関数で、既存のプロットに等高線を追加することもできる。
-Figure \@ref(fig:contour-tmap) に示すように、等高線 (isoline) にはラベルを付けることができる。
+`contour()` や `rasterVis::contourplot()` などの関数で、既存のプロットに等高線を追加することもできる。
+<!--`tmap::tm_iso() -->
+Figure \@ref(fig:contour-tmap) に示すように、等値線 (isoline) にはラベルを付けることができる。
 
 \index{hillshade}
 
-```{r contour-tmap, echo=FALSE, message=FALSE, fig.cap="モンゴル山南麓の等高線を重ねた陰影付き DEM。", fig.scap="DEM with hillshading.", warning=FALSE, fig.asp=0.56}
+```{r contour-tmap, echo=FALSE, message=FALSE, fig.cap="モンゴル山南麓の等高線を重ねた陰影付き DEM。", fig.scap="DEM with hillshading.", warning=FALSE, fig.asp=0.56, fig.width=3.5}
 # hs = shade(slope = terrain(dem, "slope", unit = "radians"),
 #            aspect = terrain(dem, "aspect", unit = "radians"))
 # plot(hs, col = gray(0:100 / 100), legend = FALSE)
@@ -485,7 +490,7 @@ source("code/06-raster-vectorization2.R", print.eval = TRUE)
 
 `grain` 粒状データセットのポリゴンは、長方形のピクセルをつなぐことで定義される直方体の境界を持つ。
 ポリゴンを滑らか (smooth) にするために、Chapter \@ref(geometry-operations) のパッケージ **smoothr** を使用することができる。
-平滑化処理はポリゴン境界の鋭いエッジを除去するため、平滑化ポリゴンは元のピクセルとは空間的範囲が正確に同じにはならない (例は、**smoothr** [ウェブサイト](https://strimas.com/smoothr/) を参照)。
+平滑化処理はポリゴン境界の鋭いエッジを除去するため、平滑化ポリゴンは元のピクセルとは空間的範囲が正確に同じにはならない。
 そのため、平滑化されたポリゴンをさらに解析に使用する場合は注意が必要となる。
 
 ## 演習

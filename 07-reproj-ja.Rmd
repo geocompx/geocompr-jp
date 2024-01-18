@@ -1,5 +1,9 @@
 # 地理データの再投影  {#reproj-geo-data}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ## 必須パッケージ  {- #prerequisites-07}
 
 - この章では、以下のパッケージが必要である。
@@ -21,8 +25,8 @@ Section \@ref(crs-intro) では、座標参照系 (CRS) を紹介し、<u>地理
 \index{CRS!projected} 
 
 多くのプロジェクトでは、CRS について心配する必要はないし、変換について考える必要もない。
-しかし、データが投影座標系なのか地理座標系なのか、そしてそれがジオメトリ操作に与える影響を知ることは重要である。
-データの CRS とジオメトリ操作の結果 (次のセクションで取り上げる) を知っていれば、CRS は裏で<u>ただ</u>うまく機能してくれる。しかし、うまくいかないことがあったとき、CRS に原因があるかもしれず、突然 CRS について学ぶ必要が出てくるのである。
+しかし、データが投影座標参照系なのか地理座標参照系なのか、そしてそれがジオメトリ操作に与える影響を知ることは重要である。
+この情報を知っていれば、CRS は裏で<u>ただ</u>うまく機能してくれる。しかし、うまくいかないことがあったとき、CRS に原因があるかもしれず、突然 CRS について学ぶ必要が出てくるのである。
 すべての投影データが入る CRS を明確に定義し、異なる CRS をどのように、そしてなぜ使うのかを理解することで、物事がうまくいくことを確実にすることができる。
 さらに、座標系について学ぶことで、地理データセットとその効果的な使用方法についての知識を深めることができる。
 
@@ -30,7 +34,7 @@ Section \@ref(crs-intro) では、座標参照系 (CRS) を紹介し、<u>地理
 次のセクションでは R における CRS を紹介し、続いて Section \@ref(crs-setting) で空間オブジェクトに関連する CRS の取得と設定方法を示す。 
 Section \@ref(geom-proj) は、バッファを作成する作業例を参照しながら、データがどの CRS にあるのかを知ることの重要性を示している。
 Section \@ref(whenproject) と Section \@ref(which-crs) において、それぞれ、いつ再投影するべきか、どの CRS を使うかという問題に取り組んでいる。
-ベクタとラスタの再投影については、\@ref(reproj-vec-geom) と \@ref(reproj-ras) で、地図投影の修正については Section \@ref(mapproj) で説明する。
+最後に、ベクタとラスタの再投影については、\@ref(reproj-vec-geom) と \@ref(reproj-ras) で、地図投影の修正については Section \@ref(mapproj) で説明する。
 
 ## 座標参照系  {#crs-in-r}
 
@@ -50,11 +54,11 @@ CRS には、以下のような様々な表現方法がある。
 \index{CRS!EPSG}
 一言でいうと、第三の CRS 識別方法が正しい。`EPSG:4326` は、本書で取り上げる **sf** と **terra**  (さらに **stars**) パッケージ、及び [QGIS](https://docs.qgis.org/3.16/en/docs/user_manual/working_with_projections/working_with_projections.html) や [PROJ](https://proj.org/development/quickstart.html) など地理データを扱う多くのソフトウェアプロジェクトが理解できる。
 `EPSG:4326` は将来を見据えたものである。
-さらに、機械可読でありながら、proj-string 表現とは異なり、「EPSG:4326」は短く、覚えやすく、オンラインで非常に「見つけやすい」 (例えば、EPSG:4326 を検索すると、ウェブサイト [epsg.io](https://epsg.io/4326) の専用ページが表示される)。
+さらに、機械可読でありながら、「EPSG:4326」は短く、覚えやすく、オンラインで非常に「見つけやすい」 (例えば、EPSG:4326 を検索すると、ウェブサイト [epsg.io](https://epsg.io/4326) の専用ページが表示される)。
 より簡潔に `4326` だけでも **sf** によって理解されるが、 **曖昧さを防ぎ、文脈を提供するために、より明示的な `AUTHORITY:CODE` という形式を推奨する**。
 
 \index{CRS!WKT}
-より長く答えると、3つの記述のどれも十分ではなく、CRS の処理と変換を明確にするためには、より詳細な情報が必要になる。
+より長く答えると、3 つの記述のどれも十分ではなく、CRS の処理と変換を明確にするためには、より詳細な情報が必要になる。
 このため、Open Geospatial Consortium  (OGC、**sf** パッケージが実装するシンプルフィーチャの仕様も整備している団体) が、WKT (Well-Known Text) と呼ばれる CRS 記述形式をオープンスタンダードで開発した。
 これは、「ISO 19111:2019 に記述された座標参照系の抽象モデルのテキスト文字列実装の構造と内容を定義する」[100ページを超えるドキュメント](https://portal.opengeospatial.org/files/18-010r7)に詳細が記述されている。 [@opengeospatialconsortium_wellknown_2019]。
 WGS84 CRS、**識別子** `EPSG:4326` の WKT 表現は以下の通りである。
@@ -74,21 +78,12 @@ st_crs("EPSG:4326")
 CRS の識別子を `AUTHORITY:CODE` という形式で参照する慣習は、他の[言語](https://jorisvandenbossche.github.io/blog/2020/02/11/geopandas-pyproj-crs/)で書かれた地理ソフトウェアでも使われており、正式に定義された広範囲の座標系を参照することができる。^[
 [QGIS](https://docs.qgis.org/3.16/en/docs/pyqgis_developer_cookbook/crs.html?highlight=srid) は、5つの識別子タイプ (EPSGコード、PostGIS SRID、INTERNAL SRID、PROJ 文字列、WKT 文字列) や、`EPSG:4326` 識別子のより長い表現である `urn:ogc:def:crs:EPSG::4326` も受け入れ可能で、固有の CRS を参照する [@opengeospatialconsortium_wellknown_2019]。
 ]
-CRS の識別子で最もよく使われる機関は、CRS の標準化リストを発表した欧州石油調査グループ (European Petroleum Survey Group) の頭文字をとった *EPSG*\index{CRS!EPSG} である (EPSG は2005年に石油・ガス団体の [Geomatics Committee of the International Association of Oil & Gas Producers](https://www.iogp.org/our-committees/geomatics/) により[引き継ぎ](http://wiki.gis.com/wiki/index.php/European_Petroleum_Survey_Group)された)。
+CRS の識別子で最もよく使われる機関は、CRS の標準化リストを発表した欧州石油調査グループ (European Petroleum Survey Group) の頭文字をとった *EPSG*\index{CRS!EPSG} である (EPSG は2005年に石油・ガス団体の [Geomatics Committee of the International Association of Oil & Gas Producers](https://epsg.org/home.html) により[引き継ぎ](http://wiki.gis.com/wiki/index.php/European_Petroleum_Survey_Group)された)。
 CRS の識別子には、他の機関を使用することもできる。
 例えば、`ESRI:54030` は、ESRI の Robinson 投影の実装で、以下の WKT 文字列 (最初の8行のみ表示) を持っていることを指している。
 
-```{r, eval=FALSE}
+```{r, out.lines=8}
 st_crs("ESRI:54030")
-#> Coordinate Reference System:
-#>   User input: ESRI:54030 
-#>   wkt:
-#> PROJCRS["World_Robinson",
-#>     BASEGEOGCRS["WGS 84",
-#>         DATUM["World Geodetic System 1984",
-#>             ELLIPSOID["WGS 84",6378137,298.257223563,
-#>                 LENGTHUNIT["metre",1]]],
-#> ...
 ```
 
 ```{r, eval=FALSE, echo=FALSE}
@@ -150,10 +145,10 @@ new_vector_crs = st_crs(new_vector)
 また、`st_crs` 関数には、使用中の CRS に関する追加情報を取得することができる、という便利な特徴もある。 
 例えば、以下を実行してみよう。
 
-- `st_crs(new_vector)$IsGeographic`、CRS が地理的かどうかを確認する。
-- `st_crs(new_vector)$units_gdal`、CRS 単位を調べることができる。
-- `st_crs(new_vector)$srid` その「SRID」識別子を抽出する (存在する場合)。
-- `st_crs(new_vector)$proj4string` proj-string 表現を抽出する。
+- `st_crs(new_vector)$IsGeographic`、CRS が地理的かどうかを確認する
+- `st_crs(new_vector)$units_gdal`、CRS 単位を調べることができる
+- `st_crs(new_vector)$srid` その「SRID」識別子を抽出する (存在する場合)
+- `st_crs(new_vector)$proj4string` proj-string 表現を抽出する
 
 座標参照系 (CRS) がない場合や間違った CRS が設定されている場合は、`st_set_crs()` 関数を使用することができる (この場合、ファイル読み込み時にすでに CRS が正しく設定されているので、WKT 文字列は変更されずに残る)。
 
@@ -163,7 +158,7 @@ new_vector = st_set_crs(new_vector, "EPSG:4326") # CRS を設定
 
 ```{r, echo=FALSE, eval=FALSE}
 waldo::compare(new_vector_crs, st_crs(new_vector))
-# `old$input`: "WGS 84"   
+# `old$input`: "WGS 84"
 # `new$input`: "EPSG:4326"
 ```
 
@@ -171,7 +166,7 @@ waldo::compare(new_vector_crs, st_crs(new_vector))
 ラスタ地理データオブジェクトの CRS の取得と設定は、同様の方法で行われる。
 `terra` パッケージの `crs()` 関数は `SpatRaster` オブジェクトから CRS 情報にアクセスする (読みやすく表示するために `cat()` 関数を使用していることに注意)。 
 
-```{r 02-spatial-data-55}
+```{r 02-spatial-data-55, out.lines=6}
 raster_filepath = system.file("raster/srtm.tif", package = "spDataLarge")
 my_rast = rast(raster_filepath)
 cat(crs(my_rast)) # CRS を取得
@@ -201,7 +196,7 @@ st_is_longlat(london)
 この出力 `NA` は、**sf** が CRS が何であるかを知らず、推測するつもりがないことを示している (`NA` は、"Not Applicable/Available" の略語で、文字通り「利用できない」という意味)。
 CRS を手動で指定するか、CRS メタデータを持つソースから読み込まれない限り、**sf** は座標系について「わからない」と言う以外の明示的な仮定をしない。
 この動作は、利用可能な CRS の多様性を考えると理にかなっているが、GeoJSON ファイルフォーマット仕様のような、すべての座標が lon/lat CRS (`EPSG:4326`) を持つという単純化した仮定をするいくつかのアプローチとは異なる。
-すべての地理座標には座標系があり、ソフトウェアがプロットやジオメトリの操作を正しく判断できるのは、扱う CRS の種類がわかっている場合のみである。
+すべての地理座標には座標参照系があり、ソフトウェアがプロットやジオメトリの操作を正しく判断できるのは、扱う CRS の種類がわかっている場合のみである。
 したがって、データセットの CRS を常に確認し、不足している場合は設定することが重要である。
 
 ```{r 06-reproj-3}
@@ -222,10 +217,10 @@ Figure \@ref(fig:s2geos) で示すように、**sf** は、CRS 種別に応じ�
 
    node [shape = rectangle];
    rec1 [label = "空間データ" shape = oval];
-   rec2 [label = "Geographic CRS" shape = diamond];
-   rec3 [label = "Projected CRS\nor CRS is missing" shape = diamond]
+   rec2 [label = "Geographic CRS\n " shape = cds];
+   rec3 [label = "Projected CRS\nor CRS is missing" shape = cds]
    rec4 [label = "S2 enabled\n(default)" shape = diamond]
-   rec5 [label = "S2 disabled" shape = diamond]
+   rec5 [label = "S2 disabled\n " shape = diamond]
    rec6 [label = "sf uses s2library for \ngeometry operations" center = true];
    rec7 [label = "sf uses GEOS for \ngeometry operations" center = true];
    rec8 [label = "Result" shape = oval weight=100];
@@ -272,7 +267,7 @@ london_buff_s2_100_cells = st_buffer(london_geo, dist = 100000, max_cells = 100)
 ```
 
 上の1行目では、**sf** は入力が投影されていると仮定して、度数単位のバッファを持つ結果を生成しているが、後述するようにこれは問題である。
-2行目の **sf** では、Chapter \@ref(spatial-class) で導入された球面幾何エンジン S2 を無言で使用して、`max_cells = 1000` のデフォルト値 (3行目で `100` に設定) を使用してバッファの範囲を計算しているが、その結果はすぐに明らかになるだろう (詳しくは `?s2::s2_buffer_cells` を参照)。
+2 行目の **sf** では、Chapter \@ref(spatial-class) で導入された球面幾何エンジン S2 明示せずに使用し、`max_cells = 1000` のデフォルト値 (3 行目で `100` に設定) を使用してバッファの範囲を計算しているが、その結果はすぐに明らかになるだろう。
 非投影 (地理) 座標系に対する **sf** の S2 幾何エンジン使用の影響を強調するために、以下のコードチャンクで、コマンド `sf_use_s2()` (デフォルトではオン、`TRUE`) で一時的にそれを無効にしてみよう。
 `london_buff_no_crs` と同様、新しい `london_geo` オブジェクトは、単位が度でほとんどの場合意味を持たない。
 
@@ -304,26 +299,16 @@ london_proj = data.frame(x = 530000, y = 180000) |>
   st_as_sf(coords = c("x", "y"), crs = "EPSG:27700")
 ```
 
-結果は、`london` と同じであるが、適切な CRS (この場合、EPSG コードが 27700 の British National Grid) に再投影され、単位がメートルである新しいオブジェクトになる。
+結果は、`london` と同じであるが、適切な CRS (この場合、EPSG コードが 27700 の British National Grid) で、単位がメートルである新しいオブジェクトが作成される。
 CRS が変化したことは、`st_crs()` を使って次のように確認できる (出力の一部は `...` で置き換えている)。
 
-```{r 06-reproj-7, eval=FALSE}
+```{r 06-reproj-7, out.lines=8}
 st_crs(london_proj)
-#> Coordinate Reference System:
-#>   User input: EPSG:27700 
-#>   wkt:
-#> PROJCRS["OSGB36 / British National Grid",
-#>     BASEGEOGCRS["OSGB36",
-#>         DATUM["Ordnance Survey of Great Britain 1936",
-#>             ELLIPSOID["Airy 1830",6377563.396,299.3249646,
-#>                 LENGTHUNIT["metre",1]]],
-#> ...
 ```
 
 この CRS の記述で注目すべきは、EPSG コード (`EPSG: 27700`) と詳細な `wkt` の文字列 (最初の5行のみ表示) であろう。^[
 最も関連性の高い投影パラメータと関連する概念の簡単な説明については、Jochen Albrecht による第4回講演を参照。
 http://www.geography.hunter.cuny.edu/~jochen/GTECH361/lectures/ および https://proj.org/usage/projections.html に情報がある。
-投影に関する他の素晴らしいリソースは、spatialreference.orgとprogonos.com/furuti/MapProjである。
 ]
 LENGTHUNIT フィールドに記述された CRS の単位が (度ではなく) メートルであることから、これが投影型 CRS であることがわかる。 `st_is_longlat(london_proj)` は現在 `FALSE` を返し、`london_proj` に対する幾何演算は警告なしで機能する。
 `london_proj` のバッファ操作は GEOS を使用し、結果は適切な距離の単位で返される。
@@ -337,9 +322,9 @@ london_buff_projected = st_buffer(london_proj, 100000)
 
 ```{r crs-buf-old, include=FALSE, eval=FALSE}
 #| message: FALSE
+#| warning: FALSE
 #| results: hide
-uk = rnaturalearth::ne_countries(scale = 50) |> 
-  st_as_sf() |> 
+uk = rnaturalearth::ne_countries(scale = 50, returnclass = "sf") |> 
   filter(grepl(pattern = "United Kingdom|Ire", x = name_long))
 plot(london_buff_s2, graticule = st_crs(4326), axes = TRUE, reset = FALSE, lwd = 2)
 plot(london_buff_s2_100_cells, lwd = 9, add = TRUE)
@@ -355,8 +340,7 @@ plot(st_geometry(uk), add = TRUE, border = "gray", lwd = 3)
 ```
 
 ```{r crs-buf, fig.cap="ロンドン周辺のバッファで、S2球面幾何エンジンを用いて作成した緯度経度データ (左)、投影データ (中)、球面幾何を用いない緯度経度データ (右) の結果を示している。左のプロットは、投影されていないデータを sf でバッファ作成した結果を示しており、デフォルトで Google の S2 spherical geometry engine を max_cells を 1000 に設定して呼び出している (細線)。太い「ブロック状の」線は、max_cells を 100 に設定して同じ操作を行った結果を示している。", fig.scap="Buffers around London with a geographic and projected CRS.", echo=FALSE, fig.asp=0.39, fig.width = 8}
-uk = rnaturalearth::ne_countries(scale = 50) |> 
-  st_as_sf() |> 
+uk = rnaturalearth::ne_countries(scale = 50, returnclass = "sf") |> 
   filter(grepl(pattern = "United Kingdom|Ire", x = name_long))
 
 library(tmap)
@@ -399,7 +383,7 @@ Figure \@ref(fig:crs-buf) (左) のバッファ境界はどちらもギザギザ
 S2 経由の緯度経度データから得られる結果は、投影データから得られる結果とは異なるという教訓である。
 投影データにおける S2 由来のバッファと GEOS 由来のバッファの差は、`max_cells` の値が大きくなるほど小さくなる。この引数の「正しい」値は多くの要因に依存すると思われるが、デフォルト値 1000 は妥当なデフォルト値だと思われる。
 `max_cells` の値を選択する時、計算の速度と結果の解像度のバランスをとる必要がある。
-曲線の境界が有利な場合、バッファ作成 (または他のジオメトリ操作) の前に投影型 CRS に変換することが適切な場合がある。
+滑らかな曲線の境界が有利な場合、バッファ作成 (または他のジオメトリ操作) の前に投影型 CRS に変換することが適切な場合がある。
 
 CRS の重要性 (投影座標か地理座標か) と、緯度経度に対してバッファ作成する際に S2 を使用するという **sf** のデフォルト設定がデータに与える影響は、上記の例から明らかである。
 この後のセクションでは、投影 CRS が必要な場合にどの CRS を使用するか、ベクタおよびラスタオブジェクトの再投影の詳細について、より深く掘り下げて説明する。
@@ -417,7 +401,7 @@ CRS の重要性 (投影座標か地理座標か) と、緯度経度に対して
 
 まず最初に、<u>いつ変換するべきか</u>を考える。
 **leaflet** パッケージでデータをオンライン公開する場合など、地理的 CRS が必要になる。
-また、異なる CRS を持つ2つのオブジェクトの距離を求める場合のように、異なる CRS を持つ2つのオブジェクトを比較したり、組み合わせたりする必要がある場合もある。
+また、異なる CRS を持つ2つのオブジェクトの距離を求める場合のように、異なる CRS を持つ 2 つの `sf` オブジェクトを比較したり、組み合わせたりする必要がある場合もある。
 
 ```{r 06-reproj-9, eval=FALSE}
 st_distance(london_geo, london_proj)
@@ -443,6 +427,7 @@ st_distance(london_geo, london_proj)
 **地理的 CRS** を選択する場合、[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84)  [日本語](https://ja.wikipedia.org/w/index.php?curid=52196)) という答えになることが多いようである。(訳注：上で既に述べたが、WGS84 に対応する日本の CRS は、東日本大震災以降の JGD2011 と、それ以前の JGD2000 である。大事なことなので繰り返す。)
 ウェブマッピングだけでなく、GPS データセットや何千ものラスタ、ベクタデータセットがこの CRS でデフォルトで提供されているため、利用されている。
 WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 を知っておくとよいだろう。(訳注：JGD2011は 6668、JGD2000 は 4612 である。)
+`"EPSG:4326"` の代わりに、`"OGC:CRS84"` を使うこともできる。前者では、経度の前に緯度が並べ替えられる。後者は、GeoJSON の標準形式であり、緯度の前に経度が並べ替えられる。
 この「マジックナンバー」は、投影された CRS が異常なオブジェクトを、広く理解されるものに変換するために使用することができる。
 
 **投影 CRS** が必要な場合はどうだろうか？
@@ -453,28 +438,8 @@ WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 
 
 \index{UTM} 
 一般的に使われているデフォルトは Universal Transverse Mercator ([UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) [日本語](https://ja.wikipedia.org/w/index.php?curid=118035)) で、地球を縦 60 個のくさびと横 20 個の緯度に分割した CRS のセットである。
-UTM CRS で使用されている横メルカトル図法は等角 (conformal) であるが、UTM ゾーンの中心から離れるにつれて面積や距離の歪みがひどくなる。
-そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から6度までに制限することを提案している (出典： [manifold.net](https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
-そのため、UTM は比較的狭い範囲での角度保存を重視する場合にのみ使用することを勧める。
-
 地球上のほとんどの場所には UTM コードがあり、例えば「60H」 は R が発明されたニュージーランド北部を指している。
 UTM EPSG コードは、北半球では 32601 から 32660 まで、南半球では 32701 から 32760 まで順次表示される。
-
-```{r 06-reproj-12, eval=FALSE, echo=FALSE}
-utm_nums_n = 32601:32660
-utm_nums_s = 32701:32760
-crs_data = rgdal::make_EPSG()
-crs_data[grep(utm_nums_n[1], crs_data$code), ] # zone 1N
-crs_data[grep(utm_nums_n[60], crs_data$code), ] # zone 60N
-crs_data[grep(utm_nums_s[1], crs_data$code), ] 
-crs_data[grep(utm_nums_s[60], crs_data$code), ] 
-crs_data[grep("UTM zone 60N", crs_data$note), ] # many
-crs_data[grep("UTM zone 60S", crs_data$note), ] # many
-crs_data[grep("UTM zone 60S", crs_data$note), ] # many
-crs_utm = crs_data[grepl("utm", crs_data$prj4), ] # 1066
-crs_utm_zone = crs_utm[grepl("zone=", crs_utm$prj4), ]
-crs_utm_south = crs_utm[grepl("south", crs_utm$prj4), ]
-```
 
 その仕組みを説明するために、 [ここにある通り](https://stackoverflow.com/a/9188972/)、地球上の任意の地点に関連する EPSG コードを計算する関数 `lonlat2UTM()` を作ってみよう。 
 
@@ -500,6 +465,10 @@ lonlat2UTM(c(174.7, -36.9))
 lonlat2UTM(st_coordinates(london))
 ```
 
+UTM CRS で使用されている横メルカトル図法は等角 (conformal) であるが、UTM ゾーンの中心から離れるにつれて面積や距離の歪みがひどくなる。
+そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から6度までに制限することを提案している (出典： [manifold.net](https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
+そのため、UTM は比較的狭い範囲での角度保存を重視する場合にのみ使用することを勧める。
+
 現在、適切な CRS を選択するためのツールも用意されており、これには **crssuggest** パッケージ<!--add ref or docs--> が含まれている。
 このパッケージのメイン関数である `suggest_crs()` は、地理的な CRS を持つ空間オブジェクトを受け取り、与えられた領域に使用可能な投影 CRS のリストを返す。^[また、本パッケージでは、CRS 情報を付加していないデータの真の CRS を把握することも可能。] 
 もう一つの便利なツールは、選択した場所とタイプに基づいて CRS をリストアップするウェブページ https://jjimenezshaw.github.io/crs-explorer/ である。
@@ -507,7 +476,7 @@ lonlat2UTM(st_coordinates(london))
 
 \index{CRS!custom} 
 適切な CRS がすぐにわからない場合、CRS の選択は、その後の地図や分析において保存することが最も重要である特性によって決められるべきだろう。
-すべての CRS は、等面積、等距離、等角 (形状はそのまま)、またはそれらの妥協点の組み合わせである (Section \@ref(projected-coordinate-reference-systems) 参照)。
+CRS は、等面積、等距離、等角 (形状はそのまま)、またはそれらの妥協点の組み合わせである (Section \@ref(projected-coordinate-reference-systems) 参照)。
 ローカルパラメータを持つカスタム CRS を対象地域に合わせて作成し、単一の CRS がすべてのタスクに適合しないプロジェクトでは、複数の CRS を使用することができる。
 「測地線計算」は、CRS が適切でない場合の代替手段を提供することができる ([proj.org/geodesic.html](https://proj.org/geodesic.html) を参照)。
 どの投影 CRS を使っても、数百キロメートルに及ぶジオメトリでは、結果が正確でない可能性がある。
@@ -535,10 +504,9 @@ lonlat2UTM(st_coordinates(london))
 このセクションで説明する原則は、ベクタデータセットとラスタデータセットに等しく適用される。
 しかし、CRS 変換には、それぞれの地理データモデルに特有の特徴がある。
 ベクタデータ変換の特殊性は Section \@ref(reproj-vec-geom) で、ラスタ変換の特殊性は Section \@ref(reproj-ras) で説明する。
-次に、最後のセクションでは、カスタム地図投影 (Section \@ref(mapproj)) を作成する方法を紹介する。
+次に、Section \@ref(mapproj) で、カスタム地図投影を作成する方法を紹介する。
 
 ## ベクタジオメトリの再投影  {#reproj-vec-geom}
-
 <!--jn: idea adding info about custom piplines?-->
 
 \index{CRS!reprojection} 
@@ -554,7 +522,7 @@ london2 = st_transform(london_geo, "EPSG:27700")
 
 `london` の変換版ができたので、**sf** 関数 `st_transform()` を使って、2 つのロンドン表現間の距離を求めることができる。^[
 `st_transform()` に代わるものとして、**lwgeom** の `st_transform_proj()` がある。これは、GDAL を使用しない変換を可能にし、GDAL がサポートしていない投影をサポートすることができる。
-本稿執筆時点 (2022年) では、`st_transform_proj()` でサポートされているが、`st_transform()` でサポートされていない投影法を見つけることはできなかった。
+しかし、本稿執筆時点 (2022年) では、`st_transform_proj()` でサポートされているが、`st_transform()` でサポートされていない投影法を見つけることはできなかった。
 ]
 `london` と `london2` が 2 km 以上も離れているのは意外かもしれない。^[
 この 2 点の位置の違いは、変換操作の不完全さ (実際は非常に正確) ではなく、`london` と `london_proj` を作成した手動で作成した座標の精度の低さによるものである。
@@ -571,7 +539,7 @@ CRS の確認と再投影のための関数を、`cycle_hire_osm` を参照し�
 `sf` Section \@ref(reproj-intro) オブジェクトの CRS は、関数 を使って問い合わせることができる。
 `st_crs()` 出力は、以下で示すように座標系に関する情報を複数行のテキストとして表示する。
 
-```{r}
+```{r, out.lines=6}
 st_crs(cycle_hire_osm)
 ```
 
@@ -609,7 +577,7 @@ st_crs(cycle_hire_osm_projected)
 
 この結果、オブジェクトは EPSG コード 27700 の新しい CRS を持つことになる。
 しかし、この EPSG コードや他のコードの詳細を調べるにはどうしたらよいだろうか？
-ネットで検索するのも一つの方法である。 
+ネットで検索するのも一つの方法であるが、CRS オブジェクトのプロパティを見ても良い。 
 
 ```{r 06-reproj-19}
 crs_lnd_new = st_crs("EPSG:27700")
@@ -618,7 +586,7 @@ crs_lnd_new$proj4string
 crs_lnd_new$epsg
 ```
 
-その結果、EPSG コード 27700 が英国ナショナルグリッドを表しており、「 [EPSG 27700](https://www.google.com/search?q=CRS+27700)」とネット検索すれば出てくるような結果である。
+その結果、EPSG コード 27700 が英国ナショナルグリッドを表しており、「 [EPSG 27700](https://www.google.com/search?q=CRS+27700)」とネット検索すれば出てくるだろう。
 
 ```{block2 06-reproj-21, type='rmdnote'}
 コンソールで空間オブジェクトを表示すると、自動的にその座標参照系が返される。
@@ -631,11 +599,11 @@ crs_lnd_new$epsg
 \index{raster!warping} 
 \index{raster!transformation} 
 \index{raster!resampling} 
-前節で説明した投影の概念は、ラスタにも同様に適用できる。
+前節で説明した投影の概念は、ラスタにも適用できる。
 しかし、ベクタとラスタの再投影には重要な違いがある。
 ベクタオブジェクトの変換は、すべての頂点の座標を変更することになるが、ラスタデータには当てはまらない。
 ラスタは同じ大きさの矩形セル (度やメートルなどの地図単位で表現される) で構成されているため、通常、ピクセルの座標を個別に変換することは不可能である。
-ラスタの再投影では、多くの場合、元のオブジェクトとは異なる列と行の数で、新しいラスタオブジェクトを作成する。
+よってラスタの再投影では、多くの場合、元のオブジェクトとは異なる列と行の数で、新しいラスタオブジェクトを作成する。
 その後、新しいピクセルを適切な値で「埋める」ことができるように、属性を再推定する必要がある。
 つまり、ラスタの再投影は、ラスタ範囲を別の CRS にベクタ再投影 (Section \@ref(reproj-vec-geom))、リサンプリングによる新しいピクセル値の計算 (Section \@ref(resampling)) という 2 つの別々の空間処理として考えることができる。
 したがって、ラスタデータとベクタデータの両方を使用する場合は、ラスタの再投影を避け、ベクタの再投影を行う方が良い場合がほとんどである。
@@ -666,8 +634,8 @@ plot(con_poly_ea, col = NA, add = TRUE, lwd = 4)
 ```
 
 ラスタの再投影処理は、**terra** パッケージの `project()` を使用する。
-前節で紹介した `st_transform()` 関数と同様、`project()` は地理的オブジェクト (この場合はラスタデータセット) と何らかの CRS 表現を第二引数として受け取る。
-余談だが、第 2 引数には、異なる CRS を持つ既存のラスタオブジェクトを指定することもできる。
+前節で紹介した `st_transform()` 関数と同様、`project()` は空間オブジェクト (この場合はラスタデータセット) と何らかの CRS 表現を第 2 引数として受け取る。
+第 2 引数には、異なる CRS を持つ既存のラスタオブジェクトを指定することもできる。
 
 ラスタ変換の例として、カテゴリデータと連続データを使ったものを見てみよう。
 土地被覆データは、通常、カテゴリ化された地図で表現される。
@@ -680,7 +648,7 @@ crs(cat_raster)
 #> ...
 ```
 
-この地域では、8つの土地被覆クラスが区別された (NLCD2011 の土地被覆クラスの全リストは、 [mrlc.gov](https://www.mrlc.gov/data/legends/national-land-cover-database-2011-nlcd2011-legend)で見ることができる)。
+この地域では、8 つの土地被覆クラスが区別された (NLCD2011 の土地被覆クラスの全リストは、 [mrlc.gov](https://www.mrlc.gov/data/legends/national-land-cover-database-2011-nlcd2011-legend)で見ることができる)。
 
 ```{r 06-reproj-30}
 unique(cat_raster)
@@ -689,8 +657,8 @@ unique(cat_raster)
 カテゴリ別ラスタを再投影する場合、推定値は元のラスタと同じでなければならない。
 これは、各新規セルの値を入力ラスタの最も近いセル (中心) の値に設定する最近傍法 (`near`) を使って行うことができる。
 例えば、ウェブマッピングに適した地理的 CRS である WGS84 に `cat_raster` を再投影している。
-まず、この CRS の PROJ 定義を取得する。これは、例えば、 [https://spatialreference.org](https://spatialreference.org/ref/epsg/wgs-84/) のウェブページを使用して行うことができる。 
-最後のステップは、`project()` 関数でラスタを再投影することである。カテゴリデータの場合は、最近傍法 (`near`) を使用する。
+まず、この CRS の 定義を取得する。
+次のステップは、`project()` 関数でラスタを再投影することである。カテゴリデータの場合は、最近傍法 (`near`) を使用する。
 
 ```{r 06-reproj-31}
 cat_raster_wgs84 = project(cat_raster, "EPSG:4326", method = "near")
@@ -719,9 +687,9 @@ tibble(
 数値ラスタ (`numeric` またはこの場合は `integer` の値) の再投影もほぼ同じ手順で行う。
 これは、[Shuttle Radar Topography Mission (SRTM)](https://www2.jpl.nasa.gov/srtm/) の **spDataLarge** にある `srtm.tif` で実証されており、WGS84 CRS による海抜メートル (標高) の高さを表している。
 
-```{r 06-reproj-32}
+```{r 06-reproj-32, out.lines=6}
 con_raster = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
-crs(con_raster)
+cat(crs(con_raster))
 ```
 
 これから、このデータセットを投影型 CRS に再投影するが、カテゴリデータに適した最近傍法では<u>ない</u>。
@@ -730,14 +698,15 @@ Section \@ref(resampling) に記載されている他の方法も、ここで使
 ]
 投影されたデータセットの値は、これら 4 つのセルの値の距離加重平均である。
 入力セルが出力セルの中心に近いほど、その重みは大きくなる。
-以下のコマンドは、WGS 84 / UTM zone 12N を表すテキストストリングを作成し、この CRS にラスタを `bilinear` 方式で再投影するものである。
+以下のコマンドは、WGS 84 / UTM zone 12N を表すテキストストリングを作成し、この CRS にラスタを `bilinear` 方式で再投影するものである (出力は示していない)。
 
 ```{r 06-reproj-34}
+#| eval: false
 con_raster_ea = project(con_raster, "EPSG:32612", method = "bilinear")
-crs(con_raster_ea)
+cat(crs(con_raster_ea))
 ```
 
-数値変数のラスタ再投影は、セル数、解像度、範囲などの値や空間特性にも小さな変化をもたらす。
+数値変数のラスタ再投影は、セル数、解像度、範囲などの値や空間特性にも変化をもたらす。
 これらの変化は、Table \@ref(tab:rastercrs) で実証されている。^[ 
 もう一つの小さな変更点は、Table \@ref(tab:rastercrs) で表現されていないが、新しい投影ラスタデータセットの値のクラスが `numeric` になっていることである。
 これは、`bilinear` 方式が連続データを扱うため、結果が整数値に型強制されることがほとんどないためである。
@@ -777,7 +746,7 @@ Section \@ref(which-crs) は、カスタム CRS を使用する理由を述べ�
 ここでは、これらのアイデアを R で応用する方法を紹介する。
 
 一つは、既存の CRS の WKT の定義を取り、その要素の一部を変更し、新しい定義を再投影に使用する方法である。
-これは、空間ベクタでは `st_crs()$wkt` と `st_transform()` で、空間ラスタでは `crs()` と `project()` で行うことができる。次の例では、`zion` オブジェクトをカスタム正距方位図法 (AEQD) CRS に変換する例を示している。
+これは、空間ベクタでは `st_crs()` と `st_transform()` で、空間ラスタでは `crs()` と `project()` で行うことができる。次の例では、`zion` オブジェクトをカスタム正距方位図法 (AEQD) CRS に変換する例を示している。
 
 ```{r}
 zion = read_sf(system.file("vector/zion.gpkg", package = "spDataLarge"))
