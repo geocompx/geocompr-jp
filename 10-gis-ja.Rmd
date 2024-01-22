@@ -131,7 +131,7 @@ QGIS は、統一されたインターフェイスで、QGIS 自身のジオア�
 
 ```{block2 qgisdocker, type='rmdnote'}
 あるいは、Docker がインストール済みであれば、本プロジェクトの `qgis` イメージから **qgisprocess** を使うこともできる。
-Docker をインストールしており、十分な実行環境のある方は、以下のコマンドで **qgisprocess** および関連プラグインを実行できる ([geocompx/docker](https://github.com/geocompx/docker) レポジトリを参照)。
+Docker をインストールしており、十分な実行環境のある方は、以下のコマンドで **qgisprocess** および関連プラグインを実行できる ([geocompx/docker](https://github.com/geocompx/docker) リポジトリを参照)。
 
 `docker run -e DISABLE_AUTH=true -p 8786:8787 ghcr.io/geocompx/docker:qgis`
 

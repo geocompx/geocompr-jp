@@ -1,5 +1,9 @@
 # 統計的学習  {#spatial-cv}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ```{r, echo=FALSE}
 knitr::opts_chunk$set(warning = FALSE)
 ```
@@ -165,7 +169,7 @@ head(pred_glm)
 
 予測ラスタに係数を適用することで、空間分布図を作成することができる。 
 これは、手動または `terra::predict()` で行うことができる。
-モデルオブジェクト (`fit`) に加えて、この関数は、モデルの入力データフレーム (Figure \@ref(fig:lsl-susc)) と同じ名前の予測子 (ラスタレイヤ) を持つ `SpatRaster` も必要とする。
+モデルオブジェクト (`fit`) に加えて、後者の関数は、モデルの入力データフレーム (Figure \@ref(fig:lsl-susc)) と同じ名前の予測子 (ラスタレイヤ) を持つ `SpatRaster` も必要とする。
 
 ```{r 12-spatial-cv-9, eval=FALSE}
 # 予測する
@@ -191,11 +195,11 @@ pred = terra::predict(ta, model = fit, type = "response")
 #   tm_shape(terra::mask(pred, study_mask)) +
 # 	tm_raster(col_alpha = 0.5, col.scale = tm_scale(values = "Reds", n = 6),
 # 	          col.legend = tm_legend(title = "Susceptibility")) +
-# 	tm_layout(legend.position = c("left", "bottom"),
-# 	          legend.title.size = 0.9,
+# 	tm_layout(legend.position = c("LEFT", "BOTTOM"),
+# 	          legend.title.size = 0.8,
 # 	          inner.margins = rep(0, 4))
 # tmap::tmap_save(map2, filename = "figures/lsl-susc-1.png", width = 11,
-#               height = 11, units = "cm")
+#               height = 13, units = "cm")
 knitr::include_graphics("figures/lsl-susc-1.png")
 ```
 
@@ -204,7 +208,7 @@ knitr::include_graphics("figures/lsl-susc-1.png")
 これは本書の範疇を越えるが、いくつかの資料を紹介する。
 
 1. 回帰クリギングの予測値は、回帰の予測値と回帰の残差のクリギングを組み合わせたものである [@goovaerts_geostatistics_1997; @hengl_practical_2007; @bivand_applied_2013]。
-2. また、一般化最小二乗モデルに空間相関 (依存関係) 構造を追加することもできる [`nlme::gls()`; @zuur_mixed_2009; @zuur_beginners_2017]。
+2. また、一般化最小二乗モデルに空間相関 (依存関係) 構造を追加することもできる (`nlme::gls()`; @zuur_mixed_2009; @zuur_beginners_2017)。
 3. また、混合効果モデリング・アプローチを使用することもできる。
 基本的に、ランダム効果は、応答変数に従属構造を課し、それによって、あるクラスのオブザベーションが、他のクラスのオブザベーションよりも互いに類似していることを可能にする [@zuur_mixed_2009]。
 クラスは、例えば、ハチの巣、フクロウの巣、植生トランセクト、標高の層別などである。
@@ -214,7 +218,7 @@ knitr::include_graphics("figures/lsl-susc-1.png")
 
 空間分布図は、モデルの非常に重要なアウトカムの一つである。
 さらに重要なのは、モデルの予測性能が低ければ、予測マップは役に立たないので、基盤となるモデルがどれだけ優れているかということである。
-二項モデルの予測性能を評価する最も一般的な尺度は、Area Under the Receiver Operator Characteristic Curve (AUROC)\index{AUROC} である。
+二項モデルの予測性能を評価する最も一般的な尺度の一つは、Area Under the Receiver Operator Characteristic Curve (AUROC)\index{AUROC} である。
 これは 0.5 から 1.0 の間の値で、0.5 はランダム化より良くないモデル、1.0 は 2 つのクラスを完全に予測することを示す。 
 したがって、AUROC\index{AUROC} が高いほど、モデルの予測力が優れていることになる。
 次のコードチャンクは、応答と予測値を入力とする `roc()` を用いて、モデルの AUROC \index{AUROC} 値を計算するものである。 
@@ -225,15 +229,13 @@ pROC::auc(pROC::roc(lsl$lslpts, fitted(fit)))
 #> Area under the curve: 0.8216
 ```
 
-AUROC\index{AUROC} の値
-<!-- `r # round(pROC::auc(pROC::roc(lsl$lslpts, fitted(fit))), 2)` -->
-0.82 は良好な適合性を示している。
+AUROC\index{AUROC} の値 0.82 は良好な適合性を示している。
 しかし、これは完全なデータセットに対して計算したものであるため、楽観的すぎる推定値である。 
 偏りを抑えた評価を導き出すためには、クロスバリデーション \index{cross-validation}  を用いる必要があり、空間データの場合は空間 CV\index{cross-validation!spatial CV}  を利用する必要がある。
 
 ##  (空間) クロスバリデーションの紹介   {#intro-cv}
 
-クロスバリデーション\index{cross-validation}  は、再サンプリング法\index{resampling}のファミリーに属する [@james_introduction_2013]。
+クロスバリデーション\index{cross-validation}  は、リサンプリング法\index{resampling}のファミリーに属する [@james_introduction_2013]。
 基本的な考え方は、データセットをトレーニングセットとテストセットに分割 (繰り返し) し、トレーニングデータを使ってモデルを適合させ、それをテストセットに適用することである。
 予測値とテストセットの既知の応答値を比較することにより (二項式の場合は AUROC\index{AUROC}  のような性能指標を使用)、学習した関係を独立したデータに一般化するモデルの能力について、バイアスを低減した評価を得ることができる。
 例えば、5倍クロスバリデーションを100回繰り返すとは、データをランダムに5分割 (フォールド) し、各フォールドをテストセットとして1回使用することを意味する (Figure \@ref(fig:partitioning) の上段を参照)。 
@@ -252,33 +254,34 @@ Chapter \@ref(transport) で見るように、地理学の「第一法則」は�
 その結果、空間的 CV はモデルの予測性能のバイアスを低減させ、過適合\index{overfitting}を回避するのに役立つ。
 
 ```{r partitioning, fig.cap="1 回の繰り返しのクロスバリデーションで選択されたテストおよびトレーニングのオブザベーションの空間的な可視化。ランダム (上段) および空間分割 (下段)。", echo=FALSE, fig.scap="Spatial visualization of selected test and training observations."}
-knitr::include_graphics("figures/13_partitioning.png")
+knitr::include_graphics("figures/12_partitioning.png")
 ```
 
 ## **mlr3** を用いた空間 CV  {#spatial-cv-with-mlr3}
+
 \index{mlr3 (package)}
 統計的学習\index{statistical learning}のためのパッケージは何十種類もある。例えば [CRAN machine learning task view](https://CRAN.R-project.org/view=MachineLearning) で説明されている。
 クロスバリデーションやハイパーパラメータ ( \index{hyperparameter}  ) のチューニング方法など、各パッケージに精通することは時間のかかる作業である。
 異なるパッケージのモデル結果を比較するのは、さらに手間がかかる。
 これらの問題を解決するために開発されたのが、**mlr3** パッケージとエコシステムである。
 これは「メタパッケージ」として機能し、分類、回帰 \index{regression}、生存時間分析、クラスタリング\index{clustering}など、一般的な教師あり・教師なしの統計学習技術への統一的なインタフェースを提供する [@lang_mlr3_2019; @becker_mlr3_2022] 。
-標準化された **mlr3** インターフェースは、8つの「ビルディングブロック」に基づいている。
+標準化された **mlr3** インターフェースは、8 つの「ビルディングブロック」に基づいている。
 Figure \@ref(fig:building-blocks) に示すように、これらは明確な順序を持っている。
 
-(ref:building-blocks) mlr3 パッケージの基本的な構成要素。Source: @becker_mlr3_2022.  (この図の再利用を快く承諾していただいた。) 
+(ref:building-blocks) mlr3 パッケージの基本的な構成要素。Source: @becker_mlr3_2022 (この図の再利用を快く承諾していただいた。) 
 
 ```{r building-blocks, echo=FALSE, fig.height=4, fig.width=4, fig.cap="(ref:building-blocks)", fig.scap="Basic building blocks of the mlr3 package."}
-knitr::include_graphics("figures/13_ml_abstraction_crop.png")
+knitr::include_graphics("figures/12_ml_abstraction_crop.png")
 ```
 
 **mlr3** のモデリングプロセスは、主に3つのステージで構成されている。
 まず、**task** で、データ (応答変数と予測変数を含む) とモデルの種類 (回帰 \index{regression}  や分類 \index{classification}  など) を指定する。
 次に、**learner**は、作成されたタスクに適用される特定の学習アルゴリズムを定義する。
-第三に、**再サンプリング**アプローチでは、モデルの予測性能、すなわち新しいデータへの汎化能力を評価する (Section \@ref(intro-cv) も参照)。
+第三に、**リサンプリング**アプローチでは、モデルの予測性能、すなわち新しいデータへの汎化能力を評価する (Section \@ref(intro-cv) も参照)。
 
 ### 一般化線形モデル  {#glm}
 
-GLM\index{GLM} を **mlr3**\index{mlr3 (package)} で実装するためには、地すべりデータを含む **task** を作成する必要がある。
+GLM\index{GLM} を **mlr3**\index{mlr3 (package)} で使うためには、地すべりデータを含む **task** を作成する必要がある。
 応答は二値 (2カテゴリの変数) で、空間次元を持つので、**mlr3spatiotempcv** パッケージの `TaskClassifST$new()` を使用し、分類 \index{classification}タスクを作成する [@schratz_mlr3spatiotempcv_2021 、非空間 task には `mlr3::TaskClassif$new()`、回帰\index{regression} には `mlr3::TaskRegr$new()` を使用。他の task の詳細は、`?Task` を参照。] 。^[**mlr3** エコシステムは **data.table** と **R6** というクラスを多用する。これらのクラスの仕様を知らなくても **mlr3** を使うことはできるが、知っておくと有利である。 **data.table**, の詳細は https://rdatatable.gitlab.io/data.table/。**R6** について学びたい方は、Advanced R book (日本語版は共立出版「R 言語徹底解説」だが、旧版を元にしている)  [@wickham_advanced_2019] の [Chapter 14](https://adv-r.hadley.nz/fp.html) を参照。]
 `Task*$new()` 関数の最初の必須引数は、`backend` である。
 `backend` は、入力データが応答変数と予測変数を含んでいることを想定している。
@@ -286,10 +289,10 @@ GLM\index{GLM} を **mlr3**\index{mlr3 (package)} で実装するためには、
 `lsl` データセットの他のすべての変数が予測因子として機能する。
 空間的な CV のためには、いくつかの追加引数を与える必要がある。
 `coordinate_names` 引数は、座標列の名前を期待する (Section \@ref(intro-cv) と Figure \@ref(fig:partitioning) を参照)。
-さらに、使用する CRS (`crs`) を示し、その座標を予測因子としてモデリング (`coords_as_features`) に使用するかどうかを決定する必要がある。
+さらに、その座標を予測因子としてモデリング (`coords_as_features`) に使用するかどうかを決定し、使用する CRS (`crs`) を示す必要がある。
 
 ```{r 12-spatial-cv-11, eval=FALSE}
-# task を作成
+# 1. task を作成
 task = mlr3spatiotempcv::TaskClassifST$new(
   id = "ecuador_lsl",
   backend = mlr3::as_data_backend(lsl), 
@@ -304,6 +307,7 @@ task = mlr3spatiotempcv::TaskClassifST$new(
 なお、`mlr3spatiotempcv::as_task_classif_st()` は、`backend` パラメータの入力として `sf`-オブジェクトも受け付ける。
 この場合、引数 `coords_as_features` のみを追加して指定するとよいだろう。
 `lsl` を `sf` -オブジェクトに変換しなかったのは、`TaskClassifST$new()` がバックグラウンドで非空間的な `data.table` オブジェクトに戻してしまうだけだからである。
+
 短時間のデータ探索では、**mlr3viz** パッケージの `autoplot()` 関数は、すべての予測因子に対する応答とすべての予測因子に対する応答をプロットするので便利だろう (図示していない)。
 
 ```{r autoplot, eval=FALSE}
@@ -346,9 +350,10 @@ knitr::kable(lrns_df,
 
 これにより、すべての学習器が2クラス問題 (地滑りの有無) をモデル化することができるようになった。
 Section \@ref(conventional-model) で使用され、**mlr3learners** では `classif.log_reg` として実装されている二項分類 \index{classification} 方式を選択することにする。
-さらに、予測の種類を決める `predict.type` を指定する必要がある。 `prob` は、地滑り発生の予測確率を 0 から 1 の間で決定する (これは `type = response` の `predict.glm` に対応する)。
+さらに、予測の種類を決める `predict.type` を指定する必要がある。 `prob` は、地滑り発生の予測確率を 0 から 1 の間で決定する (これは `type = response` の `predict.glm()` に対応する)。
 
 ```{r 12-spatial-cv-13, eval=FALSE}
+# 2. 学習器を指定
 learner = mlr3::lrn("classif.log_reg", predict_type = "prob")
 ```
 
@@ -381,24 +386,25 @@ identical(fit$coefficients, learner$model$coefficients)
 
 **mlr3**\index{mlr3 (package)} でモデリングするためのセットアップ手順は、面倒に思えるだろう。 
 しかし、この一つのインターフェースで、`mlr3extralearners::list_mlr3learners()` が示す 130 種類以上の学習器にアクセスできることを思い出してほしい。各学習器のインターフェースを学ぶことはもっと退屈である。
-さらに、再サンプリング技術の簡単な並列化と、機械学習のハイパーパラメータ\index{hyperparameter}を調整できることも利点である ( Section \@ref(svm) を参照)。
-最も重要なことは、**mlr3spatiotempcv** [@schratz_mlr3spatiotempcv_2021]  の (空間) 再サンプリングは簡単で、再サンプリング法の指定と実行という2つのステップを追加するだけでよいということである。
+さらに、リサンプリング技術の簡単な並列化と、機械学習のハイパーパラメータ\index{hyperparameter}を調整できることも利点である ( Section \@ref(svm) を参照)。
+最も重要なことは、**mlr3spatiotempcv** [@schratz_mlr3spatiotempcv_2021]  の (空間) リサンプリングは簡単で、リサンプリング法の指定と実行という2つのステップを追加するだけでよいということである。
 100 回繰り返される5回空間 CV\index{cross-validation!spatial CV} : `task` で提供された座標に基づいて5つのパーティションが選ばれ、パーティショニングは100回繰り返される。 [^13] 
 
 [^13]:
 
     なお、パッケージ **sperrorest** は、当初 R [@brenning_spatial_2012]  で空間クロスバリデーションを実装していた。
-    その間に、その機能は **mlr3** エコシステムに統合された。これが、私たちが **mlr3** [@schratz_hyperparameter_2019] を使用している理由である。**tidymodels** フレームワークは、R でモデリングを効率化するためのもう一つの包括的パッケージである。しかし、空間クロスバリデーションのサポートは、**spatialsample** を介して最近統合されたが、今のところ一つの空間再サンプリング方法のみをサポートしている。
+    その間に、その機能は **mlr3** エコシステムに統合された。これが、私たちが **mlr3** [@schratz_hyperparameter_2019] を使用している理由である。**tidymodels** フレームワークは、R でモデリングを効率化するためのもう一つの包括的パッケージである。しかし、空間クロスバリデーションのサポートは、**spatialsample** を介して最近統合されたが、今のところ一つの空間リサンプリング方法のみをサポートしている。
 
 
 ```{r 12-spatial-cv-18, eval=FALSE}
+# 3. リサンプリングを指定
 resampling = mlr3::rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
 ```
 
-空間再サンプリングを実行するために、先に指定したタスク、学習器、再サンプリング戦略を用いて、`resample()` を実行する。
-500 個の再サンプリングパーティションと 500 個のモデルを計算するため、多少時間がかかる (最新のノートパソコンで 15 秒程度)。 
+空間リサンプリングを実行するために、先に指定したタスク、学習器、リサンプリング戦略を用いて、`resample()` を実行する。
+500 個のリサンプリングパーティションと 500 個のモデルを計算するため、多少時間がかかる (最新のノートパソコンで 15 秒程度)。 
 性能指標として、今回も AUROC を選択した。
-これを取得するために、再サンプリング結果出力オブジェクト (`score_spcv_glm`) の `score()` メソッドを使用する。
+これを取得するために、リサンプリング結果出力オブジェクト (`score_spcv_glm`) の `score()` メソッドを使用する。
 これは、500 行の `data.table` オブジェクトを返す。
 
 ```{r 12-spatial-cv-19, eval=FALSE}
@@ -411,18 +417,18 @@ rr_spcv_glm = mlr3::resample(task = task,
 # AUROC を計算しデータフレームに格納
 score_spcv_glm = rr_spcv_glm$score(measure = mlr3::msr("classif.auc"))
 # 必要な列だけ残す
-score_spcv_glm = score_spcv_glm[, .(task_id, learner_id, resampling_id, 
-                                    classif.auc)]
+score_spcv_glm = dplyr::select(score_spcv_glm, task_id, learner_id, 
+                               resampling_id, classif.auc)
 ```
 
 前述のコードチャンクの出力は、モデルの予測性能のバイアスを低減した評価である。
-書籍の GitHub レポに `extdata/12-bmr_score.rds` として保存している。
+書籍の GitHub リポジトリに `extdata/12-bmr_score.rds` として保存している。
 必要であれば、以下のように読み込むことができる。
 
 ```{r 12-spatial-cv-21}
 score = readRDS("extdata/12-bmr_score.rds")
-score_spcv_glm = score[learner_id == "classif.log_reg" & 
-                         resampling_id == "repeated_spcv_coords"]
+score_spcv_glm = dplyr::filter(score, learner_id == "classif.log_reg", 
+                               resampling_id == "repeated_spcv_coords")
 ```
 
 全 500 モデルの平均 AUROC を計算するために、以下を実行した。
@@ -432,10 +438,10 @@ mean(score_spcv_glm$classif.auc) |>
   round(2)
 ```
 
-これらの結果を整理するために、100回繰り返した5回非空間クロスバリデーションの AUROC\index{AUROC} 値と比較してみよう (Figure \@ref(fig:boxplot-cv) ; 非空間CV\index{cross-validation}のコードはここでは示さないが、演習セクションで検討する)。
-予想通り、空間交差検証の結果は、従来の交差検証アプローチよりも平均して低い AUROC 値をもたらし、後者の空間自己相関\index{autocorrelation!spatial}による楽観的な予測性能が強調された。
+これらの結果を整理するために、100 回繰り返した 5 回非空間クロスバリデーションの AUROC\index{AUROC} 値と比較してみよう (Figure \@ref(fig:boxplot-cv) ; 非空間CV\index{cross-validation}のコードはここでは示さないが、演習セクションで検討する)。
+予想通り (Section \@ref(intro-cv) 参照)、空間交差検証の結果は、従来の交差検証アプローチよりも平均して低い AUROC 値をもたらし、空間自己相関\index{autocorrelation!spatial}のため、後者の空間自己相関\index{autocorrelation!spatial}による楽観的な予測性能が強調された。
 
-```{r boxplot-cv, echo=FALSE, message=FALSE, out.width="75%", fig.cap="空間CV と従来の100回繰り返し5回 CV におけるGLM AUROC 値の差を示す箱ひげ図。", fig.scap="Boxplot showing AUROC values."}
+```{r boxplot-cv, echo=FALSE, message=FALSE, out.width="75%", fig.cap="空間CV と従来の 100 回繰り返し 5 回 CV におけるGLM AUROC 値の差を示す箱ひげ図。", fig.scap="Boxplot showing AUROC values."}
 library(ggplot2)
 # resampling_id の要素の名称を変更
 score[, resampling_id := as.factor(resampling_id) |>
@@ -479,8 +485,9 @@ SVM を実装している学習器は、**mlr3extralearners** パッケージの
 
 ```{r 12-spatial-cv-23, eval=FALSE, echo=FALSE}
 mlr3_learners = mlr3extralearners::list_mlr3learners()
-mlr3_learners[class == "classif" & grepl("svm", id),
-              .(id, class, mlr3_package, required_packages)]
+mlr3_learners |>
+  dplyr::filter(class == "classif" & grepl("svm", id)) |>
+  dplyr::select(id, class, mlr3_package, required_packages)
 ```
 
 オプションのうち、**kernlab** パッケージの `ksvm()` を使用することにする [@karatzoglou_kernlab_2004]。
@@ -494,7 +501,7 @@ lrn_ksvm = mlr3::lrn("classif.ksvm", predict_type = "prob", kernel = "rbfdot",
 lrn_ksvm$fallback = lrn("classif.featureless", predict_type = "prob")
 ```
 
-次の段階は、再サンプリング戦略を指定することである。
+次の段階は、リサンプリング戦略を指定することである。
 ここでも 100 回繰り返しの 5 回空間 CV\index{cross-validation!spatial CV} を使用する。
 
 <!-- we agreed on using "performance estimation level" and "tuning level" instead of saying "outer and inner resampling" in our paper
@@ -505,7 +512,7 @@ lrn_ksvm$fallback = lrn("classif.featureless", predict_type = "prob")
 perf_level = mlr3::rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
 ```
 
-これは Section \@ref(glm) の GLM \index{GLM}  の再サンプリングに使われたコードと全く同じであることに注意しておこう。
+これは Section \@ref(glm) の GLM \index{GLM}  のリサンプリングに使われたコードと全く同じであることに注意しておこう。
 
 ここまでは、Section \@ref(glm) で説明したものと同じである。
 しかし、次のステップは新しいもので、ハイパーパラメータ \index{hyperparameter}  を調整することである。
@@ -513,25 +520,25 @@ perf_level = mlr3::rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
 これは、ネストされた空間的な CV \index{cross-validation!spatial CV}  を用いることで回避することができる。
 
 ```{r inner-outer, echo=FALSE, fig.cap="CV におけるハイパーパラメータのチューニングと性能推定レベルの模式図 (図は Schratz et al. (2019) から引用した。快く再利用の許可をいただいた)。", fig.scap="Schematic of hyperparameter tuning."}
-knitr::include_graphics("figures/13_cv.png")
+knitr::include_graphics("figures/12_cv.png")
 ```
 
 これは、各フォールドを空間的に不連続な 5 つのサブフォールドに再び分割し、最適なハイパーパラメータ \index{hyperparameter}  ( `tune_level` 以下のコードチャンクのオブジェクト。視覚的表現については Figure \@ref(fig:inner-outer) を参照) を決定するために使用することを意味する。
-最適なハイパーパラメータの組み合わせを見つけるために、これらのサブフォルダそれぞれにおいて、ハイパーパラメータCとシグマにランダムな値を選択して50のモデル (以下のコードチャンクの `terminator` オブジェクト) をフィットさせた。
-さらに、値 C と Sigma のランダムな選択は、あらかじめ定義された調整空間( `search_space` object)に制限されている。
+さらに、値 C と Sigma のランダムな選択は、あらかじめ定義された調整空間 ( `search_space` オブジェクト) に制限されている。
 同調空間の範囲は、文献で推奨されている値で選択した [@schratz_hyperparameter_2019]。
+最適なハイパーパラメータの組み合わせを見つけるために、これらのサブフォルダそれぞれにおいて、ハイパーパラメータ C とシグマにランダムな値を選択して 50 のモデル (以下のコードチャンクの `terminator` オブジェクト) を適合させた。
 
 ```{r 12-spatial-cv-26, eval=FALSE}
 # ５つに分割
 tune_level = mlr3::rsmp("spcv_coords", folds = 5)
-# 50個のランダムに選択されたハイパーパラメータを使用
-terminator = mlr3tuning::trm("evals", n_evals = 50)
-tuner = mlr3tuning::tnr("random_search")
 # ランダムに選択されたハイパーパラメータの限界値を定義
 search_space = paradox::ps(
   C = paradox::p_dbl(lower = -12, upper = 15, trafo = function(x) 2^x),
   sigma = paradox::p_dbl(lower = -15, upper = 6, trafo = function(x) 2^x)
 )
+# 50 個のランダムに選択されたハイパーパラメータを使用
+terminator = mlr3tuning::trm("evals", n_evals = 50)
+tuner = mlr3tuning::tnr("random_search")
 ```
 
 次の段階は、`AutoTuner$new()` を用いてハイパーパラメータチューニングを定義するすべての特性に従って学習器 `lrn_ksvm` を修正することである。
@@ -591,18 +598,18 @@ future::plan(list("sequential", "multisession"),
 progressr::with_progress(expr = {
   rr_spcv_svm = mlr3::resample(task = task,
                                learner = at_ksvm, 
-                               # 外側再サンプリング (パフォーマンスレベル) 
+                               # 外側リサンプリング (パフォーマンスレベル) 
                                resampling = perf_level,
                                store_models = FALSE,
                                encapsulate = "evaluate")
 })
-
 # 並列化を終了
 future:::ClusterRegistry("stop")
 # AUROC 値を計算
 score_spcv_svm = rr_spcv_svm$score(measure = mlr3::msr("classif.auc")) %>%
 # 必要な列のみ残す
-score_spcv_svm = score_spcv_svm[, .(task_id, learner_id, resampling_id, classif.auc)]
+score_spcv_svm = dplyr::select(score_spcv_svm, task_id, learner_id, 
+                               resampling_id, classif.auc)
 ```
 
 ローカルでコードを実行したくない方のために、書籍の GitHub リポジトリに [score_svm](https://github.com/Robinlovelace/geocompr/blob/main/extdata/12-bmr_score.rds) を保存してある。
@@ -622,7 +629,7 @@ round(mean(score_spcv_svm$classif.auc), 2)
 ```
 
 GLM\index{GLM} (集計された AUROC \index{AUROC} は  `r score [score $resampling_id == "repeated_spcv_coords" & score$ learner_id == "classif.log_reg", round(mean(score$classif.auc), 2)] `) は、この特定のケースでは、SVM\index{SVM} よりもわずかに優れているようである。
-絶対的に公平な比較を保証するためには、2つのモデルが全く同じパーティションを使用していることを確認する必要がある。ここでは示していないが、バックグラウンドで黙々と使用しているものである (詳しくは本書の github レポにある `code/12_cv.R` を参照)。
+絶対的に公平な比較を保証するためには、2 つのモデルが全く同じパーティションを使用していることを確認する必要がある。ここでは示していないが、バックグラウンドで黙々と使用しているものである (詳しくは本書の GitHub リポジトリにある `code/12_cv.R` を参照)。
 そのために、**mlr3** は関数 `benchmark_grid()` と `benchmark()` を提供している [https://mlr3book.mlr-org.com/chapters/chapter3/evaluation_and_benchmarking.html#sec-benchmarking, @becker_mlr3_2022 参照] 。 
 これらの機能については、「演習」でより詳しく解説する。
 また、SVM のランダムな探索に 50 回以上の反復を使用すると、おそらくより良い AUROC [@schratz_hyperparameter_2019]  を持つモデルになるハイパーパラメータ\index{hyperparameter}が得られるであろうことに注意しておこう。
@@ -634,19 +641,19 @@ GLM\index{GLM} (集計された AUROC \index{AUROC} は  `r score [score $resamp
 
 ## 結論  {#conclusions}
 
-再サンプリング手法は、データサイエンティストのツールボックスの重要な一部である [@james_introduction_2013]。
+リサンプリング手法は、データサイエンティストのツールボックスの重要な一部である [@james_introduction_2013]。
 この章では、CV\index{cross-validation} を用いて、様々なモデルの予測性能を評価した。
 Section \@ref(intro-cv) で述べたように、空間座標を持つオブザベーションは、空間自己相関\index{autocorrelation!spatial}のために統計的に独立でない場合があり、クロスバリデーションの基本的な仮定に違反する。
 空間 CV \index{cross-validation!spatial CV}  この問題は、空間的自己相関\index{autocorrelation!spatial}によってもたらされるバイアスを低減することで解決される。 
 
-**mlr3**\index{mlr3 (package)}  パッケージは、線形回帰\index{regression!linear}、一般化加法モデル\index{generalized additive model}などのセミパラメトリックモデルなどの統計学習\index{statistical learning}、あるいはランダムフォレスト\index{random forest}、SVM \index{SVM}、ブースト回帰木 [@bischl_mlr:_2016;@schratz_hyperparameter_2019]  などの機械学習 \index{machine learning}  技術と組み合わせることで、 (空間) 再サンプリング技法\index{resampling}を容易にしている。
-機械学習アルゴリズムは、しばしばハイパーパラメータ\index{hyperparameter}の入力を必要とする。その最適な「チューニング」には、大規模な計算資源を必要とする数千回のモデル実行が必要で、多くの時間、RAM、コアを消費することがある。
+**mlr3**\index{mlr3 (package)}  パッケージは、線形回帰\index{regression!linear}、一般化加法モデル\index{generalized additive model}などのセミパラメトリックモデルなどの統計学習\index{statistical learning}、あるいはランダムフォレスト\index{random forest}、SVM \index{SVM}、ブースト回帰木 [@bischl_mlr:_2016;@schratz_hyperparameter_2019]  などの機械学習\index{machine learning}  技術と組み合わせることで、 (空間) リサンプリング技法\index{resampling}を容易にしている。
+機械学習アルゴリズムは、ハイパーパラメータ\index{hyperparameter}の入力を必要とすることがある。その最適な「チューニング」には、大規模な計算資源を必要とする数千回のモデル実行が必要で、多くの時間、RAM、コアを消費することがある。
 **mlr3** は、並列化\index{parallelization}を可能にすることでこの問題に取り組んでいる。
 
 機械学習全体、そして空間データを理解するための機械学習は大きな分野であり、この章では基本的なことを説明したが、まだまだ学ぶべきことはある。
 このような方向性で、以下の資料を勧める。
 
-- **mlr3 book** [@becker_mlr3_2022; https://mlr3book.mlr-org.com/]  と、特に [chapter on the handling of spatio-temporal data](https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#sec-spatiotemporal) を参考。
+- **mlr3 book** (@becker_mlr3_2022; https://mlr3book.mlr-org.com/) と、特に [chapter on the handling of spatio-temporal data](https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#sec-spatiotemporal) を参考。
 - ハイパーパラメータ\index{hyperparameter}チューニングに関する学術論文 [@schratz_hyperparameter_2019] 
 - **mlr3spatiotempcv** の使用方法に関する学術論文 [@schratz_mlr3spatiotempcv_2021] 
 - 時空間データの場合、空間的\index{autocorrelation!spatial}と時間的\index{autocorrelation!temporal}の自己相関を考慮した上で CV\index{cross-validation} を行う必要がある [@meyer_improving_2018]。

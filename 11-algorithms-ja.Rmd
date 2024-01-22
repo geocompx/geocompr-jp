@@ -120,7 +120,7 @@ poly_mat = cbind(
   x = c(0, 9, 9, 0, 0),
   y = c(0, 0, 9, 9, 0)
 )
-# geocompr レポジトリの code/11-centroid-alg.R の短い URL
+# geocompr リポジトリの code/11-centroid-alg.R の短い URL
 source("https://t.ly/0nzj")
 ```
 

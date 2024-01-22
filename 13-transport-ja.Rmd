@@ -2,6 +2,10 @@
 
 # 交通解析  {#transport}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ```{r transport-setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE)
 ```
@@ -144,7 +148,7 @@ Figure \@ref(fig:bristol) の内側の青い境界を参照。なお、この方
 
 [^13-transport-2]:最初のマッチングで正しい名称が得られない場合、国または地域を指定する必要がある。例えば、アメリカにあるブリストルは `Bristol Tennessee` のように指定する。
 
-- OSM から最初に返された OSM 境界は、自治体が使用する正式な境界とは異なる場合がある
+- OSM から最初に返された境界は、自治体が使用する正式な境界とは異なる場合がある
 - OSM が正式な境界線を返したとしても、人々が移動する場所とはほとんど関係がないため、交通研究にとっては不適切かもしれない。
 
 TTWA (Travel to Work Area) は、水文学的な流域に類似したゾーニングシステムを構築することで、これらの問題に対処している。
@@ -154,7 +158,7 @@ TTWA はまず、人口の75％が通勤で利用する連続したゾーンと�
 
 本章で使用する出発地と目的地は同じである。中間の地理的解像度で公式に定義されたゾーン ([公式](https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualsmallareapopulationestimates/2014-10-23)名称は Middle layer Super Output Areas または MSOAs) である。
 それぞれ約8,000人が暮らしている。
-このような行政区域は、特定の介入から最も恩恵を受ける可能性のある人々のタイプなど、輸送分析に不可欠な状況を提供することができる [例 @moreno-monroy_public_2017] .
+このような行政区域は、特定の介入から最も恩恵を受ける可能性のある人々のタイプなど、輸送分析に不可欠な状況を提供することができる (例 @moreno-monroy_public_2017)。
 
 これらのゾーンの地理的解像度は重要である。通常、地理的解像度の高い小さなゾーンが望ましいが、大きな地域でその数が多いと、処理に影響を及ぼすことがある (特に、ゾーン数の非線形関数として可能性の数が増加する起点-終点分析) [@hollander_transport_2016]。
 
@@ -199,8 +203,7 @@ zones_attr = bristol_od %>%
 - `bristol_od` データセットの変数が数値であれば、それを集計して、各ゾーンに住む人の交通手段別の総数を求める。[^13-transport-3]
 - グループ化変数 `o` の名前を変更し、`bristol_zones` オブジェクトの ID 列 `geo_code` と一致するようにした。
 
-[^13-transport-3]: `_if` の接頭辞は、変数に対して `TRUE`/`FALSE` の質問をすることを要求しており、この場合は「それは数値か？」で、
-    真を返す変数のみが要約される。
+[^13-transport-3]: `_if` の接頭辞は、変数に対して `TRUE`/`FALSE` の質問をすることを要求しており、この場合は「それは数値か？」で、真を返す変数のみが要約される。
 
 結果として得られるオブジェクト `zones_attr` は、ゾーンを表す行とID変数を持つデータフレームである。
 ID が `zones` データセットのものと一致するかどうかは、`%in%` 演算子を用いて以下のように確認することができる。
@@ -243,7 +246,7 @@ zones_destinations = bristol_od |>
 zones_od = inner_join(zones_joined, zones_destinations, by = "geo_code")
 ```
 
-Figure \@ref(fig:zones) の簡易版を以下のコードで作成する (図を再現するには、本書の GitHub リポジトリの `12-zones.R` を参照。  [`code`](https://github.com/Robinlovelace/geocompr/tree/main/code) フォルダで図を再現し、**tmap**\index{tmap (package)} によるファセット・マップの詳細は Section \@ref(faceted-maps) を参照)。
+Figure \@ref(fig:zones) の簡易版は、以下のコードで作成する (図を再現するには、本書の GitHub リポジトリの [`code`](https://github.com/Robinlovelace/geocompr/tree/main/code) フォルダ の `13-zones.R` を参照。**tmap**\index{tmap (package)} によるファセット・マップの詳細は Section \@ref(faceted-maps) を参照)。
 
 
 
@@ -320,7 +323,7 @@ desire_lines = od2line(od_inter, zones_od)
 qtm(desire_lines, lines.lwd = "all")
 ```
 
-```{r desire, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="ブリストルのトリップパターンを表す希望線は、幅がトリップ数、色がアクティブモード (徒歩と自転車) によるトリップの割合を表している。4 本の黒い線は、Table 7.1のゾーン間 OD ペアを表している。", fig.asp=0.8, fig.scap="Desire lines representing trip patterns in Bristol."}
+```{r desire, echo=FALSE, warning=FALSE, message=FALSE, fig.cap="ブリストルのトリップパターンを表す希望線は、幅がトリップ数、色がアクティブモード (徒歩と自転車) によるトリップの割合を表している。4 本の黒い線は、Table 13.1のゾーン間 OD ペアを表している。", fig.asp=0.8, fig.scap="Desire lines representing trip patterns in Bristol."}
 source("code/13-desire.R", print.eval = TRUE)
 ```
 
@@ -407,7 +410,9 @@ bristol_rail_points = rbind(
     col = "red"
     ), geometry = bristol_stations$geometry)
 )
-tm_shape(desire_rail_plot, bbox = bb) +
+tm_shape(zones_od) +
+  tm_fill(fill_alpha = 0.2, lwd = 0.1) +
+  tm_shape(desire_rail_plot, bbox = bb, is.main = TRUE) +
   tm_lines(col = "Geometry",
            col.scale = tm_scale(values = "Set2"),
            col.legend = tm_legend(position = tm_pos_in("left", "top")),
@@ -451,11 +456,11 @@ R5 のようなマルチモーダルなルーティングエンジンは、OSRM 
 
 ### ルート、レッグ、セグメント {#route-legs-segments}
 
-ルーティングエンジンは、ルート、レッグ、セグメントという3つの地理的なレベルで出力を生成することができる。
+ルーティングエンジンは、ルート、レッグ、セグメントという 3 つの地理的なレベルで出力を生成することができる。
 
-- **Route** レベルの出力には、出発地と目的地のペアごとに1つのフィーチャー (通常はデータフレーム表現におけるマルチライン文字列と関連する行) が含まれ、トリップごとに 1 つのデータ行があることを意味する。
-- **Leg** レベルの出力には、各起点と終点のペアに1つのフィーチャーと関連する属性が含まれまる。1 つのモードを含むだけのトリップの場合 (たとえば、自宅から職場まで車で行き、車まで の短い徒歩は無視)、レッグはルートと同じで、車の旅になる。公共交通機関を利用するトリップの場合、レッグは重要な情報を提供する。**r5r** の関数 `detailed_itineraries()` はレッグを返すが、紛らわしいことに、これは「セグメント」と呼ばれることもある。
-- Segment レベルの出力は、交通ネットワークの各小セクションのレコードを持つ、ルートに関する最も詳細な情報を提供する。一般的にセグメントは、OpenStreetMap の道と同じか、同じ長さになっている。**cyclestreets** 関数 `journey()` はセグメントレベルのデータを返し、これは **stplanr** の `route()` 関数が返す出発地と目的地レベルのデータでグループ化することによって集約できる。
+- **Route** レベルの出力には、出発地と目的地のペアごとに 1 つのフィーチャー (通常はデータフレーム表現におけるマルチライン文字列と関連する行) が含まれ、トリップごとに 1 つのデータ行があることを意味する
+- **Leg** レベルの出力には、各起点と終点のペアに 1 つのフィーチャーと関連する属性が含まれまる。1 つのモードを含むだけのトリップの場合 (たとえば、自宅から職場まで車で行き、車まで の短い徒歩は無視)、レッグはルートと同じで、車の旅になる。公共交通機関を利用するトリップの場合、レッグは重要な情報を提供する。**r5r** の関数 `detailed_itineraries()` はレッグを返すが、紛らわしいことに、これは「セグメント」と呼ばれることもある
+- Segment レベルの出力は、交通ネットワークの各小セクションのレコードを持つ、ルートに関する最も詳細な情報を提供する。一般的にセグメントは、OpenStreetMap の道と同じか、同じ長さになっている。**cyclestreets** 関数 `journey()` はセグメントレベルのデータを返し、これは **stplanr** の `route()` 関数が返す出発地と目的地レベルのデータでグループ化することによって集約できる
 
 ほとんどのルーティングエンジンは、デフォルトでルートレベルを返すが、マルチモーダルエンジンは一般的にレッグレベル (単一の輸送モードによる連続した移動ごとに1つの機能) の出力を提供する。
 セグメントレベルの出力は、より詳細な情報を提供するという利点がある。
@@ -499,11 +504,18 @@ OSRM の一般公開されているサービスのような、オープンソー
 また、[CycleStreets.net](https://www.cyclestreets.net/) のような、より具体的なルート検索サービスもある。これは、「サイクリストによるサイクリストのための」サイクル・ジャーニー・プランナーで非営利の交通技術会社である。
 R では [**cyclestreets**](https://rpackage.cyclestreets.net/) パッケージを通して CycleStreets ルートにアクセスできるが、多くのルーティングサービスには R インターフェースがなく、パッケージ開発の大きなチャンスとなっている。Web API へのインターフェースを提供する R パッケージを構築することはやりがいのある経験になることだろう。
 
-R 言語は、交通ネットワーク上のルートを表すデータを計算したりインポートしたりするためのパッケージが豊富にあることが強みであり、ここ数年、交通研究に使われることが多くなっている。
-しかし、このようにパッケージや手法が多様化すると、覚えるべきパッケージ名や関数名が多くなってしまうというデメリットがある。
-**stplanr** パッケージは、`route()` 関数でルートを生成するための統一されたインタフェースを提供することで、この問題に取り組んでいる。
-この関数は、地理的な希望線 (引数 `l =`) や座標、さらにはユニークな住所を表すテキスト文字列など、さまざまな入力を受け取り、ルートデータを一貫した `sf` オブジェクトとして返す。
-<!-- TODO: at some point I hope to create a dedicated router package, mention that if it gets created (RL 2022-07) -->
+### Contraction hierarchies and traffic assigment
+
+Contraction hierarchies and traffic assignment are advanced but important topics in transport modeling worth being aware of, especially if you want your code to scale to large networks.
+Calculating many routes is computationally resource intensive and can take hours, leading to the development of several algorithms to speed-up routing calculations.
+**Contraction hierarchies** is a well-known algorithm that can lead to a substantial (1000x+ in some cases) speed-up in routing tasks, depending on network size.
+Contraction hierarchies are used behind the scenes in the routing engines mentioned in the previous sections.
+
+Traffic assignment is a problem that is closely related to routing: in practice, the shortest path between two points is not always the fastest, especially if there is congestion.
+The process takes OD datasets, of the kind described in Section \@ref(desire-lines), and assigns traffic to each segment in the network, generating route networks of the kind described in Section \@ref(route-networks).
+An established solution is Wardrop’s principle of user equilibrium which shows that, to be realistic, congestion should be considered when estimating flows on the network, with reference to mathematically defined relationship between cost and flow [@wardrop_theoretical_1952].
+This optimization problem can be solved by iterative algorithms which are implemented in the [**cppRouting**](https://github.com/vlarmet/cppRouting) package, which also implements contraction hierarchies for fast routing.
+
 
 ### ルーティング: 実例紹介
 

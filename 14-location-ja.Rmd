@@ -142,7 +142,7 @@ knitr::kable(tab,
 
 前処理を行った後、`rast()` 関数で `SpatRaster` に変換することができる (Section \@ref(raster-classes) と \@ref(raster-subsetting) を参照)。
 `type` 引数を `xyz`とすると、入力データの `x` and `y` 列は通常グリッドの座標に対応する。
-残りの列 (ここでは `pop`、`women`、`mean_age`、`hh_size`) は、ラスタレイヤの値として使うことができる (Figure \@ref(fig:census-stack); github レポジトリの `code/14-location-figures.R` も参照)。
+残りの列 (ここでは `pop`、`women`、`mean_age`、`hh_size`) は、ラスタレイヤの値として使うことができる (Figure \@ref(fig:census-stack); github リポジトリの `code/14-location-figures.R` も参照)。
 
 ```{r 14-location-5}
 input_ras = terra::rast(input_tidy, type = "xyz", crs = "EPSG:3035")

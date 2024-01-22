@@ -726,7 +726,7 @@ tmap_animation(urb_anim, filename = "urb_anim.gif", delay = 25)
 
 アニメーション・マップの威力を示すもう一つの例が、Figure \@ref(fig:animus) にある。
 これは、アメリカにおける州の発達を示すもので、最初は東部で形成され、その後徐々に西部へ、最後は内陸部へと発展していった。
-このマップを再現するためのコードは、本書の GitHub レポジトリのスクリプト `code/09-usboundaries.R` に記載されている。
+このマップを再現するためのコードは、本書の GitHub リポジトリのスクリプト `code/09-usboundaries.R` に記載されている。
 
 ```{r 08-mapping-24, echo=FALSE, eval=FALSE}
 source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-usboundaries.R")
