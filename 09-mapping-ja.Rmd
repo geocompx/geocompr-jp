@@ -220,12 +220,12 @@ tmap_arrange(map_nz1, map_nz2, map_nz3)
 これらを固定値で設定した場合の影響を、Figure \@ref(fig:tmstatic) に示す。
 
 ```{r tmstatic, message=FALSE, fig.cap="よく使われる塗りつぶしや枠線の美観を固定値に変更した場合の影響。", fig.scap="The impact of changing commonly used aesthetics."}
-ma1 = tm_shape(nz) + tm_fill(col = "red")
-ma2 = tm_shape(nz) + tm_fill(col = "red", alpha = 0.3)
+ma1 = tm_shape(nz) + tm_fill(fill = "red")
+ma2 = tm_shape(nz) + tm_fill(fill = "red", alpha = 0.3)
 ma3 = tm_shape(nz) + tm_borders(col = "blue")
 ma4 = tm_shape(nz) + tm_borders(lwd = 3)
 ma5 = tm_shape(nz) + tm_borders(lty = 2)
-ma6 = tm_shape(nz) + tm_fill(col = "red", alpha = 0.3) +
+ma6 = tm_shape(nz) + tm_fill(fill = "red", alpha = 0.3) +
   tm_borders(col = "blue", lwd = 3, lty = 2)
 tmap_arrange(ma1, ma2, ma3, ma4, ma5, ma6)
 ```

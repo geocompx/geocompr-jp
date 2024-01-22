@@ -426,8 +426,8 @@ st_distance(london_geo, london_proj)
 
 **地理的 CRS** を選択する場合、[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84)  [日本語](https://ja.wikipedia.org/w/index.php?curid=52196)) という答えになることが多いようである。(訳注：上で既に述べたが、WGS84 に対応する日本の CRS は、東日本大震災以降の JGD2011 と、それ以前の JGD2000 である。大事なことなので繰り返す。)
 ウェブマッピングだけでなく、GPS データセットや何千ものラスタ、ベクタデータセットがこの CRS でデフォルトで提供されているため、利用されている。
-WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 を知っておくとよいだろう。(訳注：JGD2011は 6668、JGD2000 は 4612 である。)
-`"EPSG:4326"` の代わりに、`"OGC:CRS84"` を使うこともできる。前者では、経度の前に緯度が並べ替えられる。後者は、GeoJSON の標準形式であり、緯度の前に経度が並べ替えられる。
+WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 を知っておくとよいだろう。(訳注：JGD2011は 6668、JGD2000 は 4612 である。)^[
+`"EPSG:4326"` の代わりに、`"OGC:CRS84"` を使うこともできる。前者では、経度の前に緯度が並べ替えられる。後者は、GeoJSON の標準形式であり、緯度の前に経度が並べ替えられる。]
 この「マジックナンバー」は、投影された CRS が異常なオブジェクトを、広く理解されるものに変換するために使用することができる。
 
 **投影 CRS** が必要な場合はどうだろうか？
@@ -466,7 +466,7 @@ lonlat2UTM(st_coordinates(london))
 ```
 
 UTM CRS で使用されている横メルカトル図法は等角 (conformal) であるが、UTM ゾーンの中心から離れるにつれて面積や距離の歪みがひどくなる。
-そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から6度までに制限することを提案している (出典： [manifold.net](https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
+そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から 6 度までに制限することを提案している (出典: [manifold.net](https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
 そのため、UTM は比較的狭い範囲での角度保存を重視する場合にのみ使用することを勧める。
 
 現在、適切な CRS を選択するためのツールも用意されており、これには **crssuggest** パッケージ<!--add ref or docs--> が含まれている。
@@ -610,7 +610,7 @@ crs_lnd_new$epsg
 
 ```{block2 06-reproj-35a, type='rmdnote'}
 通常のラスタの再投影は、ワーピングとも呼ばれている。
-さらに、似たような操作で「変形」と呼ばれるものが2つある。
+さらに、似たような操作で「変形」と呼ばれるものが 2 つある。
 すべての値をリサンプリングするのではなく、すべての値をそのままに、ラスタセルごとに新しい座標を再計算し、グリッドジオメトリを変更する。
 例えば、入力されたラスタ (正方形の格子) を曲線的な格子に変換することができる。
 変換操作は、[**stars** パッケージ](https://r-spatial.github.io/stars/articles/stars5.html)を用いて R で行うことができる。
@@ -711,7 +711,7 @@ cat(crs(con_raster_ea))
 もう一つの小さな変更点は、Table \@ref(tab:rastercrs) で表現されていないが、新しい投影ラスタデータセットの値のクラスが `numeric` になっていることである。
 これは、`bilinear` 方式が連続データを扱うため、結果が整数値に型強制されることがほとんどないためである。
 これは、ラスタデータセットを保存する際のファイルサイズに影響を与える可能性がある。
-]:
+]
 
 ```{r rastercrs, echo=FALSE}
 tibble(
