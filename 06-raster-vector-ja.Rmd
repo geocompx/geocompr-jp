@@ -77,7 +77,7 @@ srtm_final = mask(srtm_cropped, zion)
 srtm_inv_masked = mask(srtm, zion, inverse = TRUE)
 ```
 
-```{r cropmask, echo = FALSE, fig.cap="ラスタクロップ、ラスタマスクの説明図。", fig.asp=0.36, fig.width = 10, warning=FALSE}
+```{r cropmask, echo = FALSE, fig.cap="ラスタクロップ、ラスタマスクの説明図。", fig.asp=0.36, fig.width = 10, warning=FALSE, dev="ragg_png"}
 #| message: FALSE
 #| results: hide
 library(tmap) # 3.99.9000 は、タイトルのフォント指定ができないようです。
@@ -277,7 +277,7 @@ group_by(zion_srtm_values, ID) |>
 
 前述のコードチャンクは、Chapter \@ref(attr) で説明されているように、ポリゴン ID ごとのセル値の要約統計を提供するために **dplyr**\index{dplyr (package)} を使用した。
 その結果、例えば公園の最高標高が海抜約 2,661 m であることなど、有用な要約が得られる (標準偏差など、他の要約統計もこの方法で計算できる)。
-この例ではポリゴンが1つしかないので、1行のデータフレームが返されるが、このメソッドは複数の範囲選択ポリゴンが使用されている場合に動作する。
+この例ではポリゴンが1つしかないので、1 行のデータフレームが返されるが、このメソッドは複数の範囲選択ポリゴンが使用されている場合に動作する。
 
 同様のアプローチは、ポリゴン内のカテゴリ的なラスタ値の出現をカウントする場合にも有効である。
 これは、Figure \@ref(fig:polyextr) (B) の **spDataLarge** パッケージの土地被覆データセット (`nlcd`) を使って説明され、以下のコードで実証されている。
@@ -291,7 +291,7 @@ zion_nlcd |>
   count()
 ```
 
-```{r polyextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="連続 (左) とカテゴリ (右) のラスタ抽出に使用した範囲。", fig.width=7.5}
+```{r polyextr, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="連続 (左) とカテゴリ (右) のラスタ抽出に使用した範囲。", fig.width=7.5, dev="ragg_png"}
 rast_poly_srtm = tm_shape(srtm) + 
   tm_raster(col.scale = tm_scale_continuous(values = terrain_colors),
             col.legend = tm_legend("標高 (m)")) + 
@@ -339,7 +339,7 @@ Chapter \@ref(spatial-class) で見たように、ラスタデータモデルに
 さらに、ラスタライゼーションは地理的なデータ集計の一種と考えることができ、結果として得られる値はすべて同じ空間分解能を持つため、データセットを簡素化することができる。
 
 **terra** パッケージには、この作業を行うための関数 `rasterize()` が含まれている。
-その最初の2つの引数は、`x`、ラスタ化されるベクタオブジェクトと、`y`、出力の範囲、解像度、CRS を定義する「テンプレートラスタ」オブジェクトである。
+その最初の 2 つの引数は、`x`、ラスタ化されるベクタオブジェクトと、`y`、出力の範囲、解像度、CRS を定義する「テンプレートラスタ」オブジェクトである。
 入力ラスタの地理的解像度が低すぎる (セルサイズが大きすぎる) と、ベクタデータの地理的変動を完全に見逃す可能性があり、高すぎる場合は計算時間がかかりすぎる可能性がある。
 適切な地理的解像度を決定する際に従うべき単純なルールはなく、結果の使用目的によって大きく左右される。
 例えば、ラスタ化の出力を他の既存ラスタに合わせる必要がある場合など、ターゲット解像度がユーザーに課されることがよくある。
@@ -444,7 +444,7 @@ source("code/06-raster-vectorization1.R", print.eval = TRUE)
 
 \index{spatial vectorization!contours}
 空間ベクタ化のもう一つの一般的なタイプは、例えば連続した高さや温度の線 (等温線) を表す等高線の作成である。
-人工ラスタ `elev` は平行線を生成するため、実世界のデジタル標高モデル (DEM) を使用しよう (読者への課題：これを検証し、なぜこうなるのかを説明しなさい)。
+人工ラスタ `elev` は平行線を生成するため、実世界のデジタル標高モデル (DEM) を使用しよう (読者への課題: これを検証し、なぜこうなるのかを説明しなさい)。
 等高線は **terra** 関数 `as.contour()` で作成することができる。この関数は、R に元々ある `filled.contour()` のラッパーである (図示せず)。
 
 ```{r 06-raster-vector-36, eval=FALSE}

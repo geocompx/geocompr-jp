@@ -55,20 +55,20 @@ library(spData)
 \index{spatial!subsetting}
 
 空間部分集合を示すために、**spData** パッケージの `nz` と `nz_height` データセットを使用する。これは、ニュージーランドの 16 の主要地域と 101 の最高地点に関する地理データをそれぞれ含み (Figure \@ref(fig:nz-subset))、投影座標参照系で表示されるものである。
-次のコードでは、Canterbury を表すオブジェクトを作成し、空間部分集合を使用して、対象地域のすべての High Point を返す。
+次のコードでは、Canterbury を表すオブジェクトを作成し、空間部分集合を使用して、対象地域のすべての高点を返す。
 
 ```{r 04-spatial-operations-3}
 canterbury = nz |> filter(Name == "Canterbury")
 canterbury_height = nz_height[canterbury, ]
 ```
 
-```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="赤い三角形はニュージーランドの 101 の High Point を表し、中央のカンタベリー地域付近に集まっている (左)。カンタベリーのポイントは、`[` 部分集合演算子で作成された (グレーでハイライト、右)。", fig.scap="Illustration of spatial subsetting.", message=FALSE}
+```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="赤い三角形はニュージーランドの 101 の High Point を表し、中央のカンタベリー地域付近に集まっている (左)。カンタベリーのポイントは、`[` 部分集合演算子で作成された (グレーでハイライト、右)。", fig.scap="Illustration of spatial subsetting.", message=FALSE, dev="ragg_png"}
 library(tmap)
 p_hpnz1 = tm_shape(nz) + 
   tm_polygons(fill = "white") +
   tm_shape(nz_height) + 
   tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
-  tm_title("ニュージーランドの High Point") +
+  tm_title("ニュージーランドの高点") +
   tm_layout(bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
 p_hpnz2 = tm_shape(nz) + 
   tm_polygons(fill = "white") +
@@ -76,7 +76,7 @@ p_hpnz2 = tm_shape(nz) +
   tm_fill(col = "gray") + 
   tm_shape(canterbury_height) + 
   tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
-  tm_title("カンタベリーの High Point") +
+  tm_title("カンタベリーの高点") +
   tm_layout(bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
 tmap_arrange(p_hpnz1, p_hpnz2, ncol = 2)
 ```
@@ -163,7 +163,7 @@ Figure \@ref(fig:relations) の 3 番目と 4 番目のペア (左から右、�
 各ジオメトリペアには、次節で説明する FF2F11212 のような「DE-9IM」文字列があることを確認しておこう。
 \index{topological relations}
 
-```{r relations, echo=FALSE, fig.cap="Egenhofer and Herring (1990)の Figure 1 と Figure 2 を参考にした、ベクトル幾何学間のトポロジー関係。関数(x, y)が真となる関係が、各ジオメトリのペアについて印刷されており、xはピンク、yは青で表されている。各ペアの空間的関係の性質は、Dimensionally Extended 9-Intersection Model 文字列で記述されている。", fig.show='hold', message=FALSE, fig.asp=0.66, warning=FALSE}
+```{r relations, echo=FALSE, fig.cap="Egenhofer and Herring (1990)の Figure 1 と Figure 2 を参考にした、ベクトル幾何学間のトポロジー関係。関数(x, y)が真となる関係が、各ジオメトリのペアについて印刷されており、xはピンク、yは青で表されている。各ペアの空間的関係の性質は、Dimensionally Extended 9-Intersection Model 文字列で記述されている。", fig.show='hold', message=FALSE, fig.asp=0.66, warning=FALSE, dev="ragg_png"}
 # source("https://github.com/Robinlovelace/geocompr/raw/main/code/de_9im.R")
 source("code/de_9im.R")
 library(sf)
@@ -552,7 +552,7 @@ grid_sf$rooks = lengths(st_rook(grid, grid[5])) > 0
 plot(grid, col = grid_sf$rooks)
 ```
 
-```{r queens, fig.cap="9つの形状を持つグリッドの中央の正方形に対する「クイーン」 (左) と「ルーク」 (右) の関係を見つけるためのカスタムバイナリ空間述語のデモ。", echo=FALSE, warning=FALSE}
+```{r queens, fig.cap="9つの形状を持つグリッドの中央の正方形に対する「クイーン」 (左) と「ルーク」 (右) の関係を見つけるためのカスタムバイナリ空間述語のデモ。", echo=FALSE, warning=FALSE, dev="ragg_png"}
 st_crs(grid_sf) = "EPSG:2180"
 tm_shape(grid_sf) +
   tm_fill(fill = c("queens", "rooks"), 

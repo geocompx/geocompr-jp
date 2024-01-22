@@ -629,9 +629,9 @@ sum(routes_short_scenario$bicycle) - sum(routes_short$bicycle)
 route_network_scenario = overline(routes_short_scenario, attrib = "bicycle")
 ```
 
-前出の2つのコードチャンクの出力は、以下の Figure \@ref(fig:rnetvis) に要約している。
+前出の 2 つのコードチャンクの出力は、以下の Figure \@ref(fig:rnetvis) に要約している。
 
-```{r rnetvis, out.width="49%", fig.show='hold', fig.cap="自動車旅行から自転車への移行率を距離の関数で表した図 (左) と、この関数のルートネットワークレベルの結果 (右)。", echo=FALSE, fig.height=9.5}
+```{r rnetvis, out.width="49%", fig.show='hold', fig.cap="自動車旅行から自転車への移行率を距離の関数で表した図 (左) と、この関数のルートネットワークレベルの結果 (右)。", echo=FALSE, fig.height=9.5, dev="ragg_png"}
 routes_short_scenario |> 
   ggplot() +
   geom_line(aes(distance / 1000, uptake), color = "red", linewidth = 3) +
@@ -680,7 +680,7 @@ ways_sfn
 #> # … 
 ```
 
-前のコードチャンクの出力(スペースの関係上、最終的な出力は最も重要な8行のみを含むように短縮されている)は、 `ways_sfn` がグラフ形式と空間形式の両方のノードとエッジを含む複合オブジェクトであることを表している。
+前のコードチャンクの出力(スペースの関係上、最終的な出力は最も重要な 8 行のみを含むように短縮されている)は、 `ways_sfn` がグラフ形式と空間形式の両方のノードとエッジを含む複合オブジェクトであることを表している。
 `ways_sfn` は `sfnetwork` クラスで、 **igraph** パッケージの `igraph` クラスをベースにしている。
 下の例では、各エッジを通る最短ルート\index{shortest route}の数を意味する 'edge betweenness' \index{edge} が計算されている (詳しくは `?igraph::betweenness` を参照)。
 このデータセットに対して、エッジの間 隔を計算した結果を図に示す。図には、比較のために `overline()` 関数で計算した自転車ルートネットワークデータセットをオーバーレイで表示している。
@@ -692,7 +692,7 @@ ways_centrality = ways_sfn |>
   mutate(betweenness = tidygraph::centrality_edge_betweenness(lengths)) 
 ```
 
-```{r wayssln, fig.cap="路線ネットワークデータセットの図。グレーの線は簡略化された道路網を表し、セグメントの太さは betweenness に比例する。緑色の線は、上記のコードで計算された潜在的なサイクリングフロー (片道) である。", out.width="60%", fig.scap="Illustration of a small route network."}
+```{r wayssln, fig.cap="路線ネットワークデータセットの図。グレーの線は簡略化された道路網を表し、セグメントの太さは betweenness に比例する。緑色の線は、上記のコードで計算された潜在的なサイクリングフロー (片道) である。", out.width="60%", fig.scap="Illustration of a small route network.", dev="ragg_png"}
 bb_wayssln = tmaptools::bb(route_network_scenario, xlim = c(0.1, 0.9), ylim = c(0.1, 0.6), relative = TRUE)
 tm_shape(zones_od) +
   tm_fill(fill_alpha = 0.2, lwd = 0.1) +
@@ -779,7 +779,7 @@ qtm(route_network_no_infra, basemaps = leaflet::providers$Esri.WorldTopoMap,
 
 
 
-```{r cycleways, echo=FALSE, message=FALSE, fig.cap="ブリストルにおける自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。`qtm()` 関数から生成されたインタラクティブマップのスクリーンショットは、新しいサイクルウェイから利益を得ることができる場所としてWhiteladies Roadを強調している (右)。", out.width="50%", fig.show='hold', fig.scap="Routes along which to prioritise cycle infrastructure.", fig.height=9}
+```{r cycleways, echo=FALSE, message=FALSE, fig.cap="ブリストルにおける自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。`qtm()` 関数から生成されたインタラクティブマップのスクリーンショットは、新しいサイクルウェイから利益を得ることができる場所としてWhiteladies Roadを強調している (右)。", out.width="50%", fig.show='hold', fig.scap="Routes along which to prioritise cycle infrastructure.", fig.height=9, dev="ragg_png"}
 # Previous verson:
 # source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-cycleways.R")
 tm_shape(existing_cycleways_buffer, bbox = bristol_region) +

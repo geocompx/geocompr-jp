@@ -464,7 +464,7 @@ tanzania_neigh = read_sf(f, wkt_filter = tanzania_buf_wkt)
 
 Figure \@ref(fig:readsfquery) :B に示すように、この結果はタンザニアとその 50 km バッファ内のすべての国を含めている。
 
-```{r readsfquery, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="クエリ (A) と wkt フィルターを用いて、ベクタデータのサブセットを読み込む (B)。"}
+```{r readsfquery, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="クエリ (A) と wkt フィルターを用いて、ベクタデータのサブセットを読み込む (B)。", dev="ragg_png"}
 library(tmap)
 tm1 = tm_shape(tanzania) +
   tm_polygons(lwd = 2) +

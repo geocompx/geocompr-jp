@@ -58,7 +58,7 @@ Figure \@ref(fig:seine-simp) は、セーヌ川とその支流を表すジオメ
 seine_simp = st_simplify(seine, dTolerance = 2000) # 2000 m
 ```
 
-```{r seine-simp, echo=FALSE, fig.cap="seine のオリジナルと簡略化した形状の比較。", warning=FALSE, fig.scap="Simplification in action.", message=FALSE, fig.asp=0.5}
+```{r seine-simp, echo=FALSE, fig.cap="seine のオリジナルと簡略化した形状の比較。", warning=FALSE, fig.scap="Simplification in action.", message=FALSE, fig.asp=0.5, dev="ragg_png"}
 library(tmap)
 p_simp1 = tm_shape(seine) + tm_lines() +
   tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
@@ -113,9 +113,9 @@ us_states_simp3 = smoothr::smooth(us_states, method = "ksmooth", smoothness = 6)
 ```
 
 最後に、元のデータセットと 2 つの簡易版を視覚的に比較してみよう。
-Figure \@ref(fig:us-simp) で、Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 回帰 (`smooth(method=ksmooth`) アルゴリズムの出力に違いがあることがわかる 。
+Figure \@ref(fig:us-simp) で、Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 回帰 (`smooth(method=ksmooth`) アルゴリズムの出力に違いがあることがわかる。
 
-```{r us-simp, echo=FALSE, fig.cap="ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。", warning=FALSE, fig.scap="Polygon simplification in action."}
+```{r us-simp, echo=FALSE, fig.cap="ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。", warning=FALSE, fig.scap="Polygon simplification in action.", dev="ragg_png"}
 library(tmap)
 p_ussimp1 = tm_shape(us_states) + tm_polygons() + tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
 p_ussimp2 = tm_shape(us_states_simp1) + tm_polygons() + tm_title("st_simplify")
@@ -153,7 +153,7 @@ nz_pos = st_point_on_surface(nz)
 seine_pos = st_point_on_surface(seine)
 ```
 
-```{r centr, warning=FALSE, echo=FALSE, fig.cap="ニュージーランドの地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「表面上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations."}
+```{r centr, warning=FALSE, echo=FALSE, fig.cap="ニュージーランドの地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「表面上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations.", dev="ragg_png"}
 p_centr1 = tm_shape(nz) + tm_polygons(col = "grey80", fill = "grey90") +
   tm_shape(nz_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
   tm_shape(nz_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
@@ -188,7 +188,7 @@ seine_buff_5km = st_buffer(seine, dist = 5000)
 seine_buff_50km = st_buffer(seine, dist = 50000)
 ```
 
-```{r buffs, echo=FALSE, fig.cap="Seine データセット周辺の 5 km (左) と 50 km (右) のバッファ。ジオメトリフィーチャごとに 1 つのバッファが作成されることを反映した色に注目。", fig.show='hold', out.width="100%", fig.scap="Buffers around the seine dataset."}
+```{r buffs, echo=FALSE, fig.cap="Seine データセット周辺の 5 km (左) と 50 km (右) のバッファ。ジオメトリフィーチャごとに 1 つのバッファが作成されることを反映した色に注目。", fig.show='hold', out.width="100%", fig.scap="Buffers around the seine dataset.", dev="ragg_png"}
 p_buffs1 = tm_shape(seine_buff_5km) + tm_polygons(fill = "name") +
   tm_shape(seine) + tm_lines() +
   tm_title("5 km バッファ") + 
@@ -307,7 +307,7 @@ rotation = function(a){
 nz_rotate = (nz_sfc - nz_centroid_sfc) * rotation(30) + nz_centroid_sfc
 ```
 
-```{r affine-trans, echo=FALSE, fig.cap="アフィン変換 (平行移動、拡大縮小、回転) の図解。", warning=FALSE, eval=TRUE, fig.scap="Illustrations of affine transformations."}
+```{r affine-trans, echo=FALSE, fig.cap="アフィン変換 (平行移動、拡大縮小、回転) の図解。", warning=FALSE, eval=TRUE, fig.scap="Illustrations of affine transformations.", dev="ragg_png"}
 st_crs(nz_shift) = st_crs(nz_sfc)
 st_crs(nz_scale) = st_crs(nz_sfc)
 st_crs(nz_rotate) = st_crs(nz_sfc)
@@ -528,7 +528,7 @@ linestring = st_cast(multipoint, "LINESTRING")
 polyg = st_cast(multipoint, "POLYGON")
 ```
 
-```{r single-cast, echo = FALSE, fig.cap="多点ジオメトリからキャストされた線とポリゴンの例。", warning=FALSE, fig.asp=0.3, fig.scap="Examples of casting operations."}
+```{r single-cast, echo = FALSE, fig.cap="多点ジオメトリからキャストされた線とポリゴンの例。", warning=FALSE, fig.asp=0.3, fig.scap="Examples of casting operations.", dev="ragg_png"}
 p_sc1 = tm_shape(st_sfc(multipoint, crs = "+proj=merc")) + tm_symbols(shape = 1,
                                                   col = "black",
                                                   size = 0.5) +
@@ -633,7 +633,7 @@ linestring_sf2 = st_cast(multilinestring_sf, "LINESTRING")
 linestring_sf2
 ```
 
-```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間のタイプキャスティングの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE}
+```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間のタイプキャスティングの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE, dev="ragg_png"}
 p_lc1 = tm_shape(multilinestring_sf) + tm_lines(lwd = 3) +
   tm_title("複合線") + tm_layout(fontfamily = "HiraginoSans-W3")
 linestring_sf2$name = c("Riddle Rd", "Marshall Ave", "Foulke St")
@@ -778,7 +778,7 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 dem_agg = aggregate(dem, fact = 5, fun = mean)
 ```
 
-```{r aggregate-example, fig.cap = "オリジナル (左) と 集計後 (右)。", echo=FALSE}
+```{r aggregate-example, fig.cap = "オリジナル (左) と 集計後 (右)。", echo=FALSE, dev="ragg_png"}
 p_ar1 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale_continuous()) +
   tm_title("A. オリジナル") + 
@@ -904,7 +904,7 @@ dem_resampl = resample(dem, y = target_rast, method = "bilinear")
 
 Figure \@ref(fig:resampl) は、`dem` オブジェクトについて、異なるリサンプリング手法を比較したものである。
 
-```{r resampl, echo=FALSE, fig.cap="ラスタのオリジナルと5種類のリサンプリング手法の視覚的比較。"}
+```{r resampl, echo=FALSE, fig.cap="ラスタのオリジナルと 5 種類のリサンプリング手法の視覚的比較。", dev="ragg_png"}
 dem_resampl1 = resample(dem, target_rast, method = "near")
 dem_resampl2 = resample(dem, target_rast, method = "bilinear")
 dem_resampl3 = resample(dem, target_rast, method = "cubic")
