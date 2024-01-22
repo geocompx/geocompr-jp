@@ -504,17 +504,17 @@ OSRM の一般公開されているサービスのような、オープンソー
 また、[CycleStreets.net](https://www.cyclestreets.net/) のような、より具体的なルート検索サービスもある。これは、「サイクリストによるサイクリストのための」サイクル・ジャーニー・プランナーで非営利の交通技術会社である。
 R では [**cyclestreets**](https://rpackage.cyclestreets.net/) パッケージを通して CycleStreets ルートにアクセスできるが、多くのルーティングサービスには R インターフェースがなく、パッケージ開発の大きなチャンスとなっている。Web API へのインターフェースを提供する R パッケージを構築することはやりがいのある経験になることだろう。
 
-### Contraction hierarchies and traffic assigment
+### 収縮階層とトラフィック割り当て  {#contraction-hierarchies-and-traffic-assigment}
 
-Contraction hierarchies and traffic assignment are advanced but important topics in transport modeling worth being aware of, especially if you want your code to scale to large networks.
-Calculating many routes is computationally resource intensive and can take hours, leading to the development of several algorithms to speed-up routing calculations.
-**Contraction hierarchies** is a well-known algorithm that can lead to a substantial (1000x+ in some cases) speed-up in routing tasks, depending on network size.
-Contraction hierarchies are used behind the scenes in the routing engines mentioned in the previous sections.
+縮約階層とトラフィック割当は、交通モデリングにおける高度だが重要なトピックである。
+多くの経路を計算することは計算資源を大量に消費し、何時間もかかることがあるため、経路計算を高速化するためのアルゴリズムがいくつか開発された。
+**縮約階層** (Contraction Hierarchy) はよく知られたアルゴリズムで、ネットワークのサイズにもよるが、ルーティング課題の大幅な (場合によっては 1000 倍以上の) 高速化につながる。
+収縮階層は、前のセクションで述べたルーティング・エンジンの舞台裏で使われている。
 
-Traffic assignment is a problem that is closely related to routing: in practice, the shortest path between two points is not always the fastest, especially if there is congestion.
-The process takes OD datasets, of the kind described in Section \@ref(desire-lines), and assigns traffic to each segment in the network, generating route networks of the kind described in Section \@ref(route-networks).
-An established solution is Wardrop’s principle of user equilibrium which shows that, to be realistic, congestion should be considered when estimating flows on the network, with reference to mathematically defined relationship between cost and flow [@wardrop_theoretical_1952].
-This optimization problem can be solved by iterative algorithms which are implemented in the [**cppRouting**](https://github.com/vlarmet/cppRouting) package, which also implements contraction hierarchies for fast routing.
+交通の割当てはルーティングと密接に関係する問題で、実際には 2 点間の最短経路が最速とは限らず、特に混雑している場合は最速になる。
+この処理では、\@ref(desire-lines) で説明するような OD データセットを受け取り、 ネットワークの各セグメントにトラフィックを割り当てて、\@ref(route-networks) で説明するような ルートネットワークを生成する。
+この問題に対する解は、Wardrop の利用者均衡の原則である。この原則は、現実に即して、ネットワーク上のフローを見積もる際に混雑を、数学的に定義されたコスト・フロー関係を参照しながら考慮すべきであることを示している [@wardrop_theoretical_1952]。
+この最適化問題は、[**cppRouting**](https://github.com/vlarmet/cppRouting) パッケージで実装されている反復アルゴリズムによって解くことができる。このパッケージは、高速ルーティングのための縮約階層も実装している。
 
 
 ### ルーティング: 実例紹介
@@ -567,7 +567,9 @@ routes_plot_data = rbind(
   routes_short |> transmute(Entity = "Routes") |> sf::st_set_crs("EPSG:4326")
 )
 zone_cents_routes = zone_cents[desire_lines_short, ]
-tm_shape(desire_lines_short) + 
+tm_shape(zones_od) +
+  tm_fill(fill_alpha = 0.2, lwd = 0.1) +
+  tm_shape(desire_lines_short, is.main = TRUE) + 
   tm_lines(lty = 2) +
   tm_shape(routes_short) +
   tm_lines(col = "red") +
@@ -575,7 +577,8 @@ tm_shape(desire_lines_short) +
                 type = "lines", col = c("black", "red"), lty = c(2, 1),
                 position = tm_pos_in("left", "top")) +
   tm_shape(zone_cents_routes) +
-  tm_symbols(fill = "black", size = 0.5)
+  tm_symbols(fill = "black", size = 0.5) +
+  tm_scalebar()
 ```
 
 例えば `mapview::mapview(desire_carshort$geom_car)` でインタラクティブな地図にプロットしてみると、ブリストル中心部から約 10 km 北のブラッドリー・ストーク周辺で多くの短距離自動車旅行が行われていることがわかる。
@@ -628,17 +631,20 @@ route_network_scenario = overline(routes_short_scenario, attrib = "bicycle")
 
 前出の2つのコードチャンクの出力は、以下の Figure \@ref(fig:rnetvis) に要約している。
 
-```{r rnetvis, out.width="49%", fig.show='hold', fig.cap="自動車旅行から自転車への移行率を距離の関数で表した図 (左) と、この関数のルートネットワークレベルの結果 (右)。", echo=FALSE, fig.height=6}
+```{r rnetvis, out.width="49%", fig.show='hold', fig.cap="自動車旅行から自転車への移行率を距離の関数で表した図 (左) と、この関数のルートネットワークレベルの結果 (右)。", echo=FALSE, fig.height=9.5}
 routes_short_scenario |> 
   ggplot() +
-  geom_line(aes(distance / 1000, uptake)) +
+  geom_line(aes(distance / 1000, uptake), color = "red", linewidth = 3) +
   labs(x = "ルート距離 (km)", y = NULL, title = "自動車から自転車へ変換した割合") +
   scale_y_continuous(labels = scales::percent) + theme(text = element_text(family = "HiraginoSans-W3"))
-tm_shape(route_network_scenario) +
+tm_shape(zones_od) +
+  tm_fill(fill_alpha = 0.2, lwd = 0.1) +
+  tm_shape(route_network_scenario, is.main = TRUE) +
   tm_lines(lwd = "bicycle", 
            lwd.scale = tm_scale(values.scale = 1.5),
            lwd.legend = tm_legend(title = "1日あたりの自転車トリップ数\n(modeled, one direction)",
-                                  position = tm_pos_in("left", "top")))
+                                  position = tm_pos_in("left", "top")),
+           col = "red")
 ```
 
 道路種別や幅員などの属性がセグメントレベルで記録されている交通網は、一般的な路線網の一種である。
@@ -653,7 +659,7 @@ summary(bristol_ways)
 このネットワークや他の地理的なネットワークは、数学的なグラフとして表現することができ、ネットワーク上のノード\index{node}とエッジ\index{edge}で接続されている。
 このようなグラフを扱うために、多くのRパッケージが開発されており、特に **igraph**\index{igraph (package)} が有名である。
 ルートネットワークを手動で `igraph` オブジェクトに変換することはできるが、地理的な属性は失われる。
-この **igraph** の制限を克服するために、路線ネットワークをグラフと地理的な線として同時に表現する **sfnetworks**\index{sfnetworks (package)} パッケージが開発された。
+この **igraph** の制限を克服するために、路線ネットワークをグラフと地理的な線として同時に表現する **sfnetworks**\index{sfnetworks (package)} パッケージ [@R-sfnetworks] が開発された。
 ここでは、`bristol_ways` オブジェクトを対象に、**sfnetworks** の機能を紹介する。
 
 ```{r 13-transport-23}
@@ -688,11 +694,13 @@ ways_centrality = ways_sfn |>
 
 ```{r wayssln, fig.cap="路線ネットワークデータセットの図。グレーの線は簡略化された道路網を表し、セグメントの太さは betweenness に比例する。緑色の線は、上記のコードで計算された潜在的なサイクリングフロー (片道) である。", out.width="60%", fig.scap="Illustration of a small route network."}
 bb_wayssln = tmaptools::bb(route_network_scenario, xlim = c(0.1, 0.9), ylim = c(0.1, 0.6), relative = TRUE)
-tm_shape(ways_centrality |> st_as_sf(), bb = bb_wayssln) +
+tm_shape(zones_od) +
+  tm_fill(fill_alpha = 0.2, lwd = 0.1) +
+  tm_shape(ways_centrality |> st_as_sf(), bb = bb_wayssln, is.main = TRUE) +
   tm_lines(lwd = "betweenness", 
            lwd.scale = tm_scale(n = 2, values.scale = 2),
            lwd.legend = tm_legend(title = "Betweenness"),
-           col = "grey", col_alpha = 0.75) +
+           col = "#630032", col_alpha = 0.75) +
   tm_shape(route_network_scenario) +
   tm_lines(lwd = "bicycle",
            lwd.scale = tm_scale(n = 2, values.scale = 2),
@@ -711,7 +719,7 @@ tm_shape(ways_centrality |> st_as_sf(), bb = bb_wayssln) +
 また、**sfnetworks** パッケージを用いると、このルートネットワークのグラフ表現を使って、出発地と目的地の間の最短ルート\index{shortest route}を求めることができる。
 <!-- TODO: make an exercise based on this if time allows (RL 2022-07) -->
 このセクションで紹介した方法は比較的単純で、実際にはもっと可能なことはある。
-**sfnetworks** が提供するグラフと空間のデュアル機能により、多くの新しい強力な技法が可能になるが、このセクションで完全にカバーすることはできない。
+**sfnetworks** が提供するグラフと空間の二つの機能により、多くの新しい強力な技法が可能になるが、このセクションで完全にカバーすることはできない。
 このセクションは、この分野のさらなる探求と研究のための強力な出発点を提供する。
 上で使った例のデータセットが比較的小さい。
 データのサブセットで手法をテストし、十分な RAM を確保することが助けになるが、R5 [@alessandretti_multimodal_2022] などの大規模ネットワークに最適化された輸送ネットワーク分析ができる他のツールも調べる価値があるだろう。
@@ -771,15 +779,16 @@ qtm(route_network_no_infra, basemaps = leaflet::providers$Esri.WorldTopoMap,
 
 
 
-```{r cycleways, echo=FALSE, message=FALSE, fig.cap="ブリストルにおける自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。`qtm()` 関数から生成されたインタラクティブマップのスクリーンショットは、新しいサイクルウェイから利益を得ることができる場所としてWhiteladies Roadを強調している (右)。", out.width="50%", fig.show='hold', fig.scap="Routes along which to prioritise cycle infrastructure.", fig.height=6}
+```{r cycleways, echo=FALSE, message=FALSE, fig.cap="ブリストルにおける自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。`qtm()` 関数から生成されたインタラクティブマップのスクリーンショットは、新しいサイクルウェイから利益を得ることができる場所としてWhiteladies Roadを強調している (右)。", out.width="50%", fig.show='hold', fig.scap="Routes along which to prioritise cycle infrastructure.", fig.height=9}
 # Previous verson:
 # source("https://github.com/Robinlovelace/geocompr/raw/main/code/13-cycleways.R")
 tm_shape(existing_cycleways_buffer, bbox = bristol_region) +
- tm_polygons(fill = "lightgreen") +
- tm_shape(route_network_scenario) +
- tm_lines(lwd = "bicycle",
-          lwd.scale = tm_scale(values.scale = 3),
-          lwd.legend = tm_legend(title = "自転車トリップ数 (modeled, one direction)")) + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_polygons(fill = "lightgreen") +
+  tm_shape(route_network_scenario) +
+  tm_lines(lwd = "bicycle",
+           lwd.scale = tm_scale(values.scale = 3),
+           lwd.legend = tm_legend(title = "自転車トリップ数 (モデル化、一方向)"),
+                                  position = tm_pos_out("center", "bottom"))
 knitr::include_graphics("figures/bristol_cycleways_zoomed.png")
 ```
 

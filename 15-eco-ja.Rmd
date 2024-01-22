@@ -1,5 +1,9 @@
 # 生態学  {#eco}
 
+```{r, include=FALSE}
+source("code/before_script.R")
+```
+
 ## 必須パッケージ  {- #prerequisites-15}
 
 この章では、Chapter \@ref(spatial-class) ～ Chapter \@ref(geometry-operations) で説明した地理データ解析と処理について十分に理解していることを前提に説明する。
@@ -11,7 +15,7 @@
 library(sf)
 library(terra)
 library(dplyr)
-library(data.table)        # 高速な data.frame 操作 (mlr3 が使用)
+library(data.table)        # 高速な data_frame 操作 (mlr3 が使用)
 library(mlr3)              # 機械学習 (Chapter 12 参照)
 library(mlr3spatiotempcv)  # 時空間リサンプリング
 library(mlr3tuning)        # ハイパーパラメータのチューニング
@@ -115,7 +119,7 @@ Figure \@ref(fig:sa-mongon) に示すように、`dem` に `random_points` と `
 knitr::include_graphics("figures/15_sa_mongon_sampling.png")
 ```
 
-次のステップは、モデリングと予測地図作成に必要な変数 ( Section \@ref(predictive-mapping) 参照) だけでなく、Non-metric multidimensional scaling (NMDS\index{NMDS}) 軸を調査地域の主要勾配、高度と湿度にそれぞれ整合させるための変数も計算することである (Section \@ref(nmds) 参照)。
+次のステップは、モデリングと予測地図作成に必要な変数 (Section \@ref(predictive-mapping) 参照) だけでなく、非計量多次元尺度構成法 (Non-Metric Multidimensional Scaling, NMDS\index{NMDS}) 軸を調査地域の主要勾配、高度と湿度にそれぞれ整合させるための変数も計算することである (Section \@ref(nmds) 参照)。
 
 具体的には、R-GIS ブリッジを用いて、デジタル標高モデル\index{digital elevation model}から集水勾配と集水面積\index{catchment area}を計算する (Chapter \@ref(gis) 参照)。
 曲率も重要な予測因子である可能性があり、「演習」セクションで、それらがモデリング結果にどのような影響を与えるかを確認することができる。
@@ -186,9 +190,9 @@ ep = qgisprocess::qgis_run_algorithm(
 # 集水域と集水勾配を読み取る
 ep = ep[c("AREA", "SLOPE")] |>
   unlist() |>
-  terra::rast()
-names(ep) = c("carea", "cslope") # 名前をつける
-terra::origin(ep) = terra::origin(dem) # ラスタが同じ原点を持つことを確認
+  rast()
+names(ep) = c("carea", "cslope") # 名前をわかりやすく変更
+origin(ep) = origin(dem) # ラスタが同じ原点を持つことを確認
 ep = c(dem, ndvi, ep) # 多層 SpatRaster オブジェクトに dem と ndvi を追加する。
 ```
 
@@ -202,15 +206,14 @@ ep$carea = log10(ep$carea)
 読者の便宜を図るため、**spDataLarge** に `ep` を追加した。
 
 ```{r 15-eco-9, cache.lazy=FALSE}
-ep = terra::rast(system.file("raster/ep.tif", package = "spDataLarge"))
+ep = rast(system.file("raster/ep.tif", package = "spDataLarge"))
 ```
 
 最後に、現地観測に地形属性を抽出することができる (Section \@ref(raster-extraction) も参照)。
 
 ```{r 15-eco-10, cache=TRUE, cache.lazy=FALSE, message=FALSE, warning=FALSE}
 # terra::extract は、不要な ID 列を自動的に追加
-ep_rp = terra::extract(ep, random_points) |>
-  select(-ID)
+ep_rp = terra::extract(ep, random_points, ID = FALSE)
 random_points = cbind(random_points, ep_rp)
 ```
 
@@ -255,7 +258,7 @@ pa = pa[rowSums(pa) != 0, ]  # 84 行, 69 列 (種)
 `k` を選択する一つの方法として、1 から 6 の間で `k` を試し、最も良いストレス値が得られる結果を使用する方法がある [@mccune_analysis_2002]。
 ]
 NMDS\index{NMDS} は、各ステップで順序付けされた空間をより入力行列に近づけようとする反復的な手順である。
-アルゴリズムの収束を確認するために、ステップ数を 500 に設定した (`try` パラメータ)。
+アルゴリズムの収束を確認するために、`try` パラメータを使ってステップ数を 500 に設定した。
 
 ```{r 15-eco-12, eval=FALSE, message=FALSE}
 set.seed(25072018)
@@ -365,8 +368,8 @@ plot(fit_2)
 
 ## 植物相の勾配をモデル化  {#modeling-the-floristic-gradient}
 
-植物相の勾配を空間的に予測するために、ランダムフォレスト\index{random forest}モデル [@hengl_random_2018] を使用する。
-ランダムフォレスト\index{random forest}モデルは、環境・生態系のモデリングに頻繁に適用され、予測性能の面で最良の結果をもたらすことが多い [@schratz_hyperparameter_2019]。
+植物相の勾配を空間的に予測するために、ランダムフォレスト\index{random forest}モデルを使用する。
+ランダムフォレスト\index{random forest}モデルは、環境・生態系のモデリングに頻繁に適用され、予測性能の面で最良の結果をもたらすことが多い [@hengl_random_2018;@schratz_hyperparameter_2019]。
 ここで、これらはランダムフォレスト\index{random forest}の基礎を形成するものであるため、決定木とバギングについて簡単に紹介する。
 ランダムフォレスト\index{random forest}と関連する技術についてのより詳細な説明は @james_introduction_2013 を参照。
 
@@ -409,11 +412,11 @@ knitr::include_graphics("figures/15_tree.png")
 全体として、標高が高いほどNMDS\index{NMDS}  のスコアが高くなる、というように解釈できる。
 つまり、単純な決定木によって、すでに4つの異なる植物群像が明らかにされているのである。
 詳しく学びたい方は Section \@ref(predictive-mapping) を参照。
-決定木は、過剰に適合\index{overfitting}する傾向がある。つまり、ノイズを含む入力データを忠実に反映しすぎるため、予測性能が低下するのである [ Section \@ref(intro-cv) ; @james_introduction_2013]。
+決定木は、過剰に適合\index{overfitting}する傾向がある。つまり、ノイズを含む入力データを忠実に反映しすぎるため、予測性能が低下するのである (Section \@ref(intro-cv) ; @james_introduction_2013)。
 ブートストラップ集計 (*b*ootstrap *agg*regat*ing*, bagging, バギング) は、この問題を克服するためのアンサンブル手法である。
 アンサンブル技術は、複数のモデルの予測値を単純に結合するものである。
 このように、バギングでは同じ入力データから繰り返しサンプルを取り、その予測値を平均化する。
-これにより、分散とオーバーフィッティング\index{overfitting}を減らし、決定木と比較してはるかに優れた予測精度を実現する。
+これにより、分散と過適合\index{overfitting}を減らし、決定木と比較してはるかに優れた予測精度を実現する。
 最後に、ランダムフォレスト\index{random forest}は、相関の高い木の予測を平均化すると、相関の低い木の予測を平均化するよりも分散が大きく、信頼性が低くなるので、バギングを拡張して改良することが望ましい [@james_introduction_2013]。
 これを実現するために、ランダムフォレスト\index{random forest}はバギングを使用するが、従来のバギングでは各木が利用可能なすべての予測子を使用できるのとは対照的に、ランダムフォレストは利用可能なすべての予測子のランダムサンプルだけを使用する。
 
@@ -435,7 +438,7 @@ knitr::include_graphics("figures/15_tree.png")
 1. バイアスを低減した性能指標の評価は、読者の皆様への課題として残している (演習問題参照)。
 その代わりに、 (空間) 予測のためのハイパーパラメータ\index{hyperparameter}を調整する方法を示す。
 
-100 回繰り返しの 5 回空間クロスバリデーション\index{cross-validation!spatial CV}と 50 回のランダムサーチを使用した場合、バイアス低減された性能推定値を得るために 125,500 個のモデルが必要だったことを思い出してみよう (Section \@ref(svm) を参照)。
+Section \@ref(svm) で、100 回繰り返しの 5 回空間クロスバリデーション\index{cross-validation!spatial CV}と 50 回のランダムサーチを使用した場合、バイアス低減された性能推定値を得るために 125,500 個のモデルが必要だったことを思い出してみよう。
 ハイパーパラメータ\index{hyperparameter}のチューニングレベルでは、最適なハイパーパラメータの組み合わせを見つけ、それを特定の空間分割のテストデータを予測するための外部パフォーマンスレベルで使用した (Figure \@ref(fig:inner-outer) も参照)。 
 これを 5 つの空間分割に対して行い、100 回繰り返した結果、合計 500 の最適なハイパーパラメータの組み合わせが得られた。
 空間分布図作成に使うべきはどちらか？
@@ -527,12 +530,13 @@ autotuner_rf$tuning_result
 
 
 
+
 ### 予測マッピング  {#predictive-mapping}
 
 調整されたハイパーパラメータ\index{hyperparameter}は、これで予測に使用することができる。
 そのためには、フィットした `AutoTuner` オブジェクトの `predict` メソッドを実行するだけでよいのである。
 
-```{r 15-eco-27, cache=TRUE, cache.lazy=FALSE}
+```{r 15-eco-27, cache=TRUE, cache.lazy=FALSE, warning=FALSE}
 # 最適なハイパーパラメータの組み合わせで予測
 autotuner_rf$predict(task)
 ```
@@ -622,7 +626,7 @@ all(values(pred - pred_2) == 0)
 ここで重要なのは、データサイエンティストのツールボックスは複数のツールで構成されており、目の前のタスクや目的に最適なツールを選択するのはあなたの責任であるということである。
 ここでは、ランダムフォレスト\index{random forest}のモデリングと、それに対応した空間予測図への利用方法を紹介したいと思われる。
 この目的のためには、反応と予測因子の関係が既知の、よく研究されたデータセットが適切である。
-しかし、これはランダムフォレスト\index{random forest}モデルが予測性能の面で最良の結果を返したことを意味するものではない (演習を参照)。
+しかし、これはランダムフォレスト\index{random forest}モデルが予測性能の面で最良の結果を返したことを意味するものではない。
 
 ## 演習
 
