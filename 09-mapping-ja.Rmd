@@ -480,9 +480,9 @@ tmap_arrange(map_nza, map_nza2)
 地図要素には、マップされるオブジェクト、地図グリッド (メッシュ)、縮尺バー、タイトル、マージンなどがあり、前のセクションで説明したカラー設定は、地図の見え方に影響を与えるパレットとブレークポイントに関連している。
 どちらも微妙な変化をもたらすだろうが、地図が残す印象には同じように大きな影響を与える。
 
-経緯線網\index{tmap (package)!graticules}、北矢印\index{tmap (package)!north arrows}、スケールバー\index{tmap (package)!scale bars}、タイトルなどの追加要素には、それぞれ関数がある。`tm_graticules()`、`tm_compass()`、`tm_scalebar()`、`tm_title()` である (Figure \@ref(fig:na-sb))。^[この他、`tm_grid()`、`tm_logo()`、`tm_credits()` がある。]訳注：mac で title に日本語を使用する場合は、fontfamily = "HiraginoSans-W3" を追加する。
+経緯線網\index{tmap (package)!graticules}、方位記号\index{tmap (package)!north arrows}、スケールバー\index{tmap (package)!scale bars}、タイトルなどの追加要素には、それぞれ関数がある。`tm_graticules()`、`tm_compass()`、`tm_scalebar()`、`tm_title()` である (Figure \@ref(fig:na-sb))。^[この他、`tm_grid()`、`tm_logo()`、`tm_credits()` がある。]訳注：mac で title に日本語を使用する場合は、fontfamily = "HiraginoSans-W3" を追加する。
 
-```{r na-sb, message=FALSE, fig.cap="北矢印とスケールバーを追加した地図。", out.width="65%", fig.asp=1, fig.scap="Map with a north arrow and scale bar."}
+```{r na-sb, message=FALSE, fig.cap="方位記号とスケールバーを追加した地図。", out.width="65%", fig.asp=1, fig.scap="Map with a north arrow and scale bar.", dev="ragg_png"}
 map_nz + 
   tm_graticules() +
   tm_compass(type = "8star", position = c("left", "top")) +
@@ -593,7 +593,7 @@ nz_map = tm_shape(nz) + tm_polygons() +
 
 通常のチャート (散布図など) と地図の違いの一つとして、入力データは地図のアスペクト比を決定する。
 よって、この場合、`nz_region` と `nz` という二つのデータセットのアスペクト比を計算する必要がある。
-`norm_dim()` 関数は、オブジェクトの幅 (`"w"`) と高さ (`"h"`) を正規化する (画像デバイスが理解する `"snpc"` に)。
+`norm_dim()` 関数は、オブジェクトの幅 (`"w"`) と高さ (`"h"`) を正規化する (`"snpc"` 単位は、画像デバイスを理解する)。
 
 ```{r, message=FALSE}
 library(grid)
@@ -610,15 +610,15 @@ ins_dim = norm_dim(nz)
 ```
 
 アスペクト比を得て、`viewport()` 関数を使い、二つの地図 (主地図と差し込み地図) の大きさと位置を指定する。
-A viewport is part of a graphics device we use to draw the graphical elements at a given moment.
-The viewport of our main map is just the representation of its aspect ratio.
+ビューポートとは、ある瞬間のグラフィック要素を描画するために使用するグラフィックデバイスの一部である。
+私たちのメインマップのビューポートは、ちょうどそのアスペクト比の表現である。
 
 ```{r}
 main_vp = viewport(width = main_dim[1], height = main_dim[2])
 ```
 
 差し込み地図の表示領域は、大きさと位置を指定する必要がある。
-ここでは、主地図の半分の大きさにするために幅と高さに0.5をかけ、主地図フレームの右下から 0.5 cm の位置に配置する。
+ここでは、主地図の半分の大きさにするために幅と高さに 0.5 をかけ、主地図フレームの右下から 0.5 cm の位置に配置する。
 
 ```{r}
 ins_vp = viewport(width = ins_dim[1] * 0.5, height = ins_dim[2] * 0.5,

@@ -21,288 +21,16 @@ library(spData)
 地理データ<u>入力</u> (Input) はジオコンピューテーション\index{geocomputation}に不可欠である。 実世界のアプリケーションはデータなしには不可能である。
 データ<u>出力</u> (Output) も重要で、研究の結果得られた価値ある新しいデータセットや改良されたデータセットを他の人が利用できるようにすることができる。
 これらの入力/出力の処理をまとめて、データ I/O と呼ぶことができる。
+地理データの入出力は、プロジェクトの最初と最後に簡単に行われることが多い。
+しかし、データの入出力はプロジェクト成功の基礎である。プロジェクトの初期に犯したミス (例えば、古いデータや何らかの欠陥のあるデータセットを使用すること) は、後々大きな問題につながる可能性がある。
 
-地理データの入出力は、プロジェクトの最初と最後に数行のコードで行われることが多い。
-簡単なワンステップであるため、見落とされがちである。
-しかし、プロジェクトの初期に犯したミス (例えば、古いデータや何らかの欠陥のあるデータセットを使用すること) は、後々大きな問題につながる可能性があるため、どのデータセットが<u>利用可能</u>か、どこで<u>見つけ</u>ることができるか、どのように<u>取得する</u>のかを確認するためにかなりの時間をかける価値がある。
-Section \@ref(retrieving-data) では、このトピックについて合計で何テラバイトものデータを含む様々な<u>ジオポータル</u>とその使用方法について説明する。
-さらにデータへのアクセスを容易にするため、地理データをダウンロードするためのパッケージが多数開発されている。
-これらのパッケージについては、Section \@ref(geographic-data-packages) で説明する。
-このほか、WFS などのウェブサービスを使って空間データを取得することもできる (Section \@ref(geographic-web-services)。
-
-地理学のファイル形式は数多くあり、それぞれに長所と短所がある。
-これらファイル形式については、Section \@ref(file-formats) で説明する。
-様々なファイル形式を実際に効率よく読み書きするための処理については、それぞれ Section \@ref(data-input)、Section \@ref(data-output) で説明する。
+地理ファイル形式はたくさんあり、それぞれに長所と短所があるので、Section \@ref(file-formats) で説明する。
+これらのファイルの入力と出力は、それぞれ Section \@ref(data-input) と Section  \@ref(data-output) で説明する。
+Section \@ref(retrieving-data) では、様々な<u>ジオポータル</u>とその使用方法について説明する。
+データへのアクセスを容易にするため地理データをダウンロードするためのパッケージについては、Section \@ref(geographic-data-packages) で説明する。
+作成したデータをウェブ上などに公開したい場合、地理メタデータが重要となるので、Section \@ref(geographic-metadata) で説明する。
+空間データは、ウェブサービスとして取得することもできる。これは Section \@ref(geographic-web-services) で説明する。
 最後の Section \@ref(visual-outputs) では、ビジュアライゼーションに関する Chapter \@ref(adv-map) に備えて、ビジュアル出力 (地図) を保存するための方法を紹介する。
-
-## オープンデータの取得  {#retrieving-data}
-
-\index{open data}
-インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。^[例えば、自由に使える地理データの長いサイト一覧が https://freegisdata.rtwilson.com/ にある。]
-同じデータセットにアクセスする場所が複数あるという意味で、ある意味、データは<u>多すぎる</u>くらいにある。
-一部のデータセットは品質が低い。
-そこで、最初に最も重要な情報源をいくつか紹介する。
-様々な「ジオポータル」 (地理空間データセットを提供するウェブサービス、 [Data.gov](https://catalog.data.gov/dataset?metadata_type=geospatial) など) は、幅広いデータを提供しているが、特定の場所についてのみ提供している場合が多い (この話題については、最新の [Wikipedia page](https://en.wikipedia.org/wiki/Geoportal) で説明されている)。
-
-\index{geoportals}
-グローバルなジオポータルの中には、この問題を克服しているものもある。
-例えば、[GEOSS portal](https://www.geoportal.org/) や [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) には、全世界をカバーするラスタデータセットを多数含んでいる。
-また、米国航空宇宙局 (NASA) が運営するポータルサイト [SEDAC](https://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
-
-ジオポータルは、ほとんどの場合空間的および時間的範囲などの特性に基づいてデータセットを照会できるグラフィカルなインターフェースを提供している。米国地質調査所の [EarthExplorer](https://earthexplorer.usgs.gov/) はその代表例である。
-ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤーを理解する上で効果的な方法である。
-しかし、データの<u>ダウンロード</u>は、再現性と効率性の観点から、コードで行うのがベストである。
-ダウンロードは、主に URL や API\index{API} を経由して、様々な手法でコマンドラインから開始することができる (例: [Copernicus APIs](https://dataspace.copernicus.eu/analyse/apis) を参照)。^[Section \@ref(staccog) に、STAC API を使用して Sentinel-2 データをダウンロードする例を示している。]
-静的 URL にホストされているファイルは、`download.file()` でダウンロードすることができる。以下のコードは、 [pangaea.de](https://doi.pangaea.de/10.1594/PANGAEA.868349) から米国の国立公園のデータにアクセスする例である。
-
-```{r 07-read-write-plot-2, eval=FALSE}
-download.file(url = "https://irma.nps.gov/DataStore/DownloadFile/673366",
-              destfile = "nps_boundary.zip",
-              mode = "wb")
-unzip(zipfile = "nps_boundary.zip")
-usa_parks = read_sf(dsn = "nps_boundary.shp")
-```
-
-## 地理データパッケージ  {#geographic-data-packages}
-
-\index{data packages}
-地理データにアクセスするための R パッケージが多数開発されており、その一部を Table \@ref(tab:datapackages) で紹介している。
-これらのパッケージは、1つまたは複数の空間ライブラリやジオポータルへのインターフェースを提供し、コマンドラインからのデータアクセスをさらに高速化することを目的としている。
-
-```{r datapackages, echo=FALSE, warning=FALSE}
-datapackages = tibble::tribble(
-  ~`パッケージ`, ~説明,
-  "climateR", "2,000を超えるデータプロバイダーが提供する10万kを超えるグリッド化された気候および景観データセットに、関心のある分野ごとにアクセスできる。",
-  "elevatr", "さまざまなソースからのポイントおよびラスター標高データにアクセスする。",
-  "FedData", "米国連邦政府のデータセット。標高や地表などのデータがある。",
-  "geodata", "行政データ、標高データ、WorldClim データのダウンロードとインポート。",
-  "osmdata", "OpenStreetMap の小さなデータセットをダウンロードし、インポート。",
-  "osmextract", "OpenStreetMap の大きなデータセットをダウンロードし、インポート。",
-  "rnaturalearth", "Natural Earth ベクタ・ラスタデータ。",
-  "rnoaa", "米国海洋大気庁 (National Oceanic and Atmospheric Administration, NOAA) の気候データをインポート。"
-)
-knitr::kable(datapackages, 
-             caption = "地理データ取得の代表的 R パッケージ", 
-             caption.short = "Selected R packages for geographic data retrieval.",
-             booktabs = TRUE) |>
-  kableExtra::kable_styling(latex_options="scale_down")
-```
-
-
-
-
-
-
-
-
-Table \@ref(tab:datapackages) は、利用可能な地理データパッケージのごく一部に過ぎないことを強調しておく。
-この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r/) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
-同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czechia)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
-
-各データパッケージは、データにアクセスするためのコードの書き方がそれぞれ異なる。
-Table \@ref(tab:datapackages) の 3 つのパッケージについて、違いを確認できるようにデータを取得するコードチャンクを示す。^[R 専用パッケージを使用したデータダウンロードの他の例は、以下を参照。 https://rspatialdata.github.io/] 
-まず、国の境界線はよく使うので、**rnaturalearth** パッケージ [@R-rnaturalearth] の `ne_countries()` 関数を用いて、以下のようにアクセスしてみよう。
-
-```{r 07-read-write-plot-3}
-library(rnaturalearth)
-usa_sf = ne_countries(country = "United States of America", returnclass = "sf")
-```
-
-国境データは、**geodata**、**giscoR**、**rgeoboundaries** などでも得られる。
-
-2 つ目の例は、**geodata** パッケージを使用して、10 分の空間分解能 (赤道では約 18.5 km) で全球の月別降水量の合計を含む一連のラスタをダウンロードしてみよう [@R-geodata]。
-その結果、`SpatRaster` クラスのマルチレイヤオブジェクトが生成される。
-
-```{r 07-read-write-plot-5, eval=FALSE}
-library(geodata)
-worldclim_prec = worldclim_global("prec", res = 10, path = tempdir())
-class(worldclim_prec)
-```
-
-3 つ目の例は、**osmdata** パッケージ [@R-osmdata]  を使って、OpenStreetMap\index{OpenStreetMap} (OSM) データベースから公園を検索してみよう。
-以下のコードチャンクに示すように、クエリーは関数 `opq()` (OpenStreetMap query の略) で始まり、最初の引数は bounding box、またはつまり境界線を表すテキスト文字列 (この場合はリーズ市) である。
-その結果は、どの OSM 要素 (この場合は公園) に興味があるかを選択する関数に渡され、<u>key-value ペア</u>で表される。
-次に、これらのデータは関数 `osmdata_sf()` に渡され、データのダウンロードと `sf` オブジェクトのリストへの変換が行われる (詳しくは `vignette('osmdata')` を参照)。
-
-```{r 07-read-write-plot-6, eval=FALSE}
-library(osmdata)
-parks = opq(bbox = "leeds uk") |> 
-  add_osm_feature(key = "leisure", value = "park") |> 
-  osmdata_sf()
-```
-
-**osmdata** パッケージの制限は「容量制限」があり、大きな OSM データセット (例えば、大きな都市のすべての OSM データ) をダウンロードすることができない。
-この制限を克服するために、**osmextract** パッケージが開発された。これは、あらかじめ定義された地域の OSM データベースの圧縮バージョンを含むバイナリ `.pbf` ファイルをダウンロードし、インポートすることができる。
-
-OpenStreetMap は、クラウドソースによる膨大なグローバルデータベースであり、日々成長を続けている。また、OSM クエリの迅速な開発とテストを行うためのウェブサービス [Overpass turbo](https://overpass-turbo.eu/) から PostGIS データベースへのデータ取り込みを行うための [osm2pgsql](https://osm2pgsql.org/) まで、データに容易にアクセスできるツールのエコシステムが充実している。
-OSM から得られるデータセットの質は様々だが、データソースと OSM のエコシステムには多くの利点がある。データセットが世界中で利用でき、無料で、ボランティアの軍隊のおかげで常に改善されている。
-OSM の利用は、「市民科学」とデジタルコモンズへの還元を促すものである ([www.openstreetmap.org](https://www.openstreetmap.org) から、よく知る世界の一部を表すデータの編集を始めることができる)。
-OSM データの活用例については、Chapter \@ref(gis)、Chapter \@ref(transport)、Chapter \@ref(location) を参照。
-
-
-
-パッケージにデータセットが組み込まれていることがある。
-この場合、アクセス方法は 4 つある。パッケージをアタッチする方法 (パッケージが **spData** のように 'lazy loading' を使用している場合) は `data(dataset, package = mypackage)`、データセットを参照する方法は `mypackage::dataset`、生のデータファイルを参照する方法は `system.file(filepath, package = mypackage)` とする。
-次のコードは、`world` データセット (親パッケージを `library(spData)` にアタッチしてロード済み) を使って、後者の2つのオプションを説明している。^[
-R パッケージによるデータインポートの詳細については、@gillespie_efficient_2016 の Section 5.5 および Section 5.6 を参照。
-]
-
-```{r 07-read-write-plot-7, eval=FALSE}
-world2 = spData::world
-world3 = read_sf(system.file("shapes/world.gpkg", package = "spData"))
-```
-
-最後の例、`system.file("shapes/world.gpkg", package = "spData")` は、**spData** パッケージの `"shapes/"` フォルダ内に格納されている `world.gpkg` ファイルへのパスを返す。
-
-\index{geocoding}
-空間情報を得るもう一つの方法は、ジオコーディング (住所などの位置情報を座標に変換すること) である。
-これは通常、オンラインサービスに問い合わせを行い、その結果として位置情報を取得するものである。
-このようなサービスは数多く存在するが、使用するジオコーディングの方法、使用制限、コスト、API キーの要件などが異なっている。 
-R にはジオコーディングのためのパッケージがいくつかあるが、**tidygeocoder** は一貫したインタフェースで[最も多くのジオコーディングサービス](https://jessecambon.github.io/tidygeocoder/articles/geocoder_services.html)に接続することができるようである。
-**tidygeocoder** のメイン関数は `geocode` で、アドレスを持つデータフレームを受け取り、`"lat"` と `"long"` として座標を追加する。
-また、この関数は `method` の引数でジオコーディングサービスを選択することができ、多くの追加パラメータを持つ。
-
-このパッケージを使って、ロンドンのソーホー地区のビルにある John Snow (訳注: 疫学的手法を導入しコレラの原因、感染経路を初めて特定した医師)  の青い銘板の座標を検索してみよう。
-
-```{r, eval=FALSE}
-library(tidygeocoder)
-geo_df = data.frame(address = "54 Frith St, London W1D 4SJ, UK")
-geo_df = geocode(geo_df, address, method = "osm")
-geo_df
-```
-
-得られたデータフレームは、`st_as_sf()` を用いて `sf` オブジェクトに変換することができる。
-
-```{r, eval=FALSE}
-geo_sf = st_as_sf(geo_df, coords = c("long", "lat"), crs = "EPSG:4326")
-```
-
-また、このパッケージは、一組の座標に基づいて一連の情報 (名前、住所など) を取得するために使用される逆ジオコーディングと呼ばれる逆の処理を実行することもできる。
-
-
-
-
-
-
-
-
-
-## 地理ウェブサービス  {#geographic-web-services}
-
-<!--toDo:RL-->
-<!--revise and update the following section-->
-<!--jn: Robin, I am leaving this section entirely to you -- I have zero knowledge about OWS-->
-<!-- potentially useful package - https://github.com/eblondel/geosapi -->
-<!-- rstac - https://gist.github.com/h-a-graham/420434c158c139180f5eb82859099082, -->
-
-\index{geographic web services}
-空間データにアクセスするための Web API の標準化を目指して、Open Geospatial Consortium (OGC) は、Webサービス (OGC Web Services の略で OWS と総称) の標準仕様を多数策定している。
-これらのサービスは、[ISO/OGC Spatial Schema (ISO 19107:2019)](https://www.iso.org/standard/66175.html) や [Simple Features (ISO 19125-1:2004)](https://www.iso.org/standard/40114.html) のような地理情報をモデル化し、[Geographic Markup Language (GML)](https://www.iso.org/standard/75676.html)のようなデータをフォーマットするために開発されたコア標準を補完して使用する。
-これらの仕様は、データとメタデータの一般的なアクセスサービスをカバーしています。
-ベクトルデータは、Web Feature Service (WFS)\index{geographic web services!WFS}でアクセスでき、グリッド/画像は、Web Coverage Service (WCS)\index{geographic web services!WCS}でアクセスできる。
-Web Feature Service (WFS)\index{geographic web services!WFS} や Web Map Tile Service (WMTS)\index{geographic web services!WMTS} は、タイルのような地図画像にアクセスできる。
-メタデータは、Catalogue Service for the Web (CSW)\index{geographic web services!CSW} によってもカバーされる。
-最後に、標準的な処理は、Web Processing Service (WPS)\index{geographic web services!WPS} または Web Coverage Processing Service (WCPS)\index{geographic web services!WCPS} によって処理される。
-
-様々なオープンソースプロジェクトがこれらのプロトコルを採用している。例えば、データハンドリ ングのための [GeoServer](https://geoserver.org/) や [MapServer](https://mapserver.org/)、メタデータハンドリングのための [GeoNetwork](https://geonetwork-opensource.org/) や [PyCSW](https://pycsw.org/) などがあり、クエリの標準化につながっている。
-[GeoNode](https://geonode.org/)、[GeOrchestra](https://www.georchestra.org/)、 [Examind](https://www.examind.com/) のような空間データ基盤 (Spatial Data Infrastructures, SDI) のための統合ツールも、これらの標準ウェブサービスを直接、または前述のオープンソースツールを利用して採用している。
-
-他のウェブ API と同様に、OWS API はデータを要求するために `?` に続く「ベース URL」と「エンドポイント」および「URL クエリ引数」を使う (**httr** パッケージ内の [`best-practices-api-packages`](https://httr.r-lib.org/articles/api-packages.html) vignette を参照)。
-
-OWS のサービスへのリクエスト方法はたくさんある。
-
-まず、**httr** パッケージを使った例で、ウェブサービスがどのように機能するかを理解しよう。
-最も基本的なものの 1 つが `getCapabilities` であり、以下の **httr** 関数 `GET()` と `modify_url()` で示されている。
-以下のコードチャンクは、API\index{API}  のクエリを作成しデータ取得する方法を示している。この場合、国連食糧農業機関 (Food and Agriculture Organization, UN-FAO) が運営するサービスの機能を確認することができる。
-
-```{r 07-read-write-plot-8}
-library(httr)
-base_url = "https://www.fao.org"
-endpoint = "/fishery/geoserver/wfs"
-q = list(request = "GetCapabilities")
-res = GET(url = modify_url(base_url, path = endpoint), query = q)
-res$url
-```
-
-上記のコードチャンクは、API\index{API} リクエストを `GET()` 関数でプログラム的に構築する方法を示している。この関数は、ベース URL とクエリパラメータのリストを受け取り、簡単に拡張することができる。
-リクエストの結果を、**httr** パッケージで定義されたクラス `response` のオブジェクト `res` に保存し、URL を含むリクエストの情報を含むリストとなる。
-`browseURL(res$url)` を実行するとわかるように、結果はブラウザで直接読むこともできる。
-リクエストの内容を抽出する一つの方法として、次のようなものがある。
-
-```{r 07-read-write-plot-9, eval=FALSE}
-txt = content(res, "text")
-xml = xml2::read_xml(txt)
-xml
-#> {xml_document} ...
-#> [1] <ows:ServiceIdentification>\n  <ows:Title>GeoServer WFS...
-#> [2] <ows:ServiceProvider>\n  <ows:ProviderName>UN-FAO Fishe...
-#> ...
-```
-
-WFS サービスからデータをダウンロードするには、`GetFeature` リクエストと特定の `typeName` (以下のコードチャンクに示す) が必要である。
-
-```{r 07-read-write-plot-11, echo=FALSE, eval=FALSE}
-library(XML)
-library(curl)
-library(httr)
-base_url = "https://www.fao.org/fishery/geoserver/wfs"
-q = list(request = "GetCapabilities")
-res = GET(url = base_url, query = q)
-doc = xmlParse(res)
-root = xmlRoot(doc)
-names(root)
-names(root[["FeatureTypeList"]])
-root[["FeatureTypeList"]][["FeatureType"]][["Name"]]
-tmp = xmlSApply(root[["FeatureTypeList"]], function(x) xmlValue(x[["Name"]]))
-```
-
-利用できる名称は、アクセスする Web 機能サービスによって異なる。
-`GetCapabilities` ウェブ技術を使ってプログラムで抽出することもでき、 [@nolan_xml_2014]、ブラウザで出力された内容を手動でスクロールさせることもできる。
-
-```{r 07-read-write-plot-12, eval=FALSE}
-library(sf)
-sf::sf_use_s2(FALSE)
-qf = list(request = "GetFeature", typeName = "fifao:FAO_MAJOR")
-file = tempfile(fileext = ".gml")
-GET(url = base_url, path = endpoint, query = qf, write_disk(file))
-fao_areas = read_sf(file)
-```
-
-データアクセスチェーンに沿ったジオメトリの妥当性を保つため、また、標準やオープンソースのサーバーソリューション (GeoServer など) はシンプルフィーチャアクセスに基づいて構築されているため、**sf** で導入された新しいデフォルトの動作を無効にし、データアクセス時に S2 ジオメトリモデルを使用しないようにすることが重要である。
-これは上記のコード `sf::sf_use_s2(FALSE)` で行う。
-`write_disk()` を使って、結果をメモリにロードされるのではなく、ディスクに書き込むようにすることで、**sf** でインポートできるようにすることに注意しておこう。
-
-しかし、多くの日常的な作業には、より高レベルのインターフェイスの方が適している場合があり、この目的のために多くのRパッケージやチュートリアルが開発されている。
-OWS サービスを利用する **ows4R** というパッケージが開発された。
-WFS、データ用の WCS、メタデータ用の CSW、処理用の WPS など、一般的なアクセスサービスへの安定したインタフェースを提供する。
-OGC のサービスカバレッジは[こちら](https://github.com/eblondel/ows4R?tab=readme-ov-file#ogc-standards-coverage-status)に記載されており、新しい標準プロトコルは調査/開発中である。
-
-上記の例に基づいて、このパッケージで　`getCapabilities`　と　`getFeatures`　の操作を実行する方法を以下のコードに示します。
-
-**ows4R** パッケージはクライアントの原理に依存している。
-OWSサービス (WFS など) と対話するために、以下のようにクライアントを作成する。
-
-```{r 07-read-write-plot-12b, eval=FALSE}
-library(ows4R)
-WFS = WFSClient$new(
-  url = "https://www.fao.org/fishery/geoserver/wfs",
-  serviceVersion = "1.0.0",
-  logger = "INFO"
-)
-```
-
-例えば、`getCapabilities` や `getFeatures` などである。
-
-```{r 07-read-write-plot-12c, eval=FALSE}
-library(ows4R)
-caps = WFS$getCapabilities()
-features = WFS$getFeatures("fifao:FAO_MAJOR")
-```
-
-先に説明したように、OGC サービスでデータにアクセスする場合、**sf** 機能を扱うには、**sf** で導入された新しいデフォルトの動作を `sf::sf_use_s2(FALSE)` で無効にする必要がある。
-これは **ows4R** でデフォルトで行われる。
-
-vignette にも例がある。たとえば、[how to access raster data with the WCS](https://cran.r-project.org/web/packages/ows4R/vignettes/wcs.html) や [how to access metadata with the CSW](https://cran.r-project.org/web/packages/ows4R/vignettes/csw.html) を参照。
 
 ## ファイル形式  {#file-formats}
 
@@ -368,21 +96,22 @@ ESRI Shapefile と同様に1990年代に開発されたフォーマットで、�
 GeoTIFF フォーマットに最近追加された最も重要なものの1つが、[COG](https://www.cogeo.org/) (*Cloud Optimized GeoTIFF*) と呼ばれるバージョンである。
 COG として保存されたラスタオブジェクトは、HTTP サーバーでホストすることで、他の人がファイル全体をダウンロードすることなく、ファイルの一部だけを読むことができる (Section \@ref(raster-data-read) と Section \@ref(raster-data-write) を参照)。
 
-この他にも、書籍の都合上、詳細な説明や Table \@ref(tab:formats) で触れていない空間データフォーマットが多数存在する。
-さらに、新しい空間データフォーマットが開発され (例えば、[GeoParquet](https://geoparquet.org/) や [Zarr](https://zarr.dev/))、既存のフォーマットも改良されている。
-他のフォーマットについて詳しく知りたい場合は、[ベクタ](https://gdal.org/drivers/vector/index.html)や[ラスタ](https://gdal.org/drivers/raster/index.html)ドライバに関する GDAL ドキュメントを読むことを勧める。
-さらに、空間データフォーマットの中には、ベクタやラスタ以外のデータモデル (タイプ) を格納できるものもある。
-LiDAR点群を格納するための LAS、LAZ 形式、多次元配列を格納するための NetCDF、HDF 形式が含まれる。
+この他にも、Table \@ref(tab:formats) で触れていない地理ファイル形式が多数存在し、また新しい空間データフォーマットが開発されている。
+最近開発されているものには、[GeoArrow](https://github.com/geoarrow/geoarrow) や [Zarr](https://zarr.dev/)) がある。
+GDAL ドキュメントは、[ベクタ](https://gdal.org/drivers/vector/index.html)や[ラスタ](https://gdal.org/drivers/raster/index.html)ドライバに関して学ぶ際に優れたリソースである。
+さらに、Chapter \@ref(intro-sf) で紹介するように、空間データフォーマットの中には、ベクタやラスタ以外のデータモデル (タイプ) を格納できるものもある。
+LiDAR 点群を格納するための LAS、LAZ 形式、多次元配列を格納するための NetCDF、HDF 形式が含まれる。
 
 また、空間データは、CSV ファイルや Excel スプレッドシートなど、表形式 (非空間) のテキスト形式で保存されることも多い。
 例えば、GIS ツールを使わない人と空間サンプルを共有したり、空間データ形式を受け付けない他のソフトウェアとデータを交換したりする際に便利である。 
-しかし、この方法は、点よりも複雑な形状を保存するにはかなり困難であり、CRS に関する情報を直接保存できないなど、いくつかの問題が考えられる。
+しかし、この方法は、点よりも複雑な形状を保存するにはかなり困難であり、CRS など重要な空間メタ情報を直接保存できないなど、いくつかの欠点がある。
 
 ## データ入力 (I) {#data-input}
 
 `sf::read_sf()` (ベクタデータの読み込みに使うメイン関数) や `terra::rast()` (ラスタデータの読み込みに使うメイン関数) などのコマンドを実行すると、ファイルからデータを読み込むイベントの連鎖が無言で開始される。
-さらに、さまざまな地理データを含む、あるいは異なるデータソースに簡単にアクセスできる R パッケージが数多く存在する。
-これらはすべて、R にデータをロードするか、より正確には、RAM に保存されたワークスペースにオブジェクトを割り当てて、そこからアクセスできるようにするものである。R セッション中の [`.GlobalEnv`](http://adv-r.had.co.nz/Environments.html) からアクセスできる RAM に保存されている。
+さらに、多くの R パッケージは、サンプルデータを提供していたり (たとえば、これまでにも使ってきた `spData::world`)、あるいはさまざまなデータソースからデータを取得する関数を提供している。
+これらはすべて、R にデータをロードするか、より正確には、ワークスペースにオブジェクトを割り当てる。
+すなわち、オブジェクトが R にインポートされると、これは RAM に保存される (例外として、データベース接続がある。たとえば、Section \@ref(postgis)) で説明するように、`dplyr::collect()` などでメモリにインポートされる)、`ls()` で一覧を表示することができ (あるいは開発環境の 'Environment' に表示され)、R セッション中の [`.GlobalEnv`](http://adv-r.had.co.nz/Environments.html) からアクセスできる。
 
 ### ベクタデータ  {#iovec}
 
@@ -582,7 +311,6 @@ snow_rey
 ```
 
 この方法では、大きな GeoTIFF ファイル全体をダウンロードするのではなく、一つの値だけをダウンロードすることになる。
-
 上記の例は、単純な (しかし有用な) 1つのケースを示しただけであるが、もっと探求すべきことがある。
 また、`/vsicurl/` のプレフィックスは、ラスタだけでなく、ベクタファイルフォーマットにも有効である。
 ベクタファイルのURLの前に接頭辞を付けるだけで、`read_sf()`、オンラインストレージから直接ベクタを読み込むことができるようになる。
@@ -590,15 +318,14 @@ snow_rey
 重要なのは、GDAL が提供する接頭辞は `/vsicurl/` だけではないことである。ZIP アーカイブから空間ファイルを解凍せずに読み込むための `/vsizip/` や、AWS S3 バケットにあるファイルをオンザフライで読み込むための `/vsis3/` など、他にも多くの接頭辞が存在するのである。
 詳しくは、https://gdal.org/user/virtual_file_systems.html。
 
-<!-- ### Databases -->
-<!-- jn:toDo-->
-<!-- postgis input example -->
+ベクタデータと同様、ラスタデータも PostGIS などの空間データベースからも読み込むことができる。
+詳細は、Section \@ref(postgis) を参照。
 
 ## データ出力 (O)   {#data-output}
 
 地理データの書き込みでは、あるフォーマットから別のフォーマットへの変換や、新しく作成したオブジェクトの保存が可能である。
 データの種類 (ベクタまたはラスタ)、オブジェクトのクラス (例： `sf` または `SpatRaster` )、保存される情報の種類と量 (オブジェクトのサイズ、値の範囲など) に応じて、空間ファイルを最も効率的に保存する方法を知ることが重要である。
-次の2つのセクションでは、その方法を説明する。
+次の 2 つのセクションでは、その方法を説明する。
 
 ### ベクタデータ
 
@@ -708,6 +435,151 @@ writeRaster(x = single_layer, filename = "my_raster.tif",
 
 GeoTIFF 形式の圧縮については、Paul Ramsey の [GeoTIFF 圧縮についてのブログ](https://blog.cleverelephant.ca/2015/02/geotiff-compression-for-dummies.html) に包括的に書かれている。
 
+## オープンデータの取得  {#retrieving-data}
+
+\index{open data}
+インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。^[例えば、自由に使える地理データの長いサイト一覧が https://freegisdata.rtwilson.com/ にある。]
+同じデータセットにアクセスする場所が複数あるという意味で、ある意味、データは<u>多すぎる</u>くらいにある。
+一部のデータセットは品質が低い。
+そこで、最初に最も重要な情報源をいくつか紹介する。
+様々な「ジオポータル」 (地理空間データセットを提供するウェブサービス、 [Data.gov](https://catalog.data.gov/dataset?metadata_type=geospatial) など) は、幅広いデータを提供しているが、特定の場所についてのみ提供している場合が多い (この話題については、最新の [Wikipedia page](https://en.wikipedia.org/wiki/Geoportal) で説明されている)。
+
+\index{geoportals}
+グローバルなジオポータルの中には、この問題を克服しているものもある。
+例えば、[GEOSS portal](https://www.geoportal.org/) や [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) には、全世界をカバーするラスタデータセットを多数含んでいる。
+また、米国航空宇宙局 (NASA) が運営するポータルサイト [SEDAC](https://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
+
+ジオポータルは、ほとんどの場合空間的および時間的範囲などの特性に基づいてデータセットを照会できるグラフィカルなインターフェースを提供している。米国地質調査所の [EarthExplorer](https://earthexplorer.usgs.gov/) はその代表例である。
+ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤーを理解する上で効果的な方法である。
+しかし、データの<u>ダウンロード</u>は、再現性と効率性の観点から、コードで行うのがベストである。
+ダウンロードは、主に URL や API\index{API} を経由して、様々な手法でコマンドラインから開始することができる (例: [Copernicus APIs](https://dataspace.copernicus.eu/analyse/apis) を参照)。^[Section \@ref(staccog) に、STAC API を使用して Sentinel-2 データをダウンロードする例を示している。]
+静的 URL にホストされているファイルは、`download.file()` でダウンロードすることができる。以下のコードは、 [pangaea.de](https://doi.pangaea.de/10.1594/PANGAEA.868349) から米国の国立公園のデータにアクセスする例である。
+
+```{r 07-read-write-plot-2, eval=FALSE}
+download.file(url = "https://irma.nps.gov/DataStore/DownloadFile/673366",
+              destfile = "nps_boundary.zip",
+              mode = "wb")
+unzip(zipfile = "nps_boundary.zip")
+usa_parks = read_sf(dsn = "nps_boundary.shp")
+```
+
+## 地理データパッケージ  {#geographic-data-packages}
+
+\index{data packages}
+地理データにアクセスするための R パッケージが多数開発されており、その一部を Table \@ref(tab:datapackages) で紹介している。
+これらのパッケージは、1つまたは複数の空間ライブラリやジオポータルへのインターフェースを提供し、コマンドラインからのデータアクセスをさらに高速化することを目的としている。
+
+```{r datapackages, echo=FALSE, warning=FALSE}
+datapackages = tibble::tribble(
+  ~`パッケージ`, ~説明,
+  "climateR", "2,000を超えるデータプロバイダーが提供する10万kを超えるグリッド化された気候および景観データセットに、関心のある分野ごとにアクセスできる。",
+  "elevatr", "さまざまなソースからのポイントおよびラスター標高データにアクセスする。",
+  "FedData", "米国連邦政府のデータセット。標高や地表などのデータがある。",
+  "geodata", "行政データ、標高データ、WorldClim データのダウンロードとインポート。",
+  "osmdata", "OpenStreetMap の小さなデータセットをダウンロードし、インポート。",
+  "osmextract", "OpenStreetMap の大きなデータセットをダウンロードし、インポート。",
+  "rnaturalearth", "Natural Earth ベクタ・ラスタデータ。",
+  "rnoaa", "米国海洋大気庁 (National Oceanic and Atmospheric Administration, NOAA) の気候データをインポート。"
+)
+knitr::kable(datapackages, 
+             caption = "地理データ取得の代表的 R パッケージ", 
+             caption.short = "Selected R packages for geographic data retrieval.",
+             booktabs = TRUE) |>
+  kableExtra::kable_styling(latex_options="scale_down")
+```
+
+
+
+
+
+
+
+
+Table \@ref(tab:datapackages) は、利用可能な地理データパッケージのごく一部に過ぎないことを強調しておく。
+この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r/) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
+同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czechia)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
+
+各データパッケージは、データにアクセスするためのコードの書き方がそれぞれ異なる。
+Table \@ref(tab:datapackages) の 3 つのパッケージについて、違いを確認できるようにデータを取得するコードチャンクを示す。^[R 専用パッケージを使用したデータダウンロードの他の例は、以下を参照。 https://rspatialdata.github.io/] 
+まず、国の境界線はよく使うので、**rnaturalearth** パッケージ [@R-rnaturalearth] の `ne_countries()` 関数を用いて、以下のようにアクセスしてみよう。
+
+```{r 07-read-write-plot-3}
+library(rnaturalearth)
+usa_sf = ne_countries(country = "United States of America", returnclass = "sf")
+```
+
+国境データは、**geodata**、**giscoR**、**rgeoboundaries** などでも得られる。
+
+2 つ目の例は、**geodata** パッケージを使用して、10 分の空間分解能 (赤道では約 18.5 km) で全球の月別降水量の合計を含む一連のラスタをダウンロードしてみよう [@R-geodata]。
+その結果、`SpatRaster` クラスのマルチレイヤオブジェクトが生成される。
+
+```{r 07-read-write-plot-5, eval=FALSE}
+library(geodata)
+worldclim_prec = worldclim_global("prec", res = 10, path = tempdir())
+class(worldclim_prec)
+```
+
+3 つ目の例では、**osmdata** パッケージ [@R-osmdata]  を使って、OpenStreetMap\index{OpenStreetMap} (OSM) データベースから公園を検索してみよう。
+以下のコードチャンクに示すように、クエリーは関数 `opq()` (OpenStreetMap query の略) で始まり、最初の引数は bounding box、またはつまり境界線を表すテキスト文字列 (この場合はリーズ市) である。
+その結果は、どの OSM 要素 (この場合は公園) に興味があるかを選択する関数に渡され、<u>key-value ペア</u>で表される。
+次に、これらのデータは関数 `osmdata_sf()` に渡され、データのダウンロードと `sf` オブジェクトのリストへの変換が行われる (詳しくは `vignette('osmdata')` を参照)。
+
+```{r 07-read-write-plot-6, eval=FALSE}
+library(osmdata)
+parks = opq(bbox = "leeds uk") |> 
+  add_osm_feature(key = "leisure", value = "park") |> 
+  osmdata_sf()
+```
+
+**osmdata** パッケージの制限は「容量制限」があり、大きな OSM データセット (例えば、大きな都市のすべての OSM データ) をダウンロードすることができない。
+この制限を克服するために、**osmextract** パッケージが開発された。これは、あらかじめ定義された地域の OSM データベースの圧縮バージョンを含むバイナリ `.pbf` ファイルをダウンロードし、インポートすることができる。
+
+OpenStreetMap は、クラウドソースによる膨大なグローバルデータベースであり、日々成長を続けている。また、OSM クエリの迅速な開発とテストを行うためのウェブサービス [Overpass turbo](https://overpass-turbo.eu/) から PostGIS データベースへのデータ取り込みを行うための [osm2pgsql](https://osm2pgsql.org/) まで、データに容易にアクセスできるツールのエコシステムが充実している。
+OSM から得られるデータセットの質は様々だが、データソースと OSM のエコシステムには多くの利点がある。データセットが世界中で利用でき、無料で、ボランティアの軍隊のおかげで常に改善されている。
+OSM の利用は、「市民科学」とデジタルコモンズへの還元を促すものである ([www.openstreetmap.org](https://www.openstreetmap.org) から、よく知る世界の一部を表すデータの編集を始めることができる)。
+OSM データの活用例については、Chapter \@ref(gis)、Chapter \@ref(transport)、Chapter \@ref(location) を参照。
+
+
+
+パッケージにデータセットが組み込まれていることがある。
+この場合、アクセス方法は 4 つある。パッケージをアタッチする方法 (パッケージが **spData** のように 'lazy loading' を使用している場合) は `data(dataset, package = mypackage)`、データセットを参照する方法は `mypackage::dataset`、生のデータファイルを参照する方法は `system.file(filepath, package = mypackage)` とする。
+次のコードは、`world` データセット (親パッケージを `library(spData)` にアタッチしてロード済み) を使って、後者の2つのオプションを説明している。^[
+R パッケージによるデータインポートの詳細については、@gillespie_efficient_2016 の Section 5.5 および Section 5.6 を参照。
+]
+
+```{r 07-read-write-plot-7, eval=FALSE}
+world2 = spData::world
+world3 = read_sf(system.file("shapes/world.gpkg", package = "spData"))
+```
+
+最後の例、`system.file("shapes/world.gpkg", package = "spData")` は、**spData** パッケージの `"shapes/"` フォルダ内に格納されている `world.gpkg` ファイルへのパスを返す。
+
+\index{geocoding}
+空間情報を得るもう一つの方法は、ジオコーディング (住所などの位置情報を座標に変換すること) である。
+これは通常、オンラインサービスに問い合わせを行い、その結果として位置情報を取得するものである。
+このようなサービスは数多く存在するが、使用するジオコーディングの方法、使用制限、コスト、API キーの要件などが異なっている。 
+R にはジオコーディングのためのパッケージがいくつかあるが、**tidygeocoder** は一貫したインタフェースで[最も多くのジオコーディングサービス](https://jessecambon.github.io/tidygeocoder/articles/geocoder_services.html)に接続することができるようである。
+**tidygeocoder** のメイン関数は `geocode` で、アドレスを持つデータフレームを受け取り、`"lat"` と `"long"` として座標を追加する。
+また、この関数は `method` の引数でジオコーディングサービスを選択することができ、多くの追加パラメータを持つ。
+
+このパッケージを使って、ロンドンのソーホー地区のビルにある John Snow (訳注: 疫学的手法を導入しコレラの原因、感染経路を初めて特定した医師)  の青い銘板の座標を検索してみよう。
+
+```{r, eval=FALSE}
+library(tidygeocoder)
+geo_df = data.frame(address = "54 Frith St, London W1D 4SJ, UK")
+geo_df = geocode(geo_df, address, method = "osm")
+geo_df
+```
+
+得られたデータフレームは、`st_as_sf()` を用いて `sf` オブジェクトに変換することができる。
+
+```{r, eval=FALSE}
+geo_sf = st_as_sf(geo_df, coords = c("long", "lat"), crs = "EPSG:4326")
+```
+
+また、**tidygeocoder** は、一組の座標に基づいて一連の情報 (名前、住所など) を取得するために使用される逆ジオコーディングと呼ばれる逆の処理を実行することもできる。
+Chapter \@ref(gis) で紹介するように、地理データは地理ソフトのブリッジから R にインポートすることもできる。
+
 ## 地理メタデータ
 
 地理メタデータは地理情報管理の要であり、データセット、データ構造、サービスを記述するために使用される。
@@ -740,6 +612,117 @@ md = readISO19139("my_metadata.xml")
 例えば、Geography Markup Language (GML) 標準とファイル形式は、データとメタデータの両方をカバーしている。
 **geometa** パッケージでは、**sf** でモデリングされたジオメトリオブジェクトからGML (ISO 19136) オブジェクトをエクスポートすることができる。
 このような機能により、地理メタデータの使用 (例えば、単純なバウンディングボックスではなく、詳細な地理的範囲や時間的範囲に関するメタデータを含めることが可能) や、GML 標準を拡張するサービス (OGC Web Coverage Service など) の提供が可能になる。
+
+## 地理ウェブサービス  {#geographic-web-services}
+
+\index{geographic web services}
+空間データにアクセスするための Web API の標準化を目指して、Open Geospatial Consortium (OGC) は、Webサービス (OGC Web Services の略で OWS と総称) の標準仕様を多数策定している。
+これらのサービスは、[ISO/OGC Spatial Schema (ISO 19107:2019)](https://www.iso.org/standard/66175.html) や [Simple Features (ISO 19125-1:2004)](https://www.iso.org/standard/40114.html) のような地理情報をモデル化し、[Geographic Markup Language (GML)](https://www.iso.org/standard/75676.html)のようなデータをフォーマットするために開発されたコア標準を補完して使用する。
+これらの仕様は、データとメタデータの一般的なアクセスサービスをカバーしています。
+ベクトルデータは、Web Feature Service (WFS)\index{geographic web services!WFS}でアクセスでき、グリッド/画像は、Web Coverage Service (WCS)\index{geographic web services!WCS}でアクセスできる。
+Web Feature Service (WFS)\index{geographic web services!WFS} や Web Map Tile Service (WMTS)\index{geographic web services!WMTS} は、タイルのような地図画像にアクセスできる。
+メタデータは、Catalogue Service for the Web (CSW)\index{geographic web services!CSW} によってもカバーされる。
+最後に、標準的な処理は、Web Processing Service (WPS)\index{geographic web services!WPS} または Web Coverage Processing Service (WCPS)\index{geographic web services!WCPS} によって処理される。
+
+様々なオープンソースプロジェクトがこれらのプロトコルを採用している。例えば、データハンドリ ングのための [GeoServer](https://geoserver.org/) や [MapServer](https://mapserver.org/)、メタデータハンドリングのための [GeoNetwork](https://geonetwork-opensource.org/) や [PyCSW](https://pycsw.org/) などがあり、クエリの標準化につながっている。
+[GeoNode](https://geonode.org/)、[GeOrchestra](https://www.georchestra.org/)、 [Examind](https://www.examind.com/) のような空間データ基盤 (Spatial Data Infrastructures, SDI) のための統合ツールも、これらの標準ウェブサービスを直接、または前述のオープンソースツールを利用して採用している。
+
+他のウェブ API と同様に、OWS API はデータを要求するために `?` に続く「ベース URL」と「エンドポイント」および「URL クエリ引数」を使う (**httr** パッケージ内の [`best-practices-api-packages`](https://httr.r-lib.org/articles/api-packages.html) vignette を参照)。
+
+OWS のサービスへのリクエスト方法はたくさんある。
+
+まず、**httr** パッケージを使った例で、ウェブサービスがどのように機能するかを理解しよう。
+最も基本的なものの 1 つが `getCapabilities` であり、以下の **httr** 関数 `GET()` と `modify_url()` で示されている。
+以下のコードチャンクは、API\index{API}  のクエリを作成しデータ取得する方法を示している。この場合、国連食糧農業機関 (Food and Agriculture Organization, UN-FAO) が運営するサービスの機能を確認することができる。
+
+```{r 07-read-write-plot-8}
+library(httr)
+base_url = "https://www.fao.org"
+endpoint = "/fishery/geoserver/wfs"
+q = list(request = "GetCapabilities")
+res = GET(url = modify_url(base_url, path = endpoint), query = q)
+res$url
+```
+
+上記のコードチャンクは、API\index{API} リクエストを `GET()` 関数でプログラム的に構築する方法を示している。この関数は、ベース URL とクエリパラメータのリストを受け取り、簡単に拡張することができる。
+リクエストの結果を、**httr** パッケージで定義されたクラス `response` のオブジェクト `res` に保存し、URL を含むリクエストの情報を含むリストとなる。
+`browseURL(res$url)` を実行するとわかるように、結果はブラウザで直接読むこともできる。
+リクエストの内容を抽出する一つの方法として、次のようなものがある。
+
+```{r 07-read-write-plot-9, eval=FALSE}
+txt = content(res, "text")
+xml = xml2::read_xml(txt)
+xml
+#> {xml_document} ...
+#> [1] <ows:ServiceIdentification>\n  <ows:Title>GeoServer WFS...
+#> [2] <ows:ServiceProvider>\n  <ows:ProviderName>UN-FAO Fishe...
+#> ...
+```
+
+WFS サービスからデータをダウンロードするには、`GetFeature` リクエストと特定の `typeName` (以下のコードチャンクに示す) が必要である。
+
+```{r 07-read-write-plot-11, echo=FALSE, eval=FALSE}
+library(XML)
+library(curl)
+library(httr)
+base_url = "https://www.fao.org/fishery/geoserver/wfs"
+q = list(request = "GetCapabilities")
+res = GET(url = base_url, query = q)
+doc = xmlParse(res)
+root = xmlRoot(doc)
+names(root)
+names(root[["FeatureTypeList"]])
+root[["FeatureTypeList"]][["FeatureType"]][["Name"]]
+tmp = xmlSApply(root[["FeatureTypeList"]], function(x) xmlValue(x[["Name"]]))
+```
+
+利用できる名称は、アクセスする Web 機能サービスによって異なる。
+`GetCapabilities` ウェブ技術を使ってプログラムで抽出することもでき、 [@nolan_xml_2014]、ブラウザで出力された内容を手動でスクロールさせることもできる。
+
+```{r 07-read-write-plot-12, eval=FALSE}
+library(sf)
+sf::sf_use_s2(FALSE)
+qf = list(request = "GetFeature", typeName = "fifao:FAO_MAJOR")
+file = tempfile(fileext = ".gml")
+GET(url = base_url, path = endpoint, query = qf, write_disk(file))
+fao_areas = read_sf(file)
+```
+
+データアクセスチェーンに沿ったジオメトリの妥当性を保つため、また、標準やオープンソースのサーバーソリューション (GeoServer など) はシンプルフィーチャアクセスに基づいて構築されているため、**sf** で導入された新しいデフォルトの動作を無効にし、データアクセス時に S2 ジオメトリモデルを使用しないようにすることが重要である。
+これは上記のコード `sf::sf_use_s2(FALSE)` で行う。
+`write_disk()` を使って、結果をメモリにロードされるのではなく、ディスクに書き込むようにすることで、**sf** でインポートできるようにすることに注意しておこう。
+
+しかし、多くの日常的な作業には、より高レベルのインターフェイスの方が適している場合があり、この目的のために多くのRパッケージやチュートリアルが開発されている。
+OWS サービスを利用する **ows4R** というパッケージが開発された。
+WFS、データ用の WCS、メタデータ用の CSW、処理用の WPS など、一般的なアクセスサービスへの安定したインタフェースを提供する。
+OGC のサービスカバレッジは[こちら](https://github.com/eblondel/ows4R?tab=readme-ov-file#ogc-standards-coverage-status)に記載されており、新しい標準プロトコルは調査/開発中である。
+
+上記の例に基づいて、このパッケージで　`getCapabilities`　と　`getFeatures`　の操作を実行する方法を以下のコードに示します。
+
+**ows4R** パッケージはクライアントの原理に依存している。
+OWSサービス (WFS など) と対話するために、以下のようにクライアントを作成する。
+
+```{r 07-read-write-plot-12b, eval=FALSE}
+library(ows4R)
+WFS = WFSClient$new(
+  url = "https://www.fao.org/fishery/geoserver/wfs",
+  serviceVersion = "1.0.0",
+  logger = "INFO"
+)
+```
+
+例えば、`getCapabilities` や `getFeatures` などである。
+
+```{r 07-read-write-plot-12c, eval=FALSE}
+library(ows4R)
+caps = WFS$getCapabilities()
+features = WFS$getFeatures("fifao:FAO_MAJOR")
+```
+
+先に説明したように、OGC サービスでデータにアクセスする場合、**sf** 機能を扱うには、**sf** で導入された新しいデフォルトの動作を `sf::sf_use_s2(FALSE)` で無効にする必要がある。
+これは **ows4R** でデフォルトで行われる。
+
+vignette にも例がある。たとえば、[how to access raster data with the WCS](https://cran.r-project.org/web/packages/ows4R/vignettes/wcs.html) や [how to access metadata with the CSW](https://cran.r-project.org/web/packages/ows4R/vignettes/csw.html) を参照。
 
 ## ビジュアル出力  {#visual-outputs}
 
