@@ -220,13 +220,13 @@ tmap_arrange(map_nz1, map_nz2, map_nz3)
 これらを固定値で設定した場合の影響を、Figure \@ref(fig:tmstatic) に示す。
 
 ```{r tmstatic, message=FALSE, fig.cap="よく使われる塗りつぶしや枠線の美観を固定値に変更した場合の影響。", fig.scap="The impact of changing commonly used aesthetics."}
-ma1 = tm_shape(nz) + tm_fill(fill = "red")
-ma2 = tm_shape(nz) + tm_fill(fill = "red", alpha = 0.3)
-ma3 = tm_shape(nz) + tm_borders(col = "blue")
-ma4 = tm_shape(nz) + tm_borders(lwd = 3)
-ma5 = tm_shape(nz) + tm_borders(lty = 2)
-ma6 = tm_shape(nz) + tm_fill(fill = "red", alpha = 0.3) +
-  tm_borders(col = "blue", lwd = 3, lty = 2)
+ma1 = tm_shape(nz) + tm_polygons(fill = "red")
+ma2 = tm_shape(nz) + tm_polygons(fill = "red", alpha = 0.3)
+ma3 = tm_shape(nz) + tm_polygons(col = "blue")
+ma4 = tm_shape(nz) + tm_polygons(lwd = 3)
+ma5 = tm_shape(nz) + tm_polygons(lty = 2)
+ma6 = tm_shape(nz) + tm_polygons(fill = "red", fill_alpha = 0.3,
+                                 col = "blue", lwd = 3, lty = 2)
 tmap_arrange(ma1, ma2, ma3, ma4, ma5, ma6)
 ```
 
@@ -317,7 +317,7 @@ The `tm_scale_intervals()` 関数は、入力データ値を間隔セットに�
 以下は、よく使われる縮尺関数である (Figure \@ref(fig:break-styles))。
 
 - `style = "pretty"`: デフォルトの設定では、可能な限り改行を整数に丸め、均等にスペースを取る。
-- `style = "equal"`: 、入力値を同じ範囲のビンに分割し、一様な分布を持つ変数に適している (結果のマップが色の多様性に乏しくなる可能性があるため、歪んだ分布を持つ変数には推奨されていない)。
+- `style = "equal"`: 入力値を同じ範囲のビンに分割し、一様な分布を持つ変数に適している (結果のマップが色の多様性に乏しくなる可能性があるため、歪んだ分布を持つ変数には推奨されていない)。
 - `style = "quantile"`: 同じ数のオブザベーションが各カテゴリに入ることを保証する (ビンの範囲が広く変化する可能性があるというマイナス面を含む)。
 - `style = "jenks"`: データ中の類似した値のグループを識別し、カテゴリ間の差異を最大化する。
 - `style = "log10_pretty"`: 右に裾が広がっている分布の変数に使われる、pretty スタイルの対数版 (底は 10)
@@ -391,7 +391,7 @@ tm_shape(nz) +
                                                midpoint = 28000))
 ```
 
-```{r colpal, echo=FALSE, message=FALSE, fig.cap="カテゴリ、連続色、発散のパレットの例。", out.width="50%"}
+```{r colpal, echo=FALSE, message=FALSE, fig.cap="カテゴリ、連続色、発散のパレットの例。", out.width="75%"}
 library(cols4all)
 many_palette_plotter = function(color_names, n, titles){
   n_colors = length(color_names)
@@ -409,10 +409,10 @@ many_palette_plotter = function(color_names, n, titles){
 }
 all_default_pals = tmap_options()$values.var$fill
 many_palette_plotter(c(all_default_pals$div, all_default_pals$seq, all_default_pals$unord), 7, 
-                     titles = c("Diverging", "Sequential", "Categorical"))
+                     titles = c("発散", "連続色", "カテゴリ"))
 ```
 
-色を扱う際に考慮すべき重要な原則は、「知覚可能性」と「アクセシビリティ」の2つである。
+色を扱う際に考慮すべき重要な原則は、「知覚可能性」と「アクセシビリティ」の 2 つである。
 まず、地図の色は感覚と合っていなければならない。 
 つまり、特定の色は、経験や文化的なレンズを通して見ることができる。
 例えば、緑は植物や低地を表し、青は水や涼しさを連想させる色である。
@@ -424,9 +424,9 @@ many_palette_plotter(c(all_default_pals$div, all_default_pals$seq, all_default_p
 ### 凡例  {#legends}
 
 \index{tmap (package)!legends}
-美観変数と設定を決定したのち、地図の判例スタイルに注意を向けよう。
+美観変数と設定を決定したのち、地図の凡例スタイルに注意を向けよう。
 `tm_legend()` 関数を使うと、タイトル、位置、方向を変えたり、あるいは非表示することができる。
-最も重要なのは`タイトル`で、判例のタイトルとなる。
+最も重要なのは`タイトル`で、凡例のタイトルとなる。
 一般に、タイトルには二つの情報を記述する。一つ目は内容で、二つ目は値の単位である。
 以下のコードは、変数名 `Land_area` よりも魅力的な名前を提供することで、この機能を示している (`expression()` は上付き文字を設定するために使用)。
 
@@ -480,7 +480,7 @@ tmap_arrange(map_nza, map_nza2)
 地図要素には、マップされるオブジェクト、地図グリッド (メッシュ)、縮尺バー、タイトル、マージンなどがあり、前のセクションで説明したカラー設定は、地図の見え方に影響を与えるパレットとブレークポイントに関連している。
 どちらも微妙な変化をもたらすだろうが、地図が残す印象には同じように大きな影響を与える。
 
-経緯線網\index{tmap (package)!graticules}、方位記号\index{tmap (package)!north arrows}、スケールバー\index{tmap (package)!scale bars}、タイトルなどの追加要素には、それぞれ関数がある。`tm_graticules()`、`tm_compass()`、`tm_scalebar()`、`tm_title()` である (Figure \@ref(fig:na-sb))。^[この他、`tm_grid()`、`tm_logo()`、`tm_credits()` がある。]訳注：mac で title に日本語を使用する場合は、fontfamily = "HiraginoSans-W3" を追加する。
+経緯線網\index{tmap (package)!graticules}、方位記号\index{tmap (package)!north arrows}、スケールバー\index{tmap (package)!scale bars}、タイトルなどの追加要素には、それぞれ関数がある。`tm_graticules()`、`tm_compass()`、`tm_scalebar()`、`tm_title()` である (Figure \@ref(fig:na-sb))。^[この他、`tm_grid()`、`tm_logo()`、`tm_credits()` がある。] 訳注: mac で title に日本語を使用する場合は、fontfamily = "HiraginoSans-W3" を追加する。
 
 ```{r na-sb, message=FALSE, fig.cap="方位記号とスケールバーを追加した地図。", out.width="65%", fig.asp=1, fig.scap="Map with a north arrow and scale bar.", dev="ragg_png"}
 map_nz + 
@@ -505,11 +505,11 @@ source("code/09-layout1.R", print.eval = TRUE)
 `tm_layout()` の他の引数は、マップが配置されるキャンバスとの関係で、マップの多くの側面を制御する。
 ここでは、便利なレイアウト設定をご紹介する (一部、Figure \@ref(fig:layout2))。
 
-- `inner.margin` と `outer.margin` のマージン設定
+- `inner.margin` と `outer.margin` はマージンを設定
 - `fontface` で制御されるフォント設定と `fontfamily` 
-- 凡例設定には、`legend.show` (凡例を表示すかどうか)、`legend.only` (地図を省略するか)、`legend.outside` (凡例を地図の外に出すか) などの二値オプションや、次のような多肢選択設定がある。 `legend.position` 
-- フレーム幅 (`frame.lwd`) と二重線 (`frame.double.line`) を許可するオプション
-- `sepia.intensity` (マップのセピア度合) と `saturation` (色・グレースケール) を制御する色設定
+- 凡例設定には、`legend.show` (凡例を表示すかどうか)、`legend.only` (地図を省略するか)、`legend.outside` (凡例を地図の外に出すか) などの二値オプションや、`legend.position` ですべて設定
+- 図郭の幅 (`frame.lwd`) と二重線 (`frame.double.line`) を許可するオプション
+- `sepia.intensity` (地図のセピア度合) と `saturation` (色・グレースケール) を制御する色設定
 
 ```{r layout2, message=FALSE, fig.cap="選択したレイアウトオプションの説明図。", echo=FALSE, fig.asp=0.56, warning=FALSE, fig.width=8}
 source("code/09-layout2.R", print.eval = TRUE)
@@ -525,7 +525,7 @@ source("code/09-layout2.R", print.eval = TRUE)
 時間の次元は、色などの別の<u>視覚化に関する変数</u>で表現できる。
 しかし、これは複数のポイントが重なるため、地図が乱雑になる危険性がある (都市は移動しない！)。
 
-通常、ファセット・マップの個々のファセットには、同じジオメトリ・データが複数回繰り返され、属性データの各列に対して1回ずつ含まれている (これは `sf` オブジェクトのデフォルトのプロット方法、Chapter \@ref(spatial-class) を参照)。
+通常、ファセット・マップの個々のファセットには、同じジオメトリ・データが複数回繰り返され、属性データの各列に対して 1 回ずつ含まれている (これは `sf` オブジェクトのデフォルトのプロット方法、Chapter \@ref(spatial-class) を参照)。
 しかし、ファセットは、点パターンの経時変化など、幾何学的な変化を表現することもできる。
 このファセット化されたプロットの使用例を Figure \@ref(fig:urban-facet) に示す。
 
@@ -540,13 +540,13 @@ tm_shape(world) +
   tm_facets_wrap(by = "year", nrow = 2)
 ```
 
-このコードでは、**tmap**で作成されたファセット・マップの主要なフィーチャを示している。
+このコードでは、**tmap** で作成されたファセット・マップの主要なフィーチャを示している。
 
 - ファセット変数を持たないシェイプは繰り返される (この場合、`world` の国々)
-- 変数によって変化する `by` の引数 (この場合は `"year"`)。
-- `nrow` / `ncol` ファセットが配置される行と列の数を指定する設定である。
+- 変数によって変化する `by` の引数 (この場合は `"year"`)
+- `nrow` / `ncol` ファセットが配置される行と列の数を指定
 
-あるいは、`tm_facets_grid()` 関数を使って３つの異なる変数を元にファセットを作る。３つの変数とは、`rows`、`columns`、および `pages` である。
+あるいは、`tm_facets_grid()` 関数を使って 3 変数 `rows`、`columns`、`pages` からファセットを作る。
 
 ファセット・マップは、変化する空間的関係を示すのに有用なだけでなく、アニメーション・マップの基礎としても有用である (Section \@ref(animated-maps) 参照)。
 
@@ -637,7 +637,7 @@ print(nz_map, vp = ins_vp)
 
 差し込み地図のファイルへの保存は、グラフィックデバイス (Section \@ref(visual-outputs) 参照)、`tmap_save()` 関数とその引数 - `insets_tm` および `insets_vp` のいずれかを使用することができる。
 
-また、差し込み地図は、非連続なエリアを1つの地図にするために使用する。
+また、差し込み地図は、非連続なエリアを 1 つの地図にするために使用する。
 おそらく最もよく使われる例は、アメリカ合衆国の地図で、アメリカ本土とハワイ、アラスカで構成されている。
 このようなケースでは、個々の差し込みに最適なプロジェクションを見つけることが非常に重要である (詳しくは Chapter \@ref(reproj-geo-data) を参照)。
 `tm_shape()` の引数 `crs` に US National Atlas Equal Area の EPSG コードを指定すれば、米国本土の地図に US National Atlas Equal Area を使用することができる。
@@ -648,7 +648,7 @@ us_states_map = tm_shape(us_states, crs = "EPSG:9311") +
   tm_layout(frame = FALSE)
 ```
 
-残りのオブジェクト、`hawaii` と `alaska` は、すでに適切な投影を持っている。したがって、2つのマップを別々に作成するだけでよい。
+残りのオブジェクト `hawaii` と `alaska` は、すでに適切な投影を持っている。したがって、2 つのマップを別々に作成するだけでよい。
 
 ```{r 08-mapping-20}
 hawaii_map = tm_shape(hawaii) +
@@ -682,12 +682,12 @@ Section \@ref(faceted-maps) で紹介されているファセット・マップ�
 さらに、画面やページ上で各ファセットが物理的に分離しているため、ファセット間の微妙な差異を検出することが難しい。
 
 アニメーション地図は、これらの問題を解決する。
-デジタル出版に依存しているが、より多くのコンテンツがオンラインに移行するにつれて、これは問題ではなくなってきている。
+デジタル版でしか表示できないが、より多くのコンテンツがオンラインに移行するにつれて、これは問題ではなくなってきている。
 印刷された地図のアニメーション (またはインタラクティブ) バージョンを含むウェブページに読者をリンクすることで、地図を生き生きとさせることができる。
-R でアニメーションを生成する方法はいくつかあり、**ggplot2**をベースにした **ganimate** のようなアニメーションパッケージもある (Section \@ref(other-mapping-packages) を参照)。
-このセクションでは、**tmap**を使ったアニメーションマップの作成に焦点を当てる。なぜなら、その構文はこれまでのセクションでお馴染みであり、アプローチの柔軟性があることがある。
+R でアニメーションを生成する方法はいくつかあり、**ggplot2** をベースにした **ganimate** のようなアニメーションパッケージもある (Section \@ref(other-mapping-packages) を参照)。
+このセクションでは、**tmap** を使ったアニメーションマップの作成に焦点を当てる。構文はこれまでのセクションでも使っており、アプローチの柔軟性がある。
 
- Figure \@ref(fig:urban-animated) は、アニメーションマップの簡単な例である。
+Figure \@ref(fig:urban-animated) は、アニメーションマップの簡単な例である。
 ファセットプロットとは異なり、複数の地図を一画面に押し込むことはなく、世界で最も人口の多い集積地の空間分布が時間とともにどのように進化していくかを見ることができる (アニメーション版は同書のウェブサイトを参照)。
 
 ```{r urban-animated, message=FALSE, fig.cap="1950年から2030年までの、国連による人口予測に基づく都市集積の上位30位を示したアニメーション地図。アニメーション版は、geocompr.robinlovelace.net で見ることができる。", fig.scap="Animated map showing the top 30 largest 'urban agglomerations'.", echo=FALSE, fig.height=3.3}
@@ -699,16 +699,16 @@ if (knitr::is_latex_output()){
 ```
 
 ```{r 08-mapping-21, echo=FALSE, eval=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-urban-animation.R")
+source("https://github.com/geocompx/geocompr/raw/main/code/09-urban-animation.R")
 ```
 
 Figure \@ref(fig:urban-animated) に示したアニメーションマップは、Section \@ref(faceted-maps) で示したファセット・マップを生成するのと同じ **tmap** 技術を使用して作成することができる。
 ただし、`tm_facets_wrap()` の引数に関連して、2 つの違いがある。
 
-- `by = "year"` の代わりに `along = "year"` が使用される。
-- `free.coords = FALSE`、これは各マップ反復のためのマップ範囲を維持する。
+- `nrow = 1, ncol = 1` として、一つの時間を一つのレイヤとしている
+- `free.coords = FALSE`、これは各マップ反復のためのマップ範囲を維持する
 
-これらの追加引数は、次のコードチャンクで示される。
+追加した引数を、次のコードチャンクで示そう。
 
 ```{r 08-mapping-22}
 urb_anim = tm_shape(world) + tm_polygons() + 
@@ -716,7 +716,7 @@ urb_anim = tm_shape(world) + tm_polygons() +
   tm_facets_wrap(by = "year", nrow = 1, ncol = 1, free.coords = FALSE)
 ```
 
-その結果、`urb_anim`、各年度の個別の地図のセットを表している。
+結果である `urb_anim` は、各年度の個別の地図のセットを表している。
 最終的には、`tmap_animation()` でこれらを合成して、`.gif` ファイルとして保存する。
 次のコマンドは、Figure \@ref(fig:urban-animated) に示されたアニメーションを作成する。ただし、いくつかの要素が欠けているので、演習で追加する。
 
@@ -729,7 +729,7 @@ tmap_animation(urb_anim, filename = "urb_anim.gif", delay = 25)
 このマップを再現するためのコードは、本書の GitHub リポジトリのスクリプト `code/09-usboundaries.R` に記載されている。
 
 ```{r 08-mapping-24, echo=FALSE, eval=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-usboundaries.R")
+source("https://github.com/geocompx/geocompr/raw/main/code/09-usboundaries.R")
 ```
 
 ```{r animus, echo=FALSE, message=FALSE, fig.cap="米国における人口増加、州形成、境界線の変化を示すアニメーション地図 (1790-2010年)。アニメーション版は geocompr.robinlovelace.net でオンライン公開。", fig.scap="Animated map showing boundary changes in the United States."}
@@ -752,9 +752,9 @@ if (knitr::is_latex_output()){
 より高度なインタラクティブ機能としては、下記の **mapdeck** の例で示したように、地図を傾けたり回転させたりする機能や、ユーザーがパンやズームをすると自動的に更新される「動的にリンクした」サブプロット [@pezanowski_senseplace3_2018]  を提供する機能などが挙げられる。
 
 しかし、インタラクティブ性の最も重要なタイプは、インタラクティブまたは「スリッピー」なウェブマップ上での地理データの表示である。
-2015年にリリースされた **leaflet** (leaflet JavaScript ライブラリを使用) パッケージは、R 内からインタラクティブな Web マップの作成に革命をもたらし、多くのパッケージがこれらの基盤の上に新機能を追加し (例：**leaflet.extras2**)、Web マップの作成を静的マップ作成と同じくらいシンプルにしている (例：**mapview** や **tmap** など)）。
-ここでは、各アプローチを逆の順番で説明する。
-ここでは、**tmap** (すでに学習済みの構文)、**mapview**\index{mapview (package)}、**mapdeck**\index{mapdeck (package)}そして最後に **leaflet** \index{leaflet (package)}  (対話型マップの低レベル制御を提供) を使って、動く地図を作成する方法を探究する。
+2015年にリリースされた **leaflet** (leaflet JavaScript ライブラリを使用) パッケージは、R 内からインタラクティブな Web マップの作成に革命をもたらし、多くのパッケージがこれらの基盤の上に新機能を追加し (例：**leaflet.extras2**)、Web マップの作成を静的マップ作成と同じくらいシンプルにしている (例：**mapview** や **tmap** など)。
+ここでは、各アプローチを紹介した順と逆に説明する。
+**tmap** (すでに学習済みの構文)、**mapview**\index{mapview (package)}、**mapdeck**\index{mapdeck (package)}そして最後に **leaflet** \index{leaflet (package)} (対話型マップの低レベル制御を提供) を使って、動く地図を作成する方法を探究する。
 
 Section \@ref(static-maps) で述べた **tmap** の特徴は、同じコードを使って静的な地図とインタラクティブな地図を作ることができることである。
 地図は、`tmap_mode("view")` のコマンドでビューモードに切り替えることで、任意の時点でインタラクティブに表示すことができる。
@@ -1157,7 +1157,7 @@ knitr::kable(map_spkg_df,
 次の段落では、**cartogram** パッケージ [@R-cartogram]\index{cartogram (package)}  にのみ焦点を当てる。
 そのため、[geogrid](https://github.com/jbaileyh/geogrid)\index{geogrid (package)}、 [geofacet](https://github.com/hafen/geofacet)\index{geofacet (package)}、[linemap](https://github.com/rCarto/linemap)\index{linemap (package)}、[tanaka](https://github.com/riatelab/tanaka)\index{tanaka (package)}、[rayshader](https://github.com/tylermorganwall/rayshader)\index{rayshader (package)} のドキュメントを読んで、より詳しく知ることを勧める。
 
-カルトグラムとは、地図変数を表現するために一定の幾何学的な歪みを持たせた地図のことである (訳注：訳語は[東北大学空間計画科学研究室](http://www.plan.civil.tohoku.ac.jp/inoue/research/cartogram/)に準じた)。
+カルトグラムとは、地図変数を表現するために一定の幾何学的な歪みを持たせた地図のことである (訳注: 訳語は[東北大学空間計画科学研究室](http://www.plan.civil.tohoku.ac.jp/inoue/research/cartogram/)に準じた)。
 このような地図の作成は、R では **cartogram** を用いることで、連続・非連続の面積カルトグラム (area cartogram) を作成することが可能である。
 これ自体は地図製作パッケージではないが、汎用の地図製作パッケージを使用してプロットできるような歪んだ空間オブジェクトを構築することが可能である。
 
@@ -1196,7 +1196,7 @@ us_states9311_ncont = cartogram_ncont(us_states9311, "total_pop_15")
 us_states9311_dorling = cartogram_dorling(us_states9311, "total_pop_15")
 ```
 
-```{r cartomap2, echo=FALSE, message=FALSE, fig.cap="非連続領域カルトグラム (左) と Dorling カルトグラム (右) の比較。", fig.scap="Comparison of cartograms.", fig.asp=0.32, warning=FALSE}
+```{r cartomap2, echo=FALSE, message=FALSE, fig.cap="非連続領域カルトグラム (左) と Dorling カルトグラム (右) の比較。", fig.scap="Comparison of cartograms.", fig.asp=0.32, warning=FALSE, dev="ragg_png"}
 carto_map3 = tm_shape(us_states9311_ncont) + 
   tm_polygons("total_pop_15",
               fill.scale = tm_scale(values = "BuPu"),

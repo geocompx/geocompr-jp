@@ -1,5 +1,4 @@
 package,published,title,depends_count,suggests_count,tidyverse_happy,has_vignette_build,has_tests,reverse_count,dl_last_month,ci,test_coverage,stars,forks,last_commit,last_issue_closed,contributors
-cartography,2021-10-07,主題図,1,6,FALSE,TRUE,TRUE,2,2440,NONE,CodeCov,375,44,19.933333333333334,7.666666666666667,7
 ggplot2,2021-06-25,グラフィックの文法を使って、エレガントなデータビジュアライゼーションを作成する,1,22,TRUE,TRUE,TRUE,3482,2623427,NONE,CodeCov,5.4k,1.8k,0.13333333333333333,0.03333333333333333,270
 googleway,2022-01-24,Google Maps API にアクセスし、データの取得と地図のプロットを行う,1,3,TRUE,TRUE,TRUE,2,4304,Travis,CodeCov,208,40,0.16666666666666666,51.2,5
 ggspatial,2021-01-04,ggplot2 用の空間データフレームワーク,1,14,TRUE,FALSE,TRUE,6,7611,NONE,CodeCov,303,29,15.833333333333334,6.4,9
