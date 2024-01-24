@@ -92,7 +92,7 @@ data("census_de", package = "spDataLarge")
 # pop = population, hh_size = household size
 input = select(census_de, x = x_mp_1km, y = y_mp_1km, pop = Einwohner,
                       women = Frauen_A, mean_age = Alter_D, hh_size = HHGroesse_D)
-# set -1 and -9 to NA
+# 値 -1 と -9 を NA に設定
 input_tidy = mutate(input, across(.cols = c(pop, women, mean_age, hh_size), 
                                   .fns =  ~ifelse(.x %in% c(-1, -9), NA, .x)))
 ```
@@ -243,7 +243,7 @@ metros = pop_agg |>
   st_as_sf()
 ```
 
-```{r metro-areas, echo=FALSE, out.width= "70%", fig.cap="人口ラスター (分解能20km)、大都市圏 (金色のポリゴン) とその名称。", fig.scap="The aggregated population raster."}
+```{r metro-areas, echo=FALSE, out.width= "70%", fig.cap="人口ラスタ (分解能20km)、大都市圏 (金色のポリゴン) とその名称。", fig.scap="The aggregated population raster."}
 knitr::include_graphics("figures/14_metro_areas.png")
 ```
 

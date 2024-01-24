@@ -914,7 +914,7 @@ RPostgreSQL::postgresqlCloseConnection(conn)
 load("extdata/postgis_data.Rdata")
 ```
 
-```{r postgis, echo=FALSE, fig.cap="直前の PostGIS コマンドによる出力の例。高速道路 (黒線)、バッファ (黄色)、バッファ内の４つのレストラン (赤点)。", fig.scap="Visualization of the output of previous PostGIS commands."}
+```{r postgis, echo=FALSE, fig.cap="直前の PostGIS コマンドによる出力の例。高速道路 (黒線)、バッファ (黄色)、バッファ内の 4 つのレストラン (赤点)。", fig.scap="Visualization of the output of previous PostGIS commands."}
 library(tmap)
 tm_shape(buf) +
   tm_polygons(fill = "#FFFDD0", border.alpha = 0.3) +

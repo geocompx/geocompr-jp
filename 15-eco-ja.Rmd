@@ -548,7 +548,7 @@ autotuner_rf$predict(task)
 pred = terra::predict(ep, model = autotuner_rf, fun = predict)
 ```
 
-```{r rf-pred, echo=FALSE, eval=TRUE, fig.cap="植物相の勾配を予測するマッピングにより、はっきりとした植生帯が明らかになった。", out.width="60%", fig.scap="Predictive mapping of the floristic gradient."}
+```{r rf-pred, echo=FALSE, eval=TRUE, fig.cap="植物相の勾配を予測するマッピングにより、はっきりとした植生帯が明らかになった。", fig.scap="Predictive mapping of the floristic gradient."}
 # hs = terra::shade(terra::terrain(dem, v = "slope", unit = "radians"),
 #                   terra::terrain(dem, v = "aspect", unit = "radians"),
 #                   10, 200) |>
