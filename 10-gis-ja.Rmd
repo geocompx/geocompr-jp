@@ -790,9 +790,9 @@ TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-to
 これは、新しい R パッケージという形で、これらのライブラリへの適切なインタフェースを作成するための出発点となる可能性がある。
 
 しかし、新しいブリッジを作成するプロジェクトに飛び込む前に、既存の R パッケージのパワーと、`system()` の呼び出しがプラットフォームに依存しない (一部のコンピュータで失敗する) 可能性があることを認識しておくことが重要である。
-一方、**sf** は GDAL\index{GDAL}、GEOS\index{GEOS}、PROJ\index{PROJ} が提供するパワーのほとんどを **Rcpp** が提供する R/C++\index{C++} インターフェイスを介して R にもたらし、`system()` の呼び出しを回避している。
+一方、**sf** は GDAL\index{GDAL}、GEOS\index{GEOS}、PROJ\index{PROJ} が提供するパワーのほとんどを **Rcpp** が提供する R/C++\index{C++} インターフェイスを介して R にもたらし、`system()` の呼び出しを回避している。^[**vapour** と **gdalraster** は、GDAL\index{GDAL} への低レベルインターフェースを提供している。]
 
-### 空間データベースへのブリッジ  {#postgis}
+## 空間データベースへのブリッジ  {#postgis}
 
 \index{spatial database}
 空間データベース管理システム (空間 DBMS) は、空間および非空間データを構造化して保存する。
@@ -837,7 +837,7 @@ dbListTables(conn)
 #> [5] "highways"
 ```
 
-答えは、5つのテーブルである。
+答えは、この 5 つのテーブルである。
 ここでは、`restaurants` と `highways` のテーブルのみを対象としている。
 前者は米国内のファストフード店の位置を、後者は米国の主要な高速道路を表している。
 テーブルで利用可能な属性について調べるには、`dbListFields` を実行する。
@@ -865,7 +865,7 @@ us_route = read_sf(conn, query = query, geom = "wkb_geometry")
 
 この結果、`MULTILINESTRING` 型の `us_route` という名前の **sf**\index{sf} オブジェクトが生成される。
 
-また、前述したように、非空間的な質問だけでなく、空間的な性質をもとにデータセットを問い合わせることも可能である。
+また、前述したように、非空間的な質クエリだけでなく、空間的な性質をもとにデータセットをクエリすることも可能である。
 これを示すために、次の例では選択した高速道路 (Figure \@ref(fig:postgis)) の周囲に 35 km (35,000 m) のバッファを追加している。
 
 ```{r 09-gis-41, eval=FALSE}
@@ -877,9 +877,9 @@ query = paste(
 buf = read_sf(conn, query = query)
 ```
 
-なお、これはすでにお馴染みの関数 (`ST_Union()`\index{vector!union}、`ST_Buffer()`\index{vector!buffers}) を使った空間クエリであった。
-また、**sf** パッケージにもあるが、こちらは小文字で書かれている (`st_union()`、`st_buffer()`)。
-実際、**sf** パッケージの関数名は、PostGIS \index{PostGIS}  の命名規則にほぼ従っている。^[
+なお、これはおそらく読者がすでに知っている (`ST_Union()`\index{vector!union}、`ST_Buffer()`\index{vector!buffers}) を使った空間クエリであった。
+また、**sf** パッケージにも同名のものがあるが、こちらは小文字になっている (`st_union()`、`st_buffer()`)。
+実際、**sf** パッケージの関数名は、PostGIS\index{PostGIS}  の命名規則にほぼ従っている。^[
 接頭語 `st` は、空間／時間を意味する。
 ]
 
@@ -950,13 +950,13 @@ PostgreSQL/PostGIS は、非常に難解なオープンソースの空間デー�
 
 近年、インターネット上では、クラウド技術の利用が目立ってきている。
 この中には、空間データの保存や処理に利用されることも含まれている。
-Amazon Web Services、Microsoft Azure / Planetary Computer、Google Cloud Platform などの主要なクラウドコンピューティングプロバイダ\index{cloud computing}は、Sentinel-2\index{Sentinel-2} アーカイブのようなオープンな地球観測データの巨大なカタログを彼らのプラットフォーム上で提供している。
+Amazon Web Services、Microsoft Azure / Planetary Computer、Google Cloud Platform などの主要なクラウドコンピューティングプロバイダ\index{cloud computing}は、Sentinel-2\index{Sentinel-2} アーカイブのようなオープンな地球観測データの巨大なカタログをプラットフォーム上で提供している。
 R を使えば、これらのアーカイブから直接データに接続し、処理することができる。理想的には、同じクラウドや地域のマシンから接続することができる。
 
 このような画像アーカイブをクラウド上で<u>より簡単</u>に、<u>より効率的</u>に利用するために、[SpatioTemporal Asset Catalog (STAC)](https://stacspec.org)\index{STAC}、[cloud-optimized GeoTIFF (COG)](https://www.cogeo.org/)\index{COG} 画像形式、データキューブ\index{data cube}が有望視されている。
 Section \@ref(staccog) では、これらの個々の開発について紹介し、Rからどのように利用できるかを簡単に説明する。
 
-大規模なデータアーカイブをホストするだけでなく、地球観測データを処理するための多くのクラウドベースのサービス\index{cloud computing}もここ数年で開始された。
+ここ数年、大規模なデータアーカイブをホストするだけでなく、地球観測データを処理するクラウドベースのサービス\index{cloud computing}も多数始まっている。
 その中には、R を含むプログラミング言語と様々なクラウドサービスとの間の統一的なインタフェースである OpenEO イニシアチブも含まれている。
 OpenEO の詳細については、Section \@ref(openeo) を参照。
 
