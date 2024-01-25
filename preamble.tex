@@ -1,0 +1,34 @@
+\usepackage{color}
+\usepackage{makeidx}
+\usepackage{colortbl}
+\usepackage{tcolorbox}
+\usepackage{booktabs}
+\usepackage{underscore}
+\makeindex
+
+\newtcolorbox{blackbox}{
+  colback=lightgray,
+  colframe=black,
+  coltext=black,
+  boxsep=5pt,
+  arc=4pt}
+
+\newenvironment{rmdblock}[1]
+  {
+  \begin{itemize}
+  \renewcommand{\labelitemi}{
+    \raisebox{-.7\height}[0pt][0pt]{
+      {\setkeys{Gin}{width=3em,keepaspectratio}\includegraphics{images/#1}}
+    }
+  }
+  \setlength{\fboxsep}{1em}
+  \begin{kframe}
+  \item
+  }
+  {
+  \end{kframe}
+  \end{itemize}
+  }
+\newenvironment{rmdnote}
+  {\begin{rmdblock}{note}}
+  {\end{rmdblock}}
