@@ -1,0 +1,115 @@
+
+```{r 02-ex-e0, message=FALSE}
+library(sf)
+library(spData)
+library(terra)
+```
+
+E1. **spData** パッケージにある `world` オブジェクトのジオメトリ列に `summary()` 関数を使いなさい。出力は、
+
+- ジオメトリ型は何か?
+- 国の数は?
+- 座標参照系 (CRS) は?
+    
+```{r 02-ex-e1}
+summary(world)
+# - Its geometry type?
+#   multipolygon
+# - The number of countries?
+#   177
+# - Its coordinate reference system (CRS)?
+#   epsg:4326
+```
+
+E2. Section 2.2.3 の世界地図を作ったコードを実行しなさい。
+自分の画像と本の画像を比較し、似ている点を 2 点、異なる点を 2 点見つけなさい。
+
+- 引数 `cex` は何をするか (`?plot` 参照)?
+- なぜ `cex` を `sqrt(world$pop) / 10000` としたのか?
+- 追加: 別の方法で世界人口を可視化してみなさい。
+
+```{r 02-ex-e2}
+plot(world["continent"], reset = FALSE)
+cex = sqrt(world$pop) / 10000
+world_cents = st_centroid(world, of_largest = TRUE)
+plot(st_geometry(world_cents), add = TRUE, cex = cex)
+# - What does the `cex` argument do (see `?plot`)?
+#   It specifies the size of the circles
+# - Why was `cex` set to the `sqrt(world$pop) / 10000`?
+#   So the circles would be visible for small countries but not too large for large countries, also because area increases as a linear function of the square route of the diameter defined by `cex`
+# - Bonus: experiment with different ways to visualize the global population.
+plot(st_geometry(world_cents), cex = world$pop / 1e9)
+plot(st_geometry(world_cents), cex = world$pop / 1e8)
+plot(world["pop"])
+plot(world["pop"], logz = TRUE)
+
+# Similarities: global extent, colorscheme, relative size of circles
+# 
+# Differences: projection (Antarctica is much smaller for example), graticules, location of points in the countries.
+# 
+# To understand these differences read-over, run, and experiment with different argument values in this script: https://github.com/geocompx/geocompr/raw/main/code/02-contpop.R
+# 
+# `cex` refers to the diameter of symbols plotted, as explained by the help page `?graphics::points`. It is an acronym for 'Chacter symbol EXpansion'.
+# It was set to the square route of the population divided by 10,000 because a) otherwise the symbols would not fit on the map and b) to make circle area proportional to population.
+```
+
+E3. `plot()` を使い、Nigeria の地図を作りなさい (Section 2.2.3 参照)。 
+
+- `plot()` 関数の引数 `lwd`、`col`、`expandBB` を調整しなさい。
+- 難: `text()` のドキュメントを読み、地図に注釈をつけなさい。
+
+```{r 02-ex-e3}
+nigeria = world[world$name_long == "Nigeria", ]
+plot(st_geometry(nigeria), expandBB = c(0, 0.2, 0.1, 1), col = "gray", lwd = 3)
+plot(world[0], add = TRUE)
+world_coords = st_coordinates(world_cents)
+text(world_coords, world$iso_a2)
+
+# Alternative answer:
+nigeria = world[world$name_long == "Nigeria", ]
+africa = world[world$continent == "Africa", ]
+plot(st_geometry(nigeria), col = "white", lwd = 3, main = "Nigeria in context", border = "lightgrey", expandBB = c(0.5, 0.2, 0.5, 0.2))
+plot(st_geometry(world), lty = 3, add = TRUE, border = "grey")
+plot(st_geometry(nigeria), col = "yellow", add = TRUE, border = "darkgrey")
+a = africa[grepl("Niger", africa$name_long), ]
+ncentre = st_centroid(a)
+ncentre_num = st_coordinates(ncentre)
+text(x = ncentre_num[, 1], y = ncentre_num[, 2], labels = a$name_long)
+```
+
+E4. 10 行、10 列の空の `SpatRaster` を作り、`my_raster` となつけなさい。
+ラスタに 0 から 10 の値を適当に割り当て、プロットしなさい。
+
+```{r 02-ex-e4, message = FALSE}
+my_raster = rast(ncol = 10, nrow = 10,
+                 vals = sample(0:10, size = 10 * 10, replace = TRUE))
+plot(my_raster)
+```
+
+E5. パッケージから `raster/nlcd.tif` ファイルを読み込みなさい。
+ファイルのプロパティからどのような情報を得られるか?
+
+```{r 02-ex-e5, message = FALSE}
+nlcd = rast(system.file("raster/nlcd.tif", package = "spDataLarge"))
+dim(nlcd) # dimensions
+res(nlcd) # resolution
+ext(nlcd) # extent
+nlyr(nlcd) # number of layers
+cat(crs(nlcd)) # CRS
+```
+
+E6. **spDataLarge** パッケージのファイル `raster/nlcd.tif` の CRS を確認しなさい。
+どのような情報を学ぶことができるか?
+
+```{r 02-ex-e6, message = FALSE}
+cat(crs(nlcd))
+```
+
+```{asis 02-ex-e62, message = FALSE}
+上の WKT は、２次元の投影座標参照系である。
+これは、GRS 1980 回転楕円体で、北米測地基準系 (North American Datum) 1983 かつグリニッジ子午線がある。
+横メルカトル (Transverse Mercator) 図法で、地理座標を投影座標 (UTM zone 12N) に変換した。
+第 1 軸は東の方角、第 2 軸は北の方角を表し、両軸の単位はメートルである。
+この CRS の SRID は "EPSG:26912" である。
+```
+
