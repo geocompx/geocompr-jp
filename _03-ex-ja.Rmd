@@ -1,0 +1,221 @@
+
+演習では、**spData** パッケージの `us_states` と `us_states_df` というデータセットを使用する。
+このデータと、属性を操作するためのパッケージを読み込むため、 `library(spData)` などのコマンドを実行しておく必要がある。
+
+```{r 03-ex-e0, include=TRUE, message=FALSE}
+library(sf)
+library(dplyr)
+library(terra)
+library(spData)
+data(us_states)
+data(us_states_df)
+```
+
+`us_states` は、(`sf` クラスの) 特別なオブジェクトで、アメリカ合衆国の州のジオメトリと複数の属性 (name、region、area、 population など) がある。
+`us_states_df` は、(`data.frame` の) データフレームであり、アメリカ合衆国各州の name とその他の変数 (2010年と2015年の年収中央値や貧困度合など) で、Alaska、Hawaii、Puerto Rico も含んでいる。
+このデータは、米国国勢調査局のもので、ドキュメントは `?us_states` と `?us_states_df` とすることで読むことができる。
+
+E1. `us_states` オブジェクトから `NAME` 列のみを含む `us_states_name` という新しいオブジェクトを、Base R (`[`) または tidyverse (`select()`) 構文を使用して作成しなさい。
+新しいオブジェクトのクラスは何か？
+
+```{r 03-ex-e1}
+us_states_name = us_states["NAME"]
+class(us_states_name)
+attributes(us_states_name)
+attributes(us_states_name$geometry)
+```
+
+```{asis 03-ex-e1-asis}
+- クラスは `sf` および `data.frame`、つまり 2 つのクラスを持っている。
+- 地理的な部分は `sf` クラスにある。
+- より詳しく説明すると、列 (`sf_column`) 及びジオメトリ列 (`bbox`, `crs`) が地理的な部分である。
+```
+
+E2. `us_states`オブジェクトから、人口データを含む列を選択しなさい。
+別のコマンドを使用して同じことをしなさい（ボーナス: 3 つの方法を見つけなさい）。
+ヒント: **dplyr** の `contains` や `matches` などのヘルパー関数を使用してみる (`?contains` を参照)。
+
+```{r 03-ex-e2}
+us_states |> select(total_pop_10, total_pop_15)
+
+# or
+us_states |> select(starts_with("total_pop"))
+
+# or
+us_states |> select(contains("total_pop"))
+
+# or
+us_states |> select(matches("tal_p"))
+```
+
+E3. 以下の特徴を持つ状態をすべて見つけなさい (ボーナス、見つけた後でプロットしなさい)。
+
+- 中西部 (Midwest) 地域に属する。
+- 西 (West) 地域に属し、面積が250,000km^2^未満で**かつ**、2015年の人口が 5,000,000 人を超える (ヒント: 関数 `units::set_units()` または `as.numeric()` を使用する必要があるかもしれない)。
+- 南 (South) 地域に属し、面積が 150,000 km^2^ を超え、2015年の総人口が 7,000,000 人を超える。
+
+```{r 03-ex-e3}
+us_states |> 
+  filter(REGION == "Midwest")
+
+us_states |> filter(REGION == "West", AREA < units::set_units(250000, km^2), total_pop_15 > 5000000)
+# or
+us_states |> filter(REGION == "West", as.numeric(AREA) < 250000, total_pop_15 > 5000000)
+
+us_states |> filter(REGION == "South", AREA > units::set_units(150000, km^2), total_pop_15 > 7000000)
+# or
+us_states |> filter(REGION == "South", as.numeric(AREA) > 150000, total_pop_15 > 7000000)
+```
+
+E4. `us_states` データセットにおける2015年の総人口は?
+2015年の総人口の最小値と最大値は?
+
+```{r 03-ex-e4}
+us_states |> summarize(total_pop = sum(total_pop_15),
+                        min_pop = min(total_pop_15),
+                        max_pop = max(total_pop_15))
+```
+
+E5. 各地域にはいくつの州があるのか?
+
+```{r 03-ex-e5}
+us_states |>
+  group_by(REGION) |>
+  summarize(nr_of_states = n())
+```
+
+E6. 2015年の各地域の総人口の最小値と最大値は？
+各地域の2015年の総人口は？
+
+```{r 03-ex-e6}
+us_states |>
+  group_by(REGION) |>
+  summarize(min_pop = min(total_pop_15),
+            max_pop = max(total_pop_15),
+            tot_pop = sum(total_pop_15))
+```
+
+E7. `us_states_df` の変数を `us_states` に追加し、`us_states_stats` という新しいオブジェクトを作成しなさい。
+どの関数を使用したか?
+両方のデータセットでどの変数がキーであったか?
+新しいオブジェクトのクラスは何か?
+
+```{r 03-ex-e7}
+us_states_stats = us_states |>
+  left_join(us_states_df, by = c("NAME" = "state"))
+class(us_states_stats)
+```
+
+E8. `us_states_df` は `us_states` より2行多い。
+多い部分をどのように発見するか (ヒント: `dplyr::anti_join()` 関数を使ってよい。)?
+
+```{r 03-ex-e8}
+us_states_df |>
+  anti_join(st_drop_geometry(us_states), by = c("state" = "NAME"))
+```
+
+E9. 各州の2015年の人口密度は？
+各州の2010年の人口密度は？
+
+```{r 03-ex-e9}
+us_states2 = us_states |>
+  mutate(pop_dens_15 = total_pop_15/AREA,
+         pop_dens_10 = total_pop_10/AREA)
+```
+
+E10. 各州の人口密度は2010年から2015年の間にどれだけ変化したか？
+その変化をパーセンテージで計算し、地図に表しなさい。
+
+```{r 03-ex-e10}
+us_popdens_change = us_states2 |>
+  mutate(pop_dens_diff_10_15 = pop_dens_15 - pop_dens_10,
+         pop_dens_diff_10_15p = (pop_dens_diff_10_15/pop_dens_10) * 100)
+plot(us_popdens_change["pop_dens_diff_10_15p"])
+```
+
+E11. `us_states` の列の名称を小文字にしなさい (ヒント: 関数 `tolower()` と `colnames()` を使うと良い)。
+
+```{r 03-ex-e11}
+us_states %>%
+  setNames(tolower(colnames(.)))
+```
+
+E12. `us_states` と `us_states_df` を使って `us_states_sel` という新しいオブジェクトを作成しなさい。
+この新しいオブジェクトには、`median_income_15` と `geometry` の 2 つの変数だけにしなさい。
+`median_income_15` 列の名前を `Income` に変更しなさい。
+
+```{r 03-ex-e12}
+us_states_sel = us_states |>
+  left_join(us_states_df, by = c("NAME" = "state")) |>
+  select(Income = median_income_15)
+```
+
+E13. 各州の2010年から2015年の間の貧困ボーダー以下の住民数の変化を計算しなさい。(ヒント: 貧困レベルの列に関するドキュメントは ?us_states_df を参照)。
+ボーナス: 各州の貧困レベル以下で暮らす住民の**パーセンテージ**の変化を計算しなさい。
+
+```{r 03-ex-e13}
+us_pov_change = us_states |>
+  left_join(us_states_df, by = c("NAME" = "state")) |>
+  mutate(pov_change = poverty_level_15 - poverty_level_10)
+ 
+# Bonus
+us_pov_pct_change = us_states |>
+  left_join(us_states_df, by = c("NAME" = "state")) |>
+  mutate(pov_pct_10 = (poverty_level_10 / total_pop_10) * 100, 
+         pov_pct_15 = (poverty_level_15 / total_pop_15) * 100) |>
+  mutate(pov_pct_change = pov_pct_15 - pov_pct_10)
+```
+
+E14. 2015年、各地域の貧困ボーダー以下で暮らす人々の州の最小数、平均数、最大数は?
+ボーナス: 貧困ボーダー以下で暮らす人の増加が最も大きかった地域は?
+
+```{r 03-ex-e14}
+us_pov_change_reg = us_pov_change |>
+  group_by(REGION) |>
+  summarize(min_state_pov_15 = min(poverty_level_15),
+            mean_state_pov_15 = mean(poverty_level_15),
+            max_state_pov_15 = max(poverty_level_15))
+
+# Bonus
+us_pov_change |>
+  group_by(REGION) |>
+  summarize(region_pov_change = sum(pov_change)) |>
+  filter(region_pov_change == max(region_pov_change)) |>
+  pull(REGION) |>
+  as.character()
+```
+
+E15. 9 行 9 列、解像度 0.5 度 (WGS84) のラスタをゼロから作成しなさい。
+それを乱数で埋めなさい。
+4 つのコーナーセルの値を抽出しなさい。
+
+```{r 03-ex-e15}
+r = rast(nrow = 9, ncol = 9, res = 0.5,
+         xmin = 0, xmax = 4.5, ymin = 0, ymax = 4.5,
+         vals = rnorm(81))
+# using cell IDs
+r[c(1, 9, 81 - 9 + 1, 81)]
+r[c(1, nrow(r)), c(1, ncol(r))]
+```
+
+E16. 例にあるラスタ `grain` の最も一般的なクラスは何か?
+
+```{r 03-ex-e16}
+grain = rast(system.file("raster/grain.tif", package = "spData"))
+freq(grain) |> 
+  arrange(-count )# the most common classes are silt and sand (13 cells)
+```
+
+E17. **spDataLarge** パッケージの `dem.tif` ファイルのヒストグラムと箱ひげ図をプロットしなさい。 (`system.file("raster/dem.tif", package = "spDataLarge")`). 
+
+```{r 03-ex-e17}
+dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
+hist(dem)
+boxplot(dem)
+
+# SpatRaster をデータ部レームに変換後、ggplot2 を使うこともできる
+library(ggplot2)
+ggplot(as.data.frame(dem), aes(dem)) + geom_histogram()
+ggplot(as.data.frame(dem), aes(dem)) + geom_boxplot()
+```
+
