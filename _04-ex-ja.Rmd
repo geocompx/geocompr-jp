@@ -1,0 +1,235 @@
+```{r 04-ex-e0, include=TRUE, message=FALSE}
+library(sf)
+library(dplyr)
+library(spData)
+```
+
+E1. Canterbury は、New Zealand の最高峰 100 地点のほとんどを含む地域であることは、Section \@ref(spatial-vec) で述べたとおりである。
+Canterbury 地方には、これらの高地がいくつあるだろうか？
+
+**ボーナス:** その結果を `plot()` 関数を使って次のように表示しなさい。、まず、New Zealand 全土を示し、`canterbury` 地域を黄色で強調し、高地を赤い十字 (ヒント: `pch = 7`)、かつ他の地域の高地は青い円で表示しなさい。異なる `pch` 値の図解を含む詳細については、ヘルプページ `?points` を参照。
+
+```{r 04-ex-e1}
+canterbury = nz |> filter(Name == "Canterbury")
+canterbury_height = nz_height[canterbury, ]
+nz_not_canterbury_height = nz_height[canterbury, , op = st_disjoint]
+nrow(canterbury_height) # answer: 70
+
+plot(st_geometry(nz))
+plot(st_geometry(canterbury), col = "yellow", add = TRUE)
+plot(nz_not_canterbury_height$geometry, pch = 1, col = "blue", add = TRUE)
+plot(canterbury_height$geometry, pch = 4, col = "red", add = TRUE)
+```
+
+E2. `nz_height`高地の数が 2 番目に多いのはどの地方で、いくつあるか？
+
+```{r 04-ex-e2}
+nz_height_count = aggregate(nz_height, nz, length)
+nz_height_combined = cbind(nz, count = nz_height_count$elevation)
+nz_height_combined |> 
+  st_drop_geometry() |> 
+  select(Name, count) |> 
+  arrange(desc(count)) |> 
+  slice(2)
+```
+
+E3. この質問を全地域に一般化すると、ニュージーランドの 16 地方のうち、国内最高地点トップ 100 に属する地点を含む地域はいくつあるか? どの地方か?
+
+- ボーナス: これらの地域を、点の数と名前の順に並べた表を作成しなさい。
+
+```{r 04-ex-e3}
+# Base R 方法:
+nz_height_count = aggregate(nz_height, nz, length)
+nz_height_combined = cbind(nz, count = nz_height_count$elevation)
+plot(nz_height_combined)
+
+# Tidyverse 方法:
+nz_height_joined = st_join(nz_height, nz |> select(Name))
+# 地方ごとに n を計算 - 結果を含む
+nz_height_counts = nz_height_joined |> 
+  group_by(Name) |> 
+  summarise(count = n())
+
+# オプションで、結果と nz ジオメトリを結合
+nz_height_combined = left_join(nz, nz_height_counts |> sf::st_drop_geometry())
+# plot(nz_height_combined) # Base R 方法の結果と同じであることを確認
+
+# 要約テーブルを生成
+nz_height_combined |> 
+  st_drop_geometry() |> 
+  select(Name, count) |> 
+  arrange(desc(count)) |> 
+  na.omit()
+```
+
+E4. 空間述語の知識を試すために、アメリカの州と他の空間オブジェクトとの関係を調べ、プロットしてみよう。
+
+この練習の出発点は、アメリカのコロラド州を表すオブジェクトを作成することである。次のコマンドで実行する。
+`colorado = us_states[us_states$NAME == "Colorado",]`  (base R)、または `filter()` 関数 (tidyverse) を使って、結果のオブジェクトをアメリカの州のコンテキストでプロットしなさい。
+
+- Colorado 州と地理的に交差するすべての州を表す新しいオブジェクトを作成し、その結果をプロットしなさい (ヒント: これを行う最も簡潔な方法は、部分集合化メソッド `[`] を使用する)。
+- Colorado 州に接する (境界を共有する) すべてのオブジェクトを表すもう 1 つのオブジェクトを作成し、その結果をプロットしなさい (ヒント: Base R の空間部分集合操作中に、引数 `op = st_intersects` やその他の空間関係を使用できる)。
+- ボーナス: 東海岸に近い Columbia 特別区の重心から、アメリカの西海岸に California 州の重心までの直線を作成し（ヒント: Chapter 5 で説明した関数 `st_centroid()`、`st_union()`、`st_cast()`が役に立つ)、この東西に長い直線がどの州を横切るかを特定しなさい。
+
+```{r 04-ex-4-1}
+colorado = us_states[us_states$NAME == "Colorado", ]
+plot(us_states$geometry)
+plot(colorado$geometry, col = "grey", add = TRUE)
+```
+
+```{r 04-ex-4-2}
+intersects_with_colorado = us_states[colorado, , op = st_intersects]
+plot(us_states$geometry, main = "States that intersect with Colorado")
+plot(intersects_with_colorado$geometry, col = "grey", add = TRUE)
+```
+
+```{r 04-ex-4-3}
+# Alternative but more verbose solutions
+# 2: With intermediate object, one list for each state
+sel_intersects_colorado = st_intersects(us_states, colorado)
+sel_intersects_colorado_list = lengths(sel_intersects_colorado) > 0
+intersects_with_colorado = us_states[sel_intersects_colorado_list, ]
+
+# 3: With intermediate object, one index for each state
+sel_intersects_colorado2 = st_intersects(colorado, us_states)
+sel_intersects_colorado2
+us_states$NAME[unlist(sel_intersects_colorado2)]
+
+# 4: With tidyverse
+us_states |> 
+  st_filter(y = colorado, .predicate = st_intersects)
+```
+
+```{r 04-ex-4-4}
+touches_colorado = us_states[colorado, , op = st_touches]
+plot(us_states$geometry, main = "States that touch Colorado")
+plot(touches_colorado$geometry, col = "grey", add = TRUE)
+```
+
+
+```{r 04-ex-4-5}
+washington_to_cali = us_states |> 
+  filter(grepl(pattern = "Columbia|Cali", x = NAME)) |> 
+  st_centroid() |> 
+  st_union() |> 
+  st_cast("LINESTRING")
+states_crossed = us_states[washington_to_cali, , op = st_crosses]
+states_crossed$NAME
+plot(us_states$geometry, main = "States crossed by a straight line\n from the District of Columbia to central California")
+plot(states_crossed$geometry, col = "grey", add = TRUE)
+plot(washington_to_cali, add = TRUE)
+```
+
+
+E5. `dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))` を使用し、標高を低 (<300)、中、高 (>500) の 3 つのクラスに再分類しなさい。
+次に、NDVI ラスタ(`ndvi = rast(system.file("raster/ndvi.tif", package = "spDataLarge"))`) を読み込み、各標高クラスの平均 NDVI と平均標高を計算しなさい。
+
+```{r 04-ex-e5}
+library(terra)
+dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
+ndvi = rast(system.file("raster/ndvi.tif", package = "spDataLarge"))
+
+#1
+dem_rcl = matrix(c(-Inf, 300, 0, 300, 500, 1, 500, Inf, 2), ncol = 3, byrow = TRUE)
+dem_reclass = classify(dem, dem_rcl)
+levels(dem_reclass) = data.frame(id = 0:2, cats = c("low", "medium", "high"))
+plot(dem_reclass)
+
+#2
+zonal(c(dem, ndvi), dem_reclass, fun = "mean")
+```
+
+E6. `rast(system.file("ex/logo.tif", package = "terra"))` にライン検出フィルタを適用しなさい。
+結果をプロットしなさい。
+ヒント: `?terra::focal()` を読むと良い。
+
+```{r 04-ex-e6}
+# from the focal help page (?terra::focal()):
+# Laplacian filter: filter=matrix(c(0,1,0,1,-4,1,0,1,0), nrow=3)
+# Sobel filters (for edge detection): 
+# fx=matrix(c(-1,-2,-1,0,0,0,1,2,1), nrow=3) 
+# fy=matrix(c(1,0,-1,2,0,-2,1,0,-1), nrow=3)
+
+# just retrieve the first channel of the R logo
+r = rast(system.file("ex/logo.tif", package = "terra"))
+# compute the Sobel filter
+filter_x = matrix(c(-1, -2, -1, 0, 0, 0, 1, 2, 1), nrow = 3)
+sobel_x = focal(r, w = filter_x)
+plot(sobel_x, col = c("white", "black"))
+
+filter_y = matrix(c(1, 0, -1, 2, 0, -2, 1, 0, -1), nrow = 3)
+sobel_y = focal(r, w = filter_y)
+plot(sobel_y, col = c("black", "white"))
+```
+
+E7. ランドサット画像の正規化差分水分指数 (Normalized Difference Water Index; NDWI; `(green - nir)/(green + nir)`) を計算しなさい。
+**spDataLarge**パッケージが提供するランドサット画像を使用しなさい (`system.file("raster/landsat.tif", package = "spDataLarge")`)。
+また、このエリアの NDVI と NDWI の相関を計算しなさい (ヒント: `layerCor()` 関数を使用できる)。
+
+```{r 04-ex-e7}
+file = system.file("raster/landsat.tif", package = "spDataLarge")
+multi_rast = rast(file)
+
+ndvi_fun = function(nir, red){
+  (nir - red) / (nir + red)
+}
+ndvi_rast = lapp(multi_rast[[c(4, 3)]], fun = ndvi_fun)
+plot(ndvi_rast)
+
+ndwi_fun = function(green, nir){
+    (green - nir) / (green + nir)
+}
+
+ndwi_rast = lapp(multi_rast[[c(2, 4)]], fun = ndwi_fun)
+plot(ndwi_rast)
+
+two_rasts = c(ndvi_rast, ndwi_rast)
+names(two_rasts) = c("ndvi", "ndwi")
+
+# correlation -- option 1
+layerCor(two_rasts, fun = "cor")
+
+# correlation -- option 2
+two_rasts_df = as.data.frame(two_rasts)
+cor(two_rasts_df$ndvi, two_rasts_df$ndwi)
+```
+
+E8. StackOverflow の[投稿](https://stackoverflow.com/questions/35555709/global-raster-of-geographic-distances)では、`raster::distance()` を使って最も近い海岸線までの距離を計算する方法が紹介されている。
+似たようなことを `terra::distance()` を使ってやってみよう。 Spain のデジタル標高モデルを取得し、全国の海岸までの距離を表すラスタを計算しなさい (ヒント: `geodata::elevation_30s()` を使う)。
+得られた距離をメートルからキロメートルに変換しなさい。
+注意: 操作 (`aggregate()`) の計算時間を短縮するために、入力ラスタのセルサイズを大きくすることが賢明かもしれない。
+
+```{r 04-ex-e8}
+# Spain の DEM を取得
+spain_dem = geodata::elevation_30s(country = "Spain", path = ".", mask = FALSE)
+
+# 計算高速化のため解像度を 20 倍落とす
+spain_dem = aggregate(spain_dem, fact = 20)
+
+# ドキュメントによると、terra::distance() は
+# NA であるすべてのセルから NA でない最も近いセルまでの距離を計算する。
+# 海岸までの距離を計算するには、陸地では NA、
+# 水域ではそれ以外の値を持つラスタが必要である。
+water_mask = is.na(spain_dem)
+water_mask[water_mask == 0] = NA
+
+# distance() 関数をマスクに適用して海岸までの距離を取得
+distance_to_coast = distance(water_mask)
+# 距離を km に変換
+distance_to_coast_km = distance_to_coast / 1000
+
+# 結果をプロット
+plot(distance_to_coast_km, main = "Distance to the coast (km)")
+```
+
+E9. 距離ラスタを標高ラスタで加重することによって、上記の演習で使用したアプローチを修正しなさい。100 高度メートルごとに、海岸までの距離が 10 km 増加する。
+次に、ユークリッド距離 (E7) を使って作成したラスタと標高で重み付けしたラスタの差を計算し、可視化しなさい。
+
+```{r 04-ex-e9}
+# now let's weight each 100 altitudinal meters by an additional distance of 10 km
+distance_to_coast_km2 = distance_to_coast_km + ((spain_dem / 100) * 10)
+# plot the result
+plot(distance_to_coast_km2)
+# visualize the difference
+plot(distance_to_coast_km - distance_to_coast_km2)
+```

@@ -24,7 +24,7 @@ library(spDataLarge)
 
 Section \@ref(geo-vec) は、「単項」と「二項」演算によるベクタジオメトリの変換を扱う。
 単項演算 (unary operation) とは、単体のジオメトリに対して、線分やポリゴンの単純化、バッファや中心点の作成、「アフィン変換」による単体のジオメトリの移動・拡大・縮小・回転などを行う (Section \@ref(simplification) ～ Section \@ref(affine-transformations) を参照)。
-一方、二項変換 (binary transformations) とは、あるジオメトリを別のジオメトリの形状に基づいて変更するもので、切り取り (clip) と結合\index{vector!union} (union) を、Section \@ref(clipping) と Section \@ref(geometry-unions) で説明する。
+一方、二項変換 (binary transformations) とは、あるジオメトリを別のジオメトリの形状に基づいて変更するもので、Section \@ref(clipping) で切り取り (clip) を、Section \@ref(geometry-unions) で結合\index{べくた@ベクタ!けつごう@結合} (union) を説明する。
 ジオメトリ型の変換 (例えば、ポリゴンからラインへの変換) は、Section \@ref(type-trans) で実際に行う。
 
 Section \@ref(geo-ras) は、ラスタオブジェクトの幾何学変換を扱っている。
@@ -142,7 +142,7 @@ seine_centroid = st_centroid(seine)
 ```
 
 地理的重心は、親オブジェクトの境界の外にあることもある (ドーナツを想像すればよい)。
-このような場合、親オブジェクトに点があることを保証するために、*point on surface* オペレーションを使用することができ (例：島国のような不規則なマルチポリゴンオブジェクトのラベル付け)、Figure \@ref(fig:centr) の赤い点に示されている。
+このような場合、親オブジェクトに点があることを保証するために、*point on surface* オペレーションを使用することができ (例: 島国のような不規則なマルチポリゴンオブジェクトのラベル付け)、Figure \@ref(fig:centr) の赤い点に示されている。
 これらの赤い点は、常に親オブジェクトの上にあることに確認しておこう。
 `st_point_on_surface()` を使い、以下のように作成する。^[
 `st_point_on_surface()` の動作の説明は、https://gis.stackexchange.com/a/76563/20955 に記載されている。
@@ -153,7 +153,7 @@ nz_pos = st_point_on_surface(nz)
 seine_pos = st_point_on_surface(seine)
 ```
 
-```{r centr, warning=FALSE, echo=FALSE, fig.cap="ニュージーランドの地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「表面上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations.", dev="ragg_png"}
+```{r centr, warning=FALSE, echo=FALSE, fig.cap="ニュージーランドの地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「サーフェス上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations.", dev="ragg_png"}
 p_centr1 = tm_shape(nz) + tm_polygons(col = "grey80", fill = "grey90") +
   tm_shape(nz_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
   tm_shape(nz_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
@@ -162,7 +162,7 @@ p_centr2 = tm_shape(seine) + tm_lines(col = "grey80") +
   tm_shape(seine_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
   tm_shape(seine_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
   tm_add_legend(type = "symbols", shape = 1, col = c("black", "red"), 
-                labels = c("重心", "表面上の点")) +
+                labels = c("重心", "サーフェス上の点")) +
   tm_layout(scale = 1.6)
 tmap_arrange(p_centr1, p_centr2, ncol = 2)
 ```
@@ -176,8 +176,8 @@ tmap_arrange(p_centr1, p_centr2, ncol = 2)
 バッファとは、フィーチャから一定距離内の領域を表すポリゴンのことである。
 入力が点、線、ポリゴンのいずれであっても、出力はバッファとなる。
 簡略化 (可視化やファイルサイズの縮小によく使われる) とは異なり、バッファ作成は地理的なデータ解析に使われる傾向がある。
-この線から所定の距離内にある点はいくつあるか？
-この新店舗から移動可能な距離にあるのは、どのような層なのだろうか？
+この線から所定の距離内にある点はいくつあるか?
+この新店舗から移動可能な距離にあるのは、どのような層なのだろうか?
 このような疑問には、関心のある地理的要素の周囲にバッファを作成することで回答し、可視化することができる。
 
 Figure \@ref(fig:buffs) は、セーヌ川と支流を囲む様々な大きさの緩衝地帯 (5 km と 50 km)を示している。
@@ -204,11 +204,12 @@ tmap_arrange(p_buffs1, p_buffs2, ncol = 2)
 `st_buffer()` には、追加の引数がある。
 最も重要な引数は、以下の通り。
 
-- `nQuadSegs` (GEOS エンジン使用時): これは「1 象限あたりの分割数」を意味し、デフォルトでは 30 に設定されている (バッファで作られる円は $4 \times 30 = 120$ ラインで構成されることを意味する)。
+- `nQuadSegs` (GEOS\index{GEOS} エンジン使用時): これは「1 象限あたりの分割数」を意味し、デフォルトでは 30 に設定されている (バッファで作られる円は $4 \times 30 = 120$ ラインで構成されることを意味する)。
 この引数が有用な例外的なケースとしては、バッファ操作の出力によって消費されるメモリが大きな懸念材料である場合 (この場合は減らす)、または非常に高い精度が必要な場合 (この場合は増やす)。
-- `max_cells` (S2 エンジン使用時): 値が大きいほどバッファが滑らかになるが、時間がかかる
+- `max_cells` (S2\index{S2} エンジン使用時): 値が大きいほどバッファが滑らかになるが、時間がかかる
 - `endCapStyle` と `joinStyle` (GEOS エンジン使用時): バッファの縁の見た目を制御する
 - `singleSide` (GEOS エンジン使用時): バッファを入力ジオメトリの片側につくるか両側につくるかを制御する
+
 ```
 
 ```{r nQuadSegs, eval=FALSE, echo=FALSE}
@@ -352,7 +353,7 @@ nz_scale_sf = st_set_geometry(nz, nz_scale)
 切り取りは、
 点よりも複雑なフィーチャである線、ポリゴン、およびそれらの複合にしか適用できない。 
 コンセプトを説明するために、まずは簡単な例で説明する。
-中心点が互いに1単位離れていて、半径が1である2つの重なり合った円を用意する (Figure \@ref(fig:points))。
+中心点が互いに 1 単位離れていて、半径が 1 である 2 つの重なり合った円を用意しよう (Figure \@ref(fig:points))。
 
 ```{r points, fig.cap="重なり合った円。", fig.asp=0.4, crop = TRUE}
 op = par(mar = rep(0, 4))
@@ -586,9 +587,9 @@ t2 = cast_all(polyg)
 
 Table \@ref(tab:sfs-st-cast) は、シンプルフィーチャに対して可能なジオメトリタイプの変換を示したものである。
 単一のシンプルフィーチャ (表の最初の列で表される) は、Table \@ref(tab:sfs-st-cast) の列で表される複数のジオメトリタイプに変換することができる。
-例えば、1つの点から複数行の文字列やポリゴンに変換することはできない。`[1, 4:5]` のセルに NA が含まれている理由を説明する。
+例えば、1 つの点から複数行の文字列やポリゴンに変換することはできない。`[1, 4:5]` のセルに NA が含まれている理由を説明する。
 一部の変換では、単一のフィーチャ入力を複数のサブフィーチャに分割し、`sf` オブジェクトを「拡張」(重複する属性値を持つ新しい行を追加) している。
-例えば、5組の座標からなる多点ジオメトリを「POINT」ジオメトリに変換すると、出力には 5 つのフィーチャが含まれる。
+例えば、5 組の座標からなる多点ジオメトリを「POINT」ジオメトリに変換すると、出力には 5 つのフィーチャが含まれる。
 
 ```{r sfs-st-cast, echo=FALSE}
 sfs_st_cast = read.csv("extdata/sfs-st-cast.csv")
@@ -624,16 +625,16 @@ multilinestring_sf
 ```
 
 道路や河川のネットワークをイメージしていただきたい。 
-新しいオブジェクトは、すべての線を定義する1つの行だけを持っている。
-このため、各線分に名前を付けたり、1本の線の長さを計算したりすることができないなど、実行できる操作に制限がある。
-このような場合、1つのマルチ線を3つの線に分離する `st_cast()` 関数を使用することができる。
+新しいオブジェクトは、すべての線を定義する 1 つの行だけを持っている。
+このため、各線分に名前を付けたり、1 本の線の長さを計算したりすることができないなど、実行できる操作に制限がある。
+このような場合、1 つの複合線を 3 つの線に分離する `st_cast()` 関数を使用することができる。
 
 ```{r 05-geometry-operations-34}
 linestring_sf2 = st_cast(multilinestring_sf, "LINESTRING")
 linestring_sf2
 ```
 
-```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間のタイプキャスティングの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE, dev="ragg_png"}
+```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間の型キャストの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE, dev="ragg_png"}
 p_lc1 = tm_shape(multilinestring_sf) + tm_lines(lwd = 3) +
   tm_title("複合線") + tm_layout(fontfamily = "HiraginoSans-W3")
 linestring_sf2$name = c("Riddle Rd", "Marshall Ave", "Foulke St")
@@ -654,7 +655,7 @@ linestring_sf2
 ## ラスタデータに対するジオメトリ操作  {#geo-ras}
 
 \index{raster!manipulation} 
-幾何学的なラスタ操作には、画像の平行移動 (shift)、反転 (flip)、ミラー (mirror)、拡大縮小 (scale)、回転 (rotate)、反り (warp) などがある。
+幾何学的なラスタ操作には、画像の平行移動 (shift)、反転 (flip)、ミラー (mirror)、拡大縮小 (scale)、回転 (rotate)、幾何補正 (warp) などがある。
 これらの操作は、ジオリファレンスなど様々な用途で必要とされ、既知の CRS を持つ正確な地図に画像を重ね合わせるために使用される [@liu_essential_2009]。
 ジオリファレンスには、さまざまな手法が存在する。
 
@@ -662,14 +663,14 @@ linestring_sf2
 - 局所的な地形も考慮したオルソレクティフィケーション (orthorectification)
 - 画像[レジストレーション](https://en.wikipedia.org/wiki/Image_registration) は、異なるセンサーから撮影された同じものの画像を、ある画像と別の画像に (座標系や解像度の点で) 位置合わせして結合するために使用する。
 
-最初の2点については、手作業が必要になることが多いため、R はむしろ不向きで、通常は専用の GIS ソフトウェアの助けを借りて行われる (Chapter \@ref(gis) も参照)。
+最初の 2 つについては、手作業が必要になることが多いため、R はむしろ不向きで、通常は専用の GIS ソフトウェアの助けを借りて行われる (Chapter \@ref(gis) も参照)。
 一方、R では複数の画像の位置合わせが可能であり、本節ではその方法を中心に紹介する。
 これには、画像の範囲、解像度、原点を変更することがよく含まれる。
 もちろん、投影法の一致も必要であるが、それはすでに Section \@ref(reproj-ras) で説明した。
 
-いずれにせよ、1枚のラスタ画像に対してジオメトリ演算を行う理由は他にもある。
-例えば、Chapter \@ref(location) で、ドイツの大都市圏を人口50万人以上の 20 km^2^ のピクセルと定義している。 
-しかし、元の住民ラスタの解像度は 1 km^2^ であるため、解像度を20分の1に下げる (集約する) (Section \@ref(define-metropolitan-areas) を参照)。
+いずれにせよ、1 枚のラスタ画像に対してジオメトリ演算を行う理由は他にもある。
+例えば、Chapter \@ref(location) で、ドイツの大都市圏を人口 50万人以上の 20 km^2^ のピクセルと定義している。 
+しかし、元の住民ラスタの解像度は 1 km^2^ であるため、解像度を 20分の 1 に下げる (集約する) (Section \@ref(define-metropolitan-areas) を参照)。
 ラスタを集約するもう一つの理由は、単純にランタイムの短縮やディスクスペースの節約である。
 もちろん、この方法はラスタデータの粗い解像度が可能なタスクの場合にのみ推奨される。
 
@@ -817,7 +818,7 @@ dem_disagg = disagg(dem_agg, fact = 5, method = "bilinear")
 identical(dem, dem_disagg)
 ```
 
-```{r bilinear, echo = FALSE, fig.width=8, fig.height=10, fig.cap="双一次補間法で分解する場合は、最も近い4つの入力セルの距離加重平均で出力を決定。", fig.scap="Bilinear disaggregation in action.", warning=FALSE}
+```{r bilinear, echo = FALSE, fig.width=8, fig.height=10, fig.cap="双一次補間法で分解する場合は、最も近い 4 つの入力セルの距離加重平均で出力を決定。", fig.scap="Bilinear disaggregation in action.", warning=FALSE}
 source("code/05-bilinear.R", print.eval = TRUE)
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/146619205-3c0c2e3f-9e8b-4fda-b014-9c342a4befbb.png")
 ```
@@ -873,10 +874,10 @@ Figure \@ref(fig:resampl) に示すように、解像度/原点の異なるラ�
 主なリサンプリング方法には、以下のようなものがある。
 
 - 最近傍 (Nearest neighbor)：元のラスタの最も近いセルの値を、ターゲットのセルに割り当てる。これは高速でシンプルな手法で、通常、カテゴリラスタのリサンプリングに適している
-- 双一次補間 (Bilinear interpolation)：元のラスタから4つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である
-- 三次補間 (Cubic interpolation)：3次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる
-- 三次スプライン補間 (Cubic spline interpolation)：出力セルを決定するために元のラスタの16個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される
-- Lanczos windowed sinc resampling: 出力セルの値を決定するために、元のラスタの36個の最近接セルの値を使用する。連続的なラスタに使用される^[
+- 双一次補間 (Bilinear interpolation)：元のラスタから 4 つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である
+- 三次補間 (Cubic interpolation)：3 次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる
+- 三次スプライン補間 (Cubic spline interpolation)：出力セルを決定するために元のラスタの 16 個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される
+- Lanczos windowed sinc resampling: 出力セルの値を決定するために、元のラスタの 36 個の最近接セルの値を使用する。連続的なラスタに使用される^[
 この方法の詳細な説明は、https://gis.stackexchange.com/a/14361/20955。
 ]
 
@@ -896,7 +897,7 @@ target_rast = rast(xmin = 794650, xmax = 798250,
                    resolution = 300, crs = "EPSG:32717")
 ```
 
-次に、2つのラスタオブジェクトを最初の2つの引数として与え、上で説明したリサンプリングメソッドのうちの1つを提供する必要がある。
+次に、2 つのラスタオブジェクトを最初の 2 つの引数として与え、上で説明したリサンプリングメソッドのうちの 1 つを提供する必要がある。
 
 ```{r 05-geometry-operations-42b}
 dem_resampl = resample(dem, y = target_rast, method = "bilinear")
@@ -968,6 +969,6 @@ GDAL の関数はすべてラスタファイルのパスを入力として受け
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child('_05-ex.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
+res = knitr::knit_child('_05-ex-ja.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
 cat(res, sep = '\n')
 ```

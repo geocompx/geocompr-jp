@@ -143,7 +143,7 @@ tidyverse との互換性は、前身の **sp** になかった **sf** の利点
 R の基本的な部分集合 (subset) の作成方法には、演算子 `[` と関数 `subset()` がある。
 **dplyr** の関数では、行の部分集合作成には `filter()` と `slice()` があり、列の部分集合作成には `select()` がある。
 どちらのアプローチも `sf` オブジェクトの属性データの空間成分を保持する。一方、演算子 `$` や **dplyr** 関数 `pull()` を使って単一の属性列をベクトルとして返すと、これから説明するようにジオメトリデータが失われる。
-\index{ぞくせい@属性!subsetting}
+\index{ぞくせい@属性!ぶぶんしゅうごう@部分集合}
 このセクションでは、`sf` データフレームの部分集合作成に焦点を当てている。ベクトルや非地理データフレームの部分集合に関する詳細については、An Introduction to R [@rcoreteam_introduction_2021] の Chapter [2.7](https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Index-vectors) と Advanced R Programming [@wickham_advanced_2019]  の Chapter [4](https://adv-r.hadley.nz/subsetting.html) を勧める。
 
 \index{ぞくせい@属性!ぶぶんしゅうごう@部分集合}
@@ -658,7 +658,7 @@ elev = rast(nrows = 6, ncols = 6, resolution = 0.5,
 `vals` 引数は、各セルが含む値を設定する。この場合、1 から 36 までの数値データである。
 
 \index{らすた@ラスタ!そうさ@操作}
-\index{かてごりらすた@カテゴリラスタ}
+\index{らすた!かてごり@ラスタ!カテゴリ}
 ラスタオブジェクトは、R のクラス `logical` または `factor` 変数のカテゴリ値も含むことができる。
 次のコードでは、Figure \@ref(fig:cont-raster) に示すラスタデータセットを作成する。
 
@@ -676,7 +676,7 @@ elev = rast(system.file("raster/elev.tif", package = "spData"))
 grain = rast(system.file("raster/grain.tif", package = "spData"))
 ```
 
-\index{かてごりらすた@カテゴリラスタ}
+\index{らすた!かてごり@ラスタ!カテゴリ}
 \index{らすたぞくせいてーぶる@ラスタ属性テーブル}
 ラスタオブジェクトは、対応するルックアップテーブルまたは「ラスタ属性テーブル」(Raster Attribute Table, RAT) をデータフレームのリストとして格納し、`cats(grain)` (詳しくは `?cats()`) を使って表示することができる。
 このリストの各要素は、ラスタのレイヤである。
@@ -801,6 +801,6 @@ hist(elev)
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child('_03-ex.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
+res = knitr::knit_child('_03-ex-ja.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
 cat(res, sep = '\n')
 ```

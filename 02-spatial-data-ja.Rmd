@@ -14,7 +14,7 @@ source("code/before_script.R")
 
 R のスクリプト、出力、その他ジオコンピュテーションに関連するものを保存するために、コンピュータに新しいフォルダを作成することから始めるとよいだろう。
 また、学習をサポートするため、[ソースコード](https://github.com/Robinlovelace/geocompr)を[ダウンロード](https://github.com/Robinlovelace/geocompr/archive/refs/heads/main.zip) または[クローン](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)しておくと良い。
-R コードを書く/実行する/テストする際には、 [RStudio](https://posit.co/download/rstudio-desktop/#download) (ほとんどの人に推奨) または [VS Code](https://github.com/REditorSupport/vscode-R) などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める。^[
+R コードを書く/実行する/テストする際には、 [RStudio](https://posit.co/download/rstudio-desktop/#download) (ほとんどの人に推奨)\index{RStudio} または [VS Code](https://github.com/REditorSupport/vscode-R)\index{VS Code} などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める。^[
 プロジェクト管理には、[RStudio projects](https://r4ds.had.co.nz/workflow-projects.html)、[VS Code workspaces](https://code.visualstudio.com/docs/editor/workspaces) などのシステムを利用することを勧める。
 RStudio でこれを行うには、**rstudioapi** パッケージを使用するのが手っ取り早い方法である。
 RStudio の R コンソールから以下のコマンドで、ホームディレクトリに 'geocompr-learning' という新しいプロジェクトを開く (例: `rstudioapi::openProject("~/geocompr-learning")`)
@@ -35,8 +35,6 @@ install.packages("terra")
 install.packages("spData")
 install.packages("spDataLarge", repos = "https://nowosad.r-universe.dev")
 ```
-
-
 
 ```{r}
 #| echo: FALSE
@@ -140,12 +138,11 @@ knitr::include_graphics(c("figures/vector_lonlat.png", "figures/vector_projected
 - [PROJ](https://proj.org/) は、 Chapter \@ref(reproj-geo-data) で扱う内容の根幹をなす座標系変換のための強力なライブラリ。 
 - [GEOS](https://libgeos.org/)\index{GEOS} は、投影型 CRS を持つデータに対してバッファや重心の計算などの操作を行う平面ジオメトリエンジン、Chapter \@ref(geometry-operations) でカバーする。
 - [S2](https://s2geometry.io/) は、Google が開発した C++ で書かれた球面幾何学エンジンである。[**s2**](https://r-spatial.github.io/s2/) パッケージ経由で、この章の Section \@ref(s2) と Chapter \@ref(reproj-geo-data) でカバーする。
-<!-- - [liblwgeom](https://github.com/postgis/postgis/tree/master/liblwgeom), a geometry engine used by PostGIS, via the [**lwgeom**](https://r-spatial.github.io/lwgeom/) package -->
 
-これらのインターフェースに関する情報は、パッケージが最初にロードされたときに **sf** によって表示される。この章の最初にある `library(sf)` コマンドの下に表示されるメッセージ `r print(capture.output(sf:::.onAttach(), type = "message"))` は、リンクされている GEOS、GDAL、PROJ ライブラリのバージョン (コンピュータや時期によって変わる) と S2インターフェースがオンになっているかどうかという情報を教えてくれる。
+これらのインターフェースに関する情報は、パッケージが最初にロードされたときに **sf** によって表示される。この章の最初にある `library(sf)` コマンドの下に表示されるメッセージ `r print(capture.output(sf:::.onAttach(), type = "message"))` は、リンクされている GEOS\index{GEOS}、GDAL、PROJ ライブラリのバージョン (コンピュータや時期によって変わる) と S2\index{S2} インターフェースがオンになっているかどうかという情報を教えてくれる。
 今では当たり前のことであるが、そもそも再現性のあるジオコンピューティングを可能にするのは、様々な地理ライブラリとの緊密な連携に他ならない。
 
-**sf** の特徴として、投影法未指定のデータで使用するデフォルトのジオメトリエンジンを変更することができる S2 のスイッチを切るには、`sf::sf_use_s2(FALSE)` というコマンドを使う。つまり、平面ジオメトリエンジン GEOS が、投影されていないデータに対するジオメトリ操作を含む、すべてのジオメトリ操作にデフォルトで使用されることになる。
+**sf** の特徴として、投影法未指定のデータで使用するデフォルトのジオメトリエンジンを変更することができる S2\index{S2} のスイッチを切るには、`sf::sf_use_s2(FALSE)` というコマンドを使う。つまり、平面ジオメトリエンジン GEOS が、投影されていないデータに対するジオメトリ操作を含む、すべてのジオメトリ操作にデフォルトで使用されることになる。
 Section \@ref(s2) で見るように、平面幾何学は2次元の空間に基づいている。
 GEOS などの平面ジオメトリエンジンは「平面」 (投影) 座標を、S2 などの球面ジオメトリエンジンは非投影 (緯度経度) 座標を想定している。
 
@@ -154,7 +151,7 @@ GEOS などの平面ジオメトリエンジンは「平面」 (投影) 座標�
 ### シンプルフィーチャの紹介  {#intro-sf}
 
 シンプルフィーチャ (simple feature、ISO 19125 では、feature は「地物」、simple feature は「単純地物」と訳されこともあるが、本書ではシンプルフィーチャで統一する。) は、Open Geospatial Consortium (OGC) が開発・推奨する[オープンスタンダード](http://portal.opengeospatial.org/files/?artifact_id=25355)であり、その活動は後の章で再確認することになる (Section \@ref(file-formats))。
-\index{simple features |see {sf}}
+\index{シンプルフィーチャ|see {sf}}
 シンプルフィーチャは、様々なジオメトリ型を表現する階層的なデータモデルである。
 仕様でサポートされている 18 種類のジオメトリのうち、地理研究の大部分で使用されているのは 7 種類のみである (Figure \@ref(fig:sf-ogc) を参照)。
 これらのコアなジオメトリ型は、R パッケージの **sf** で完全にサポートされている [@pebesma_simple_2018]。^[ 
@@ -171,11 +168,11 @@ knitr::include_graphics("figures/sf-classes.png")
 \index{sf}
 \index{sf (package)|see {sf}}
 また、**sf** はジオメトリコレクションをサポートしており、1つのオブジェクトに複数のジオメトリ型を格納することができる。
-**sf** は、データクラスの **sp** [@R-sp]、GDAL と PROJ を通したデータ読み書きの **rgdal** [@R-rgdal]、GEOS を通した空間演算の **rgeos** [@R-rgeos] という 3 パッケージで提供されていたものと同じ機能 (およびそれ以上) を提供する。
+**sf** は、データクラスの **sp**\index{sp (package)} [@R-sp]、GDAL と PROJ を通したデータ読み書きの **rgdal** [@R-rgdal]、GEOS を通した空間演算の **rgeos** [@R-rgeos] という 3 パッケージで提供されていたものと同じ機能 (およびそれ以上) を提供する。
 
 Chapter 1 の繰り返しになるが、R の地理パッケージは低レベルのライブラリとのインターフェイスとの長い歴史がある。**sf** はこの伝統を受け継ぎ、最新バージョンの幾何演算 GEOS、地理データファイルの読み書きのための GDAL、投影座標参照系の表現と変換のための PROJ ライブラリと統一されたインターフェイスを提供する。
 **s2**、すなわち「Google の球面幾何学ライブラリ [`s2`](https://s2geometry.io/) への R インタフェース」を通して、**sf** は高速で正確な「非平面形状の測定と操作」 [@bivand_progress_2021] にアクセスすることができる。
-[2021年6月](https://cran.r-project.org/src/contrib/Archive/sf/)に公開された **sf** バージョン 1.0.0 からは、地理 (経度・緯度) 座標系を持つジオメトリに対して[デフォルト](https://r-spatial.org/r/2020/06/17/s2.html)で **s2** 機能が使われるようになった。これは、**sf** 独自の特徴であり、Python パッケージ [GeoPandas](geopandas/geopandas/issues/2098) など、ジオメトリ演算に GEOS にしか対応していない空間ライブラリとは異なる。
+[2021年6月](https://cran.r-project.org/src/contrib/Archive/sf/)に公開された **sf** バージョン 1.0.0 からは、地理 (経度・緯度) 座標系を持つジオメトリに対して[デフォルト](https://r-spatial.org/r/2020/06/17/s2.html)で **s2**\index{S2} 機能が使われるようになった。これは、**sf** 独自の特徴であり、Python パッケージ [GeoPandas](geopandas/geopandas/issues/2098) など、ジオメトリ演算に GEOS にしか対応していない空間ライブラリとは異なる。
 **s2** については、以降の章で説明する。
 
 **sf** は、地理計算のための複数の強力なライブラリを単一のフレームワークに統合しており、これのおかげで高性能ライブラリを用いた再現可能な地理データ解析の世界への「参入障壁」がかなり下げられたと言える。
@@ -197,7 +194,7 @@ vignette("sf6") # その他の情報
 vignette("sf7") # 球面幾何学演算
 ```
 
-最初の vignette で説明されているように、R のシンプルフィーチャオブジェクトはデータフレームに格納され、地理データは通常 'geom' または 'geometry' という名前の特別な列を占める。
+最初の vignette で説明されているように、R のシンプルフィーチャオブジェクトはデータフレームに格納され、地理データは通常 'geom' または 'geometry'\index{ベクタ!geometry} という名前の特別な列を占める。
 本章の冒頭で読み込んだ **spData** [@R-spData] が提供する `world` データセットを使って、`sf` オブジェクトの内容とその動作について説明する。
 `world` は、空間と属性の列を含む「`sf` データフレーム」で、属性列の名前は関数 `names()` によって返される (この例の最後の列は地理情報を含んでいる)。
 
@@ -358,8 +355,9 @@ source("code/02-contpop.R")
 上記のコードでは、関数 `st_centroid()` を使って、あるジオメトリ型 (ポリゴン) を別の型 (点) に変換している (Chapter \@ref(geometry-operations) 参照)。引数 `cex` で見た目を変化させることができる。
 
 \index{bounding box}
-**sf** の plot メソッドには、地理データに特有の引数もある。以下の例で、`sf` オブジェクトをコンテクストでプロットするために`expandBB` を使用してみよう。
-`expandBB` は長さ4の数値ベクトルを取り、プロットの外接枠をゼロから相対的に下、左、上、右の順序で拡張する。
+**sf** の plot メソッドには、地理データに特有の引数もある。
+`sf` オブジェクトをコンテクストでプロットするために、以下の例で `expandBB` を使用してみよう。
+`expandBB` は長さ 4 の数値ベクトルを取り、プロットの外接枠をゼロから相対的に下、左、上、右の順序で拡張する。
 これを利用して、インドを巨大なアジアの隣国 (東にある中国に重点を置く) の文脈でプロットすると、次のコードチャンクで Figure \@ref(fig:china) を生成する。 (プロットにテキストを追加することについては、以下の演習を参照)。^[
 `st_geometry(india)` を使って、オブジェクトに関連するジオメトリのみを返すことで、シンプルフィーチャ列 (`sfc`) オブジェクトに属性がプロットされるのを防いでいることに注意。
 別の方法として `india [0]` を使う。これは属性データを含まない `sf` オブジェクトを返す。
@@ -400,8 +398,9 @@ R のシンプルフィーチャは、**sf** パッケージがサポートす�
 
 一般に、シンプルフィーチャの符号化方式としては、WKB (Well-known binary) や WKT (Well-known text) が標準的である。
 \index{well-known text}
-\index{WKT|see {well-known text}}
+\index{WKT|{well-known text} 参照}
 \index{well-known binary}
+\index{WKB|{well-known binary} 参照}
 WKB の表現は通常、コンピュータで読みやすい16進数の文字列である。
 このため、GIS や空間データベースでは、ジオメトリオブジェクトの転送や保存に WKB を使用している。
 一方、WKT は、シンプルフィーチャを人間が読みやすいテキストマークアップで記述したものである。 
@@ -802,6 +801,7 @@ Chapter \@ref(geometry-operations) で取り上げた、異なるタイプのジ
 
 球面幾何学エンジンは、世界が丸いという事実に基づいているが、2点間の直線やポリゴンに囲まれた面積の計算など、地盤計算のための簡単な数学的手続きは、平面 (投影) 幾何学を前提としている。
 **sf** バージョン 1.0.0 以降、R は Google の S2 球面幾何エンジンとのインターフェース **s2** インターフェースパッケージにより、球面幾何の操作を「すぐに」(かつデフォルトで) サポートする。
+\index{S2}
 S2 は、離散型グローバルグリッドシステム (Discrete Global Grid System, DGGS) の例として、おそらく最もよく知られている。
 もう一つの例は、[H3](https://h3geo.org/) グローバルな六角形の階層的な空間インデックスである [@bondaruk_assessing_2020]。
 
@@ -860,7 +860,7 @@ sf_use_s2(TRUE)
 
 ## ラスタデータ  {#raster-data}
 
-空間ラスタデータモデルは、連続した格子状のセル (ピクセルとも呼ばれる; Figure \@ref(fig:raster-intro-plot) :A) で世界を表現する。
+空間ラスタデータモデルは、連続した格子状のセル (ピクセルとも呼ばれる; Figure \@ref(fig:raster-intro-plot) :A) で世界を表現する\index{ラスタデータモデル}。
 このデータモデルでは、各セルが同じ一定の大きさを持つ、いわゆる正方形のグリッドを指すことが多く、本書では正方形のグリッドにのみ焦点を当てることにする。
 しかし、他にも回転格子、せん断格子、直線格子、曲線格子など、いくつかの種類の格子が存在する (@pebesma_spatial_2022 の第 1 章、または @tennekes_elegant_2022 の第 2 章を参照のこと)。
 
@@ -904,6 +904,7 @@ source("code/02-raster-intro-plot2.R", print.eval = TRUE)
 ### ラスタデータを扱うための R パッケージ  {#r-packages-for-working-with-raster-data}
 
 過去 20 年の間に、ラスタデータセットを読み込んで処理するためのパッケージがいくつか開発された。
+\index{raster (package)}\index{terra (package)}\index{stars (package)}
 Section \@ref(the-history-of-r-spatial) にあるように、その中でも特に **raster** は 2010 年にリリースされ、R のラスタ機能を一変させ、**terra** や **stars** が開発されるまでこの分野の最高峰のパッケージとなった。
 最近開発されたこの 2 つのパッケージは、ラスタデータを扱うための強力で高性能な機能を備えており、両者の使用例にはかなりの重複がある。
 この本では、古くて (多くの場合) 遅い **raster** に代わる **terra** に焦点を当てる。
@@ -926,19 +927,15 @@ Section \@ref(the-history-of-r-spatial) にあるように、その中でも特�
 
 ### terra 入門  {#an-introduction-to-terra}
 
+\index{terra (package)}
 **terra** パッケージ は、R のラスタオブジェクトをサポートする。
 ラスタデータセットの作成、読み込み、書き出し、操作、処理を行うための豊富な関数群を提供する。
 **terra** の機能は、より成熟した **raster** パッケージとほぼ同じであるが、いくつかの相違点がある。**terra** の関数は通常、**raster** の対応する関数よりも計算効率が高い。
 一方、**raster** クラスシステムは人気があり、他の多くのパッケージで使用されている。
 古いスクリプトやパッケージとの後方互換性を確保するために、2種類のオブジェクトをシームレスに変換することができる。例えば、**raster** パッケージの [`raster()`](https://rspatial.github.io/raster/reference/raster.html)、[`stack()`](https://rspatial.github.io/raster/reference/stack.html)、`brick()` などの関数がある (地理データを扱うための R パッケージの進化については、前の章を参照)。
 
-```{r, echo=FALSE, eval=FALSE}
-# # test raster/terra conversions
-# See https://github.com/rspatial/terra/issues/399
-```
-
 ラスタデータを操作するための関数に加え、**terra** はラスタデータセットを扱うための新しいツールを開発するための基盤となる低レベルの関数を多数提供している。
-\index{terra (package)}
+\index{terra (package)|{terra} 参照}
 また、**terra** では、メインメモリに収まりきらないような大きなラスタデータセットを扱うことができる。
 この場合、**terra** はラスタを小さなチャンクに分割し、ラスタファイル全体を RAM にロードする代わりに、それらを繰り返し処理することが可能である。
 
@@ -983,6 +980,7 @@ R でラスタデータをプロットすることはこのセクションの範
 
 ### ラスタクラス  {#raster-classes}
 
+\index{terra (package)}
 `SpatRaster` クラスは、**terra** のラスタオブジェクトを表する。
 R でラスタオブジェクトを作成する最も簡単な方法は、ディスクまたはサーバからラスタファイルを読み込むことである (Section \@ref(raster-data-read))。
 \index{raster!class}

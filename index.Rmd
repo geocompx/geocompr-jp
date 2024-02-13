@@ -107,7 +107,7 @@ These can be installed using the [**remotes**](https://github.com/r-lib/remotes)
 
 ```{r index-3, message=FALSE, eval=FALSE, echo=is_html, results='hide'}
 install.packages("remotes")
-remotes::install_github("geocompx/geocompkg")
+install.packages('geocompkg', repos = c('https://geocompr.r-universe.dev', 'https://cloud.r-project.org'), dependencies = TRUE, force = TRUE)
 ```
 
 ```{asis index-3-1a, echo=is_html}
@@ -173,12 +173,13 @@ The book website is hosted on [Netlify](https://www.netlify.com/).
 \begin{center} \Large \emph{For Katy} \end{center}
 
 \vspace*{2cm}
-\begin{center} \Large \emph{Dla Jagody} \end{center}
+\begin{center} \Large \emph{Dla mojej rodziny} \end{center}
 
 \vspace*{2cm}
 \begin{center} \Large \emph{F{\"u}r meine Katharina und alle unsere Kinder  } \end{center}
 ```
 
+```{asis index-22c, echo=is_html}
 # Foreword (1st Edition) {-}
 
 Doing 'spatial' in R has always been about being broad, seeking to provide and integrate tools from geography, geoinformatics, geocomputation and spatial statistics for anyone interested in joining in: joining in asking interesting questions, contributing fruitful research questions, and writing and improving code.
@@ -202,9 +203,9 @@ Engage with the authors and the wider R-spatial community, see value in having m
 Roger Bivand
 
 Bergen, September 2018
+```
 
 # Foreword (2nd Edition) {-}
-
 
 
 # Preface {-}
@@ -299,9 +300,10 @@ The reviewers deserve special mention here: their detailed feedback and expertis
 We thank Patrick Schratz and Alexander Brenning from the University of Jena for fruitful discussions on and input into Chapters \@ref(spatial-cv) and \@ref(eco).
 We thank Emmanuel Blondel from the Food and Agriculture Organization of the United Nations for expert input into the section on web services;
 Michael Sumner for critical input into many areas of the book, especially the discussion of algorithms in Chapter 11;
-Tim Appelhans and David Cooley for key contributions to the visualization chapter (Chapter 9);
+Tim Appelhans, David Cooley and Kiranmayi Vadlamudi for key contributions to the visualization chapter (Chapter 9);
+Marius Appel for his input into Chapter 10;
 and Katy Gregg, who proofread every chapter and greatly improved the readability of the book.
 
 Countless others could be mentioned who contributed in myriad ways.
 The final thank you is for all the software developers who make geocomputation with R possible.
-Edzer Pebesma (who created the **sf** package), Robert Hijmans (who created **terra**) and Roger Bivand (who laid the foundations for much R-spatial software) have made high performance geographic computing possible in R.
+Especially, Edzer Pebesma (who created the **sf** package), Robert Hijmans (who created **terra**) and Roger Bivand (who laid the foundations for much R-spatial software) who have made high performance geographic computing possible in R.

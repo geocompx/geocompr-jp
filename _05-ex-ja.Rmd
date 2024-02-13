@@ -1,0 +1,155 @@
+```{r 05-ex-e0, message=FALSE}
+library(sf)
+library(terra)
+library(dplyr)
+library(spData)
+library(spDataLarge)
+```
+
+E1. `nz` データセットの簡略版を生成してプロットしなさい。
+`ms_simplify()` の `keep` (0.5 から 0.00005 の範囲) と `st_simplify()` の `dTolerance` (100 から 100,000) の値を変えて実験しなさい。
+
+- 各メソッドで結果の形が崩れ始め、New Zealand を認識できなくなるのはどの値からか？
+- 発展: `st_simplify()` の結果のジオメトリ型は、`ms_simplify()` のジオメトリ型と何が違うか？また、どのように解決できるか？
+
+```{r 05-ex-e1}
+plot(rmapshaper::ms_simplify(st_geometry(nz), keep = 0.5))
+plot(rmapshaper::ms_simplify(st_geometry(nz), keep = 0.05))
+# Starts to breakdown here at 0.5% of the points:
+plot(rmapshaper::ms_simplify(st_geometry(nz), keep = 0.005))
+# At this point no further simplification changes the result
+plot(rmapshaper::ms_simplify(st_geometry(nz), keep = 0.0005))
+plot(rmapshaper::ms_simplify(st_geometry(nz), keep = 0.00005))
+plot(st_simplify(st_geometry(nz), dTolerance = 100))
+plot(st_simplify(st_geometry(nz), dTolerance = 1000))
+# Starts to breakdown at 10 km:
+plot(st_simplify(st_geometry(nz), dTolerance = 10000))
+plot(st_simplify(st_geometry(nz), dTolerance = 100000))
+plot(st_simplify(st_geometry(nz), dTolerance = 100000, preserveTopology = TRUE))
+
+# Problem: st_simplify returns POLYGON and MULTIPOLYGON results, affecting plotting
+# Cast into a single geometry type to resolve this
+nz_simple_poly = st_simplify(st_geometry(nz), dTolerance = 10000) |> 
+  st_sfc() |> 
+  st_cast("POLYGON")
+nz_simple_multipoly = st_simplify(st_geometry(nz), dTolerance = 10000) |> 
+  st_sfc() |> 
+  st_cast("MULTIPOLYGON")
+plot(nz_simple_poly)
+length(nz_simple_poly)
+nrow(nz)
+```
+
+E2. 空間データ操作の章の最初の演習で、Canterbury 地方には New Zealand の 101 の高地のうち 70 地点があることがわかった。
+`st_buffer()`を使用して、Canterbury から 100 km 以内にある `nz_height` の点はいくつあるか？
+
+```{r 05-ex-e2}
+canterbury = nz[nz$Name == "Canterbury", ]
+cant_buff = st_buffer(canterbury, 100)
+nz_height_near_cant = nz_height[cant_buff, ]
+nrow(nz_height_near_cant) # 75 - 5 more
+```
+
+E3. New Zealand の地理的重心を求めなさい。
+Canterburyの地理的重心からの距離は？
+
+```{r 05-ex-e3}
+cant_cent = st_centroid(canterbury)
+nz_centre = st_centroid(st_union(nz))
+st_distance(cant_cent, nz_centre) # 234 km
+```
+
+E4. Most world maps have a north-up orientation.
+A world map with a south-up orientation could be created by a reflection (one of the affine transformations not mentioned in this chapter) of the `world` object's geometry.
+Write code to do so.
+Hint: you need to use a two-element vector for this transformation.
+ Bonus: create an upside-down map of your country. ほとんどの世界地図は北を向いている。
+オブジェクト `world` のジオメトリの反射 (この章では触れないアフィン変換の 1 つ) によって、南を上にしたワールドマップを作ることができる。
+そのコードを書きなさい。
+ヒント: この変換には 2 要素のベクトルを使う必要がある。
+ボーナス: あなたの国の逆さ地図を作ってみなさい。
+ 
+```{r 05-ex-e4}
+world_sfc = st_geometry(world)
+world_sfc_mirror = world_sfc * c(1, -1)
+plot(world_sfc)
+plot(world_sfc_mirror)
+
+us_states_sfc = st_geometry(us_states)
+us_states_sfc_mirror = us_states_sfc * c(1, -1)
+plot(us_states_sfc)
+plot(us_states_sfc_mirror)
+## nicer plot
+# library(ggrepel)
+# us_states_sfc_mirror_labels = st_centroid(us_states_sfc_mirror) |> 
+#   st_coordinates() |>
+#   as_data_frame() |> 
+#   mutate(name = us_states$NAME)
+# us_states_sfc_mirror_sf = st_set_geometry(us_states, us_states_sfc_mirror)
+# ggplot(data = us_states_sfc_mirror_sf) +
+#   geom_sf(color = "white") +
+#   geom_text_repel(data = us_states_sfc_mirror_labels, mapping = aes(X, Y, label = name), size = 3, min.segment.length = 0) +
+#   theme_void() 
+```
+
+E5. Section [5.2.6](https://r.geocompx.org/geometry-operations.html#subsetting-and-clipping) のコードを実行しなさい。そのセクションで作成したオブジェクトを参照して、`x` **と** `y` に含まれる `p` の点の部分集合を作成しなさい。
+
+- 基本サブセット演算子を使用する。
+- `st_intersection()`\index{べくた@ベクタ!こうさ@交差}で作成した中間オブジェクトを使用する。
+
+```{r 05-ex-e5a, echo=FALSE}
+b = st_sfc(st_point(c(0, 1)), st_point(c(1, 1))) # create 2 points
+b = st_buffer(b, dist = 1) # convert points to circles
+x = b[1]
+y = b[2]
+bb = st_bbox(st_union(x, y))
+box = st_as_sfc(bb)
+set.seed(2017)
+p = st_sample(x = box, size = 10)
+```
+
+```{r 05-ex-e5}
+p_in_y = p[y]
+p_in_xy = p_in_y[x]
+x_and_y = st_intersection(x, y)
+p[x_and_y]
+```
+
+E6. アメリカの州の境界線の長さをメートル単位で計算しなさい。
+どの州の境界線が最も長く、どの州の境界線が最も短いか。
+ヒント: `st_length` 関数は `LINESTRING` または `MULTILINESTRING` 形状の長さを計算する。
+
+```{r 05-ex-e6}
+us_states9311 = st_transform(us_states, "EPSG:9311")
+us_states_bor = st_cast(us_states9311, "MULTILINESTRING")
+us_states_bor$borders = st_length(us_states_bor)
+arrange(us_states_bor, borders)
+arrange(us_states_bor, -borders)
+```
+
+E7. srtm.tif ファイルを R で読み込みなさい (`srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))`)。
+このラスタの解像度は 0.00083 x 0.00083度。
+**terra** パッケージで利用可能なすべてのメソッドを使用して、その解像度を 0.01 × 0.01度に変更しなさい。
+結果を視覚化しなさい。
+リサンプリング方法の結果の違いは何があるか?
+
+```{r 05-ex-e7}
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+rast_template = rast(ext(srtm), res = 0.01)
+srtm_resampl1 = resample(srtm, y = rast_template, method = "bilinear")
+srtm_resampl2 = resample(srtm, y = rast_template, method = "near")
+srtm_resampl3 = resample(srtm, y = rast_template, method = "cubic")
+srtm_resampl4 = resample(srtm, y = rast_template, method = "cubicspline")
+srtm_resampl5 = resample(srtm, y = rast_template, method = "lanczos")
+
+srtm_resampl_all = c(srtm_resampl1, srtm_resampl2, srtm_resampl3,
+                     srtm_resampl4, srtm_resampl5)
+plot(srtm_resampl_all)
+
+# differences
+plot(srtm_resampl_all - srtm_resampl1, range = c(-300, 300))
+plot(srtm_resampl_all - srtm_resampl2, range = c(-300, 300))
+plot(srtm_resampl_all - srtm_resampl3, range = c(-300, 300))
+plot(srtm_resampl_all - srtm_resampl4, range = c(-300, 300))
+plot(srtm_resampl_all - srtm_resampl5, range = c(-300, 300))
+```
