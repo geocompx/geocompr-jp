@@ -1,0 +1,144 @@
+Some of the following exercises use a vector (`zion_points`) and raster dataset (`srtm`) from the **spDataLarge** package.
+They also use a polygonal 'convex hull' derived from the vector dataset (`ch`) to represent the area of interest:
+
+```{r 06-ex-e0, message=FALSE, include=TRUE}
+library(sf)
+library(terra)
+library(spData)
+zion_points_path = system.file("vector/zion_points.gpkg", package = "spDataLarge")
+zion_points = read_sf(zion_points_path)
+srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))
+ch = st_combine(zion_points) |>
+  st_convex_hull() |> 
+  st_as_sf()
+```
+
+E1. `srtm` ラスタを、 (1) `zion_points`と (2) `ch` のデータセットを使い切り落とし (crop) なさい。
+作成した地図に違いはあるか？
+次に、同じデータセットを使い `srtm` をマスクしなさい。
+何か違いはあるか?
+その違いを説明できるか?
+
+```{r 06-ex-e1}
+plot(srtm)
+plot(st_geometry(zion_points), add = TRUE)
+plot(ch, add = TRUE)
+
+srtm_crop1 = crop(srtm, zion_points)
+srtm_crop2 = crop(srtm, ch)
+plot(srtm_crop1)
+plot(srtm_crop2)
+
+srtm_mask1 = mask(srtm, zion_points)
+srtm_mask2 = mask(srtm, ch)
+plot(srtm_mask1)
+plot(srtm_mask2)
+```
+
+E2. まず、`zion_points` で表される点の `srtm` から値を抽出しなさい。
+次に、`zion_points` の各点を 90 個のバッファで囲んで `srtm` の平均値を抽出し、この 2 つの値を比較しなさい。
+バッファによる値の抽出は、点のみによる抽出よりもどのような場合に適しているだろうか?
+
+- ボーナス:  **exactextractr**パッケージを使用して抽出を実行し、結果を比較しなさい。
+
+```{r 06-ex-e2}
+zion_points_buf = st_buffer(zion_points, dist = 90)
+plot(srtm)
+plot(st_geometry(zion_points_buf), add = TRUE)
+plot(ch, add = TRUE)
+
+zion_points_points = extract(srtm, zion_points)
+zion_points_buffer = extract(srtm, zion_points_buf, fun = "mean")
+plot(zion_points_points$srtm, zion_points_buffer$srtm)
+
+# Bonus
+# remotes::install_github("isciences/exactextractr")
+# zion_points_buf_2 = exactextractr::exact_extract(x = srtm, y = zion_points_buf,
+#                                                  fun = "mean")
+# 
+# plot(zion_points_points$srtm, zion_points_buf_2)
+# plot(zion_points_buffer$srtm, zion_points_buf_2)
+```
+
+E3. New Zealand の標高 3100 m 以上のポイント (`nz_height`オブジェクト) の部分集合を作成し、新しい点データセットの範囲に対して解像度 3 km のテンプレートラスタを作成しなさい。
+これら 2 つの新しいオブジェクトを使い、
+
+- 各グリッドセルで最も標高の高い点の数を数えなさい。
+- 各グリッドセル内の最大標高を求めなさい。
+
+```{r 06-ex-e3}
+nz_height3100 = dplyr::filter(nz_height, elevation > 3100)
+new_graticule = st_graticule(nz_height3100, datum = "EPSG:2193")
+plot(st_geometry(nz_height3100), graticule = new_graticule, axes = TRUE)
+
+nz_template = rast(ext(nz_height3100), resolution = 3000, crs = crs(nz_height3100))
+
+nz_raster = rasterize(nz_height3100, nz_template, 
+                      field = "elevation", fun = "length")
+plot(nz_raster)
+plot(st_geometry(nz_height3100), add = TRUE)
+
+nz_raster2 = rasterize(nz_height3100, nz_template, 
+                       field = "elevation", fun = max)
+plot(nz_raster2)
+plot(st_geometry(nz_height3100), add = TRUE)
+```
+
+E4. New Zealand の高地の位置を数えるラスタ (前のエクササイズで作成) を集約し、その地理的解像度を半分に下げ (セルが 6 × 6 km になるように)、結果をプロットしなさい。
+
+- 低解像度のラスタを元の解像度 3 km に再サンプルしなさい。結果はどう変わったか?
+- ラスタの解像度を下げることの利点と欠点を 2 つ挙げなさい。
+
+```{r 06-ex-e4}
+nz_raster_low = raster::aggregate(nz_raster, fact = 2, fun = sum, na.rm = TRUE)
+res(nz_raster_low)
+
+nz_resample = resample(nz_raster_low, nz_raster)
+plot(nz_raster_low)
+plot(nz_resample) # the results are spread over a greater area and there are border issues
+plot(nz_raster)
+```
+
+```{asis 06-ex-e4-asis}
+利点:
+
+- メモリの消費が少ない
+- 処理が早い
+- 可視化によいこともある
+
+欠点:
+
+- 細部が除かれている
+- 作業工程が増える
+```
+
+E5. `grain` データセットをポリゴンにして、土を表している正方形をフィルタしなさい。
+
+```{r 06-ex-e5}
+grain = rast(system.file("raster/grain.tif", package = "spData"))
+```
+
+- ベクタデータがラスタデータよりも良い点と悪い点を挙げなさい。
+- ラスタをベクタに変換すると良いのはどのような時か？
+
+```{r 06-ex-e5-2}
+grain_poly = as.polygons(grain) |> 
+  st_as_sf()
+levels(grain)
+clay = dplyr::filter(grain_poly, grain == "clay")
+plot(clay)
+```
+
+```{asis 06-ex-e5-2-asis}
+良い点: 
+
+- 他のベクタの部分集合化ができる
+- アフィン変換や sf/dplyr 動詞を使うことができる
+
+悪い点: 
+
+- 一貫性
+- 操作によっては処理が遅くなる
+- 分野によっては有用な関数がある
+```
+
