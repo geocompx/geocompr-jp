@@ -18,7 +18,7 @@ library(spData)
 ## イントロダクション  {#introduction-08}
 
 この章では、地理データの読み書きの方法について説明する。
-地理データ<u>入力</u> (Input) はジオコンピューテーション\index{geocomputation}に不可欠である。 実世界のアプリケーションはデータなしには不可能である。
+地理データ<u>入力</u> (Input) はジオコンピューテーション\index{じおこんぴゅてーしょん@ジオコンピューテーション}に不可欠である。 実世界のアプリケーションはデータなしには不可能である。
 データ<u>出力</u> (Output) も重要で、研究の結果得られた価値ある新しいデータセットや改良されたデータセットを他の人が利用できるようにすることができる。
 これらの入力/出力の処理をまとめて、データ I/O と呼ぶことができる。
 地理データの入出力は、プロジェクトの最初と最後に簡単に行われることが多い。
@@ -34,7 +34,7 @@ Section \@ref(retrieving-data) では、様々な<u>ジオポータル</u>とそ
 
 ## ファイル形式  {#file-formats}
 
-\index{file formats}
+\index{ふぁいるけいしき@ファイル形式}
 地理データセットは通常、ファイルまたは空間データベースとして保存される。
 ファイル形式はベクタデータとラスタデータのどちらかを保存できるが、 [PostGIS](https://postgis.net/) のような空間データベースは両方を保存できる (Section \@ref(postgis) も参照)。
 今日、ファイル形式の多様性は困惑するほどある。しかし、1960年代には、ハーバード大学で空間解析のための最初の広く配布されたプログラム ([SYMAP](https://news.harvard.edu/gazette/story/2011/10/the-invention-of-gis/)) などの初期の GIS ソフトウェアが開発された。それ以降、多くの統合と標準化が行われてきた [@coppock_history_1991]。
@@ -42,7 +42,7 @@ Section \@ref(retrieving-data) では、様々な<u>ジオポータル</u>とそ
 \index{GDAL}
 GDAL (Geospatial Data Abstraction Library、「グードル」と発音する。「グー」の goo の oo 部分は、Object Oeirneted を表す) は、2000年のリリース以来、地理ファイルフォーマット間の非互換性に関連する多くの問題を解決した。
 GDAL は、多くのラスタおよびベクタデータフォーマットの読み書きのための統一された高性能なインタフェースを提供する。^[Chapter \@ref(geometry-operations) で解説する通り、GDAL には、ラスタのモザイク処理、リサンプリング、クロッピング、再投影などを可能にするユーティリティ関数群もある。] 
-GRASS、ArcGIS\index{ArcGIS}、QGIS\index{QGIS} など、多くのオープンおよびプロプライエタリな GIS プログラムは、GUI\index{graphical user interface} の背後に GDAL\index{GDAL}  を使用して、地理データを取り込み、適切な形式で出力するという足回りの作業を行なっている。
+GRASS、ArcGIS\index{ArcGIS}、QGIS\index{QGIS} など、多くのオープンおよびプロプライエタリな GIS プログラムは、GUI\index{ぐらふぃかるゆーざいんたーふぇーす@グラフィカル・ユーザー・インターフェース} の背後に GDAL\index{GDAL}  を使用して、地理データを取り込み、適切な形式で出力するという足回りの作業を行なっている。
 
 GDAL\index{GDAL} は、200 以上のベクタおよびラスタデータフォーマットへのアクセスを提供する。
 Table \@ref(tab:formats) では、よく使われる空間ファイルフォーマットについての基本情報を紹介している。
@@ -111,11 +111,11 @@ LiDAR 点群を格納するための LAS、LAZ 形式、多次元配列を格納
 `sf::read_sf()` (ベクタデータの読み込みに使うメイン関数) や `terra::rast()` (ラスタデータの読み込みに使うメイン関数) などのコマンドを実行すると、ファイルからデータを読み込むイベントの連鎖が無言で開始される。
 さらに、多くの R パッケージは、サンプルデータを提供していたり (たとえば、これまでにも使ってきた `spData::world`)、あるいはさまざまなデータソースからデータを取得する関数を提供している。
 これらはすべて、R にデータをロードするか、より正確には、ワークスペースにオブジェクトを割り当てる。
-すなわち、オブジェクトが R にインポートされると、これは RAM に保存される (例外として、データベース接続がある。たとえば、Section \@ref(postgis)) で説明するように、`dplyr::collect()` などでメモリにインポートされる)、`ls()` で一覧を表示することができ (あるいは開発環境の 'Environment' に表示され)、R セッション中の [`.GlobalEnv`](http://adv-r.had.co.nz/Environments.html) からアクセスできる。
+すなわち、オブジェクトが R にインポートされると、これは RAM に保存され^[例外として、**terra** の `SpatRaster` オブジェクト (実際のデータの C++ ポインタ) や、データベース接続がある。たとえば、Section \@ref(postgis)) で説明するように、`dplyr::collect()` などでメモリにインポートされる]、`ls()` で一覧を表示することができ (あるいは開発環境の 'Environment' に表示され)、R セッション中の [`.GlobalEnv`](http://adv-r.had.co.nz/Environments.html) からアクセスできる。
 
 ### ベクタデータ  {#iovec}
 
-\index{vector!data input}
+\index{べくた@ベクタ!でーたにゅうりょく@データ入力}
 空間ベクタデータは、さまざまなファイル形式で提供されている。
 `.geojson` や `.gpkg` ファイルなど、よく使われる表現のほとんどは、裏で [GDAL のベクタドライバ](https://gdal.org/drivers/vector/index.html)\index{GDAL} を使う **sf** 関数 `read_sf()` (または同等の `st_read()`) で直接 R に取り込むことができる。
 `st_drivers()` は、最初の 2 列に `name` と `long_name` を含むデータフレームを返す。続く列に、Table \@ref(tab:drivers) の主要ファイルフォーマットについて図示しているように、データの書き込みやラスタデータの保存など GDAL (従って **sf**) で利用できる各ドライバの機能を返す。  
@@ -222,7 +222,7 @@ tmap_arrange(tm1, tm2)
 例えば、表計算ソフトのフォーマット (`.csv`) に保存された座標を考えてみよう。
 このようなファイルを空間オブジェクトとして読み込むには、当然、座標を表す列の名前 (以下の例では、`X` と `Y`) を指定しなければならない。
 これは、`options` パラメータの助けを借りて行うことができる。
-可能なオプションについては、対応する GDAL\index{GDAL}  ドライバの説明の「オープンオプション」セクションを参照。
+可能なオプションについては、対応する GDAL\index{GDAL} ドライバの説明の「オープンオプション」セクションを参照。
 カンマ区切り値 (csv) 形式は、https://gdal.org/drv_csv.html。
 
 ```{r 07-read-write-plot-20, results='hide'}
@@ -267,7 +267,7 @@ kml = read_sf("KML_Samples.kml", layer = "Placemarks")
 
 ### ラスタデータ  {#raster-data-read}
 
-\index{raster!data input}
+\index{らすた@ラスタ!でーたにゅうりょく@データ入力}
 ラスタデータは、ベクタデータと同様に多くのファイル形式があり、中にはマルチレイヤファイルをサポートするものもある。
 **terra** の `rast()` コマンドは、レイヤが 1 つだけのファイルが提供された場合、1 つのレイヤで読み込む。
 
@@ -289,16 +289,18 @@ multilayer_rast = rast(multilayer_filepath)
 これまでの例はすべて、ハードディスクに保存されているファイルから空間情報を読み取るものであった。 
 しかし、GDAL は HTTP/HTTPS/FTP の Web リソースなど、オンラインのリソースから直接データを読み込むことも可能である。
 あとは、ファイルへのパスの前に `/vsicurl/` というプレフィックスを付けるだけである。
-試しに、2000年から2012年までの 500 m 解像度での全球の月別積雪確率に接続してみよう [@hengl_t_2021_5774954]。
+試しに、2000年から2012年までの 500 m 解像度での全球の月別積雪確率に接続してみよう。
 12月の積雪確率は、COG (Cloud Optimized GeoTIFF) ファイル (Section \@ref(file-formats)) として、[zenodo.org](https://zenodo.org/record/5774954/files/clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif) に保存されている。
 オンラインファイルを読むには、そのURLと `/vsicurl/` プレフィックスを指定するだけである。
 
-```{r}
-myurl = "/vsicurl/https://zenodo.org/record/5774954/files/clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif"
+```{r, linewidth=80}
+myurl = paste0("/vsicurl/https://zenodo.org/record/5774954/files/",
+               "clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif")
 snow = rast(myurl)
 snow
 ```
 
+\index{COG} 
 入力データが COG であるため、実際にはこのファイルを RAM に読み込むのではなく、値を取得せずに接続を作成している。
 その値は、何らかの値に基づく操作 (例えば、`crop()` や `extract()`) を適用した場合に読み取られる。
 これにより、ファイル全体をダウンロードすることなく、データのごく一部だけを読み出すこともできるようになった。
@@ -329,7 +331,7 @@ snow_rey
 
 ### ベクタデータ
 
-\index{vector!data output}
+\index{べくた@ベクタ!でーたしゅつりょく@データ出力}
 ```{r 07-read-write-plot-27, echo=FALSE, results='hide'}
 world_files = list.files(pattern = "world*")
 file.remove(world_files)
@@ -350,10 +352,11 @@ write_sf(obj = world, dsn = "world.gpkg")
 write_sf(obj = world, dsn = "world.gpkg")
 ```
 
-ファイルを上書きする代わりに、`append = TRUE`、ファイルに新しいレイヤーを追加することができる。これは、GeoPackageを含むいくつかの空間フォーマットでサポートされている。
+ファイルを上書きする代わりに、引数 `layer` でファイルに新しいレイヤを追加することができる。
+これは、GeoPackage を含むいくつかの空間フォーマットでサポートされている。
 
 ```{r 07-read-write-plot-31, results='hide'}
-write_sf(obj = world, dsn = "world_many_layers.gpkg", append = TRUE)
+write_sf(obj = world, dsn = "world_many_layers.gpkg", layer = "second_layer")
 ```
 
 また、`write_sf()` と同等である、`st_write()` を使用することもできる。
@@ -379,11 +382,11 @@ file.remove(world_files)
 
 ### ラスタデータ  {#raster-data-write}
 
-\index{raster!data output}
+\index{らすた@ラスタ!でーたしゅつりょく@データ出力}
 `writeRaster()` 機能は、`SpatRaster` のオブジェクトをディスク上のファイルに保存する。 
 この関数は、出力データ型とファイルフォーマットに関する入力を期待するが、選択されたファイルフォーマットに固有のGDALオプションも受け付ける (詳しくは `?writeRaster` を参照)。
 
-\index{raster!data types}
+\index{らすた@ラスタ!でーたがた@データ型}
 ラスタを保存する際、**terra** パッケージは以下の7つのデータ形式を提供する：INT1U、INT2S、INT2U、INT4S、INT4U、FLT4S、FLT8S。^[
 R は 32 ビット符号なし整数をサポートしていないため、INT4U の使用は推奨されていない。
 ] データ型は、ディスクに書き込まれるラスタオブジェクトのビット表現を決定する (Table \@ref(tab:datatypes))。
@@ -437,14 +440,14 @@ GeoTIFF 形式の圧縮については、Paul Ramsey の [GeoTIFF 圧縮につ�
 
 ## オープンデータの取得  {#retrieving-data}
 
-\index{open data}
+\index{おーぷんでーた@オープンデータ}
 インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。^[例えば、自由に使える地理データの長いサイト一覧が https://freegisdata.rtwilson.com/ にある。]
 同じデータセットにアクセスする場所が複数あるという意味で、ある意味、データは<u>多すぎる</u>くらいにある。
 一部のデータセットは品質が低い。
 そこで、最初に最も重要な情報源をいくつか紹介する。
 様々な「ジオポータル」 (地理空間データセットを提供するウェブサービス、 [Data.gov](https://catalog.data.gov/dataset?metadata_type=geospatial) など) は、幅広いデータを提供しているが、特定の場所についてのみ提供している場合が多い (この話題については、最新の [Wikipedia page](https://en.wikipedia.org/wiki/Geoportal) で説明されている)。
 
-\index{geoportals}
+\index{じおぽーたる@ジオポータル}
 グローバルなジオポータルの中には、この問題を克服しているものもある。
 例えば、[GEOSS portal](https://www.geoportal.org/) や [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) には、全世界をカバーするラスタデータセットを多数含んでいる。
 また、米国航空宇宙局 (NASA) が運営するポータルサイト [SEDAC](https://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
@@ -465,7 +468,7 @@ usa_parks = read_sf(dsn = "nps_boundary.shp")
 
 ## 地理データパッケージ  {#geographic-data-packages}
 
-\index{data packages}
+\index{でーたぱっけーじ@データパッケージ}
 地理データにアクセスするための R パッケージが多数開発されており、その一部を Table \@ref(tab:datapackages) で紹介している。
 これらのパッケージは、1つまたは複数の空間ライブラリやジオポータルへのインターフェースを提供し、コマンドラインからのデータアクセスをさらに高速化することを目的としている。
 
@@ -554,7 +557,7 @@ world3 = read_sf(system.file("shapes/world.gpkg", package = "spData"))
 
 最後の例、`system.file("shapes/world.gpkg", package = "spData")` は、**spData** パッケージの `"shapes/"` フォルダ内に格納されている `world.gpkg` ファイルへのパスを返す。
 
-\index{geocoding}
+\index{じおこーでぃんぐ@ジオコーディング}
 空間情報を得るもう一つの方法は、ジオコーディング (住所などの位置情報を座標に変換すること) である。
 これは通常、オンラインサービスに問い合わせを行い、その結果として位置情報を取得するものである。
 このようなサービスは数多く存在するが、使用するジオコーディングの方法、使用制限、コスト、API キーの要件などが異なっている。 
@@ -582,7 +585,7 @@ Chapter \@ref(gis) で紹介するように、地理データは地理ソフト�
 
 ## 地理メタデータ
 
-地理メタデータは地理情報管理の要であり、データセット、データ構造、サービスを記述するために使用される。
+地理メタデータは地理情報管理の要であり、データセット、データ構造、サービスを記述するために使用される。\{ちりめたでーた@地理メタデータ}
 メタデータはデータセットを FAIR (Findable, Accessible, Interoperable, Reusable) にするためのもので、ISO/OGC 標準、特に ISO 19115 標準とその基礎となるスキーマによって定義されている。
 これらの標準は、メタデータカタログを通じて扱われる空間データインフラで広く使用されている。
 
@@ -615,14 +618,14 @@ md = readISO19139("my_metadata.xml")
 
 ## 地理ウェブサービス  {#geographic-web-services}
 
-\index{geographic web services}
-空間データにアクセスするための Web API の標準化を目指して、Open Geospatial Consortium (OGC) は、Webサービス (OGC Web Services の略で OWS と総称) の標準仕様を多数策定している。
+\index{ちりうぇぶさーびす@地理ウェブサービス}
+空間データにアクセスするための Web API の標準化を目指して、Open Geospatial Consortium (OGC) は、Web サービス (OGC Web Services の略で OWS と総称) の標準仕様を多数策定している。
 これらのサービスは、[ISO/OGC Spatial Schema (ISO 19107:2019)](https://www.iso.org/standard/66175.html) や [Simple Features (ISO 19125-1:2004)](https://www.iso.org/standard/40114.html) のような地理情報をモデル化し、[Geographic Markup Language (GML)](https://www.iso.org/standard/75676.html)のようなデータをフォーマットするために開発されたコア標準を補完して使用する。
 これらの仕様は、データとメタデータの一般的なアクセスサービスをカバーしています。
-ベクトルデータは、Web Feature Service (WFS)\index{geographic web services!WFS}でアクセスでき、グリッド/画像は、Web Coverage Service (WCS)\index{geographic web services!WCS}でアクセスできる。
-Web Feature Service (WFS)\index{geographic web services!WFS} や Web Map Tile Service (WMTS)\index{geographic web services!WMTS} は、タイルのような地図画像にアクセスできる。
-メタデータは、Catalogue Service for the Web (CSW)\index{geographic web services!CSW} によってもカバーされる。
-最後に、標準的な処理は、Web Processing Service (WPS)\index{geographic web services!WPS} または Web Coverage Processing Service (WCPS)\index{geographic web services!WCPS} によって処理される。
+ベクトルデータは、Web Feature Service (WFS)\index{ちりうぇぶさーびす@地理ウェブサービス!WFS}でアクセスでき、グリッド/画像は、Web Coverage Service (WCS)\index{ちりうぇぶさーびす@地理ウェブサービス!WCS}でアクセスできる。
+Web Feature Service (WFS)\index{ちりうぇぶさーびす@地理ウェブサービス!WFS} や Web Map Tile Service (WMTS)\index{ちりうぇぶさーびす@地理ウェブサービス!WMTS} は、タイルのような地図画像にアクセスできる。
+メタデータは、Catalogue Service for the Web (CSW)\index{ちりうぇぶさーびす@地理ウェブサービス!CSW} によってもカバーされる。
+最後に、標準的な処理は、Web Processing Service (WPS)\index{ちりうぇぶさーびす@地理ウェブサービス!WPS} または Web Coverage Processing Service (WCPS)\index{ちりうぇぶさーびす@地理ウェブサービス!WCPS} によって処理される。
 
 様々なオープンソースプロジェクトがこれらのプロトコルを採用している。例えば、データハンドリ ングのための [GeoServer](https://geoserver.org/) や [MapServer](https://mapserver.org/)、メタデータハンドリングのための [GeoNetwork](https://geonetwork-opensource.org/) や [PyCSW](https://pycsw.org/) などがあり、クエリの標準化につながっている。
 [GeoNode](https://geonode.org/)、[GeOrchestra](https://www.georchestra.org/)、 [Examind](https://www.examind.com/) のような空間データ基盤 (Spatial Data Infrastructures, SDI) のための統合ツールも、これらの標準ウェブサービスを直接、または前述のオープンソースツールを利用して採用している。
@@ -633,7 +636,7 @@ OWS のサービスへのリクエスト方法はたくさんある。
 
 まず、**httr** パッケージを使った例で、ウェブサービスがどのように機能するかを理解しよう。
 最も基本的なものの 1 つが `getCapabilities` であり、以下の **httr** 関数 `GET()` と `modify_url()` で示されている。
-以下のコードチャンクは、API\index{API}  のクエリを作成しデータ取得する方法を示している。この場合、国連食糧農業機関 (Food and Agriculture Organization, UN-FAO) が運営するサービスの機能を確認することができる。
+以下のコードチャンクは、API\index{API} のクエリを作成しデータ取得する方法を示している。この場合、国連食糧農業機関 (Food and Agriculture Organization, UN-FAO) が運営するサービスの機能を確認することができる。
 
 ```{r 07-read-write-plot-8}
 library(httr)
@@ -726,7 +729,7 @@ vignette にも例がある。たとえば、[how to access raster data with the
 
 ## ビジュアル出力  {#visual-outputs}
 
-\index{map making!outputs}
+\index{ちずさくせい@地図作成!しゅつりょく@出力}
 R は、多くの静的および対話的なグラフィックス形式をサポートしている。
 静的プロットを保存する最も一般的な方法は、例えばグラフィックデバイスを開き、プロットを作成し、それを閉じることである。
 
@@ -739,7 +742,7 @@ dev.off()
 この他の利用可能なグラフィックデバイスには、`pdf()`、`bmp()`、`jpeg()`、`tiff()` がある。 
 出力プロットの幅、高さ、解像度など、いくつかのプロパティを指定することができる。
 
-\index{tmap (package)!saving maps}
+\index{tmap (package)!ちずのほぞん@地図の保存}
 さらに、いくつかのグラフィックパッケージは、グラフィック出力を保存するための独自の関数を提供している。
 例えば、**tmap** パッケージには、`tmap_save()` という関数がある。
 オブジェクト名と新規ファイルへのファイルパスを指定することで、`tmap` オブジェクトをさまざまなグラフィックフォーマットまたは HTML ファイルに保存することができる。
@@ -761,6 +764,6 @@ mapshot2(mapview_obj, file = "my_interactive_map.html")
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child('_08-ex.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
+res = knitr::knit_child('_08-ex-ja.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
 cat(res, sep = '\n')
 ```

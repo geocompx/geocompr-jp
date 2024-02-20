@@ -1,0 +1,82 @@
+```{r 08-ex-e0, message=FALSE}
+library(sf)
+library(terra)
+```
+
+E1. ベクタ、ラスタ、地理データベースの形式を 3 つ挙げて説明しなさい。
+
+```{asis 08-ex-e0-asis}
+Vector formats: Shapefile (old format supported by many programs), GeoPackage (more recent format with better support of attribute data) and GeoJSON (common format for web mapping).
+
+Raster formats: GeoTiff, Arc ASCII, ERDAS Imagine (IMG).
+
+Database formats: PostGIS, SQLite, FileGDB.
+```
+
+E2. **sf** 関数 `read_sf()` と `st_read()` の違いを 2 つ以上述べなさい。
+
+```{asis 08-ex-e2-asis}
+`read_sf()` は、`st_read()` のラッパである。つまり、裏で `st_read()` を呼び出している。違いは、`read_sf` は `quiet = TRUE`、`stringsAsFactors = FALSE`、`as_tibble = TRUE` である。
+
+- `read_sf()` は、デフォルトで `quiet`、つまりコンソールへの情報が少ない。
+- `read_sf()` は、デフォルトで tibble、つまりデータフレームに機能が追加されている。
+- `read_sf()` は、デフォルトで文字を因子に変換しない。
+
+違いを見るためには、関数のヘルプ (`?st_read`) にあるように、`nc = st_read(system.file("shape/nc.shp", package="sf"))` と `nc = read_sf(system.file("shape/nc.shp", package="sf"))` を実行してみる。
+```
+
+```{r 08-ex-e2}
+read_sf
+nc = st_read(system.file("shape/nc.shp", package="sf"))
+nc = read_sf(system.file("shape/nc.shp", package="sf"))
+```
+
+E3. パッケージ **spData** から `cycle_hire_xy.csv` ファイルを空間オブジェクトとして読みこみなさい (ヒント: `misc` フォルダにある)。
+読み込んだオブジェクトのジオメトリ型は何か?
+
+```{r 08-ex-e3}
+c_h = read.csv(system.file("misc/cycle_hire_xy.csv", package = "spData")) |> 
+  st_as_sf(coords = c("X", "Y"))
+c_h
+```
+
+E4. **rnaturalearth** を使ってドイツの国境をダウンロードし、`germany_borders` というオブジェクトを作りなさい。
+このオブジェクトを GeoPackage 形式のファイルに書き込みなさい。
+
+```{r 08-ex-e4}
+library(rnaturalearth)
+germany_borders = ne_countries(country = "Germany", returnclass = "sf")
+plot(germany_borders)
+st_write(germany_borders, "germany_borders.gpkg")
+```
+
+E5. **geodata** パッケージを用い、世界の月毎の最低気温を、空間解像度 5 分でダウンロードしなさい。
+6 月の値を抽出し、`tmin_june.tif` というファイルに保存しなさい (ヒント: `terra::subset()` を使う)。
+
+```{r 08-ex-e5}
+library(geodata)
+gmmt = worldclim_global(var = "tmin", res = 5, path = tempdir())
+names(gmmt)
+plot(gmmt)
+
+gmmt_june = terra::subset(gmmt, "wc2.1_5m_tmin_06")
+plot(gmmt_june)
+writeRaster(gmmt_june, "tmin_june.tif")
+```
+
+E6. ドイツの国境の性的地図を作成し、PNG ファイルとして保存しなさい。
+
+```{r 08-ex-e6}
+png(filename = "germany.png", width = 350, height = 500)
+plot(st_geometry(germany_borders), axes = TRUE, graticule = TRUE)
+dev.off()
+```
+
+E7. `cycle_hire_xy.csv` ファイルのデータを使ってインタラクティブ地図を作りなさい。
+この地図を `cycle_hire.html` に書き出しなさい。
+
+```{r 08-ex-e7, eval=FALSE}
+library(mapview)
+mapview_obj = mapview(c_h, zcol = "nbikes", legend = TRUE)
+mapshot(mapview_obj, file = "cycle_hire.html")
+```
