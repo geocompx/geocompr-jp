@@ -41,18 +41,18 @@ has_qgis_plugins =
 マウスで画面上のさまざまな場所をクリックする代わりに、コマンドを入力し、`Enter` を押すことで、コマンドを実行する。
 RStudio や VS Code などの対話型開発環境を使った作業では、通常ソースエディタでソースファイルに書き込み、`Ctrl+Enter` などのショートカットキーでコードの対話的実行を制御する。
 
-CLI は R だけのものではない。初期のコンピュータ環境は、おおむねコマンドライン「シェル」に依存しており、GUI\index{graphical user interface}  が一般的になったのは、コンピューターのマウスが普及した1990年代以降のことである。
+CLI は R だけのものではない。初期のコンピュータ環境は、おおむねコマンドライン「シェル」に依存しており、GUI\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} が一般的になったのは、コンピューターのマウスが普及した1990年代以降のことである。
 例えば、最も長い歴史を持つ GIS\index{GIS} プログラムの一つである GRASS GIS は、洗練された GUI [@landa_new_2008]  を獲得するまでは、主にコマンドラインでの対話に依存していた。
-ほとんどの GIS\index{GIS} パッケージは、グラフィカルユーザーインターフェイス (Grafical User Interface, GUI\index{graphical user interface} を採用している。
-QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS}、gvSIG を、システムターミナルや組み込み CLI\index{command-line interface} から操作することも<u>可能</u>であるが、「マウス操作」が一般的である。
+ほとんどの GIS\index{GIS} パッケージは、グラフィカルユーザーインターフェイス (Grafical User Interface, GUI)\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} を採用している。
+QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS}、gvSIG を、システムターミナルや組み込み CLI\index{こまんどらいんいんたーふぇーす@コマンドラインインターフェース} から操作することも<u>可能</u>であるが、「マウス操作」が一般的である。
 これは多くの GIS\index{GIS}  ユーザーがコマンドラインの利点を見逃していることを意味する。
 QGIS\index{QGIS} [@sherman_desktop_2008] の作成者によれば、
 
 > 「近代的」GIS ソフトウェアの発展に伴い、マウス操作を好む人がほとんどである。それはいいことであるが、コマンドラインには、とてつもない量の柔軟性とパワーが待っている。繰り返しコマンドラインで作業をする場合、同じことを GUI で行う場合よりも短い時間で行うことができる。
 
-「CLI vs GUI」\index{graphical user interface}  の議論は、敵対的になる必要はない。作業の内容 (フィーチャを描く時は GUI の方が優れている)、再現可能性、ユーザーのスキルセットに応じて、どちらの選択肢も利点はある。
+「CLI vs GUI」\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} の議論は、敵対的になる必要はない。作業の内容 (フィーチャを描く時は GUI の方が優れている)、再現可能性、ユーザーのスキルセットに応じて、どちらの選択肢も利点はある。
 GRASS GIS は、CLI をベースとしながらも GUI がある GIS の良い例である。
-同様に、R は CLI\index{command-line interface} であり、そして RStudio\index{RStudio} のような IDE\index{IDE} が GUI を提供することで、アクセシビリティを向上している。
+同様に、R は CLI\index{こまんどらいんいんたーふぇーす@コマンドラインインターフェース} であり、そして RStudio\index{RStudio} のような IDE\index{IDE} が GUI を提供することで、アクセシビリティを向上している。
 このように、ソフトウエアは CLI または GUI というように完全に分けられるものではない。
 しかしながら、CLI は以下のような重要な点があることは押さえておきたい。
 
@@ -62,7 +62,7 @@ GRASS GIS は、CLI をベースとしながらも GUI がある GIS の良い�
 - 将来性があり、かつ効率的なプログラミングスキルを身につけることができる
 - デジタル時代に必須のタッチタイピング
 
-一方、GUI ベースの GIS\index{GIS} システムにも有利な点がある。
+一方、GUI\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} ベースの GIS システムにも有利な点がある。
 
 - 学習曲線が「浅い」ので、新しい言語を何時間も学ぶことなく、地理データを探索し、可視化することができる
 - トレース、スナップ、トポロジーツールなど、「デジタイジング」 (新しいベクタデータセットの作成) のための優れたサポートを提供する^[**mapedit** パッケージは、R から開いたブラウザウィンドウでフィーチャを素早く編集することができるが、専門的で大規模な地図製作のデジタイズはできない。]
@@ -84,7 +84,7 @@ R はこの伝統を受け継ぎ、特に C++\index{C++}  などの多くの言�
 
 R は GIS として設計されたものではない。しかし、専用の GIS とのインターフェイスが可能なため、驚異的な地理空間能力を発揮する。
 GIS ブリッジを通すことで、R はさまざまな作業を実行でき、さらには CLI の持っている再現可能性、拡張性、生産性といった付加価値をもたらす。
-さらに、R は、インタラクティブ/アニメーションマップ作成 (Chapter \@ref(adv-map) 参照) や空間統計モデリング ( Chapter \@ref(spatial-cv) 参照) など、ジオコンピューティング\index{geocomputation}のいくつかの分野では GIS を凌駕する性能を有している。
+さらに、R は、インタラクティブ地図/地図アニメーション作成 (Chapter \@ref(adv-map) 参照) や空間統計モデリング ( Chapter \@ref(spatial-cv) 参照) など、ジオコンピュテーション\index{じおこんぴゅてーしょん@ジオコンピュテーション}のいくつかの分野では GIS を凌駕する性能を有している。
 
 この章では、Table \@ref(tab:gis-comp) にまとめた 3 つの成熟したオープンソース GIS 製品への「ブリッジ」に焦点を当てる。
 
@@ -92,7 +92,6 @@ GIS ブリッジを通すことで、R はさまざまな作業を実行でき�
 - SAGA\index{SAGA} (**Rsagacmd**\index{Rsagacmd (package)}; Section \@ref(saga))
 - GRASS GIS\index{GRASS GIS} (**rgrass**\index{rgrass (package)}; Section \@ref(grass))
 
-<!-- ここでは取り上げないパッケージもある。例えば、R パッケージの **RPyGeo** は、R から商用 GIS へアクセスすることができるが、もうメンテナンスされていない。 -->
 また、QGIS\index{QGIS} ([docs.qgis.org](https://docs.qgis.org/3.28/en/docs/training_manual/processing/r_intro.html) 参照) や GRASS GIS\index{GRASS GIS}  ([grasswiki.osgeo.org](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#R_within_GRASS) 参照) など GIS から R を実行する環境も開発されている。
 
 ```{r gis-comp, echo=FALSE, message=FALSE}
@@ -116,7 +115,7 @@ knitr::kable(
 # kableExtra::add_footnote(label = "Comparing downloads of different providers is rather difficult (see http://spatialgalaxy.net/2011/12/19/qgis-users-around-the-world), and here also useless since every Windows QGIS download automatically also downloads SAGA and GRASS GIS.", notation = "alphabet")
 ```
 
-また、R-GIS ブリッジを補完するために、３つのブリッジの後で空間ライブラリへのインタフェース (Section \@ref(gdal))、空間データベース\index{spatial database} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。 
+また、R-GIS ブリッジを補完するために、３つのブリッジの後で空間ライブラリへのインタフェース (Section \@ref(gdal))、空間データベース\index{くうかんでーたべーす@空間データベース} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。 
 
 ## **qgisprocess**: QGIS へのブリッジなど  {#rqgis}
 
@@ -192,15 +191,15 @@ qgis_providers()
 
 これで、R から QGIS などの地理計算をする準備ができた。
 それでは、2 つの事例を試してみよう。
-最初のものは、異なる境界線を持つ 2 つのポリゴンデータセットを和集合を作成 (union)\index{union} する方法を示している (Section \@ref(qgis-vector))。
+最初のものは、異なる境界線を持つ 2 つのポリゴンデータセットを和集合を作成 (union)\index{けつごう@結合 (union)} する方法を示している (Section \@ref(qgis-vector))。
 もう一つは、ラスタ (Section \@ref(qgis-raster)) で表現された数値標高モデルから新しい情報を導き出すことに重点を置いている。
 
 ### ベクタデータ  {#qgis-vector}
 
 異なる空間単位 (地域、行政単位など) を持つ2つのポリゴンオブジェクトがある場合を考えてみよう。
 この2つのオブジェクトを統合して、すべての境界線と関連する属性を含む1つのオブジェクトにすることが目標である。
-Section \@ref(incongruent) (Figure \@ref(fig:uniondata)) でも見た不整合なポリゴン\index{spatial congruence}を再び利用する。
-どちらのポリゴンデータセットも **spData** パッケージで提供されており、その両方に地理的な CRS \index{CRS!geographic} を使用したい (Chapter \@ref(reproj-geo-data) も参照)。
+Section \@ref(incongruent) (Figure \@ref(fig:uniondata)) でも見た不整合なポリゴン\index{くうかんせいごう@空間整合}を再び利用する。
+どちらのポリゴンデータセットも **spData** パッケージで提供されており、その両方に地理的な CRS\index{CRS!ちりてき@地理的} を使用したい (Chapter \@ref(reproj-geo-data) も参照)。
 
 ```{r 09-gis-4}
 data("incongruent", "aggregating_zones", package = "spData")
@@ -233,7 +232,7 @@ qgis_algo = qgis_algorithms()
 ```
 
 `qgis_search_algorithms()` 関数は、アルゴリズムを探すために使うことができる。
-関数の短い説明文に "union"\index{union}という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
+関数の短い説明文に "union"\index{けつごう@結合 (union)}という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
 
 ```{r, eval=has_qgis_plugins}
 qgis_search_algorithms("union")
@@ -250,12 +249,12 @@ qgis_search_algorithms("union")
 これによって、出力が長くなる。
 以下のコマンドは、各行に `"native:union"` が必要とする引数を表すデータフレームを返し、各列は名前、説明、種類、デフォルト値、とりうる値を示す。
 
-```{r 09-gis-6, eval=has_qgis_plugins}
+```{r 09-gis-6, eval=has_qgis_plugins, linewidth=80}
 alg = "native:union"
 union_arguments = qgis_get_argument_specs(alg)
 union_arguments
 #> # A tibble: 5 × 6
-#>   name    description qgis_type default_value available_values acceptable_values
+#>   name    description qgis_type default_value available_values acceptable_...
 #>   <chr>   <chr>       <chr>     <list>        <list>           <list>           
 #> 1 INPUT   Input layer source    <NULL>        <NULL>           <chr [1]>        
 #> 2 OVERLAY Overlay la… source    <NULL>        <NULL>           <chr [1]>        
@@ -265,8 +264,10 @@ union_arguments
 
 #> [[1]]
 #> [1] "A numeric value"                                                                                 
-#> [2] "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME field"                    
-#> [3] "expression:SOME EXPRESSION to use a data defined value calculated using a custom QGIS expression"
+#> [2] "field:FIELD_NAME to use a data defined value taken from the FIELD_NAME
+#>      field"                    
+#> [3] "expression:SOME EXPRESSION to use a data defined value calculated using
+#>      a custom QGIS expression"
 ```
 
 `union_arguments$name` の引数は、`INPUT`、`OVERLAY`、`OVERLAY_FIELDS_PREFIX`、`OUTPUT` である。
@@ -298,11 +299,11 @@ union
 union_sf = st_as_sf(union)
 ```
 
-QGIS\index{QGIS} の和集合 (union \index{vector!union}) の操作は、2つの入力レイヤーの交差 (intersect)\index{vector!intersection}  と対称差 (symmetrical difference) を用いて、2つの入力レイヤを1つのレイヤにマージすることに注意 (ちなみに、これは GRASS GIS\index{GRASS GIS} と SAGA\index{SAGA} でユニオン操作をするときのデフォルトでもある)。
-これは `st_union(incongr_wgs, aggzone_wgs)` とは**違う**  (演習参照)！
+QGIS\index{QGIS} の和集合 (union\index{べくた@ベクタ!けつごう@結合 (union)}) の操作は、2 つの入力レイヤーの交差 (intersect)\index{べくた@ベクタ!こうさ@交差 (intersection)}  と対称差 (symmetrical difference) を用いて、2 つの入力レイヤを 1 つのレイヤにマージすることに注意 (ちなみに、これは GRASS GIS\index{GRASS GIS} と SAGA\index{SAGA} でユニオン操作をするときのデフォルトでもある)。
+これは `st_union(incongr_wgs, aggzone_wgs)` とは**違う**  (演習参照)!
 
-その結果である `union_sf` は、2つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
-しかし、これらのポリゴンの多くは小さく、実際の領域を表しているわけではなく、2つのデータセットの細部が異なるために生じたものであることに注意しておこう。
+その結果である `union_sf` は、2 つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
+しかし、これらのポリゴンの多くは小さく、実際の領域を表しているわけではなく、2 つのデータセットの細部が異なるために生じたものであることに注意しておこう。
 こうした誤差によってできたものは、スライバー (sliver) ポリゴンと呼ばれている (Figure \@ref(fig:sliver) の左側のパネルにある赤い色のポリゴンを参照)。
 スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25000 m^2^ を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。
@@ -316,7 +317,7 @@ qgis_search_algorithms("clean")
 ```
 
 今回見つかったアルゴリズム (`v.clean`) は、QGIS ではなく、GRASS GIS\index{GRASS GIS} に含まれている。
-GRASS GIS の `v.clean` は、空間ベクタデータのトポロジーをクリーニング\index{topology cleaning}する強力なツールである。 
+GRASS GIS の `v.clean` は、空間ベクタデータのトポロジーをクリーニング\index{とぽろじーくりーにんぐ@トポロジークリーニング}する強力なツールである。 
 重要なのは、**qgisprocess** を通して使用できることである。
 
 前のステップと同様に、このアルゴリズムのヘルプを見るところから始めよう。
@@ -368,7 +369,7 @@ knitr::include_graphics("figures/10-sliver.png")
 
 ### ラスタデータ  {#qgis-raster}
 
-デジタル標高モデル (Digital Elevation Model, DEM)\index{digital elevation model} には、ラスタセルごとの標高情報が含まれている。
+デジタル標高モデル (Digital Elevation Model, DEM)\index{でじたるひょうこうもでる@デジタル標高モデル} には、ラスタセルごとの標高情報が含まれている。
 DEM は、衛星航法、水流モデル、表面分析、可視化など、さまざまな用途で使用されている。
 ここでは、DEM ラスタから統計学習における予測因子として利用可能な新しい情報を導き出してみたい。
 例えば、様々な地形パラメータは、地滑りの予測に役立つ (Chapter \@ref(spatial-cv) 参照)。
@@ -384,7 +385,7 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 
 **terra** パッケージの `terrain()` では、傾斜、アスペクト、TPI (*Topographic Position Index*)、TRI (*Topographic Ruggedness Index*)、粗さ、流れ方向など、地形の基本特性を算出することができる。
 とはいえ、GIS は、地形の特性に関する機能が他にもたくさんあり、文脈によってはより適しているものもある。
-例えば、地形湿潤指数 (Topologic Wetness Index, TWI) は、水文・生物学的プロセスの研究に有用であることがわかっている [@sorensen_calculation_2006]。
+例えば、地形湿潤指数 (Topologic Wetness Index, TWI)\index{ちけいしつじゅんしすう@地形湿潤指数} は、水文・生物学的プロセスの研究に有用であることがわかっている [@sorensen_calculation_2006]。
 このインデックスのアルゴリズムリストを、`"wetness"` というキーワードで検索してみよう。
 
 ```{r, eval=has_qgis_plugins}
@@ -399,8 +400,8 @@ qgis_search_algorithms("wetness") |>
 ```
 
 上記のコードの出力は、目的のアルゴリズムが SAGA\index{SAGA} ソフトウェアに存在することを示唆するものである。^[TWI は、GRASS GIS 関数 `r.topidx` でも計算可能。]
-SAGA はハイブリッド GIS であるが、主にラスタ処理、ここでは特にデジタル標高モデル \index{digital elevation model}   (土壌特性、地形属性、気候パラメータ) に重点を置いている。 
-したがって、SAGA は大規模な (高解像度の) ラスタ\index{raster}データセットの高速処理に特に優れている [@conrad_system_2015]。
+SAGA はハイブリッド GIS であるが、主にラスタ処理、ここでは特にデジタル標高モデル\index{でじたるひょうこうもでる@デジタル標高モデル} (土壌特性、地形属性、気候パラメータ) に重点を置いている。 
+したがって、SAGA は大規模な (高解像度の) ラスタ\index{らすた@ラスタ}データセットの高速処理に特に優れている [@conrad_system_2015]。
 
 `"sagang:sagawetnessindex"` アルゴリズムは、実際には修正された TWI であり、谷底に位置するセルに対してより現実的な土壌水分ポテンシャルをもたらすものである [@bohner_spatial_2006]。
 
@@ -436,7 +437,7 @@ options(qgisprocess.tmp_raster_ext = ".tif")
 Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マップを見ることができる。
 地形湿潤指数には単位がない。数値が小さいほど水がたまらず、数値が大きいほど水がたまるエリアであることを示す。
 
-また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon)\index{geomorphons} に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である [@jasiewicz_geomorphons_2013] 。
+また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon)\index{じおもるふぉん@ジオモルフォン} に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である [@jasiewicz_geomorphons_2013] 。
 これらの表現型は、地滑りしやすさ、生態系サービス、人間の移動性、デジタル土壌マッピングなど、多くの研究で利用されている。 
 
 ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass7:r.geomorphon"` として見つけることができる。
@@ -475,18 +476,18 @@ knitr::include_graphics("figures/10-qgis-raster-map.png")
 
 ## SAGA  {#saga}
 
-System for Automated Geoscientific Analyses (SAGA \index{SAGA} ; Table \@ref(tab:gis-comp) ) は、コマンドラインインタフェース \index{command-line interface}  ( Windows では `saga_cmd.exe`、Linux では単に `saga_cmd` ) を介して SAGA モジュールを実行する可能性を提供する ([SAGA wiki on modules](https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/) を参照)。
-また、Pythonインターフェース (SAGA Python API \index{API}  ) も用意されている。
+System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:gis-comp)) は、コマンドラインインタフェース\index{こまんどらいんいんたーふぇいす@コマンドラインインターフェイス} (Windows では `saga_cmd.exe`、Linux では単に `saga_cmd`) を介して SAGA モジュールを実行する可能性を提供する ([SAGA wiki on modules](https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/) を参照)。
+また、Pythonインターフェース (SAGA Python API\index{API}) も用意されている。
 **Rsagacmd**\index{Rsagacmd (package)} は、前者を使って R 内で SAGA\index{SAGA} を実行している。
 
-この Section では、**Rsagacmd** を使用して、SAGA の seeded region growing アルゴリズムを使って、2000年9月22日のペルーの Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure \@ref(fig:sagasegments) 左図)。^[リモートセンシング画像から NDVI を算出する方法については、Section \@ref(local-operations) を参照。]
+この Section では、**Rsagacmd** を使用して、SAGA\index{だんぺん@断片} の seeded region growing アルゴリズムを使って、2000年9月22日のペルーの Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure \@ref(fig:sagasegments) 左図)。^[リモートセンシング画像から NDVI を算出する方法については、Section \@ref(local-operations) を参照。]
 
 ```{r, eval=FALSE}
 ndvi = rast(system.file("raster/ndvi.tif", package = "spDataLarge"))
 ```
 
 **Rsagacmd** を始めるには、`saga_gis()` 関数を実行する必要がある。
-この関数は主に2つの目的がある。
+この関数は主に 2 つの目的がある。
 
 - 有効な SAGA ライブラリやツールへのリンクを含む新しいオブジェクトを動的に作成すること^[つまり、SAGA バージョンによってう使用できるライブラリが変わる。]
 - `raster_backend` (ラスタデータを扱う際に用いる R パッケージ)、`vector_backend` (ベクタデータを扱う際に用いる R パッケージ)、`cores` (処理に用いる CPU コアの最大数、デフォルトは all) など、一般的なパッケージオプションを設定すること
@@ -500,8 +501,8 @@ saga = saga_gis(raster_backend = "terra", vector_backend = "sf")
 これはライブラリ (ツールのグループ) のリストとして構成されており、ライブラリの内部にはツールのリストがある。
 どのツールにも `$` 記号でアクセスできる (TAB キーで自動補完することが可能)。
 
-シード領域拡大アルゴリズム\index{seeded region growing algorithm}は，主に2つのステップで動作する [@adams_seeded_1994;@bohner_image_2006]。
-まず、指定されたサイズのローカルウィンドウにおいて、最も分散の小さいセルを見つけることで、初期セル (seed) が生成される．
+シード領域拡大アルゴリズム\index{だんぺん@断片!しーどりょういきかくだいあるごりずむ@シード領域拡大アルゴリズム}は，主に 2 つのステップで動作する [@adams_seeded_1994;@bohner_image_2006]。
+まず、指定されたサイズのローカルウィンドウにおいて、最も分散の小さいセルを見つけることで、初期セル (seed) が生成される。\index{じこそうかん@自己送還!くうかん@空間}
 次に、領域成長アルゴリズムを用いて、seed の近傍画素をマージし、均質な領域を作成する。
 
 ```{r, eval=FALSE}
@@ -555,7 +556,7 @@ knitr::include_graphics("figures/10-saga-segments.png")
 演習で試すことができる。
 
 R には、似たような値を持つポリゴン (いわゆるセグメント) を作成するという目的を達成するための他のツールもある。
-いくつかの画像分割アルゴリズムを実行できる **SegOptim** パッケージ [@goncalves_segoptim_2019] や、地理空間データを扱うためにスーパーピクセルアルゴリズム SLIC を実装した **supercells** [@nowosad_extended_2022] などが含まれている。
+いくつかの画像分割アルゴリズムを実行できる **SegOptim** パッケージ [@goncalves_segoptim_2019] や、地理空間データを扱うためにスーパーピクセルアルゴリズム SLIC を実装した **supercells** [@nowosad_extended_2022] などが含まれている。\index{だんぺん@断片!すーぱーぴくせる@スーパーピクセル}
 
 ## GRASS GIS  {#grass}
 
@@ -567,38 +568,38 @@ GRASS は、入力データを内部データベースに格納する。
 ベクタデータに関して、GRASS GIS はデフォルトでトポロジカル GIS、すなわち隣接するフィーチャのジオメトリを一度だけ保存する。
 ベクタ属性の管理にはデフォルトで SQLite を用い、属性はキーによってジオメトリ、すなわち GRASS GIS データベースにリンクされる ([GRASS GIS vector management](https://grasswiki.osgeo.org/wiki/Vector_Database_Management#GRASS_GIS_vector_management_model))。
 
-GRASS GIS を使う前に、GRASS GIS データベース\index{spatial database}を (R からも) セットアップする必要があるが、このプロセスに少し戸惑うかもしれない。
+GRASS GIS を使う前に、GRASS GIS データベース\index{くうかんでーたべーす@空間データベース}を (R からも) セットアップする必要があるが、このプロセスに少し戸惑うかもしれない。
 まず、GRASS GIS のデータベースは専用のディレクトリを必要とし、そのディレクトリには location を置く必要がある (詳しくは [grass.osgeo.org](https://grass.osgeo.org/grass-stable/manuals/index.html) の [GRASS GIS Database](https://grass.osgeo.org/grass-stable/manuals/grass_database.html) ヘルプページを参照)。
 location には、1 つのプロジェクトまたは 1 つの領域のジオデータが格納される。
 通常、1 つの場所の中に、異なるユーザや異なるタスクを参照するいくつかのマップセットを存在させることができる。
 各 location には、PERMANENT マップセット (自動的に作成される必須のマップセット) もある。
 プロジェクトのすべてのユーザと地理データを共有するために、データベース所有者は PERMANENT マップセットに空間データを追加することができる。
 さらに、PERMANENT マップセットには、ラスタデータの投影法、空間範囲、およびデフォルトの解像度が格納される。
-まとめると、GRASS GIS データベースは多くの location を含み (1つのロケーションのデータはすべて同じ CRS を持つ)、それぞれの location は多くのマップセット (データセットのグループ) を格納することができる。
-GRASS GIS 空間データベース\index{spatial database}システムの詳細は、@neteler_open_2008 と [GRASS GIS quick start](https://grass.osgeo.org/grass-stable/manuals/helptext.html) を参照。
+まとめると、GRASS GIS データベースは多くの location を含み (1 つのロケーションのデータはすべて同じ CRS を持つ)、それぞれの location は多くのマップセット (データセットのグループ) を格納することができる。
+GRASS GIS 空間データベース\index{くうかんでーたべーす@空間データベース}システムの詳細は、@neteler_open_2008 と [GRASS GIS quick start](https://grass.osgeo.org/grass-stable/manuals/helptext.html) を参照。
 こkでは R から手軽に GRASS GIS を使うため **link2GI** パッケージを使う。しかし、GRASS GIS データベースを順番に作ることもできる。
 作り方は [GRASS within R](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#GRASS_within_R) を参照。
 以下の段落で解説するコードは、初めて GRASS GIS を使う方には難しいかもしれないが、コードを 1 行 1 行実行して途中の結果を確認することで、コードの元となる理由が明らかになる。
 
-ここでは、GIScience における最も興味深い問題の一つである巡回セールスマン問題 \index{traveling salesman}  を用いた **rgrass** \index{rgrass (package)}  を紹介する。
-ある巡回セールスマンが24件の顧客を訪問したいとする。
-さらに、自宅を起点とし、最短距離で25カ所を回りたいということであった。
+ここでは、GIScience における最も興味深い問題の一つである巡回セールスマン問題\index{じゅんかんせーるすまんもんだい@巡回セールスマン問題}  を用いた **rgrass** \index{rgrass (package)} を紹介する。
+ある巡回セールスマンが 24 件の顧客を訪問したいとする。
+さらに、自宅を起点とし、最短距離で 25 カ所を回りたいということであった。
 この問題に対する最適解は一つであるが、考えられる解をすべてチェックすることは、現代のコンピュータでは (ほとんど) 不可能である [@longley_geographic_2015]。
-この場合、可能な解の数は `(25 - 1)! / 2`、すなわち24の階乗を2で割った数に相当する (2 で割るのは、順方向と逆方向を区別しないため)。
+この場合、可能な解の数は `(25 - 1)! / 2`、すなわち 24 の階乗を 2 で割った数に相当する (2 で割るのは、順方向と逆方向を区別しないため)。
 1 回の繰り返しがナノ秒でも、`r format(factorial(25 - 1) / (2 * 10^9 * 3600 * 24 * 365))` 年間に相当する。
 幸いなことに、この想像を絶する時間のごく一部で実行できる、巧妙でほぼ最適なソリューションがある。
 GRASS GIS\index{GRASS GIS} は、これらの解決策の一つを提供する (詳細は、 [v.net.salesman](https://grass.osgeo.org/grass-stable/manuals/v.net.salesman.html)を参照)。
-今回の使用例では、ロンドンの街角にある最初の25の自転車ステーション (顧客の代わり) 間の最短経路\index{shortest route}を見つけたい (最初の自転車ステーションは、巡回セールスマン\index{traveling salesman}の自宅に相当すると単純に仮定する)。
+今回の使用例では、ロンドンの街角にある最初の 25 レンタルサイクルのステーション (顧客の代わり) 間の最短経路\index{さいたんけいろ@最短経路}を見つけたい (最初の自転車ステーションは、巡回セールスマン\index{じゅんかんせーるすまんもんだい@巡回セールスマン問題}の自宅に相当すると仮定する)。
 
 ```{r 09-gis-24}
 data("cycle_hire", package = "spData")
 points = cycle_hire[1:25, ]
 ```
 
-自転車ハイヤーポイントのデータの他に、この地域の道路網が必要である。
-OpenStreetMap\index{OpenStreetMap} から **osmdata**\index{osmdata (package)}  パッケージの助けを借りてダウンロードすることができる (Section \@ref(retrieving-data) も参照)。
+レンタルサイクルのステーションのデータの他に、この地域の道路網が必要である。
+OpenStreetMap\index{OpenStreetMap} から **osmdata**\index{osmdata (package)} パッケージの助けを借りてダウンロードすることができる (Section \@ref(retrieving-data) も参照)。
 そのために、道路網のクエリ (OSM 言語では "highway" とラベル付けされている) を `points` の bounding box \index{bounding box} に制限し、対応するデータを `sf`\index{sf} オブジェクトとして読み込む。
-`osmdata_sf()` は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連IDのみを保持する。^[読者のために、 `london_streets` は、`data("london_streets", package = "spDataLarge")` で使用できるようにしてある。]
+`osmdata_sf()` は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連 ID のみを保持する。^[読者のために、 `london_streets` は、`data("london_streets", package = "spDataLarge")` で使用できるようにしてある。]
 
 ```{r 09-gis-25, eval=FALSE}
 library(osmdata)
@@ -638,7 +639,7 @@ write_VECT(terra::vect(points[, 1]), vname = "points")
 (Coercion between object formats)[https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html] vignette を参照。] 
 
 現在、両方のデータセットが GRASS GIS のデータベースに存在している。
-ネットワーク\index{network}の解析を行うには、トポロジカルクリーン\index{topology cleaning}な道路ネットワークが必要である。
+ネットワーク\index{ねっとわーく@ネットワーク}の解析を行うには、トポロジカルクリーン\index{とぽろじーくりーにんぐ@トポロジークリーニング}な道路ネットワークが必要である。
 GRASS GIS の `"v.clean"` は、重複、小角、ダングルの除去などを行う。
 ここでは、後続のルーティングアルゴリズムが実際に交差点で右折または左折できるように、各交差点で改行し、その出力を `streets_clean` という名前の GRASS GIS オブジェクトに保存している。
 
@@ -654,8 +655,8 @@ GRASS GIS モジュールの引数やフラグについて学ぶには、`help` 
 例えば `execGRASS("g.region", flags = "help")` と試してみよう。
 ```
 
-サイクリング・ステーションのいくつかのポイントは、正確に街路セグメント上に位置しない可能性がある。
-しかし、それらの間の最短ルート\index{shortest route}を見つけるために、それらを最も近い道路セグメントに接続する必要がある。
+レンタルサイクルのステーションのいくつかのポイントは、正確に街路セグメント上に位置しない可能性がある。
+しかし、それらの間の最短経路\index{さいたんけいろ@最短経路}を見つけるために、それらを最も近い道路セグメントに接続する必要がある。
 `"v.net"`のconnect-operatorはまさにこれを行う。
 その出力を `streets_points_con` に保存する。
 
@@ -708,7 +709,7 @@ mapview::mapshot(m_1,
 
 その際、いくつか注意すべき点がある。
 
-- GRASS GIS の空間データベース\index{spatial database}を使えば、より高速に処理できた。
+- GRASS GIS の空間データベース\index{くうかんでーたべーす@空間データベース}を使えば、より高速に処理できた。
 しかし、ここでは最初に地理データを書き出した。
 そして、新しいオブジェクトを作成し、最終結果だけを R にインポートした。
 現在利用可能なデータセットを調べるには、`execGRASS("g.list", type = "vector,raster", flags = "p")` を実行する。
@@ -717,12 +718,12 @@ R にデータをインポートする前に、いくつかの (空間) 部分�
 ベクタデータには `"v.select"` と `"v.extract"` を使用する。
 `"db.select"` を使用すると、対応するジオメトリを返さずにベクタレイヤの属性テーブルの部分集合を選択することができる。
 - また、実行中の GRASS GIS\index{GRASS GIS} のセッションから R を起動することもできる [詳細は @bivand_applied_2013 を参照]。
-- GRASS GIS で提供されて入るジオアルゴリズム\index{geoalgorithm}の素晴らしいドキュメントは、 [GRASS GIS online help](https://grass.osgeo.org/grass-stable/manuals/) または `execGRASS("g.manual", flags = "i")` を参照。
+- GRASS GIS で提供されて入るジオアルゴリズム\index{じおあるごりずむ@ジオアルゴリズム}の素晴らしいドキュメントは、 [GRASS GIS online help](https://grass.osgeo.org/grass-stable/manuals/) または `execGRASS("g.manual", flags = "i")` を参照。
 
 ## いつ、何を使うべきか？
 
 R-GIS のインターフェースは、個人の好みや作業内容、GIS\index{GIS}  の使い方に依存するため、一概にお勧めすることはできないし、研究分野にもよるだろう。
-前述の通り、SAGA\index{SAGA} は大規模 (高解像度) ラスタ\index{raster}データセットの高速処理に特に優れており、水文学者、気候学者、土壌学者に頻繁に利用されている [@conrad_system_2015]。
+前述の通り、SAGA\index{SAGA} は大規模 (高解像度) ラスタ\index{らすた@ラスタ}データセットの高速処理に特に優れており、水文学者、気候学者、土壌学者に頻繁に利用されている [@conrad_system_2015]。
 一方、GRASS GIS\index{GRASS GIS} は、トポロジーに基づく空間データベースをサポートする唯一の GIS であり、ネットワーク分析だけでなくシミュレーション研究にも特に有用である。
 QGIS\index{QGIS} は、GRASS GIS や SAGA と比較して、特に初めて GIS を使う方にとって使いやすく、おそらく最も人気のあるオープンソースの GIS だと思われる。
 したがって、**qgisprocess**\index{qgisprocess (package)} は、ほとんどのユースケースに適切な選択である。
@@ -730,13 +731,13 @@ QGIS\index{QGIS} は、GRASS GIS や SAGA と比較して、特に初めて GIS 
 
 - 複数の GIS に統一的にアクセスできるため、重複した機能を含む 1000 以上のジオアルゴリズム ( Table \@ref(tab:gis-comp) ) を提供。例えば、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS} などのジオアルゴリズムを使ってオーバーレイ操作を実行することが可能である。
 - データフォーマットの自動変換 (SAGAは `.sdat` グリッドファイル、GRASS GIS は独自のデータベースフォーマットを使用するが、対応する変換は QGIS が行う。) 
-- 地理的な R オブジェクトを QGIS ジオアルゴリズム\index{geoalgorithm}に自動的に渡し、R に戻すことができる。
+- 地理的な R オブジェクトを QGIS ジオアルゴリズム\index{じおあるごりずむ@ジオアルゴリズム}に自動的に渡し、R に戻すことができる。
 - 名前付き引数、デフォルト値の自動取得をサポートする便利な機能 (**rgrass**\index{rgrass (package)} からインスパイアされた) 
 
 もちろん、他の R-GIS ブリッジを使用した方が良いケースもある。
 QGIS は、複数の GIS\index{GIS}  ソフトウェアパッケージへの統一インターフェースを提供する唯一の GIS であるが、対応するサードパーティのジオアルゴリズムのサブセットへのアクセスしか提供しない (詳細については、@muenchow_rqgis:_2017 を参照)。
 したがって、SAGA と GRASS GIS の関数一式を使用するには、**RSAGA**\index{RSAGA (package)} と **rgrass** 以外は使わない方が良い。
-また、ジオデータベース\index{spatial database}を用いてシミュレーションを行いたい場合 [@krug_clearing_2010]、**qgisprocess** が、呼び出しごとに常に新しい GRASS GIS セッションを開始するので、**rgrass** を直接使用してみよう。
+また、ジオデータベース\index{くうかんでーたべーす@空間データベース}を用いてシミュレーションを行いたい場合 [@krug_clearing_2010]、**qgisprocess** が、呼び出しごとに常に新しい GRASS GIS セッションを開始するので、**rgrass** を直接使用してみよう。
 最後に、地形データ、空間データベース管理機能 (マルチユーザーアクセスなど) が必要な場合は、GRASS GIS の利用を勧める。 
 
 なお、スクリプティング・インターフェースを持つ GIS ソフトウェアパッケージは以下のように数多くあるが、これらを利用できる専用の R パッケージはない: gvSig、OpenJump、Orfeo Toolbox。^[注記: **link2GI** は Orfeo Toolbox\index{Orfeo Toolbox} を部分的に統合しており、**qgisprocess** から Orfeo Toolbox アルゴリズムへアクセスすることもできる。TauDEM\index{TauDEM} は R パッケージの **traudem** からアクセスできる。]
@@ -744,7 +745,7 @@ QGIS は、複数の GIS\index{GIS}  ソフトウェアパッケージへの統�
 ## GDAL へのブリッジ  {#gdal}
 
 Chapter \@ref(read-write) で述べたように、GDAL\index{GDAL}  は多くの地理データ形式をサポートする低レベルのライブラリである。
-GDAL は非常に効果的なので、ほとんどのGISプログラムは、車輪の再発明や特注の読み書きコードを使用するのではなく、地理データのインポートとエクスポートのためにバックグラウンドで GDAL\index{GDAL}  を使用している。
+GDAL は非常に効果的なので、ほとんどの GIS プログラムは、車輪の再発明や特注の読み書きコードを使用するのではなく、地理データのインポートとエクスポートのためにバックグラウンドで GDAL\index{GDAL} を使用している。
 しかし、GDAL\index{GDAL} が提供するのは、データ入出力だけではない。
 ベクタデータとラスタデータの [geoprocessing tools](https://gdal.org/programs/index.html)、ラスタデータをオンラインで提供するための[タイル](https://gdal.org/programs/gdal2tiles.html#gdal2tiles)を作成する機能、ベクタデータの高速[ラスタ化](https://gdal.org/programs/gdal_rasterize.html#gdal-rasterize)がある。
 GDAL はコマンドラインツールであるため、R からは `system()` コマンドからアクセスすることができる。
@@ -794,13 +795,13 @@ TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-to
 
 ## 空間データベースへのブリッジ  {#postgis}
 
-\index{spatial database}
+\index{くうかんでーたべーす@空間データベース}
 空間データベース管理システム (空間 DBMS) は、空間および非空間データを構造化して保存する。
 大規模なデータの集合を、一意の識別子 (主キーと外部キー) および暗黙のうちに空間を介して関連するテーブル (エンティティ) に整理することができる (たとえば、空間結合を考えてみてみよう)。 
 地理的なデータセットはすぐに大きくなったり、乱雑になったりする傾向があるため、この機能は便利である。
-データベースは、空間および非空間フィールドに基づく大規模なデータセットの保存とクエリを効率的に行うことができ、マルチユーザーアクセスとトポロジー\index{topological relations}のサポートを提供する。
+データベースは、空間および非空間フィールドに基づく大規模なデータセットの保存とクエリを効率的に行うことができ、マルチユーザーアクセスとトポロジー\index{いそうかんけい@位相関係}のサポートを提供する。
 
-最も重要なオープンソースの空間データベース\index{spatial database}は PostGIS \index{PostGIS} である [@obe_postgis_2015]。^[
+最も重要なオープンソースの空間データベース\index{くうかんでーたべーす@空間データベース}は PostGIS\index{PostGIS} である [@obe_postgis_2015]。^[
 SQLite/SpatiaLite も確かに重要であるが、GRASS GIS\index{GRASS GIS} はバックグラウンドで SQLite を使っているので、暗黙のうちにこの方法をすでに導入している (Section \@ref(grass) を参照)。
 ]
 PostGIS\index{PostGIS} のような空間 DBMS への R ブリッジは重要で、数ギガバイトの地理データを RAM にロードすることなく、R セッションをクラッシュさせる可能性があるような巨大なデータストアにアクセスできる。
@@ -877,7 +878,7 @@ query = paste(
 buf = read_sf(conn, query = query)
 ```
 
-なお、これはおそらく読者がすでに知っている (`ST_Union()`\index{vector!union}、`ST_Buffer()`\index{vector!buffers}) を使った空間クエリであった。
+なお、これはおそらく読者がすでに知っている (`ST_Union()`\index{べくた@ベクタ!けつごう@結合 (union)}、`ST_Buffer()`\index{べくた@ベクタ!ばっふぁ@バッファ}) を使った空間クエリであった。
 また、**sf** パッケージにも同名のものがあるが、こちらは小文字になっている (`st_union()`、`st_buffer()`)。
 実際、**sf** パッケージの関数名は、PostGIS\index{PostGIS}  の命名規則にほぼ従っている。^[
 接頭語 `st` は、空間／時間を意味する。
@@ -950,13 +951,13 @@ PostgreSQL/PostGIS は、非常に難解なオープンソースの空間デー�
 
 近年、インターネット上では、クラウド技術の利用が目立ってきている。
 この中には、空間データの保存や処理に利用されることも含まれている。
-Amazon Web Services、Microsoft Azure / Planetary Computer、Google Cloud Platform などの主要なクラウドコンピューティングプロバイダ\index{cloud computing}は、Sentinel-2\index{Sentinel-2} アーカイブのようなオープンな地球観測データの巨大なカタログをプラットフォーム上で提供している。
+Amazon Web Services、Microsoft Azure / Planetary Computer、Google Cloud Platform などの主要なクラウドコンピューティングプロバイダ\index{くらうどこんぴゅーてぃんぐ@クラウドコンピューティング}は、Sentinel-2\index{Sentinel-2} アーカイブのようなオープンな地球観測データの巨大なカタログをプラットフォーム上で提供している。
 R を使えば、これらのアーカイブから直接データに接続し、処理することができる。理想的には、同じクラウドや地域のマシンから接続することができる。
 
-このような画像アーカイブをクラウド上で<u>より簡単</u>に、<u>より効率的</u>に利用するために、[SpatioTemporal Asset Catalog (STAC)](https://stacspec.org)\index{STAC}、[cloud-optimized GeoTIFF (COG)](https://www.cogeo.org/)\index{COG} 画像形式、データキューブ\index{data cube}が有望視されている。
+このような画像アーカイブをクラウド上で<u>より簡単</u>に、<u>より効率的</u>に利用するために、[SpatioTemporal Asset Catalog (STAC)](https://stacspec.org)\index{STAC}、[cloud-optimized GeoTIFF (COG)](https://www.cogeo.org/)\index{COG} 画像形式、データキューブ\index{でーたきゅーぶ@データキューブ}が有望視されている。
 Section \@ref(staccog) では、これらの個々の開発について紹介し、Rからどのように利用できるかを簡単に説明する。
 
-ここ数年、大規模なデータアーカイブをホストするだけでなく、地球観測データを処理するクラウドベースのサービス\index{cloud computing}も多数始まっている。
+ここ数年、大規模なデータアーカイブをホストするだけでなく、地球観測データを処理するクラウドベースのサービス\index{くらうどこんぴゅーてぃんぐ@クラウドコンピューティング}も多数始まっている。
 その中には、R を含むプログラミング言語と様々なクラウドサービスとの間の統一的なインタフェースである OpenEO イニシアチブも含まれている。
 OpenEO の詳細については、Section \@ref(openeo) を参照。
 
@@ -987,7 +988,7 @@ items = s |>
 ただし、データ提供者のカタログを閲覧する際には、COG が利用可能であることが大きなプラスになることを覚えておこう。
 
 領域が大きい時、要求された画像を扱うのはまだ比較的困難である。それらは異なる地図投影を使用することがあり、空間的に重なることがあり、空間解像度はしばしばスペクトルバンドに依存する。
-**gdalcubes** パッケージ\index{gdalcubes (package)} [@appel_gdalcubes_2019] は、個々の画像から抽象化し、画像コレクションを 4 次元データキューブ\index{data cube}として作成し処理するために使用することができる。
+**gdalcubes** パッケージ\index{gdalcubes (package)} [@appel_gdalcubes_2019] は、個々の画像から抽象化し、画像コレクションを 4 次元データキューブ\index{でーたきゅーぶ@データキューブ}として作成し処理するために使用することができる。
 
 以下のコードは、前回の STAC-API 検索で返された Sentinel-2 画像から、低解像度 (250m) の最大 NDVI コンポジットを作成する最小限の例を示している。
 
@@ -1016,22 +1017,22 @@ cube = raster_cube(collection, v) |>
 この場合、10% 以上のクラウドカバーがある画像は無視する。
 詳しくは、こちらの [OpenGeoHub サマースクール 2021 で発表したチュートリアル](https://appelmar.github.io/ogh2021/tutorial.html)を参照。^[STAC\index{STAC} を扱う別のパッケージとして、**rsi** がある。これは、指定した時間と位置の STAC 空間データを取得する。]
 
-STAC\index{STAC}、COGs\index{COG}、data cube\index{data cube} を組み合わせて、衛星画像の (大規模) コレクションをクラウド上\index{cloud computing}で解析するクラウドネイティブワークフローを形成する. 
+STAC\index{STAC}、COGs\index{COG}、データキューブ\index{でーたきゅーぶ@データキューブ} を組み合わせて、衛星画像の (大規模) コレクションをクラウド上\index{くらうどこんぴゅーてぃんぐ@クラウドコンピューティング}で解析するクラウドネイティブワークフローを形成する. 
 これらのツールは、例えば、大規模な地球観測データの土地利用や土地被覆の分類を可能にする **sits** パッケージ\index{sits (package)}のバックボーンを既に形成している。
 このパッケージは、クラウドサービスで利用可能な画像コレクションから EO データキューブを構築し、様々な機械学習と真相学習アルゴリズムを用いてデータキューブの土地分類を実行するものである。
 **sits** の詳細については、https://e-sensing.github.io/sitsbook/ または関連記事 [@rs13132428] を参照。
 
 ### openEO
 
-OpenEO [@schramm_openeo_2021]\index{openEO} は、データ処理のための共通言語を定義することによって、クラウドサービス間の相互運用性を支援するイニシアチブである。
+OpenEO [@schramm_openeo_2021]\index{OpenEO} は、データ処理のための共通言語を定義することによって、クラウドサービス間の相互運用性を支援するイニシアチブである。
 最初のアイデアは[r-spatial.org blog post](https://r-spatial.org/2016/11/29/openeo.html)で説明されており、ユーザーができるだけ少ないコード変更で簡単にクラウドサービス間を変更できるようにすることを目的としている。
-[標準化プロセス](https://processes.openeo.org)では、データへのインタフェースとして多次元データキューブモデル\index{data cube}を使用している。
+[標準化プロセス](https://processes.openeo.org)では、データへのインタフェースとして多次元データキューブモデル\index{でーたきゅーぶ@データキューブ}を使用している。
 8種類のバックエンドの実装が用意されており (https://hub.openeo.org)、ユーザーは R、Python、JavaScript、QGIS、Web エディタで接続し、コレクションに対してプロセスを定義 (およびチェーン) することができる。
 バックエンドによって機能や利用できるデータが異なるため、**openeo** R パッケージ [@lahn_openeo_2021] は接続されたバックエンドから利用できるプロセスとコレクションを動的にロードする。
 その後、ユーザーは画像コレクションのロード、プロセスの適用と連鎖、ジョブの送信、結果の探索とプロットを行うことができる。
 
 以下のコードは、[openEO platform backend](https://openeo.cloud/) に接続し、利用可能なデータセット、プロセス、出力フォーマットを要求し、Sentinel-2 データから最大 NDVI 画像を計算するプロセスグラフを定義し、最後にバックエンドにログインした後にグラフを実行する。
-openEO\index{openEO} プラットフォームのバックエンドには無料版があり、既存の機関やインターネットフォームのアカウントから登録することが可能である。
+openEO\index{OpenEO} プラットフォームのバックエンドには無料版があり、既存の機関やインターネットフォームのアカウントから登録することが可能である。
 
 ```{r 09-openeo-example, eval=FALSE}
 library(openeo)
@@ -1067,7 +1068,7 @@ compute_result(graph = result, output_file = tempfile(fileext = ".tif"))
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child("_10-ex.Rmd",
+res = knitr::knit_child("_10-ex-ja.Rmd",
   quiet = TRUE,
   options = list(include = FALSE, eval = FALSE)
 )
