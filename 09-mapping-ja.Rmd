@@ -44,7 +44,7 @@ nz_elev = rast(system.file("raster/nz_elev.tif", package = "spDataLarge"))
 ## イントロダクション  {#introduction-09}
 
 地理学的研究の満足度と重要性は、その結果を伝えることにある。
-地図作りは、コミュニケーションと細部への注意、そして創造力を必要とする古来の技術である。
+地図制作は、コミュニケーションと細部への注意、そして創造力を必要とする古来の技術である。\index{ちずせいさく@地図制作}
 R における静的マッピングは、Section \@ref(basic-map) で見たように、`plot()` 関数を使えば簡単にできる。
 R の基本メソッドを使って高度なマップを作成することも可能ではある [@murrell_r_2016]。
 しかし、この章の焦点は、専用の地図作成パッケージを使った地図作成にある。
@@ -58,12 +58,12 @@ R の基本メソッドを使って高度なマップを作成することも可
 
 > 素人が作ったような地図では、情報の重要性が伝わらず、専門家によるデータ調査をうまく表現できないことがある。
 地図は数千年前からさまざまな用途に使われてきた。
-歴史的な例としては、3000年以上前の古バビロニア王朝の建物や土地所有の地図、約2000年前のプトレマイオスの代表作<u>地理学</u>の世界地図などがある [@talbert_ancient_2014] .
+歴史的な例としては、3000年以上前の古バビロニア王朝の建物や土地所有の地図、約2000年前のプトレマイオスの代表作<u>地理学</u>の世界地図などがある [@talbert_ancient_2014]。\index{ちりがく@地理学}
 
 地図は、歴史的にエリートが自分のために作るか、あるいはエリートのために誰かが作る行為であった。
 しかし、R パッケージの **tmap** や QGIS\index{QGIS} の印刷レイアウトのようなオープンソースの地図作成ソフトが登場し、誰でも高品質の地図を作ることができるようになり、「市民科学」が可能になったことで、状況は一変した。
 また、ジオコンピュテーションの研究成果をわかりやすく紹介するためには、地図が最適な方法であることが多い。
-したがって、地図作成はジオコンピュテーション\index{geocomputation}の重要な一部であり、世界を記述するだけでなく、世界を<u>変えること</u>にも重点を置いているのである。
+したがって、地図作成はジオコンピュテーション\index{じおこんぴゅてーしょん@ジオコンピュテーション}の重要な一部であり、世界を記述するだけでなく、世界を<u>変えること</u>にも重点を置いているのである。
 
 この章では、さまざまな地図の作り方を紹介する。
 次のセクションでは、美観への配慮、ファセット、差し込み地図 (inset map) など、さまざまな静的マップについて説明する。
@@ -72,7 +72,7 @@ R の基本メソッドを使って高度なマップを作成することも可
 
 ## 静的地図  {#static-maps}
 
-\index{map making!static maps}
+\index{ちずさくせい@地図作成!せいてきちず@静的地図}
 ジオコンピュテーションの視覚的な出力として最も一般的なのが静止地図であろう。
 標準的なフォーマットとしては、ラスタ出力用に `.png`、ベクタ出力用に `.pdf` がよく用いられる。
 当初、R が作成できる地図の種類は静的地図だけだった。
@@ -93,7 +93,7 @@ Base R のアプローチは拡張可能で、`plot()` は何十もの引数を�
 
 ### tmap の基礎知識  {#tmap-basics}
 
-\index{tmap (package)!basics}
+\index{tmap (package)!きそ@基礎}
 **ggplot2**と同様に、**tmap** は「グラフィックの文法」という考えに基づいている [@wilkinson_grammar_2005]。
 各入力データセットは、地図上の位置 (データの `geometry` で定義)、色、その他の視覚的変数など、さまざまな方法で「マッピング」することができる。
 基本的な構成要素は `tm_shape()` (入力データ、ベクタまたはラスタのオブジェクトを定義する) で、その後に `tm_fill()` や `tm_dots()` などの 1 つまたは複数のレイヤ要素が続く。
@@ -119,6 +119,7 @@ source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-tmshape.R", p
 この場合、`tm_shape()` に渡されるオブジェクトは `nz` で、ニュージーランドの地域を表す `sf` オブジェクトである (`sf` オブジェクトについては Section \@ref(intro-sf) を参照)。
 `nz` を視覚的に表現するためにレイヤを追加し、`tm_fill()` と `tm_borders()` でそれぞれ Figure \@ref(fig:tmshape) の陰影部分 (左図) と枠線 (中図) を作成している。
 
+\index{ちずさくせい@地図作成!れいや@レイヤ}
 これは、直感的な地図作りの手法である。
 新しいレイヤを<u>追加する</u>一般的なタスクは、追加演算子 `+` とそれに続く `tm_*()` によって引き受けられる。
 アスタリスク(\*)は、以下のように名前から明らかなレイヤを指す。
@@ -183,6 +184,7 @@ map_nz3 = map_nz2 +
   tm_shape(nz_height) + tm_symbols()
 ```
 
+\index{ちずさくせい@地図作成!めたぷろっと@メタプロット}
 便利だがあまり知られていない **tmap** の機能として、`tmap_arrange()` がある。これは、複数の地図オブジェクトを一つの「メタプロット」に配置することができる。
 Figure \@ref(fig:tmlayers)は、`map_nz1` から `map_nz3` までをメタプロットしている例である。
 
@@ -195,8 +197,8 @@ tmap_arrange(map_nz1, map_nz2, map_nz3)
 
 ### 可視化の変数  {#visual-variables}
 
-\index{tmap (package)!aesthetics}
-\index{tmap (package)!visual variables}
+\index{ちずさくせい@地図作成!びかん@美観}
+\index{ちずさくせい@地図作成!かしかのへんすう@可視化の変数}
 前節のプロットは、**tmap** のデフォルトの美観セッティングを示してきた。
 `tm_fill()` と `tm_symbols()` のレイヤには灰色の影を使用し、`tm_lines()` で作成した線を表現するために、連続した黒い線を使用する。
 もちろん、これらのデフォルト値やその他の美観はオーバーライドすることができる。
@@ -258,15 +260,15 @@ tm_shape(nz) + tm_fill(fill = "Land_area")
 
 ### 縮尺  {#scales}
 
-\index{tmap (package)!scales}
+\index{tmap (package)!しゅくしゃく@縮尺}
 縮尺は、地図と凡例で値がどのように表示されるかを制御し、視覚的変数に大きく依存する。
 例えば、`col` という変数の場合、`col.scale` が空間オブジェクトの色が値にどう対応するかを制御する。`size` という変数の場合、`size.scale` は大きさが値にどう対応するかを制御する。
 デフォルトでは、`tm_scale()` が使われ、入力データ種別 (因子型、数値型、整数型) によって自動的に設定を選択する。
 
-\index{tmap (package)!color breaks}
+\index{tmap (package)!いろわけ@色分け}
 ポリゴンの塗りつぶしの設定によって縮尺がどのように機能するか見てみよう。
 カラー設定は、地図デザインの重要な要素である。Figure \@ref(fig:tmpal) に示すように、空間変動の描き方に大きな影響を与える可能性がある。
-これは、ニュージーランドの地域を中央値によって色分けする4つの方法を、左から右に示している (下のコードチャンクでも示している)。
+これは、ニュージーランドの地域を中央値によって色分けする 4 つの方法を、左から右に示している (下のコードチャンクでも示している)。
 
 - デフォルトの設定では、次の段落で説明する 'pretty' 区切りが使用される
 - `breaks` では、手動で区切りを設定することができる
@@ -292,7 +294,7 @@ source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-tmpal.R", pri
 例えば、`values` は、`fill.scale` or `col.scale` に対しては色のベクトル、パレット名、`size.scale` に対しては大きさのベクトル、`shape.scale` に対してはシンボルのベクトルを期待する。
 ```
 
-\index{tmap (package)!break styles}
+\index{tmap (package)!break}
 `tm_scale_` から始まる関数ファミリーを使うことで縮尺をカスタマイズすることもできる。
 最も重要なものは、`tm_scale_intervals()`、`tm_scale_continuous()`、`tm_scale_categorical()` である。
 
@@ -311,12 +313,12 @@ tm_shape(nz) + tm_fill(fill = "Land_area", fill.scale = tm_scale_continuous())
 tm_shape(nz) + tm_symbols(size = "Land_area", size.scale = tm_scale_intervals())
 ```
 
-\index{tmap (package)!interval scale}
+\index{tmap (package)!interval}
 `tm_scale_intervals()` 関数は、入力データ値を間隔セットに分割する。
 `breaks` を手動で設定する代わりに、`style` 引数で **tmap** に自動的にブレイクを作成するアルゴリズムを選択することもできる。
-以下は、よく使われる縮尺関数である (Figure \@ref(fig:break-styles))。
+デフォルトは `tm_scale_intervals(style = "pretty")` で、可能な限り整数に丸めて均等の間隔にする。
+その他のオプションは、Figure \@ref(fig:break-styles) に示している。
 
-- `style = "pretty"`: デフォルトの設定では、可能な限り改行を整数に丸め、均等にスペースを取る。
 - `style = "equal"`: 入力値を同じ範囲のビンに分割し、一様な分布を持つ変数に適している (結果のマップが色の多様性に乏しくなる可能性があるため、歪んだ分布を持つ変数には推奨されていない)。
 - `style = "quantile"`: 同じ数のオブザベーションが各カテゴリに入ることを保証する (ビンの範囲が広く変化する可能性があるというマイナス面を含む)。
 - `style = "jenks"`: データ中の類似した値のグループを識別し、カテゴリ間の差異を最大化する。
@@ -330,10 +332,10 @@ tm_shape(nz) + tm_symbols(size = "Land_area", size.scale = tm_scale_intervals())
 source("code/09-break-styles.R", print.eval = TRUE)
 ```
 
-\index{tmap (package)!continuous scale}
+\index{tmap (package)!continuous}
 `tm_scale_continuous()` 関数は、連続色フィールドの色を提示する。連続ラスタによく用いられる (Figure \@ref(fig:concat) 左図)。
 分布が偏っている場合に対して、`tm_scale_continuous_log()` や `tm_scale_continuous_log1p()` といった派生もある。
-\index{tmap (package)!categorical scale}
+\index{tmap (package)!categorical}
 最後に、`tm_scale_categorical()` は、カテゴリ値を代表し、各カテゴリに固有の色が割り当てられる (Figure \@ref(fig:concat) 右図)。
 
 ```{r concat, message=FALSE, fig.cap="**tmap** における連続スケールとカテゴリスケールの例", echo=FALSE, fig.width=8}
@@ -351,7 +353,7 @@ m_cat1 = tm_shape(nz) +
 tmap_arrange(m_cont1, m_cat1)
 ```
 
-\index{tmap (package)!palettes}
+\index{tmap (package)!いろぱれっと@色パレット}
 パレットは、ビンに関連付けられ、前述の `breaks`、`n`、`style` 引数で決定される色域を定義する。
 この引数には色ベクトルまたは新しい色パレット名を与えるが、`tmaptools::palette_explorer()` で対話的に選択することができる。
 プレフィックスとして `-` を付けると、パレットの順序を逆にすることができる。
@@ -361,7 +363,8 @@ tmap_arrange(m_cont1, m_cat1)
 例として、`tmap_options()$values.var` を実行してみよう。
 ```
 
-色パレット\index{map making!color palettes}は大きく分けて三種類ある。カテゴリ、連続、発散である (Figure \@ref(fig:colpal))。目的に応じてこの三種類を使い分ける。^[
+\index{いろぱれっと@色パレット}
+色パレット\index{ちずさくせい@地図作成!いろぱれっと@色パレット}は大きく分けて三種類ある。カテゴリ、連続、発散である (Figure \@ref(fig:colpal))。目的に応じてこの三種類を使い分ける。^[
 第四の色パレットとして二変量 (bivariate) がある。
 これは、地図上の二つの変数の関係を代表する。
 ]
@@ -423,7 +426,7 @@ many_palette_plotter(c(all_default_pals$div, all_default_pals$seq, all_default_p
 
 ### 凡例  {#legends}
 
-\index{tmap (package)!legends}
+\index{tmap (package)!はんれい@凡例}
 美観変数と設定を決定したのち、地図の凡例スタイルに注意を向けよう。
 `tm_legend()` 関数を使うと、タイトル、位置、方向を変えたり、あるいは非表示することができる。
 最も重要なのは`タイトル`で、凡例のタイトルとなる。
@@ -475,12 +478,12 @@ tmap_arrange(map_nza, map_nza2)
 
 ### レイアウト  {#layouts}
 
-\index{tmap (package)!layouts}
+\index{tmap (package)!れいあうと@レイアウト}
 地図レイアウトとは、すべての地図要素を組み合わせて、まとまりのある地図にすることである。
 地図要素には、マップされるオブジェクト、地図グリッド (メッシュ)、縮尺バー、タイトル、マージンなどがあり、前のセクションで説明したカラー設定は、地図の見え方に影響を与えるパレットとブレークポイントに関連している。
 どちらも微妙な変化をもたらすだろうが、地図が残す印象には同じように大きな影響を与える。
 
-経緯線網\index{tmap (package)!graticules}、方位記号\index{tmap (package)!north arrows}、スケールバー\index{tmap (package)!scale bars}、タイトルなどの整飾には、それぞれ `tm_graticules()`、`tm_compass()`、`tm_scalebar()`、`tm_title()` といった関数がある (Figure \@ref(fig:na-sb))。^[この他、`tm_grid()`、`tm_logo()`、`tm_credits()` がある。]
+経緯線網\index{tmap (package)!けいいせんもう@経緯線網}、方位記号\index{tmap (package)!ほういきごう@方位記号}、スケールバー\index{tmap (package)!すけーるばー@スケールバー}、タイトルなどの整飾には、それぞれ `tm_graticules()`、`tm_compass()`、`tm_scalebar()`、`tm_title()` といった関数がある (Figure \@ref(fig:na-sb))。^[この他、`tm_grid()`、`tm_logo()`、`tm_credits()` がある。]
 
 ```{r na-sb, message=FALSE, fig.cap="方位記号とスケールバーを追加した地図。", out.width="65%", fig.asp=1, fig.scap="Map with a north arrow and scale bar.", dev="ragg_png"}
 map_nz + 
@@ -498,7 +501,7 @@ map_nz + tm_layout(bg.color = "lightblue")
 map_nz + tm_layout(frame = FALSE)
 ```
 
-```{r layout1, message=FALSE, fig.cap="レイアウトオプションは、(左から) title、scale、bg.color、frame の各引数で指定。", fig.scap="Layout options specified by the tmap arguments.", echo=FALSE, fig.asp=0.56}
+```{r layout1, message=FALSE, fig.cap="レイアウトオプションは、(左から) scale、bg.color、frame の各引数で指定。", fig.scap="Layout options specified by the tmap arguments.", echo=FALSE, fig.asp=0.56}
 source("code/09-layout1.R", print.eval = TRUE)
 ```
 
@@ -515,21 +518,21 @@ source("code/09-layout1.R", print.eval = TRUE)
 source("code/09-layout2.R", print.eval = TRUE)
 ```
 
-### ファセット・マップ  {#faceted-maps}
+### ファセット地図  {#faceted-maps}
 
-\index{map making!faceted maps}
-\index{tmap (package)!faceted maps}
-ファセット・マップは「スモール・マルチプル」とも呼ばれ、多数のマップを横に並べ、時には縦に重ねて構成されている [@meulemans_small_2017]。
+\index{ちずさくせい@地図作成!ふぁせっとちず@ファセット地図}
+\index{tmap (package)!ふぁせっとちず@ファセット地図}
+ファセット地図は「スモール・マルチプル」とも呼ばれ、多数の地図を横に並べ、時には縦に重ねて構成する [@meulemans_small_2017]。
 ファセットは、空間的な関係が時間などの別の変数に対してどのように変化するかを視覚化することができる。
-例えば、集落の人口の変化を、各パネルが特定の時点の人口を表すファセット・マップで表現することができる。
+例えば、集落の人口の変化を、各パネルが特定の時点の人口を表すファセット地図で表現することができる。
 時間の次元は、色などの別の<u>視覚化に関する変数</u>で表現できる。
 しかし、これは複数のポイントが重なるため、地図が乱雑になる危険性がある (都市は移動しない！)。
 
-ファセット・マップでは、一つのジオメトリ・データの属性データのそれぞれの列に対して一つのファセットとなる (`sf` オブジェクトのデフォルトのプロット方法、Chapter \@ref(spatial-class) を参照)。
+ファセット地図では、一つのジオメトリ・データの属性データのそれぞれの列に対して一つのファセットとなる (`sf` オブジェクトのデフォルトのプロット方法、Chapter \@ref(spatial-class) を参照)。
 また、ファセットを用いて、点パターンの経時変化など、ジオメトリの変化を表現することもできる。
 このファセット化されたプロットの使用例を Figure \@ref(fig:urban-facet) に示す。
 
-```{r urban-facet, message=FALSE, fig.cap="国連による人口予測に基づき、1970年から2030年までの都市集積の上位30位までを示したファセット・マップ。", fig.scap="Faceted map showing urban agglomerations.", fig.asp=0.5}
+```{r urban-facet, message=FALSE, fig.cap="国連による人口予測に基づき、1970年から2030年までの都市集積の上位30位までを示したファセット地図。", fig.scap="Faceted map showing urban agglomerations.", fig.asp=0.5}
 urb_1970_2030 = urban_agglomerations |> 
   filter(year %in% c(1970, 1990, 2010, 2030))
 
@@ -540,7 +543,7 @@ tm_shape(world) +
   tm_facets_wrap(by = "year", nrow = 2)
 ```
 
-このコードでは、**tmap** で作成されたファセット・マップの主要なフィーチャを示している。
+このコードでは、**tmap** で作成されたファセット地図の主要な特徴を示している。
 
 - ファセット変数を持たないシェイプは繰り返される (この場合、`world` の国々)
 - 変数によって変化する `by` の引数 (この場合は `"year"`)
@@ -548,18 +551,18 @@ tm_shape(world) +
 
 あるいは、`tm_facets_grid()` 関数を使って 3 変数 `rows`、`columns`、`pages` からファセットを作る。
 
-ファセット・マップは、変化する空間的関係を示すのに有用なだけでなく、アニメーション・マップの基礎としても有用である (Section \@ref(animated-maps) 参照)。
+ファセット地図は、変化する空間的関係を示すのに有用なだけでなく、地図アニメーションの基礎としても有用である (Section \@ref(animated-maps) 参照)。
 
 ### 差し込み地図
 
-\index{map making!inset maps}
-\index{tmap (package)!inset maps}
+\index{ちずさくせい@地図作成!さしこみちず@差し込み地図}
+\index{tmap (package)!さしこみちず@差し込み地図}
 差し込み地図とは、メインマップの中や横に描画される小さなマップのことである。 
 コンテキストを提供したり (Figure \@ref(fig:insetmap1))、非連続な領域を接近させて比較を容易にしたり (Figure \@ref(fig:insetmap2))、様々な目的を果たすことが可能である。
 また、より小さなエリアに焦点を当てたり、地図と同じエリアを別のトピックでカバーしたりすることもできる。
 
-下の例では、ニュージーランドの南アルプスの中央部の地図を作成している。
-差し込み地図は、メインマップがニュージーランド全体に対してどのような位置にあるかを示すものである。
+下の例では、New Zealand の南アルプスの中央部の地図を作成している。
+差し込み地図は、メインマップが New Zealand 全体に対してどのような位置にあるかを示すものである。
 最初のステップは、関心のある領域を定義することである。これは、新しい空間オブジェクト `nz_region` を作成することで可能である。
 
 ```{r 08-mapping-16}
@@ -569,7 +572,7 @@ nz_region = st_bbox(c(xmin = 1340000, xmax = 1450000,
   st_as_sfc()
 ```
 
-ステップ 2 では、ニュージーランドの南アルプス周辺を示すベースマップを作成する。 
+ステップ 2 では、New Zealand の南アルプス周辺を示すベースマップを作成する。 
 ここは、最も重要なメッセージが述べられている場所である。 
 
 ```{r 08-mapping-17}
@@ -675,8 +678,8 @@ print(alaska_map, vp = grid::viewport(0.15, 0.15, width = 0.3, height = 0.3))
 
 ## 地図アニメーション  {#animated-maps}
 
-\index{map making!animated maps}
-\index{tmap (package)!animated maps}
+\index{ちずさくせい@地図作成!ちずあにめーしょん@地図アニメーション}
+\index{tmap (package)!ちずあにめーしょん@地図アニメーション}
 Section \@ref(faceted-maps) で紹介されているファセット・マップは、変数の空間分布が (例えば時間経過とともに) どのように変化するかを示すことができるが、このアプローチには欠点がある。
 ファセットは数が多いと小さくなる。
 さらに、画面やページ上で各ファセットが物理的に分離しているため、ファセット間の微妙な差異を検出することが難しい。
@@ -742,11 +745,11 @@ if (knitr::is_latex_output()){
 }
 ```
 
-## インタラクティブ・マップ  {#interactive-maps}
+## インタラクティブ地図  {#interactive-maps}
 
-\index{map making!interactive maps}
-\index{tmap (package)!interactive maps}
-静止画やアニメーションの地図は、地理データセットを盛り上げることができるが、インタラクティブな地図は、それらを新しいレベルに引き上げることができる。
+\index{ちずさくせい@地図作成!いんたらくてぃぶちず@インタラクティブ地図}
+\index{tmap (package)!いんたらくてぃぶちず@インタラクティブ地図}
+静止画や地図アニメーションは、地理データセットを盛り上げることができるが、インタラクティブな地図は、それらを新しいレベルに引き上げることができる。
 インタラクティブ性には様々な形態があるが、最も一般的で有用なのは、地理データセットのどの部分でもパンしたりズームしたりして、「ウェブ地図」の上に重ねてコンテキストを表示す機能である。
 より高度なインタラクティブ性のレベルとしては、さまざまなフィーチャをクリックすると表示されるポップアップ、つまりインタラクティブラベルのようなものがある。
 より高度なインタラクティブ機能としては、下記の **mapdeck** の例で示したように、地図を傾けたり回転させたりする機能や、ユーザーがパンやズームをすると自動的に更新される「動的にリンクした」サブプロット [@pezanowski_senseplace3_2018]  を提供する機能などが挙げられる。
@@ -938,7 +941,7 @@ if (knitr::is_latex_output() || knitr::is_html_output()){
 
 ## 地図アプリ  {#mapping-applications}
 
-\index{map making!mapping applications}
+\index{ちずさくせい@地図作成!ちずあぷり@地図アプリ}
 Section \@ref(interactive-maps) で示されたインタラクティブなウェブマップは、遠くまで行くことができる。
 表示すレイヤを慎重に選択し、ベースマップとポップアップを使用することで、ジオコンピュテーションを含む多くのプロジェクトの主な結果を伝えることができる。
 しかし、ウェブマッピングというアプローチでインタラクティブ性を追求することには限界がある。
@@ -1218,7 +1221,7 @@ tmap_arrange(carto_map3, carto_map4, carto_map_34legend,
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child('_09-ex.Rmd', quiet = TRUE, 
+res = knitr::knit_child('_09-ex-ja.Rmd', quiet = TRUE, 
                         options = list(include = FALSE, eval = FALSE))
 cat(res, sep = '\n')
 ```
