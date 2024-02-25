@@ -1,0 +1,72 @@
+```{r 13-ex-e0, message=FALSE}
+library(sf)
+library(spDataLarge)
+```
+
+E1. 本章で紹介した分析の多くでは、アクティブ (自転車のこと) という交通モードに焦点を当てたが、車でのトリップ についてはどうだろうか?
+
+  - `desire_lines` オブジェクトに含まれるトリップのうち、車でのトリップの割合は?
+  - 直線距離が 5 km 以上の`desire_lines`の割合は?
+  - 長さが 5 km 以上の希望線に含まれるトリップのうち、車で移動するトリップの割合は?
+  - 長さが 5 km 未満で、移動の 50% 以上が車である希望線をプロットする。
+  - これらの自動車に依存しながらも短い希望線の位置について、何か気づくことはあるか?
+
+```{r 13-e1, eval=FALSE, echo=FALSE}
+sum(desire_lines$car_driver) / sum(desire_lines$all)
+# 57%
+desire_lines_5km_plus = desire_lines |> 
+  filter(distance_km > 5)
+# Just over are half ar 5km+, 54%:
+nrow(desire_lines_5km_plus) / nrow(desire_lines)
+# 71 of 5km+ trips are made by car
+sum(desire_lines_5km_plus$car_driver) / sum(desire_lines_5km_plus$all)
+
+desire_lines_driving = desire_lines |> 
+  mutate(`Proportion driving` = car_driver / all) |> 
+  filter(`Proportion driving` > 0.5)
+nrow(desire_lines_5km_plus_driving) / nrow(desire_lines)
+
+desire_lines_5km_less_50_pct_driving = desire_lines |>
+  filter(distance_km <= 5) |> 
+  mutate(`Proportion driving` = car_driver / all) |> 
+  filter(`Proportion driving` > 0.5)
+desire_lines_5km_less_50_pct_driving |> 
+  tm_shape() +
+  tm_lines("Proportion driving")
+```
+
+E2. 最後の図に示されたすべてのルート (既存の自転車道から 100 m 以上離れた区間) が建設された場合、自転車道の長さはどの程度増加するか?
+
+```{r 13-transport-29, eval=FALSE, echo=FALSE}
+sum(st_length(route_network_no_infra))
+# 104193.6 [m]
+# Just over 100 km
+```
+
+E3. `desire_lines` に含まれるトリップのうち、`routes_short_scenario` に含まれるトリップの割合はいくらか?
+
+  - ボーナス: 全トリップのうち、`routes_short_scenario` を横切る希望線の割合は？
+
+```{r 13-transport-30, echo=FALSE, eval=FALSE}
+sum(routes_short_scenario$all) / sum(desire_lines$all) # 13%
+d_intersect = desire_lines[routes_short_scenario, , op = st_crosses]
+sum(d_intersect$all) / sum(desire_lines$all) # 88%
+```
+
+E4. 本章で紹介する分析は、ジオコンピュテーションの手法をどのように交通研究に応用できるかを教えるためのものである。
+実際に政府機関や交通コンサルタント会社でこのようなことをする場合、どの点が変わるだろうか? 大きいものから 3 点述べなさい。
+
+```{r}
+# Higher level of geographic resolution.
+# Use cycle-specific routing services.
+# Identify key walking routes.
+# Include a higher proportion of trips in the analysis
+```
+
+E5. 最後の図で特定されたルートは、明らかに、全体像の一部を示しているに過ぎない。
+どのように分析を拡張するか?
+
+E6. カーフリーゾーン、駐輪ポイント、減車戦略など、場所ベースのサイクリング政策に投資するための主要な**エリア** (ルートではない) を作成することによって、シナリオを拡張したいと想像する。
+ラスタ\index{らすた@ラスタ}データセットは、この作業をどのように支援できるか?
+
+  - ボーナス: Bristol 地域を 100 のセル（10 × 10）に分割し、それぞれの道路の平均制限速度を `bristol_ways` データセットから推定するラスタレイヤを開発しなさい (Chapter \@ref(location) 参照)。

@@ -46,7 +46,7 @@ identical(nz_u1, nz_u3$geom)
 Base R の `aggregate()` 関数を使うか、**dplyr** の `summarise()` を使うかは好みの問題であるが、後者の方が読みやすいだろう。
 
 つまり、R で地理データを扱う場合、たとえ 1 つのパッケージであっても、複数の選択肢から選ぶことができる場合が多いということである。
-R のパッケージが増えれば、さらに選択肢は広がる。例えば、古いパッケージの **sp** を使っても同じ結果を得ることができる。
+R のパッケージが増えれば、さらに選択肢は広がる。例えば、古いパッケージの **sp** を使っても同じ結果を得ることができる。\index{sp (package)}
 しかしながら、良いアドバイスをしたいという本書のゴールに従うと、パフォーマンスもよく将来性のある **sf** パッケージを推奨する。
 このことは、本書のすべてのパッケージに当てはまるが、他の手段の存在を知って自分の選択について正当化できることは、(邪魔にならない程度に) 役に立つことがある。
 
@@ -113,22 +113,22 @@ length(spdeps) # 463
 
 ## ギャップとオーバーラップ  {#gaps}
 
-ジオコンピュテーションは巨大な分野であり、多くのギャップがあることは避けられない。
+ジオコンピュテーションは巨大な分野であり、多くのギャップがあることは避けられない。\index{じおこんぴゅてーしょん@ジオコンピュテーション}
 特定にトピックやテクニック、パッケージを意図的に強調し、あるいは省略するなど、選択的に行っている。
 地理データの操作、座標参照系の基本、データの読み書き、可視化技術など、実際のアプリケーションで最もよく必要とされるトピックを重視するよう努めた。
 また、本書は、ジオコンピュテーションに必要なスキルを身につけ、さらに高度なトピックや特定のアプリケーションに進む方法を紹介することを目的としており、いくつかのトピックやテーマは何度も登場する。
 
 また、他で深く取り上げられているトピックをあえて省略した。
-例えば、点パターン解析、空間補間 (クリギング)、空間回帰といった空間データの統計的モデリングは、機械学習の文脈で Chapter \@ref(spatial-cv) で触れているが、詳細には触れていない。
+例えば、点パターン解析\index{てんぱたーんかいせき@点パターン解析}、空間補間\index{くうかんほかん@空間補間} (例えばクリギング)、空間回帰\inde{くうかんかいき@空間回帰}といった空間データの統計的モデリングは、機械学習の文脈で Chapter \@ref(spatial-cv) で触れているが、詳細には触れていない。
 これらの手法については、@pebesma_spatial_2023 の統計学的指向の章や、ポイントパターン分析に関する書籍 [@baddeley_spatial_2015]、空間データに適用するベイズ手法 [@gomez-rubio_bayesian_2020;@moraga_spatial_2023]、健康 [@moraga_geospatial_2019] や[山火事深刻度分析](https://bookdown.org/mcwimberly/gdswr-book/application---wildfire-severity-analysis.html) など特定のアプリケーションに焦点を当てた書籍といった優れた資料がすでに存在している [@wimberly_geographic_2023]。
 その他の話題としては、リモートセンシングや、GIS 専用ソフトと並行しての R の利用 (ブリッジとしてではなく) などが挙げられるが、これらは限定的である。
 これらの話題については、[R におけるリモートセンシングについての議論](https://github.com/r-spatial/discuss/issues/56)、@wegmann_remote_2016 や [Marburg University](https://geomoer.github.io/moer-info-page/courses.html) から入手できる GIS 関連教材など、多くの資料がある。
 
-Chapter \@ref(spatial-cv) と Chapter \@ref(eco) で空間統計推論よりも機械学習に焦点を当てたのは、このトピックに関する質の高いリソースが豊富にあるためである。
+Chapter \@ref(spatial-cv) と Chapter \@ref(eco) で空間統計推論よりも機械学習に焦点を当てたのは、このトピックに関する質の高いリソースが豊富にあるためである。\index{とうけいすいろん@統計推論}
 これらのリソースには、生態系のユースケースに焦点を当てた @zuur_mixed_2009、@zuur_beginners_2017、そして [css.cornell.edu/faculty/dgr2](https://css.cornell.edu/faculty/dgr2/teach/) でホストされている *Geostatistics & Open-source Statistical Computing* の自由に利用できる教材とコードがある。
 [*R for Geographic Data Science*](https://sdesabbata.github.io/r-for-geographic-data-science/) では、地理データサイエンスとモデリングのための R の紹介をしている。
 
-また、「ビッグデータ」(ハイスペックなラップトップに収まらないデータセットという意味) に対するジオコンピュテーションはほとんど省略している。
+また、「ビッグデータ」(ハイスペックなラップトップに収まらないデータセットという意味) に対するジオコンピュテーションはほとんど省略している。\index{びっぐでーた@ビッグデータ}
 この決定は、一般的な研究や政策アプリケーションに必要な地理的データセットの大部分は、個人用ハードウェアに収まるという事実によって正当化される (Section \@ref(cloud) 参照)。
 コンピュータの RAM を増やしたり、[GitHub Codespaces: 本書のコードを実行可能](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=84222786&machine=basicLinux32gb&devcontainer_path=.devcontainer.json&location=WestEurope) のようなプラットフォームで利用できる計算能力を一時的に「借りる」ことは可能である。
 さらに、小さなデータセットで問題を解くことを学ぶことは、巨大なデータセットで問題を解くための前提条件であり、本書で強調しているのは「始めること」であり、ここで学んだスキルは大きなデータセットに移行したときに役立つものである。
@@ -187,13 +187,13 @@ Chapter \@ref(gis) で紹介した空間データベースは、メモリで処�
 - 大型・汎用プログラミングQ&amp;Aサイト [stackoverflow.com](https://stackoverflow.com/)
 - [RStudio Community](https://community.rstudio.com/)、[rOpenSci Discuss](https://discuss.ropensci.org/) ウェブフォーラム、 [Stan](https://discourse.mc-stan.org/) フォーラムなど、特定のソフトウェアツールに関連するフォーラムなど、特定のエンティティに関連するオンラインフォーラム。
 - GitHub などのソフトウェア開発プラットフォームは、R-spatial パッケージの大半の課題トラッカーや、最近では **sfnetworks** パッケージに関する議論 (バグ報告だけでなく) を促すために作られた議論ページなどをホストしている ([luukvdmeer/sfnetworks/discussions](https://github.com/luukvdmeer/sfnetworks/discussions/)を参照)。
-- チャットルームやフォーラム [rOpenSci](https://ropensci.org/blog/2022/09/13/contributing-ropensci/) や [geocompx](https://geocompx.org) コミュニティ (これには質問をすることができる [Discord server](https://discord.com/invite/PMztXYgNxp) もある)。本書もここに関係している。
+- チャットルームやフォーラム [rOpenSci](https://ropensci.org/blog/2022/09/13/contributing-ropensci/) や [geocompx](https://geocompx.org) コミュニティ (これには質問をすることができる [Discord server](https://discord.com/invite/PMztXYgNxp) もある)。本書もここに関係している。\index{geocompx}
 - [OSGeoJapan のメーリングリスト](https://www.osgeo.jp/mailing_list) (日本語)
 - [r-wakalang Slack](https://github.com/tokyor/r-wakalang) (日本語)
 
 ### **reprex** による再現性の例  {#reprex}
 
-良い質問とは、明確に述べられた質問で、さらにアクセスしやすい完全に再現可能な例があるとよい (https://r4ds.hadley.nz/workflow-help.html も参照)。
+良い質問とは、明確に述べられた質問で、さらにアクセスしやすい完全に再現可能な例があるとよい (https://r4ds.hadley.nz/workflow-help.html も参照)。\index{さいげんせい@再現性}
 また、ユーザーの視点から「うまくいかなかった」コードを示した後、何を見たいかを説明することも有効である。
 再現可能な例を作成するための非常に便利なツールが、**reprex** パッケージである。
 予期せぬ動作を強調するために、問題を示す完全に再現可能なコードを書き、`reprex()`関数を使って、フォーラムや他のオンラインスペースに貼り付けられるようなコードのコピーを作成することができる。
@@ -256,7 +256,7 @@ Chapter \@ref(intro) で紹介されているように、ジオコンピュテ�
 R の強みは、科学的な再現性を重視し、学術研究において広く使用され、地理データの統計的モデリングを比類なくサポートすることから、特にジオコンピュテーションの定義に関連しています。
 さらに、他の言語やフレームワークを学ぶのはコンテキストスイッチというコストが発生するため、ジオコンピュテーションのための 1 つの言語を深く学ぶことを推奨する。
 ]
-*Python*、*C++*、*JavaScript*、*Scala*\index{Scala}、*Rust*\index{Rust} を使っても、同じ深さでジオコンピュテーションを勉強することができる。
+*Python*\index{Python}、*C++*、*JavaScript*、*Scala*\index{Scala}、*Rust*\index{Rust} を使っても、同じ深さでジオコンピュテーションを勉強することができる。
 それぞれが進化した地理空間能力を有している。
 例えば、Pythonのパッケージ [**rasterio**](https://github.com/rasterio/rasterio) は、この本で使われている **terra** パッケージを補足/置換できるものである。
 Python のジオコンピュテーションについては、[*Geocomputation with Python*](https://py.geocompx.org/) を参照。

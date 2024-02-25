@@ -1,0 +1,247 @@
+回答するには、以下のパッケージをアタッチすることとする (他のパッケージも必要に応じてアタッチする)。
+
+```{r 15-ex-e0, message=FALSE, warning=FALSE, eval=FALSE}
+library(sf)
+library(terra)
+library(data.table)
+library(dplyr)
+library(future)
+library(ggplot2)
+library(lgr)
+library(mlr3)
+library(mlr3learners)
+library(mlr3spatiotempcv)
+library(mlr3tuning)
+library(mlr3viz)
+library(progressr)
+library(qgisprocess)
+library(tictoc)
+library(vegan)
+```
+
+E1. コミュニティ行列のパーセンテージデータを使用して、NMDS\index{NMDS} を実行する。
+ストレス値を報告し、存在-不在データを使用して NMDS から取得したストレス値と比較します。
+この違いを説明するものは何か?
+
+```{r 15-ex-e1, message=FALSE, eval=FALSE}
+data("comm", package = "spDataLarge")
+pa = vegan::decostand(comm, "pa")
+pa = pa[rowSums(pa) != 0, ]
+comm = comm[rowSums(comm) != 0, ]
+set.seed(25072018)
+nmds_pa = vegan::metaMDS(comm = pa, k = 4, try = 500)
+nmds_per = vegan::metaMDS(comm = comm, k = 4, try = 500)
+nmds_pa$stress
+nmds_per$stress
+```
+
+```{asis 15-ex-e1-asis, message=FALSE}
+存在-不在値を使った NMDS は、パーセントを使ったもの `nmds_per$stress`) よりも良い結果 (`nmds_pa$stress`) を出した。
+これは一見意外に思えるかもしれない。
+一方、パーセント行列はより多くの情報とノイズの両方を含んでいる。
+もう一つの側面は、データの収集方法である。
+フィールドにいる植物学者を想像してみてほしい。
+被度 5% の植物と被度 10% の植物を区別することは可能だと思えるかもしれない。
+しかし、3 回しか検出されず、その結果被覆率が 0.0001% など非常に小さい草本種はどうだろう。
+別の草本種が 6 回検出されたとして、そのカバー率は 0.0002% だろうか？
+ここで重要なのは、フィールドキャンペーン中に指定されたパーセントデータは、データにない精度を反映している可能性があるということである。
+これはまたノイズをもたらし、順序付けの結果を悪化させる。
+それでも、ある種が他のプロットよりも高い頻度やカバー率を持っている場合は、単なる存在-不在データと比べて貴重な情報である。
+妥協案としては、ロンド尺度のようなカテゴリ尺度を使用することである。
+```
+
+E2. この章で使用したすべての予測ラスタ (集水勾配、集水面積) を計算し、`SpatRaster`オブジェクトに格納しなさい。
+そこに `dem` と `ndvi` を追加しなさい。\index{らすた@ラスタ}
+次に、プロファイルと接線曲率を計算し、追加の予測ラスタとして追加しなさい (ヒント: `grass7:r.slope.aspect`)。
+最後に、応答予測行列を構築しなさい。
+最初の NMDS\index{NMDS} 軸のスコア (存在-不在コミュニティ行列を使用したときの結果) を標高に従って回転させたものが応答変数を表し、`random_points`に結合とする (内側結合を使用する)。
+応答予測行列を完成させるために、環境予測ラスタ・オブジェクトの値を `random_points` に抽出しなさい。
+
+
+```{r 15-ex-e2, eval = FALSE}
+# まず、本章で使用した terrain 属性を計算
+library(dplyr)
+library(terra)
+library(qgisprocess)
+library(vegan)
+data("comm", "random_points", package = "spDataLarge")
+dem = terra::rast(system.file("raster/dem.tif", package = "spDataLarge"))
+ndvi = terra::rast(system.file("raster/ndvi.tif", package = "spDataLarge"))
+
+# 存在-不在行列を使う、空を削除
+pa = vegan::decostand(comm, "pa")
+pa = pa[rowSums(pa) != 0, ]
+
+# プラグインを使用
+qgisprocess::qgis_enable_plugins(c("grassprovider", "processing_saga_nextgen"))
+
+# 環境予測因子 (ep) 集水傾斜、集水域を計算する。
+ep = qgisprocess::qgis_run_algorithm(
+  alg = "sagang:sagawetnessindex",
+  DEM = dem,
+  SLOPE_TYPE = 1,
+  SLOPE = tempfile(fileext = ".sdat"),
+  AREA = tempfile(fileext = ".sdat"),
+  .quiet = TRUE)
+# 集水域、集水傾斜を読み込む
+ep = ep[c("AREA", "SLOPE")] |>
+  unlist() |>
+  terra::rast()
+# 列名を変更
+names(ep) = c("carea", "cslope")
+# すべてのラスタを同じオリジンに揃える
+origin(ep) = origin(dem)
+# dem と ndvi を multilayer SpatRaster オブジェクトに追加
+ep = c(dem, ndvi, ep) 
+ep$carea = log10(ep$carea)
+
+# 曲率を計算
+qgis_show_help("grass7:r.slope.aspect")
+curvs = qgis_run_algorithm(
+  "grass7:r.slope.aspect",
+  elevation = dem,
+  .quiet = TRUE)
+# 曲率を ep に追加
+curv_nms = c("pcurvature", "tcurvature")
+curvs = curvs[curv_nms] |>
+  unlist() |>
+  terra::rast()
+curvs = terra::app(curvs, as.numeric)
+names(curvs) = curv_nms
+ep = c(ep, curvs)
+random_points[, names(ep)] = 
+  # terra::extract は ID 列を追加するが、不要
+  terra::extract(ep, random_points) |>
+  select(-ID)
+elev = dplyr::filter(random_points, id %in% rownames(pa)) %>% 
+  dplyr::pull(dem)
+# NMDSを高度に応じて回転させる (湿度の代理)
+rotnmds = MDSrotate(nmds_pa, elev)
+# 最初の 2 軸を抽出
+sc = vegan::scores(rotnmds, choices = 1:2, display = "sites")
+rp = data.frame(id = as.numeric(rownames(sc)),
+                sc = sc[, 1])
+# 予測因子 (dem, ndvi, terrain attributes) を結合
+rp = dplyr::inner_join(random_points, rp, by = "id")
+# saveRDS(rp, "extdata/15-rp_exercises.rds")
+```
+
+E3. 空間交差検証\index{くろすばりでーしょん@クロスバリデーション!くうかんてき@空間的  CV}を使用して、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}と線形モデルのバイアス削減 RMSE を取得しなさい。
+ランダムフォレストのモデリングには、最適なハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}の組み合わせの推定 (50 回の反復によるランダム探索) を内部チューニングループに含めなさい。
+チューニングレベルを並列化しなさい。
+平均 RMSE\index{RMSE} を報告し、箱ひげ図を使用して、検索されたすべての RMSE を可視化しなさい。
+この課題は、mlr3の関数 `benchmark_grid()` と `benchmark()` (詳細は https://mlr3book.mlr-org.com/perf-eval-cmp.html#benchmarking を参照) を用いて解くのが最適。
+
+```{r 15-ex-e3, message=FALSE, eval=FALSE}
+library(dplyr)
+library(future)
+library(mlr3)
+library(mlr3spatiotempcv)
+library(mlr3learners)
+library(mlr3viz)
+library(paradox)
+library(ranger)
+
+# 前の演習を行っていない場合、以下を実行
+# rp = readRDS("extdata/15-rp_exercises.rds")
+
+# task を定義
+task = mlr3spatiotempcv::as_task_regr_st(
+  select(rp, -id, -spri),
+  target = "sc", 
+  id = "mongon")
+
+# 学習器を定義
+mlr3::mlr_learners
+# 線形モデル
+lrn_lm = mlr3::lrn("regr.lm", predict_type = "response")
+# ランダムフォレスト
+lrn_rf = mlr3::lrn("regr.ranger", predict_type = "response")
+# ランダムフォレストの AutoTuner を定義
+search_space = paradox::ps(
+  mtry = paradox::p_int(lower = 1, upper = ncol(task$data()) - 1),
+  sample.fraction = paradox::p_dbl(lower = 0.2, upper = 0.9),
+  min.node.size = paradox::p_int(lower = 1, upper = 10)
+)
+at_rf = mlr3tuning::AutoTuner$new(
+  learner = lrn_rf,
+  # 空間分割
+  resampling = mlr3::rsmp("spcv_coords", folds = 5),
+  # パフォーマンス計測
+  measure = mlr3::msr("regr.rmse"),
+  search_space = search_space,
+  # 50 回繰り返しのランダム探索
+  terminator = mlr3tuning::trm("evals", n_evals = 50),
+  tuner = mlr3tuning::tnr("random_search")
+)
+# リサンプリング戦略を定義
+rsmp_sp = mlr3::rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
+
+# ベンチマーク設計を作成
+design_grid = mlr3::benchmark_grid(
+  tasks = task,
+  learners = list(lrn_lm, at_rf),
+  resamplings = rsmp_sp)
+print(design_grid)
+# 外部ループを順次実行し、内部ループを並列化
+future::plan(list("sequential", "multisession"), 
+             workers = floor(future::availableCores() / 2))
+set.seed(10112022)
+# verbosity を下げる
+lgr::get_logger("mlr3")$set_threshold("warn")
+lgr::get_logger("bbotk")$set_threshold("info")
+# 注意: ベンチマークの実行には時間がかかる
+# よって、結果は以下のファイルに保存しておく
+# extdata/15-bmr-exercises.rds (下記参照)
+tictoc::tic()
+progressr::with_progress(expr = {
+  bmr = mlr3::benchmark(
+    design = design_grid,
+    # `resample()` と `benchmark()` の引数 `encapsulate` で、カプセル化
+    # かつフォールバック学習器をそれぞれの特徴なし学習器に設定する
+    # これは簡便性のためだけである
+    # それぞれの学習器を設定したりより細かく設定することも可能
+    # 
+    encapsulate = "evaluate",
+    store_backends = FALSE,
+    store_models = FALSE)
+})
+tictoc::toc()
+
+# 並列化を終了
+future:::ClusterRegistry("stop")
+# すでの結果は保存済み
+# saveRDS(bmr, file = "extdata/15-bmr_exercises.rds")
+# 非常に時間がかかるため、自分で空間 CV を実行したくない場合には
+# これを読み込む
+# bmr = readRDS("extdata/15-bmr_exercises.rds")
+
+# 平均 RMSE
+bmr$aggregate(measures = msr("regr.rmse"))
+# あるいは、計算する
+agg = bmr$aggregate(measures = msr("regr.rmse"))
+
+# 平均 rmse を考慮すると、lm の方がわずかに良い
+purrr::map(agg$resample_result, ~ mean(.$score(msr("regr.rmse"))$regr.rmse))
+# 中央値を見ると、ランダムフォレストの方がわずかに良い
+purrr::map(agg$resample_result, ~ median(.$score(msr("regr.rmse"))$regr.rmse))
+
+# 箱ひげ図を作成 (autoplot を使うには mlr3viz をアタッチする!)
+library(mlr3viz)
+autoplot(bmr, measure = msr("regr.rmse"))
+
+# 自動で行わない場合
+# AUROC 値を抽出し、data.table に保存
+d = purrr::map_dfr(agg$resample_result, ~ .$score(msr("regr.rmse")))
+# 箱ひげ図を作成
+library(ggplot2)
+ggplot(data = d, mapping = aes(x = learner_id, y = regr.rmse)) +
+  geom_boxplot(fill = c("lightblue2", "mistyrose2")) +
+  theme_bw() +
+  labs(y = "RMSE", x = "model")
+```
+
+```{asis 15-ex-e3-asis, message=FALSE}
+実際、`lm`は、少なくともランダムフォレスト・モデルと同程度のパフォーマンスを示す。したがって、はるかに理解しやすく、計算負荷が少ない (ハイパーパラメータの適合が不要) ので、好まれるべきである。
+しかし、使用したデータ集合は，オブザベーションと予測変数が小さくm応答-予測変数の関係も比較的線形であることに留意してほしい．
+```

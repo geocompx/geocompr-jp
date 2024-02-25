@@ -1,0 +1,237 @@
+```{asis 12-ex-asis1, message=FALSE}
+回答するには、以下のパッケージをアタッチすることとする (他のパッケージも必要に応じてアタッチする)。
+```
+
+```{r 12-ex-e0, message=FALSE, warning=FALSE, eval=FALSE}
+library(dplyr)
+# library(kernlab)
+library(mlr3)
+library(mlr3learners)
+library(mlr3extralearners)
+library(mlr3spatiotempcv)
+library(mlr3tuning)
+library(qgisprocess)
+library(terra)
+library(sf)
+library(tmap)
+```
+
+E1. `terra::rast(system.file("raster/ta.tif", package = "spDataLarge"))$elev` で読み込んだ `elev` データセットから、R-GIS ブリッジ (GIS ソフトウェアへのブリッジの章を参照) を用いて以下の地形属性を計算しなさい。
+
+  - 傾斜角度
+  - 平面曲率
+  - プロファイル曲率
+  - 集水域
+    
+```{r 12-ex-e1-1, eval=FALSE}
+# データをアタッチ
+dem = terra::rast(system.file("raster/ta.tif", package = "spDataLarge"))$elev
+
+algs = qgisprocess::qgis_algorithms()
+qgis_search_algorithms("curvature")
+alg = "sagang:slopeaspectcurvature"
+qgisprocess::qgis_show_help(alg)
+qgisprocess::qgis_get_argument_specs(alg)
+# terrain attributes (ta)
+out_nms = paste0(tempdir(), "/", c("slope", "cplan", "cprof"),
+                 ".sdat")
+args = rlang::set_names(out_nms, c("SLOPE", "C_PLAN", "C_PROF"))
+out = qgis_run_algorithm(alg, ELEVATION = dem, METHOD = 6, 
+                         UNIT_SLOPE = "[1] degree",
+                         !!!args,
+                         .quiet = TRUE
+                         )
+ta = out[names(args)] |> unlist() |> terra::rast()
+names(ta) = c("slope", "cplan", "cprof")
+# catchment area
+qgis_search_algorithms("[Cc]atchment")
+alg = "sagang:catchmentarea"
+qgis_show_help(alg)
+qgis_get_argument_specs(alg)
+carea = qgis_run_algorithm(alg,
+                           ELEVATION = dem, 
+                           METHOD = 4, 
+                           FLOW = file.path(tempdir(), "carea.sdat"))
+# transform carea
+carea = terra::rast(carea$FLOW[1])
+log10_carea = log10(carea)
+names(log10_carea) = "log10_carea"
+# add log_carea and dem to the terrain attributes
+ta = c(ta, dem, log10_carea)
+```
+
+E2. `slope`、`cplan`、`cprof`、`elev`、`log_carea` という新しい変数を追加し、対応する出力ラスタから `lsl` データフレーム (`data("lsl", package = "spDataLarge"`)) に値を抽出しなさい。
+
+```{r 12-ex-e2, eval=FALSE}
+# 
+# terrain attribute raster stack をアタッチ (前の演習で行っていない場合)
+data("lsl", package = "spDataLarge")
+ta = terra::rast(system.file("raster/ta.tif", package = "spDataLarge"))
+lsl = select(lsl, x, y, lslpts)
+# 値を点に抽出、predictor を作成
+lsl[, names(ta)] = terra::extract(ta, lsl[, c("x", "y")]) |>
+  select(-ID)
+```
+
+E3. 導き出された地形属性ラスタを GLM と組み合わせて、Figure 12.2に示すような空間予測マップを作成しなさい。
+`data("study_mask", "package="spDataLarge")` を実行すると、調査地域のマスクが添付される。
+
+```{r 12-ex-e3, eval=FALSE}
+# データをアタッチ (E1 と E2 で行っていない場合)
+# landslide points with terrain attributes and terrain attribute raster stack
+data("lsl", "study_mask", package = "spDataLarge")
+ta = terra::rast(system.file("raster/ta.tif", package = "spDataLarge"))
+
+# モデルに適合
+fit = glm(lslpts ~ slope + cplan + cprof + elev + log10_carea, 
+          data = lsl, family = binomial())
+
+# 予測を作成
+pred = terra::predict(object = ta, model = fit, type = "response")
+
+# 地図を作成
+lsl_sf = sf::st_as_sf(lsl, coords = c("x", "y"), crs = 32717)
+lsl_sf = sf::st_as_sf(lsl, coords = c("x", "y"), crs = 32717)
+hs = terra::shade(ta$slope * pi / 180,
+                  terra::terrain(ta$elev, v = "aspect", unit = "radians"))
+rect = tmaptools::bb_poly(raster::raster(hs))
+bbx = tmaptools::bb(raster::raster(hs), xlim = c(-0.00001, 1),
+                    ylim = c(-0.00001, 1), relative = TRUE)
+
+tm_shape(terra::mask(hs, study_mask), bbox = bbx) +
+  tm_grid(col = "black", n.x = 1, n.y = 1, labels.inside.frame = FALSE,
+          labels.rot = c(0, 90), lines = FALSE) +
+	tm_raster(col.scale = tm_scale(values = gray(0:100 / 100), n = 100),
+            col.legend = tm_legend_hide()) +
+	# 予測ラスタ
+  tm_shape(terra::mask(pred, study_mask)) +
+	tm_raster(col_alpha = 0.5,
+            col.scale = tm_scale(values = "Reds", n = 6),
+            col.legend = tm_legend(title = "Susceptibility")) +
+	# 矩形と外側マージン
+  tm_shape(rect) + 
+  tm_borders() +
+	tm_layout(legend.position = c("left", "bottom"),
+	          legend.title.size = 0.9)
+```
+
+E4. GLM 学習器に基づき、100 回繰り返した 5 フォールドの非空間クロスバリデーションと空間 CV を計算し、箱ひげ図を用いて両方のリサンプリング戦略からの AUROC 値を比較しなさい。
+
+ヒント: 非空間リサンプリング戦略を指定する必要がある。
+
+追加ヒント: `mlr3::benchmark()` と `mlr3::benchmark_grid()` を使って、練習問題 4 から 6 を一度に解くことができます (詳しくは https://mlr3book.mlr-org.com/chapters/chapter10/advanced_technical_aspects_of_mlr3.html#sec-fallback を参照)。
+その際、計算には非常に時間がかかり、おそらく数日かかることを覚悟しよう。
+もちろん、これはシステムに依存する。
+自由に使える RAM とコアが多ければ多いほど、計算時間は短くなる。
+
+```{r 12-ex-e4, eval=FALSE}
+# データをアタッチ (E1 と E2 で行っていない場合)
+data("lsl", package = "spDataLarge")  # landslide points with terrain attributes
+
+# task を作成
+task = TaskClassifST$new(
+  id = "lsl_ecuador",
+  backend = mlr3::as_data_backend(lsl), target = "lslpts", positive = "TRUE",
+  coordinate_names = c("x", "y"),
+  coords_as_features = FALSE,
+  crs = 32717
+)
+
+# 学習機を準備 (すべての演習で使用)
+# GLM
+lrn_glm = lrn("classif.log_reg", predict_type = "prob")
+lrn_glm$fallback = lrn("classif.featureless", predict_type = "prob")
+
+# SVM
+# SVM 学習機を準備 (using ksvm function from the kernlab package)
+lrn_ksvm = lrn("classif.ksvm", predict_type = "prob", kernel = "rbfdot",
+               type = "C-svc")
+lrn_ksvm$fallback = lrn("classif.featureless", predict_type = "prob")
+
+# ネストされたリサンプリングを特定し学習器を調整
+# 5 つの空間的に非連続な分割
+tune_level = rsmp("spcv_coords", folds = 5)
+# ランダムに選択した 50 のハイパーパラメータ
+terminator = trm("evals", n_evals = 50)
+tuner = tnr("random_search")
+# ランダムに選択したハイパーパラメータの外側を定義
+ps = ps(
+  C = p_dbl(lower = -12, upper = 15, trafo = function(x) 2^x),
+  sigma = p_dbl(lower = -15, upper = 6, trafo = function(x) 2^x)
+)
+at_ksvm = AutoTuner$new(
+  learner = lrn_ksvm,
+  resampling = tune_level,
+  measure = msr("classif.auc"),
+  search_space = ps,
+  terminator = terminator,
+  tuner = tuner
+)
+
+# QDA
+lrn_qda = lrn("classif.qda", predict_type = "prob")
+lrn_qda$fallback = lrn("classif.featureless", predict_type = "prob")
+
+# ハイパーパラメータのチューニングなしで SVM
+vals = lrn_ksvm$param_set$values
+lrn_ksvm_notune = lrn_ksvm$clone()
+lrn_ksvm_notune$param_set$values = c(vals, C = 1, sigma = 1)
+
+# リサンプリング戦略を定義
+# リサンプリング方法を指定 例 空間 CV 100 繰り返し 5 fold
+# -> 各繰り返しで、データセットを 5 倍に分割
+# 方法: repeated_spcv_coords -> 空間分割
+rsmp_sp = rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
+# 方法: repeated_cv -> 非空間分割
+rsmp_nsp = rsmp("repeated_cv", folds = 5, repeats = 100)
+
+# (空間) クロスバリデーション
+#****************************
+# デザインを作成
+grid = benchmark_grid(tasks = task, 
+                      learners = list(lrn_glm, at_ksvm, lrn_qda, 
+                                      lrn_ksvm_notune),
+                      resamplings = list(rsmp_sp, rsmp_nsp))
+# クロスバリデーションを実行
+library(future)
+# 外側ループを順次実行し、内側ループを並列化
+future::plan(list("sequential", "multisession"), 
+             workers = floor(availableCores() / 2))
+set.seed(021522)
+bmr = benchmark(grid, 
+                store_backends = FALSE, 
+                store_models = FALSE, 
+                encapsulate = "evaluate")
+# 並列化を終了
+future:::ClusterRegistry("stop")
+# 結果を保存
+# saveRDS(bmr, file = "extdata/12-bmr.rds")
+
+# 結果をプロット
+autoplot(bmr, measure = msr("classif.auc"))
+```
+
+E5. 二次判別分析 (quadratic discriminant analysis, QDA) を用いて地すべり感受性をモデル化。
+QDA の予測性能を評価する。
+QDA と GLM の空間クロスバリデーション平均 AUROC 値の差は?
+
+```{r 12-ex-e5, eval=FALSE}
+# データをアタッチ (E4 で行っていない場合)
+bmr = readRDS("extdata/12-bmr.rds")
+
+# 結果をプロット
+autoplot(bmr, measure = msr("classif.auc"))
+# QDA は GLM よりも平均して AUROC 値が高く、これは中程度であることを示している
+# non-linear boundaries
+```
+
+E6. ハイパーパラメータを調整せずに SVM を実行する。
+`rbfdot` カーネルを $sigma$ = 1 と *C* = 1 で使用する。
+**kernlab** の `ksvm()` でハイパーパラメータを指定しないままにしておくと、自動的に非空間的なハイパーパラメータチューニングが初期化される。
+
+```{r 12-ex-e6, eval=FALSE}
+# データをアタッチ (E4 で行っていない場合)
+bmr = readRDS("extdata/12-bmr.rds")
+# 結果をプロット
+autoplot(bmr, measure = msr("classif.auc"))
+```

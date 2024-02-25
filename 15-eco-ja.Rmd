@@ -40,27 +40,25 @@ library(vegan)             # 生態学
 
 残念ながら、霧のオアシスは、主に人間の活動により、大きく危機に瀕している。
 残されたユニークな植生生態系を効果的に保護するためには、原生植物相の構成と空間分布に関するエビデンスが必要である [@muenchow_predictive_2013; @muenchow_soil_2013]。
-この章では、前の章で学んだ技術を生態学的に実際に応用していこう。
-その中で、ペルー中央北岸のカスマ近郊にある *lomas* のある山、Mongón 山の南斜面における維管束植物の構成と空間分布を分析する (Figure \@ref(fig:study-area-mongon))。
+
+この章では、Peru の中央北岸に位置するカスマ近郊の**ロマ植生**山である Mongón 山の南斜面における維管束植物 (ここでは主に顕花植物) の組成と空間分布を分析する (Figure \@ref(fig:study-area-mongon))。
+モゴン山での野外調査において、2011年の冬に無作為にサンプリングした 4 x 4 m^2^ の 100 区画に生息する維管束植物をすべて記録した [@muenchow_predictive_2013]。
+このサンプリングは、米国海洋大気庁 ([NOAA](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php)) が発表したデータに示されているように、その年の強いラニーニャ現象が発生した時期と重なった。
+このため、沿岸部の砂漠では例年よりもさらに高いレベルの乾燥が発生し、Peru の**ロマ植生**山脈の南斜面では霧の活動が活発化した。
 
 ```{r study-area-mongon, echo=FALSE, fig.cap="Mongón 山調査地、Muenchow, Schratz, and Brenning (2017) より。", out.width="60%", fig.scap="The Mt. Mongón study area."}
 knitr::include_graphics("figures/15_study_area_mongon.png")
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/38989956-6eae7c9a-43d0-11e8-8f25-3dd3594f7e74.png")
 ```
 
-Mongón 山への野外調査において、2011年の冬、ランダムにサンプルした 4x4 m^2^ の 100 区画に生息するすべての維管束植物を記録した [@muenchow_predictive_2013]。
-National Oceanic and Atmospheric Administration ([NOASS](https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php)を参照) の報告書にある通り、サンプル採取は、その年の強いラニーニャ現象に重なった。
-そのため、沿岸部の砂漠は通常よりもさらに高い乾燥度を示すようになり、ペルーの *lomas* のある山脈の南斜面では、霧の活動も活発になっている。
+また本章では、前章で扱ったテクニックを、重要な応用分野である生態学に応用する方法を示す。
+具体的には、
 
-<!--
-最初の仮説は、標高勾配に沿って4つの植物帯が見られるというものだ。低標高の*チランジア*帯、草本帯、ブロメリアド帯、そして最上部の多肉植物帯である。 [@muenchow_soil_2013] .
--->
-
-Ordinations\index{ordination} は、 (ノイズの多い) データセットから主要な勾配を抽出するための次元削減技術であり、私たちの場合は南山斜面に沿って発達した植物学的勾配である (次のセクションを参照)。
-本章では、最初の序列軸である植物相の勾配を、標高、傾斜、集水域\index{catchment area}および NDVI\index{NDVI}  といった環境予測因子の関数としてモデル化することにする。
-このために、非常に有名な機械学習\index{machine learning}アルゴリズムであるランダムフォレストモデル\index{random forest}を利用する [@breiman_random_2001]。
-このモデルを使えば、調査地のどこでも植物組成の空間分布図作成が可能になる。
-最適な予測を保証するために、空間クロスバリデーション \index{cross-validation!spatial CV} (Section \@ref(svm) 参照) の助けを借りて、ハイパーパラメータ\index{hyperparameter}を事前に調整することが推奨される。
+- 必要なデータを読み込み、環境予測因子を計算する (Section \@ref(data-and-data-preparation))
+- 次元削減技術 (座標付け; Section \@ref(nmds)) を用いて、種組成行列から主な植物学的勾配を抽出する\index{じげんさくげんぎじゅつ@次元削減技術}
+- 最初の順序軸、すなわち植物相勾配を、標高、傾斜、集水域、NDVI などの環境予測変数の関数としてモデル化する (Section \@ref(modeling-the-floristic-gradient))\index{ざひょうづけ@座標付け}\index{しゅうすいいき@集水域}\index{NDVI}
+そのために、ランダムフォレストモデルを利用する。機械学習アルゴリズム [@breiman_random_2001]の1つである。最適な予測を行うために、空間交差検証を用いて、ハイパーパラメータを事前に調整することが望ましい (see Section \@ref(svm))\index{らんだむふぉれすと@ランダムフォレスト}\index{きかいがくしゅう@機械学習}\index{はいぱーぱらめーた@ハイパーパラメータ}\index{くろすばりでーしょん@クロスバリデーション!くうかんてき@空間的 CV}
+- 調査地内の任意の場所の植物組成の空間分布図を作成する (Section \@ref(predictive-mapping))
 
 ## データとデータ準備  {#data-and-data-preparation}
 
@@ -219,12 +217,12 @@ random_points = cbind(random_points, ep_rp)
 
 ## 次元性を低減  {#nmds}
 
-順序付け (Ordination\index{ordination}) は、植生学において、0 で埋め尽くされた大規模な種間プロット行列から主要情報 (生態的勾配に相当することが多い) を抽出するための一般的なツールである。 
+座標付け (Ordination\index{ざひょうづけ@座標付け}) は、植生学において、0 で埋め尽くされた大規模な種間プロット行列から主要情報 (生態的勾配に相当することが多い) を抽出するための一般的なツールである。 
 しかし、リモートセンシング\index{remote sensing}、土壌学、ジオマーケティング\index{geomarketing} などの分野でも利用されている。
-順序付け\index{ordination}テクニックに馴染みがない場合、または復習が必要な場合は、生態学で人気の順序付けテクニックを簡単に紹介した Michael W. Palmer の [web page](https://ordination.okstate.edu/overview.htm) と R でこれらのテクニックを適用する方法について深く調べた @borcard_numerical_2011 に目を通してみよう。 
+座標付け\index{ざひょうづけ@座標付け}テクニックに馴染みがない場合、または復習が必要な場合は、生態学で人気の座標付けテクニックを簡単に紹介した Michael W. Palmer の [web page](https://ordination.okstate.edu/overview.htm) と R でこれらのテクニックを適用する方法について深く調べた @borcard_numerical_2011 に目を通してみよう。 
 **vegan**\index{vegan (package)} のパッケージのドキュメントも非常に有用なリソースである (`vignette(package = "vegan")`)。
 
-主成分分析 (principal component analysis, PCA\index{PCA}) は、おそらく最も有名な順序付け \index{ordination}の手法である。 
+主成分分析 (principal component analysis, PCA\index{しゅせいぶんぶんせき@主成分分析}) は、おそらく最も有名な座標付け \index{ざひょうづけ@座標付け}の手法である。 
 変数間の線形関係が期待でき、2 つのプロット (オブザベーション) における変数の共同不在が類似性とみなせる場合、次元を削減するためのすばらしいツールである。
 これは植生データではほとんどない。
 
@@ -235,15 +233,15 @@ random_points = cbind(random_points, ep_rp)
 というのも、この2つの全く異なる環境設定に共通するのは、 (稀少なユビキタス種を除いて) 種が存在しないという点だけである可能性が非常に高いからである。 
 
 Non-metric multidimensional scaling (NMDS\index{NMDS}) は、生態学でよく使われる次元削減手法の一つである [@vonwehrden_pluralism_2009]。
-NMDS\index{NMDS}  は、元の行列のオブジェクト間の距離と、順序付けられたオブジェクト間の距離の間のランクベースの差異を低減する。 
+NMDS\index{NMDS} は、元の行列のオブジェクト間の距離と、座標付けられたオブジェクト間の距離の間のランクベースの差異を低減する。 
 その差をストレスとして表現している。 
-ストレス値が低いほど、順序付け、すなわち元の行列の低次元表現が良好であることを示す。
+ストレス値が低いほど、座標付け、すなわち元の行列の低次元表現が良好であることを示す。
 ストレス値が 10 より小さいと適合性が高く、15程度でも良好、20より大きいと適合性が低いことを表している [@mccune_analysis_2002]。
 R では、**vegan**\index{vegan (package)} パッケージの `metaMDS()` で NMDS を実行することができる。
 入力として、サイトを行、種を列とする群集行列を期待する。
-しばしば、有-無データを用いた順序付け\index{ordination} は、 (説明される分散の点で) より良い結果をもたらするが、その代償として、もちろん、入力行列の情報量は少なくなる (演習も参照)。
-`decostand()` は、数値の観測結果を、1が種の発生、0が種の不在を示す有無に変換する。
-NMDS\index{NMDS} のようなオーダリング技術では、部位ごとに少なくとも1回の観測が必要である。
+しばしば、有-無データを用いた座標付け\index{ざひょうづけ@座標付け} は、 (説明される分散の点で) より良い結果をもたらするが、その代償として、もちろん、入力行列の情報量は少なくなる (演習も参照)。
+`decostand()` は、数値の観測結果を、1 が種の発生、0 が種の不在を示す有無に変換する。
+NMDS\index{NMDS} のようなオーダリング技術では、部位ごとに少なくとも 1 回のオブザベーションが必要である。
 したがって、種が発見されなかったサイトはすべて除外する必要がある。
 
 ```{r 15-eco-11}
@@ -251,13 +249,13 @@ NMDS\index{NMDS} のようなオーダリング技術では、部位ごとに少
 pa = vegan::decostand(comm, "pa") # 100 行 (箇所) , 69 列 (種) 
 # 1種以上発見されたサイトのみを残す
 pa = pa[rowSums(pa) != 0, ]  # 84 行, 69 列 (種) 
-``` 
+```
 
 得られた行列は、NMDS\index{NMDS} の入力として機能する。
 `k` は出力軸数を指定し、ここでは 4 とする。 ^[
 `k` を選択する一つの方法として、1 から 6 の間で `k` を試し、最も良いストレス値が得られる結果を使用する方法がある [@mccune_analysis_2002]。
 ]
-NMDS\index{NMDS} は、各ステップで順序付けされた空間をより入力行列に近づけようとする反復的な手順である。
+NMDS\index{NMDS} は、各ステップで座標付けされた空間をより入力行列に近づけようとする反復的な手順である。
 アルゴリズムの収束を確認するために、`try` パラメータを使ってステップ数を 500 に設定した。
 
 ```{r 15-eco-12, eval=FALSE, message=FALSE}
@@ -283,12 +281,12 @@ saveRDS(nmds, "extdata/15-nmds.rds")
 nmds = readRDS("extdata/15-nmds.rds")
 ```
 
-ストレス値 9 は非常に良い結果を表し、縮小された順序付け空間が入力行列の分散の大部分を表していることを意味する。
-全体として、NMDS\index{NMDS} は、順序付け空間において、 (種の構成という点で) より類似したオブジェクトがより近くに配置される。
-しかし、他の多くの順序付け \index{ordination}  の手法とは対照的に、軸は任意であり、必ずしも重要度 [@borcard_numerical_2011]  によって順序付けされるわけではない。
+ストレス値 9 は非常に良い結果を表し、縮小された座標付け空間が入力行列の分散の大部分を表していることを意味する。
+全体として、NMDS\index{NMDS} は、座標付け空間において、(種の構成という点で) より類似したオブジェクトがより近くに配置される。
+しかし、他の多くの座標付け \index{ざひょうづけ@座標付け}  の手法とは対照的に、軸は任意であり、必ずしも重要度 [@borcard_numerical_2011]  によって座標付けされるわけではない。
 しかし、調査地では湿度が主な勾配を表していることが既に分かっている [@muenchow_predictive_2013;@muenchow_rqgis:_2017]。
 湿度は標高と高い相関があるため、標高に応じて NMDS\index{NMDS} 軸を回転させる (NMDS 軸の回転の詳細については `?MDSrotate` も参照)。
-結果をプロットしてみると、意図したとおり、第1軸は明らかに高度 (Figure \@ref(fig:xy-nmds)) と関連していることがわかる。
+結果をプロットしてみると、意図したとおり、第 1 軸は明らかに高度 (Figure \@ref(fig:xy-nmds)) と関連していることがわかる。
 
 ```{r xy-nmds-code, fig.cap="NMDS の第1軸を高度に対してプロット。", fig.scap = "First NMDS axis against altitude plot.", fig.asp=1, out.width="60%", eval=FALSE}
 elev = dplyr::filter(random_points, id %in% rownames(pa)) |> 
@@ -363,15 +361,15 @@ plot(rotnmds, display = "sites")
 plot(fit_2)
 ```
 
-最初の NMDS\index{NMDS} 軸のスコアは、Mont. Mongón の斜面に沿って現れる異なる植生形態、すなわち植物学的勾配を表している。
-それらを空間的に可視化するために、NMDS\index{NMDS}  のスコアを先に作成した予測因子 (Section \@ref(data-and-data-preparation)) でモデル化し、得られたモデルを予測マッピングに利用する (次節参照) ことができる。
+最初の NMDS\index{NMDS} 軸のスコアは、Mongón 山の斜面に沿って現れる異なる植生形態、すなわち植物学的勾配を表している。
+それらを空間的に可視化するために、NMDS\index{NMDS} のスコアを先に作成した予測因子 (Section \@ref(data-and-data-preparation)) でモデル化し、得られたモデルを予測地図に利用する (次節参照) ことができる。
 
 ## 植物相の勾配をモデル化  {#modeling-the-floristic-gradient}
 
-植物相の勾配を空間的に予測するために、ランダムフォレスト\index{random forest}モデルを使用する。
-ランダムフォレスト\index{random forest}モデルは、環境・生態系のモデリングに頻繁に適用され、予測性能の面で最良の結果をもたらすことが多い [@hengl_random_2018;@schratz_hyperparameter_2019]。
-ここで、これらはランダムフォレスト\index{random forest}の基礎を形成するものであるため、決定木とバギングについて簡単に紹介する。
-ランダムフォレスト\index{random forest}と関連する技術についてのより詳細な説明は @james_introduction_2013 を参照。
+植物相の勾配を空間的に予測するために、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}モデルを使用する。
+ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}モデルは、環境・生態系のモデリングに頻繁に適用され、予測性能の面で最良の結果をもたらすことが多い [@hengl_random_2018;@schratz_hyperparameter_2019]。
+ここで、これらはランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}の基礎を形成するものであるため、決定木とバギングについて簡単に紹介する。
+ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}と関連する技術についてのより詳細な説明は @james_introduction_2013 を参照。
 
 決定木を例として紹介すると、まず、回転した NMDS\index{NMDS} スコアと現場観測値 (`random_points`) を結合して、応答予測行列を構築する。
 また、得られたデータフレームは、後で **mlr3**\index{mlr3 (package)} のモデリングに使用する予定である。
@@ -405,10 +403,7 @@ knitr::include_graphics("figures/15_tree.png")
 
 結果として得られる木は、3 つの内部ノードと 4 つの終端ノード (Figure \@ref(fig:tree)) で構成される。
 木の一番上にある最初の内部ノードは、328.5 m 以下のすべてのオブザベーションを左に、それ以外のすべてのオブザベーションを右の枝に割り当てる。
-<!-- `r # gsub("<", "", as.character(as.data.frame(tree_mo$fram$splits)[1, "cutleft"]))` -->
-<!-- comment tag for translation purpose -->
 左の枝に入るオブザベーションは、平均 NMDS\index{NMDS} スコアが -1.198 である。
-<!-- `r # round(tree_mo$frame$yval[2], 3)` -->
 全体として、標高が高いほどNMDS\index{NMDS}  のスコアが高くなる、というように解釈できる。
 つまり、単純な決定木によって、すでに4つの異なる植物群像が明らかにされているのである。
 詳しく学びたい方は Section \@ref(predictive-mapping) を参照。
@@ -417,8 +412,8 @@ knitr::include_graphics("figures/15_tree.png")
 アンサンブル技術は、複数のモデルの予測値を単純に結合するものである。
 このように、バギングでは同じ入力データから繰り返しサンプルを取り、その予測値を平均化する。
 これにより、分散と過適合\index{overfitting}を減らし、決定木と比較してはるかに優れた予測精度を実現する。
-最後に、ランダムフォレスト\index{random forest}は、相関の高い木の予測を平均化すると、相関の低い木の予測を平均化するよりも分散が大きく、信頼性が低くなるので、バギングを拡張して改良することが望ましい [@james_introduction_2013]。
-これを実現するために、ランダムフォレスト\index{random forest}はバギングを使用するが、従来のバギングでは各木が利用可能なすべての予測子を使用できるのとは対照的に、ランダムフォレストは利用可能なすべての予測子のランダムサンプルだけを使用する。
+最後に、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}は、相関の高い木の予測を平均化すると、相関の低い木の予測を平均化するよりも分散が大きく、信頼性が低くなるので、バギングを拡張して改良することが望ましい [@james_introduction_2013]。
+これを実現するために、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}はバギングを使用するが、従来のバギングでは各木が利用可能なすべての予測子を使用できるのとは対照的に、ランダムフォレストは利用可能なすべての予測子のランダムサンプルだけを使用する。
 
 <!--
 バギングとは、単にm=pのランダムフォレストの特殊な場合であることを思い出してみよう。したがって、randomForest()関数は、ランダムフォレストとバギングの両方を実行するために使用することが可能である。 
@@ -434,19 +429,19 @@ knitr::include_graphics("figures/15_tree.png")
 
 1. 応答変数は数値なので、回帰\index{regression}タスクは、Section \@ref(svm) の分類\index{classification}タスクに取って代わる。
 1. カテゴリー応答変数にしか使えない AUROC\index{AUROC}  の代わりに、性能指標として平均二乗誤差 (root mean squared error, RMSE \index{RMSE}) を使うことにする。
-1. サポートベクタマシン\index{SVM}  の代わりに、ランダムフォレスト\index{random forest}  モデルを使用している。これは当然ながら、異なるハイパーパラメータ\index{hyperparameter}を伴う。
+1. サポートベクタマシン\index{SVM}  の代わりに、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}  モデルを使用している。これは当然ながら、異なるハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}を伴う。
 1. バイアスを低減した性能指標の評価は、読者の皆様への課題として残している (演習問題参照)。
-その代わりに、 (空間) 予測のためのハイパーパラメータ\index{hyperparameter}を調整する方法を示す。
+その代わりに、 (空間) 予測のためのハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}を調整する方法を示す。
 
 Section \@ref(svm) で、100 回繰り返しの 5 回空間クロスバリデーション\index{cross-validation!spatial CV}と 50 回のランダムサーチを使用した場合、バイアス低減された性能推定値を得るために 125,500 個のモデルが必要だったことを思い出してみよう。
-ハイパーパラメータ\index{hyperparameter}のチューニングレベルでは、最適なハイパーパラメータの組み合わせを見つけ、それを特定の空間分割のテストデータを予測するための外部パフォーマンスレベルで使用した (Figure \@ref(fig:inner-outer) も参照)。 
+ハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}のチューニングレベルでは、最適なハイパーパラメータの組み合わせを見つけ、それを特定の空間分割のテストデータを予測するための外部パフォーマンスレベルで使用した (Figure \@ref(fig:inner-outer) も参照)。 
 これを 5 つの空間分割に対して行い、100 回繰り返した結果、合計 500 の最適なハイパーパラメータの組み合わせが得られた。
 空間分布図作成に使うべきはどちらか？
 答えは簡単で、全くない。 
 このチューニングは、バイアスを低減した性能推定値を得るために行われたものであり、最良の空間予測を行うために行われたものではないことに留意してみよう。
-後者については、完全なデータセットから最適なハイパーパラメータ\index{hyperparameter}の組み合わせを推定する。
-これは、内部のハイパーパラメータ\index{hyperparameter}のチューニング・レベルがもはや必要ないことを意味する。なぜなら、真のアウトカムが不明の新しいデータ (未訪問のフィールド観測) にこのモデルを適用するので、テストはいかなる場合でも不可能なのである。 
-そこで、5回繰り返しの空間 CV\index{cross-validation!spatial CV}  によって、完全なデータセットで良好な空間予測を行うためにハイパーパラメータ\index{hyperparameter}を調整することにした。
+後者については、完全なデータセットから最適なハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}の組み合わせを推定する。
+これは、内部のハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}のチューニング・レベルがもはや必要ないことを意味する。なぜなら、真のアウトカムが不明の新しいデータ (未訪問のフィールド観測) にこのモデルを適用するので、テストはいかなる場合でも不可能なのである。 
+そこで、5回繰り返しの空間 CV\index{cross-validation!spatial CV}  によって、完全なデータセットで良好な空間予測を行うためにハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}を調整することにした。
 <!-- If we used more than one repetition (say 2) we would retrieve multiple optimal tuned hyperparameter combinations (say 2) -->
 
 既に入力変数 (`rp`) を構築しているので、**mlr3**\index{mlr3 (package)}  の構成要素 (タスク、学習器、リサンプリング) を指定するための準備は全て整っている。
@@ -460,7 +455,7 @@ task = mlr3spatiotempcv::as_task_regr_st(select(rp, -id, -spri),
 
 バックエンドとして `sf` オブジェクトを使用すると、後の空間分割に必要なジオメトリ情報が自動的に提供される。
 さらに、`id` と `spri` の列は、これらの変数をモデリングにおける予測因子として使用すべきではないため、削除した。
-次に、**ranger** パッケージのランダムフォレスト\index{random forest}  学習器を構築する [@wright_ranger_2017]。
+次に、**ranger** パッケージのランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}  学習器を構築する [@wright_ranger_2017]。
 
 ```{r 15-eco-21}
 lrn_rf = lrn("regr.ranger", predict_type = "response")
@@ -468,7 +463,7 @@ lrn_rf = lrn("regr.ranger", predict_type = "response")
 
 例えばサポートベクタマシン\index{SVM} (Section \@ref(svm) 参照) とは対照的に、ランダムフォレストはハイパーパラメータのデフォルト値で使用した場合、既に良い性能を示すことが多い (これが人気の理由の一つだろう)。
 それでも、チューニングによってモデル結果が適度に改善されることが多いので、努力する価値はある [@probst_hyperparameters_2018]。
-ランダムフォレスト\index{random forest}では、ハイパーパラメータ\index{hyperparameter} `mtry`、`min.node.size`、`sample.fraction` がランダム性の度合いを決定するので、これらを調整する必要がある [@probst_hyperparameters_2018]。
+ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}では、ハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ} `mtry`、`min.node.size`、`sample.fraction` がランダム性の度合いを決定するので、これらを調整する必要がある [@probst_hyperparameters_2018]。
 `mtry` は、各ツリーでいくつの予測変数を使用すべきかを示す。 
 すべての予測変数が使用される場合、これは事実上バギングに相当する (Section \@ref(modeling-the-floristic-gradient) の冒頭を参照)。
 `sample.fraction` パラメータは、各ツリーで使用されるオブザベーションの割合を指定する。
@@ -476,7 +471,7 @@ lrn_rf = lrn("regr.ranger", predict_type = "response")
 `min.node.size` パラメータは、端末ノードが少なくとも持つべき観測値の数を示す (Figure \@ref(fig:tree) も参照)。
 当然ながら、木や演算時間が大きくなればなるほど、`min.node.size` は小さくなる。
 
-ハイパーパラメータ\index{hyperparameter}の組み合わせはランダムに選択されるが、特定のチューニング限界 (`paradox::ps()` で作成) の範囲内に収まる必要がある。
+ハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}の組み合わせはランダムに選択されるが、特定のチューニング限界 (`paradox::ps()` で作成) の範囲内に収まる必要がある。
 `mtry` は 1 から予測変数の数 `r ncol(task$data()) - 1`) までの範囲でなければならない。`sample.fraction` は 0.2 から 0.9 の間、`min.node.size` は 1 から 10 の間でなければならない [@probst_hyperparameters_2018]。
 
 ```{r 15-eco-22, eval=FALSE}
@@ -489,13 +484,13 @@ search_space = paradox::ps(
 ```
 
 探索空間を定義したことで、`AutoTuner()` 関数でチューニングを指定する準備が整いた。
-地理的なデータを扱うので、今回も空間クロスバリデーションを用いてハイパーパラメータ\index{hyperparameter}を調整する (Section \@ref(intro-cv) と Section \@ref(spatial-cv-with-mlr3) を参照)。
+地理的なデータを扱うので、今回も空間クロスバリデーションを用いてハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}を調整する (Section \@ref(intro-cv) と Section \@ref(spatial-cv-with-mlr3) を参照)。
 具体的には、1回だけ繰り返す5分割の空間分割 (`rsmp()`) を使用することにする。 
-これらの空間分割のそれぞれにおいて、あらかじめ定義された限界値 (`seach_space`) の範囲内でランダムに選択されたハイパーパラメータ構成 (`tnr()` ) を用いながら50個のモデル(`trm()`)を実行し、最適なハイパーパラメータ\index{hyperparameter}の組合せを見出す [Section \@ref(svm) と https://mlr3book.mlr-org.com/chapters/chapter4/hyperparameter_optimization.html#sec-autotuner, @becker_mlr3_2022 を参照]。
+これらの空間分割のそれぞれにおいて、あらかじめ定義された限界値 (`seach_space`) の範囲内でランダムに選択されたハイパーパラメータ構成 (`tnr()` ) を用いながら50個のモデル(`trm()`)を実行し、最適なハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}の組合せを見出す [Section \@ref(svm) と https://mlr3book.mlr-org.com/chapters/chapter4/hyperparameter_optimization.html#sec-autotuner, @becker_mlr3_2022 を参照]。
 性能指標は二乗平均平方根誤差 (root mean squared error, RMSE\index{RMSE}) である。
 
 ```{r 15-eco-23, eval=FALSE}
-autotuner_rf = mlr3tuning::AutoTuner$new(
+autotuner_rf = mlr3tuning::auto_tuner(
   learner = lrn_rf,
   resampling = mlr3::rsmp("spcv_coords", folds = 5), # 空間分割
   measure = mlr3::msr("regr.rmse"), # パフォーマンス測定
@@ -505,7 +500,7 @@ autotuner_rf = mlr3tuning::AutoTuner$new(
 )
 ```
 
-`AutoTuner` -オブジェクトの `train()` -メソッドを呼び出すと、最終的にハイパーパラメータ\index{hyperparameter}のチューニングが実行され、指定したパラメータに対して最適なハイパーパラメータ\index{hyperparameter}の組み合わせが見つかる。
+`AutoTuner` -オブジェクトの `train()` -メソッドを呼び出すと、最終的にハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}のチューニングが実行され、指定したパラメータに対して最適なハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}の組み合わせが見つかる。
 
 ```{r 15-eco-24, eval=FALSE, cache=TRUE, cache.lazy=FALSE}
 # ハイパーパラメータのチューニング
@@ -525,16 +520,10 @@ autotuner_rf = readRDS("extdata/15-tune.rds")
 autotuner_rf$tuning_result
 ```
 
+### 予測地図  {#predictive-mapping}
 
-
-
-
-
-
-### 予測マッピング  {#predictive-mapping}
-
-調整されたハイパーパラメータ\index{hyperparameter}は、これで予測に使用することができる。
-そのためには、フィットした `AutoTuner` オブジェクトの `predict` メソッドを実行するだけでよいのである。
+調整されたハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}は、これで予測に使用することができる。
+そのためには、適合した `AutoTuner` オブジェクトの `predict` メソッドを実行するだけでよい。
 
 ```{r 15-eco-27, cache=TRUE, cache.lazy=FALSE, warning=FALSE}
 # 最適なハイパーパラメータの組み合わせで予測
@@ -592,45 +581,45 @@ all(values(pred - pred_2) == 0)
 ```
 
 予測地図には、はっきりとした植生帯 (Figure \@ref(fig:rf-pred)) が描かれている。
-**lomas** 山の植生帯の詳細については、@muenchow_soil_2013 を参照。
+**ロマ植生**山の植生帯の詳細については、@muenchow_soil_2013 を参照。
 青い色調は、いわゆる *Tillandsia*-帯を表している。
-*Tillandsia* は、特に **lomas** 山脈の砂地やかなり砂漠的な麓で大量に見られる、高度に適応した属植物である。
+*Tillandsia* は、特に**ロマ植生**山脈の砂地やかなり砂漠的な麓で大量に見られる、高度に適応した属植物である。
 黄色は草本植生帯で、*Tillandsia*-植生帯に比べ植物被度が高いことを表している。
 オレンジ色はブロメリア帯を表し、種の豊富さと植物被覆率が最も高いことを特徴としている。
 霧による湿度が最も高い気温逆転地帯 (標高約 750 - 850 m) の真下で見られる。
 逆転温度以上になると当然水分は減少し、再び砂漠化し、数種の多肉植物が見られるようになる (多肉植物帯；赤色)。
-興味深いのは、空間予測によってブロメリア帯が途切れていることが明らかになったことである。これは、予測マッピングなしでは発見できなかった非常に興味深い発見であった。
+興味深いのは、空間予測によってブロメリア帯が途切れていることが明らかになったことである。これは、予測地図なしでは発見できなかった非常に興味深い発見であった。
 
 ## 結論
 
-本章では、NMDS\index{NMDS} (Section \@ref(nmds)) を用いて、**lomas** の Mongón 山の群集行列を順序付け\index{ordination}した。
+本章では、NMDS\index{NMDS} (Section \@ref(nmds)) を用いて、**ロマ植生**の Mongón 山の群集行列を座標付け\index{ざひょうづけ@座標付け}した。
 最初の軸は、調査地域の主な植物相の勾配を表し、部分的に R-GIS\index{GIS} ブリッジ ( Section \@ref(data-and-data-preparation) ) を使って導き出した環境予測因子の関数としてモデル化された。
-**mlr3**\index{mlr3 (package)}  パッケージは、ハイパーパラメータ\index{hyperparameter} `mtry`、`sample.fraction` および `min.node.size` (Section \@ref(mlr3-building-blocks) ) を空間的に調整するためのビルディングブロックを提供している。
-調整されたハイパーパラメータ\index{hyperparameter}は最終モデルの入力となり、このモデルを環境予測変数に適用して植物相の勾配を空間的に表現した (Section \@ref(predictive-mapping))。
+**mlr3**\index{mlr3 (package)}  パッケージは、ハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ} `mtry`、`sample.fraction` および `min.node.size` (Section \@ref(mlr3-building-blocks) ) を空間的に調整するためのビルディングブロックを提供している。
+調整されたハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}は最終モデルの入力となり、このモデルを環境予測変数に適用して植物相の勾配を空間的に表現した (Section \@ref(predictive-mapping))。
 その結果、砂漠の真ん中にある驚異的な生物多様性を空間的に示すことができたのである。
-**ロマス**山は絶滅の危機に瀕しているため、予測地図は保護区域を定める際の判断材料となり、地域住民に身近にあるユニークな存在であることを認識させることができるのである。
+**ロマ植生**山は絶滅の危機に瀕しているため、予測地図は保護区域を定める際の判断材料となり、地域住民に身近にあるユニークな存在であることを認識させることができるのである。
 
 方法論の面では、いくつかの追加的な指摘ができる。
 
-- 2つ目の軸\index{ordination}もモデル化し、2つの軸のモデル化されたスコアを1つの予測地図に統合して可視化する革新的な方法を見つけるのは興味深いことである。
+- 2 つ目の軸\index{ざひょうづけ@座標付け}もモデル化し、2つの軸のモデル化されたスコアを1つの予測地図に統合して可視化する革新的な方法を見つけるのは興味深いことである。
 - もし、生態学的に意味のある方法でモデルを解釈することに興味があれば、おそらく (セミ) パラメトリックモデルを使うべきだろう [@muenchow_predictive_2013;@zuur_mixed_2009;@zuur_beginners_2017] 
-しかし、少なくともランダムフォレスト\index{random forest}のような機械学習モデルの解釈を助けるアプローチは存在する (例えば、[https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/](https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/) を参照) 
-- 本章で使用したハイパーパラメータ\index{hyperparameter}のランダム化最適化よりも、逐次モデルベース最適化 (sequential model-based optimization, SMBO) の方が望ましいかもしれない [@probst_hyperparameters_2018] 
+しかし、少なくともランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}のような機械学習モデルの解釈を助けるアプローチは存在する (例えば、[https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/](https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/) を参照) 
+- 本章で使用したハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}のランダム化最適化よりも、逐次モデルベース最適化 (sequential model-based optimization, SMBO) の方が望ましいかもしれない [@probst_hyperparameters_2018] 
 
-最後に、ランダムフォレスト\index{random forest}と他の機械学習\index{machine learning}モデルは、多くのオブザベーションと多くの予測因子、この章で使われるよりもはるかに多く、どの変数と変数の相互作用が応答を説明するのに寄与するかが不明である設定で頻繁に使用されることに注意しておこう。
+最後に、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}と他の機械学習\index{きかいがくしゅう@機械学習}モデルは、多くのオブザベーションと多くの予測因子、この章で使われるよりもはるかに多く、どの変数と変数の相互作用が応答を説明するのに寄与するかが不明である設定で頻繁に使用されることに注意しておこう。
 さらに、その関係は高度に非線形である可能性もある。
 私たちのユースケースでは、レスポンスと予測変数の関係はかなり明確で、非線型はわずかであり、オブザベーションと予測変数の数は少ない。
-したがって、線形モデル\index{regression!linear}を試してみる価値はあるかもしれない。
-線形モデルは、ランダムフォレスト\index{random forest}モデルよりも説明や理解がしやすいので好まれ (パーシモンの法則)、さらに計算負荷が少ない (演習を参照)。
-線形モデルがデータに存在する非線形性の程度に対処できない場合、一般化加法モデル\index{generalized additive model} (generalized additive model, GAM) を試してみることもできる。
+したがって、線形モデル\index{かいき@回帰!せんけい@線形}を試してみる価値はあるかもしれない。
+線形モデルは、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}モデルよりも説明や理解がしやすいので好まれ (パーシモンの法則)、さらに計算負荷が少ない (演習を参照)。
+線形モデルがデータに存在する非線形性の程度に対処できない場合、一般化加法モデル\index{いっぱんかかほうもでる@一般化加法モデル} (generalized additive model, GAM) を試してみることもできる。
 ここで重要なのは、データサイエンティストのツールボックスは複数のツールで構成されており、目の前のタスクや目的に最適なツールを選択するのはあなたの責任であるということである。
-ここでは、ランダムフォレスト\index{random forest}のモデリングと、それに対応した空間予測図への利用方法を紹介したいと思われる。
+ここでは、ランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}のモデリングと、それに対応した空間予測図への利用方法を紹介したいと思われる。
 この目的のためには、反応と予測因子の関係が既知の、よく研究されたデータセットが適切である。
-しかし、これはランダムフォレスト\index{random forest}モデルが予測性能の面で最良の結果を返したことを意味するものではない。
+しかし、これはランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}モデルが予測性能の面で最良の結果を返したことを意味するものではない。
 
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child('_15-ex.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
+res = knitr::knit_child('_15-ex-ja.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
 cat(res, sep = '\n')
 ```

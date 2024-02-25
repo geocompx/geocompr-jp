@@ -212,12 +212,11 @@ reclass # 出力は一部省略
 #> max values  : 8000,     3,        3,       3
 ```
 
-
 ## 大都市圏を定義  {#define-metropolitan-areas}
 
-大都市圏とは、50万人以上が住む 20 km^2^ のピクセルと定義している。
+大都市圏とは、50 万人以上が住む 20 km^2^ のピクセルと定義している。
 この粗い解像度のピクセルは、Section \@ref(aggregation-and-disaggregation) で紹介したように、`aggregate()`\index{aggregation}、速やかに作成することができる。
-以下のコマンドは、引数 `fact = 20`、結果の解像度を20倍にしている (元のラスタの解像度が1km^2^であったことを思い出してみよう)。
+以下のコマンドは、引数 `fact = 20`、結果の解像度を 20 倍にしている (元のラスタの解像度が 1 km^2^ であったことを思い出してみよう)。
 
 ```{r 14-location-11, warning=FALSE, cache=TRUE, cache.lazy=FALSE}
 pop_agg = aggregate(reclass$pop, fact = 20, fun = sum, na.rm = TRUE)
@@ -233,7 +232,7 @@ pop_agg = pop_agg[pop_agg > 500000, drop = FALSE]
 これをプロットすると、8 つの大都市圏 (Figure \@ref(fig:metro-areas)) が見えてくる。
 各領域は、1つ以上のラスタセルで構成される。
 1つのリージョンに属するすべてのセルを結合できればコマンドは、
-**terra**\index{terra} の `patches()` である。
+**terra**\index{terra (package)} の `patches()` である。
 その後、`as.polygons()` でラスタオブジェクトを空間ポリゴンに変換し、`st_as_sf()` で `sf`. オブジェクトに変換する。
 
 ```{r 14-location-13, warning=FALSE, message=FALSE}
@@ -294,7 +293,7 @@ metro_names = metro_names$city |>
 - `map()`\index{loop!map} (`lapply()`\index{loop!lapply} の **tidyverse** 相当)。これは、OSM \index{OpenStreetMap}  クエリー関数 `opq()` (Section \@ref(retrieving-data) 参照) のバウンディングボックス\index{bounding box}  を定義する、8 つの大都市名すべてを繰り返し処理するものである
 - `add_osm_feature()` で、キー値が `shop` の OSM\index{OpenStreetMap} 要素を指定する (共通のキー:値のペアの一覧は [wiki.openstreetmap.org](https://wiki.openstreetmap.org/wiki/Map_Features) を参照)
 - `osmdata_sf()`、これは OSM\index{OpenStreetMap} データを空間オブジェクト (クラス `sf`) に変換するものである
-- `while()`\index{loop!while}、1 回目のダウンロードに失敗すると繰り返し (今回は 3 回) ダウンロードを試みる。^[OSM-downloadは1回目で失敗することもあるようである
+- `while()`\index{loop!while}、ダウンロードに失敗すると、さらに 2 回ダウンロードを試みる。^[OSM-download は 1 回目で失敗することもあるようである
 ]
 
 このコードを実行する前に: 約 2 GB のデータをダウンロードすることを考慮してみよう。
@@ -457,6 +456,6 @@ if (knitr::is_latex_output()) {
 ## 演習
 
 ```{r, echo=FALSE, results='asis'}
-res = knitr::knit_child('_14-ex.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
+res = knitr::knit_child('_14-ex-ja.Rmd', quiet = TRUE, options = list(include = FALSE, eval = FALSE))
 cat(res, sep = '\n')
 ```
