@@ -102,7 +102,7 @@ us_states_simp2 = rmapshaper::ms_simplify(us_states, keep = 0.01,
 \index{べくた@ベクタ!かんりゃくか@簡略化}
 簡略化の代わりに、ポリゴンや線のジオメトリの境界を平滑化するという方法もあり、**smoothr** パッケージ\index{smoothr (package)}で実装されている。
 平滑化はジオメトリのエッジを補間するため、必ずしも頂点の数が少なくなるわけではないが、ラスタを空間的にベクトル化したジオメトリを扱うときに特に有用である (このトピックは Chapter \@ref(raster-vector) で説明する)。
-**Smoothr** は、Gaussian kernel 回帰、Chaikin's corner cutting  アルゴリズム、スプライン補間の3つの平滑化手法を実装しており、パッケージ vignette と[web](https://strimas.com/smoothr/)で説明されている。
+**Smoothr** は、Gaussian kernel 回帰、Chaikin's corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と[web](https://strimas.com/smoothr/)で説明されている。
 `st_simplify()` と同様に、平滑化アルゴリズムは「トポロジー」を保存しないことに注意。
 **smoothr** の主要関数は `smooth()` であり、 `method` 引数は使用する平滑化手法を指定する。
 以下は、Gaussian kernel 回帰を使用して、`method=ksmooth` を使用して米国の州の境界線を滑らかにする。
@@ -134,7 +134,7 @@ tmap_arrange(p_ussimp1, p_ussimp2, p_ussimp3, p_ussimp4, ncol = 2, nrow = 2)
 重心の操作で最もよく使われるのは、<u>地理的重心</u>である。
 このタイプの重心操作 (「セントロイド」とも呼ばれる) は、空間オブジェクトにおける質量の中心を表す (指の上で皿のバランスをとることを想像してほしい)。
 地理的重心は、複雑な形状をシンプルな点で表現したり、ポリゴン間の距離を推定したりと、さまざまな用途に利用されている。
-これらは、以下のコードで示すように、**sf** 関数 (`st_centroid()`) で計算することができる。では、ニュージーランドの地域とセーヌ川の支流の地理的重心 (Figure \@ref(fig:centr) の黒い点で示される) を生成してみよう。
+これらは、以下のコードで示すように、**sf** 関数 (`st_centroid()`) で計算することができる。では、New Zealand の地域とセーヌ川の支流の地理的重心 (Figure \@ref(fig:centr) の黒い点で示される) を生成してみよう。
 
 ```{r 05-geometry-operations-7, warning=FALSE}
 nz_centroid = st_centroid(nz)
@@ -153,7 +153,7 @@ nz_pos = st_point_on_surface(nz)
 seine_pos = st_point_on_surface(seine)
 ```
 
-```{r centr, warning=FALSE, echo=FALSE, fig.cap="ニュージーランドの地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「サーフェス上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations.", dev="ragg_png"}
+```{r centr, warning=FALSE, echo=FALSE, fig.cap="New Zealand の地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「サーフェス上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations.", dev="ragg_png"}
 p_centr1 = tm_shape(nz) + tm_polygons(col = "grey80", fill = "grey90") +
   tm_shape(nz_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
   tm_shape(nz_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
@@ -245,14 +245,14 @@ plot(st_buffer(seine_wgs, 5000, singleSide = TRUE)) # no effect
 アフィン変換には、特に、平行移動、拡大縮小、回転が含まれる。
 さらに、これらを任意に組み合わせて使用することも可能である。
 アフィン変換はジオコンピュテーションに不可欠な要素である。
-例えば、ラベルの配置には平行移動が必要であり、非連続領域のカートグラムでは拡大縮小が使用され (Section \@ref(other-mapping-packages) 参照)、歪んだ地図や間違った投影に基づいて作成されたジオメトリを再投影または改善する際には多くのアフィン変換が適用される。
+例えば、ラベルの配置には平行移動が必要であり、非連続領域のカルトグラムでは拡大縮小が使用され (Section \@ref(other-mapping-packages) 参照)、歪んだ地図や間違った投影に基づいて作成されたジオメトリを再投影または改善する際には多くのアフィン変換が適用される。
 **sf** パッケージは `sfg` と `sfc` のクラスのオブジェクトに対してアフィン変換を実装している。
 
 ```{r 05-geometry-operations-11}
 nz_sfc = st_geometry(nz)
 ```
 
-平行移動は、すべてのポイントをマップ単位で同じ距離だけ移動させる。
+平行移動は、すべての点を地図単位で同じ距離だけ移動させる。
 ベクタオブジェクトに数値ベクタを追加することで、実現できるだろう。
 例えば、以下のコードでは、すべての y 座標を北に 10 万メートル移動させ、x 座標はそのままにしている (Figure \@ref(fig:affine-trans) 左図)。
 
@@ -280,7 +280,7 @@ nz_centroid_sfc = st_centroid(nz_sfc)
 nz_scale = (nz_sfc - nz_centroid_sfc) * 0.5 + nz_centroid_sfc
 ```
 
-2次元座標の回転には、回転行列が必要である。
+2 次元座標の回転には、回転行列が必要である。
 
 $$
 R =
@@ -300,9 +300,9 @@ rotation = function(a){
 } 
 ```
 
-`rotation` 関数は、1つの引数 `a` - 回転角度 (angle) を度単位で受け取る。
+`rotation` 関数は、1 つの引数 `a` - 回転角度 (angle) を度単位で受け取る。
 重心のような選択された点を中心に回転させることができる (Figure \@ref(fig:affine-trans) 右図)。
-その他の例については、`vignette("sf3")` を参照 (訳注：[日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html))。
+その他の例については、`vignette("sf3")` を参照 (訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html))。
 
 ```{r 05-geometry-operations-16}
 nz_rotate = (nz_sfc - nz_centroid_sfc) * rotation(30) + nz_centroid_sfc
@@ -427,9 +427,9 @@ x_and_y = st_intersection(x, y)
 
 以下のコードは、同じ結果を得るための3つの方法を示している。
 以下のコードチャンクの最初の行に示すように、`x` と `y` の交差\index{べくた@ベクタ!こうさ@交差} (前のコードチャンクでは `x_and_y` で表される) を直接部分集合オブジェクトとして使用することができる。
-また、以下のコード塊の2行目で示すように、`p` で表される入力点と部分集合/クリッピングオブジェクト `x_and_y` との<u>交点</u>を求めることもできる。
+また、以下のコードチャンクの 2 行目で示すように、`p` で表される入力点と部分集合/クリッピングオブジェクト `x_and_y` との<u>交点</u>を求めることもできる。
 この第二のアプローチは、`x_and_y` と部分的に交差するフィーチャを返すが、部分集合・オブジェクトの境界を越える空間的に広範囲なフィーチャについては、形状を修正したものを返すことになる。
-3つ目のアプローチは、前の章で紹介した二項の空間述語 `st_intersects()` を使って部分集合オブジェクトを作成することである。
+3 つ目のアプローチは、前の章で紹介した二項の空間述語 `st_intersects()` を使って部分集合オブジェクトを作成することである。
 結果は (属性名の表面的な違いを除いて) 同じだが、実装は大きく異なる。
 
 ```{r 05-geometry-operations-21}
@@ -558,8 +558,8 @@ all.equal(multipoint, multipoint_3)
 ```
 
 ```{block2 05-geometry-operations-31, type='rmdnote'}
-単純なジオメトリ (`sfg`) に対して、`st_cast()` は、非マルチタイプからマルチタイプ (例えば、`POINT` から `MULTIPOINT`) やマルチタイプから非マルチタイプへのジオメトリキャストも提供する。
-しかし、マルチタイプから非マルチタイプにキャストする場合、古いオブジェクトの最初の要素だけが出力オブジェクトに残る。
+単純なジオメトリ (`sfg`) に対して、`st_cast()` は、非複合タイプから複合タイプ (例えば、`POINT` から `MULTIPOINT`) や複合タイプから非複合タイプへのジオメトリキャストも提供する。
+しかし、複合タイプから非複合タイプにキャストする場合、古いオブジェクトの最初の要素だけが出力オブジェクトに残る。
 ```
 
 ```{r 05-geometry-operations-32, include=FALSE}
@@ -610,7 +610,7 @@ knitr::kable(sfs_st_cast,
                              "入力型は行、出力型は列で指定"),
              caption.short = "Geometry casting on simple feature geometries.",
              booktabs = TRUE) |> 
-  kableExtra::add_footnote("注：(1) という値はフィーチャ数を表し、NA は操作が不可能なことを表す。", notation = "none")
+  kableExtra::add_footnote("注: (1) という値はフィーチャ数を表し、NA は操作が不可能なことを表す。", notation = "none")
 ```
 
 例として、新しいオブジェクトである `multilinestring_sf` にジオメトリタイプの変換を適用してみよう (Figure \@ref(fig:line-cast) の左側)。
@@ -669,8 +669,8 @@ linestring_sf2
 もちろん、投影法の一致も必要であるが、それはすでに Section \@ref(reproj-ras) で説明した。
 
 いずれにせよ、1 枚のラスタ画像に対してジオメトリ演算を行う理由は他にもある。
-例えば、Chapter \@ref(location) で、ドイツの大都市圏を人口 50万人以上の 20 km^2^ のピクセルと定義している。 
-しかし、元の住民ラスタの解像度は 1 km^2^ であるため、解像度を 20分の 1 に下げる (集約する) (Section \@ref(define-metropolitan-areas) を参照)。
+例えば、Chapter \@ref(location) で、ドイツの大都市圏を人口 50 万人以上の 20 km^2^ のピクセルと定義している。 
+しかし、元の住民ラスタの解像度は 1 km^2^ であるため、解像度を 20 分の 1 に下げる (集約する) (Section \@ref(define-metropolitan-areas) を参照)。
 ラスタを集約するもう一つの理由は、単純に実行時間の短縮やディスクスペースの節約である。
 もちろん、この方法はラスタデータの粗い解像度が可能なタスクの場合にのみ推奨される。
 
@@ -716,7 +716,7 @@ R の **terra** パッケージで、範囲が異なる2つのオブジェクト
 elev_3 = elev + elev_2
 ```
 
-しかし、2つのラスタの範囲を `extend()` で揃えることができる。 
+しかし、2 つのラスタの範囲を `extend()` で揃えることができる。 
 追加する行や列の数を (以前のように) 関数に指示するのではなく、別のラスタオブジェクトを使って計算させるようにしている。
 ここでは、`elev` のオブジェクトを、`elev_2` の範囲に拡張している。 
 新しく追加された行と列は、`NA` を受け取る。
@@ -874,10 +874,10 @@ Figure \@ref(fig:resampl) に示すように、解像度/原点の異なるラ�
 主なリサンプリング方法には、以下のようなものがある。
 
 - 最近傍 (Nearest neighbor): 元のラスタの最も近いセルの値を、ターゲットのセルに割り当てる。これは高速でシンプルな手法で、通常、カテゴリラスタのリサンプリングに適している
-- 双一次補間 (Bilinear interpolation)：元のラスタから 4 つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である
-- 三次補間 (Cubic interpolation)：3 次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる
-- 三次スプライン補間 (Cubic spline interpolation)：出力セルを決定するために元のラスタの 16 個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される
-- Lanczos windowed sinc resampling: 出力セルの値を決定するために、元のラスタの 36 個の最近接セルの値を使用する。連続的なラスタに使用される^[
+- 双一次補間 (Bilinear interpolation): 元のラスタから 4 つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である
+- 三次補間 (Cubic interpolation): 3 次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる
+- 三次スプライン補間 (Cubic spline interpolation): 出力セルを決定するために元のラスタの 16 個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される
+- ランチョスリサンプリング (Lanczos windowed sinc resampling): 出力セルの値を決定するために、元のラスタの 36 個の最近接セルの値を使用する。連続的なラスタに使用される^[
 この方法の詳細な説明は、https://gis.stackexchange.com/a/14361/20955。
 ]
 

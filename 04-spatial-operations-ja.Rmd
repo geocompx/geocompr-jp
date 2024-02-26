@@ -17,7 +17,7 @@ library(spData)
 
 ## イントロダクション  {#introduction-04}
 
-ジオコンピュテーション\index{geocomputation}において、ベクタデータセット間の空間結合やラスタデータセットのローカルおよびフォーカル演算などの空間演算は重要な要素である。
+ジオコンピュテーション\index{じおこんぴゅてーしょん@ジオコンピュテーション}において、ベクタデータセット間の空間結合やラスタデータセットのローカルおよびフォーカル演算などの空間演算は重要な要素である。
 この章では、空間オブジェクトがその位置と形状に基づいて、さまざまな方法で変更できることを紹介する。
 空間的な操作の多くは、非空間的 (属性的) な操作に相当するため、前の章で示したデータセットの部分集合や結合といった概念がここでも適用できる。
 これは特にベクタ操作に当てはまる。ベクタ属性の操作に関する Section \@ref(vector-attribute-manipulation) は、空間的な対応である空間部分集合 (Section \@ref(spatial-subsetting) で取り上げている) を理解するための基礎となるものである。
@@ -54,7 +54,7 @@ library(spData)
 \index{vector!subsetting}
 \index{spatial!subsetting}
 
-空間部分集合を示すために、**spData** パッケージの `nz` と `nz_height` データセットを使用する。これは、ニュージーランドの 16 の主要地域と 101 の最高地点に関する地理データをそれぞれ含み (Figure \@ref(fig:nz-subset))、投影座標参照系で表示されるものである。
+空間部分集合を示すために、**spData** パッケージの `nz` と `nz_height` データセットを使用する。これは、New Zealand の 16 の主要地域と 101 の最高地点に関する地理データをそれぞれ含み (Figure \@ref(fig:nz-subset))、投影座標参照系で表示されるものである。
 次のコードでは、Canterbury を表すオブジェクトを作成し、空間部分集合を使用して、対象地域のすべての高点を返す。
 
 ```{r 04-spatial-operations-3}
@@ -62,13 +62,13 @@ canterbury = nz |> filter(Name == "Canterbury")
 canterbury_height = nz_height[canterbury, ]
 ```
 
-```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="赤い三角形はニュージーランドの 101 の High Point を表し、中央のカンタベリー地域付近に集まっている (左)。カンタベリーのポイントは、`[` 部分集合演算子で作成された (グレーでハイライト、右)。", fig.scap="Illustration of spatial subsetting.", message=FALSE, dev="ragg_png"}
+```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="赤い三角形はNew Zealand の 101 の High Point を表し、中央のカンタベリー地域付近に集まっている (左)。カンタベリーのポイントは、`[` 部分集合演算子で作成された (グレーでハイライト、右)。", fig.scap="Illustration of spatial subsetting.", message=FALSE, dev="ragg_png"}
 library(tmap)
 p_hpnz1 = tm_shape(nz) + 
   tm_polygons(fill = "white") +
   tm_shape(nz_height) + 
   tm_symbols(shape = 2, col = "red", size = 0.5, col_alpha = 0.75) +
-  tm_title("ニュージーランドの高点") +
+  tm_title("New Zealand の高点") +
   tm_layout(bg.color = "lightblue", fontfamily = "HiraginoSans-W3")
 p_hpnz2 = tm_shape(nz) + 
   tm_polygons(fill = "white") +
@@ -181,7 +181,7 @@ tmap::tmap_arrange(de_9im(p1, p2), de_9im(p1, p3), de_9im(p1, p4),
                    de_9im(p7, p1), de_9im(p1, p5), de_9im(p1, p6), nrow = 2)
 ```
 
-`sf` では、異なる種類の位相関係をテストする関数を「二項述語」と呼ぶ。これは、コマンド [`vignette("sf3")`](https://r-spatial.github.io/sf/articles/sf3.html) (訳注：[日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html#sf))、およびヘルプページ [`?geos_binary_pred`](https://r-spatial.github.io/sf/reference/geos_binary_ops.html) で見ることができる。
+`sf` では、異なる種類の位相関係をテストする関数を「二項述語」と呼ぶ。これは、コマンド [`vignette("sf3")`](https://r-spatial.github.io/sf/articles/sf3.html) (訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html#sf))、およびヘルプページ [`?geos_binary_pred`](https://r-spatial.github.io/sf/reference/geos_binary_ops.html) で見ることができる。
 位相関係が実際にどのように機能するかを見るために、Figure \@ref(fig:relations) で説明した関係を基に、前の章 (Section \@ref(geometry)) で学んだベクタのジオメトリの表現方法の知識を統合して、簡単な再現性のある例を作ってみよう。
 なお、ポリゴンの頂点の座標 (x、y) を表す表形式のデータを作成するために、R の基本関数 `cbind()` を使って、座標点を表す行列、`POLYGON`、そして最後に `sfc` オブジェクトを作成する (Chapter \@ref(spatial-class) で説明)。
 
@@ -230,7 +230,7 @@ st_intersects(point_sf, polygon_sfc)
 ```
 
 その結果は、直感と一致するはずである。
-1 点目と 3 点目は真 (`1`)であるが、2点目は偽 (空のベクタで表される) が返されポリゴンの境界の外にある。
+1 点目と 3 点目は真 (`1`)であるが、2 点目は偽 (空のベクタで表される) が返されポリゴンの境界の外にある。
 予想外なのは、結果がベクトルのリストという形になっていることだろう。
 この出力は<u>疎行列</u> (sparse matrix) であり、関係が存在する場合にのみ登録され、複数フィーチャに対する位相幾何学的操作のメモリ要件を軽減する。
 前節で見たように、`TRUE` または `FALSE` の値からなる<u>密な行列</u> (dense matrix) が返されるのは、`sparse = FALSE` の時である。
@@ -268,7 +268,7 @@ st_is_within_distance(point_sf, polygon_sfc, dist = 0.2, sparse = FALSE)[, 1]
 
 点 2 は `polygon_sfc` の最も近い頂点から 0.2 単位以上離れているが、距離を 0.2 に設定すると、まだ選択されていることに注意されたい。
 これは、距離が最も近い辺まで測定されるためで、この場合、Figure \@ref(fig:relation-objects) の点 2 の真上にあるポリゴンの部分である。
- (点 2 とポリゴンの実際の距離が 0.13 であることは、コマンド `st_distance(point_sf, polygon_sfc)` で確認できる。) 
+(点 2 とポリゴンの実際の距離が 0.13 であることは、コマンド `st_distance(point_sf, polygon_sfc)` で確認できる。) 
 
 ```{r, eval=FALSE, echo=FALSE}
 # verify distances to the polygon with reference to paragraph above:
@@ -346,7 +346,7 @@ st_distance(nz_height[1:3, ], co)
 ```
 
 `nz_height` の 2 番目と 3 番目のフィーチャーと `co` の 2 番目のフィーチャ間の距離はゼロであることに注意。
-これは、点と多角形の間の距離は、ポリゴンの<u>任意の部分</u> までの距離を指すという事実を示している：
+これは、点と多角形の間の距離は、ポリゴンの<u>任意の部分</u> までの距離を指すという事実を示している: 
 `nz_height` の 2 番目と 3 番目の点は Otago の<u>中</u>にあり、プロットすることで確認できる (結果は示していない)。
 
 ```{r 04-spatial-operations-33, eval=FALSE}
@@ -395,7 +395,7 @@ text(x = c(-0.5, 1.5), y = 1, labels = c("x", "y")) # add text
 ```
 
 DE-9IM 文字列がどのように機能するかを示すために、Figure \@ref(fig:relations) の最初のジオメトリペアの様々な関連性を見てみよう。
-Figure \@ref(fig:de9imgg) は、各オブジェクトの内部、境界、外部のあらゆる組み合わせの交点を示す9交差点モデル (9IM) を示している。最初のオブジェクト `x` の各コンポーネントを列とし、`y` の各コンポーネントを行として配置すると、各要素間の交点が強調されたファセット図形が作成される。
+Figure \@ref(fig:de9imgg) は、各オブジェクトの内部、境界、外部のあらゆる組み合わせの交点を示す 9 交差点モデル (9IM) を示している。最初のオブジェクト `x` の各コンポーネントを列とし、`y` の各コンポーネントを行として配置すると、各要素間の交点が強調されたファセット図形が作成される。
 
 ```{r de9imgg, echo=FALSE, warning=FALSE, fig.cap="Dimensionally Extended 9 Intersection Model (DE-9IM) の仕組みを説明する図。凡例にない色は、異なる構成要素間の重なりを表している。太い線は2次元の交わりを強調する。例えば、オブジェクト x の境界とオブジェクト y の内部の交わりは、中央上部のファセットで示されている。", message=FALSE}
 p1_2 = st_as_sf(c(p1, p3))
@@ -761,10 +761,10 @@ nz_agg = aggregate(x = nz_height, by = nz, FUN = mean)
 ```
 
 前のコマンドの結果は、 (空間) 集約オブジェクト (`nz`) と同じジオメトリを持つ `sf` オブジェクトである。これは、コマンド `identical(st_geometry(nz), st_geometry(nz_agg))` で確認することができる。
-先の操作の結果を Figure \@ref(fig:spatial-aggregation) に示す。これは、ニュージーランドの16の地域それぞれにおける `nz_height` のフィーチャの平均値を示している。
+先の操作の結果を Figure \@ref(fig:spatial-aggregation) に示す。これは、New Zealand の16の地域それぞれにおける `nz_height` のフィーチャの平均値を示している。
 また、次のように `st_join()` の出力を「tidy」関数 `group_by()` と `summarize()` にパイプすることでも、同じ結果を生成することができる。
 
-```{r spatial-aggregation, echo=FALSE, fig.cap="ニュージーランドの各地域の上位 101 の高さの平均値。", fig.asp=1, message=FALSE, out.width="50%"}
+```{r spatial-aggregation, echo=FALSE, fig.cap="New Zealand の各地域の上位 101 の高さの平均値。", fig.asp=1, message=FALSE, out.width="50%"}
 library(tmap)
 tm_shape(nz_agg) +
   tm_fill("elevation", 
@@ -837,7 +837,7 @@ grain = rast(system.file("raster/grain.tif", package = "spData"))
 前の章 (Section \@ref(manipulating-raster-objects)) では、特定のセル ID や行と列の組み合わせに関連する値を取得する方法を紹介した。
 ラスタオブジェクトは、位置 (座標) などの空間オブジェクトを抽出することも可能である。
 部分集合に座標を使用するには、**terra** の関数 `cellFromXY()` で座標をセル ID に「変換」することができる。
-別の方法として、`terra::extract()` (注意： **tidyverse**\index{tidyverse (package)} の中にも `extract()` という関数がある) を使って値を抽出することができる。
+別の方法として、`terra::extract()` (注意:  **tidyverse**\index{tidyverse (package)} の中にも `extract()` という関数がある) を使って値を抽出することができる。
 以下に、座標 0.1, 0.1 に位置する点を覆うセルの値を求める方法を示す。
 \index{raster!subsetting}
 \index{spatial!subsetting}
@@ -931,7 +931,7 @@ elev[elev < 20] = NA
 
 1. <u>ローカル</u> (Local)、つまりセル単位の操作
 2. <u>フォーカル</u> (Focal)、つまり近傍 (Nighborhood) オペレーション。
-多くの場合、出力セルの値は、3×3の入力セルブロックの結果
+多くの場合、出力セルの値は、3×3 の入力セルブロックの結果
 3. <u>ゾーン</u> (Zonal) 演算は、フォーカル演算と似ているが、新しい値を計算する周囲の画素グリッドは不規則なサイズと形状を持つことができる。
 4. <u>グローバル</u> (Global) またはラスタ単位の操作。
 つまり、出力セルは 1 つまたは複数のラスタ全体から潜在的にその値を引き出す。
@@ -955,7 +955,7 @@ log(elev)
 elev > 5
 ```
 
-```{r 04-local-operations, echo=FALSE, fig.cap="elev ラスタオブジェクトのさまざまなローカル操作の例：2つのラスタの加算、二乗、対数変換の適用、論理演算の実行。"}
+```{r 04-local-operations, echo=FALSE, fig.cap="elev ラスタオブジェクトのさまざまなローカル操作の例: 2つのラスタの加算、二乗、対数変換の適用、論理演算の実行。"}
 knitr::include_graphics("figures/04-local-operations.png")
 ```
 
@@ -1071,7 +1071,7 @@ knitr::include_graphics("figures/04_focal_example.png")
 ```
 
 期待通りの出力が得られるかどうか、すぐに確認することができる。
-この例では、最小値は常に移動ウィンドウの左上隅でなければならない (入力ラスタは、左上隅から始まるセルの値を行単位で1つずつ増加させることによって作成したことを思い出してほしい)。
+この例では、最小値は常に移動窓の左上隅でなければならない (入力ラスタは、左上隅から始まるセルの値を行単位で1つずつ増加させることによって作成したことを思い出してほしい)。
 この例では、重み付け行列は 1 だけで構成されており、各セルの出力に対する重みが同じであることを意味しているが、これは変更可能である。
 
 画像処理では、焦点関数やフィルターが重要な役割を担っている。
@@ -1104,7 +1104,7 @@ z
 ```
 
 これは、各カテゴリの統計値 \index{statistics}、ここでは各粒度クラスの平均高度を返す。
-注： `as.raster` 引数を `TRUE` に設定することで、各ゾーンの統計情報を計算したラスタを取得することも可能である。
+注:  `as.raster` 引数を `TRUE` に設定することで、各ゾーンの統計情報を計算したラスタを取得することも可能である。
 
 ### グローバルな操作と距離  {#global-operations-and-distances}
 
@@ -1133,7 +1133,7 @@ Visibility と viewshed の計算もグローバル操作に属する (Chapter \
 
 ### ラスタのマージ  {#merging-rasters}
 
-\index{raster!merge}
+\index{らすた@ラスタ!まーじ@マージ}
 NDVI を計算し (Section \@ref(local-operations) 参照)、さらに、調査地域内の観測の標高データから地形属性を計算したいとする。
 このような計算には、リモートセンシングの情報が必要である。 
 リモートセンシング画像は、特定の空間範囲をカバーするシーンに分割されることが多く、1つの調査エリアが複数のシーンにまたがっていることがよくある。

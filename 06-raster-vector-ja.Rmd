@@ -244,7 +244,7 @@ print(plot_transect, vp = viewport(layout.pos.row = 2, layout.pos.col = 2))
 これは以下のコマンドで示され、`ID` (ポリゴンの行番号) と `srtm`  (関連する標高値) の列名を持つデータフレームが生成される。
 
 ```{r 06-raster-vector-17, eval=FALSE, echo=FALSE}
-# aim: zion_many を作成し、マルチポリゴンの結果をテストする。
+# aim: zion_many を作成し、複合ポリゴンの結果をテストする。
 n = 3
 zion_many = st_sample(x = zion, size = n) |> 
   st_buffer(dist = 500) |>

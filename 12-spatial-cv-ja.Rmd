@@ -69,7 +69,7 @@ CV は過適合\index{かてきごう@過適合}を検出するのに役立つ�
 予測地図は**扱わない**。
 これは、Chapter \@ref(eco) で扱う。
 
-## ケーススタディ：地すべりの発生しやすさ  {#case-landslide}
+## ケーススタディ: 地すべりの発生しやすさ  {#case-landslide}
 
 このケーススタディは、エクアドル南部の地滑り地点のデータセットに基づいている。図は Figure \@ref(fig:lsl-map)、詳細は @muenchow_geomorphic_2012 で説明されている。
 論文で使用されたデータセットのサブセットは **spDataLarge**\index{spDataLarge (package)}  パッケージで提供されており、以下のように読み込むことができる。

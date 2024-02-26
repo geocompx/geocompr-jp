@@ -48,13 +48,13 @@ CRS には、以下のような様々な表現方法がある。
 2. `+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs` のような、形式化された、しかし今では時代遅れの「proj4 文字列」(または proj-string)
 3. `EPSG:4326` のような識別用の 'authority:code' テキスト文字列
 
-上の例はそれぞれ、全地球測位システム (Global Positioning System, GPS) 座標やその他多くのデータセットの基礎となる「WGS84」座標系という同じものを指している。(訳注：WGS84 は、世界で一般的に用いられている緯度経度座標系だが、日本の場合は、JGD2011 が用いられることが多い。そのコードは `EPSG:6668` である。なお、JGD2011 は東日本大震災の影響を考慮しており、震災以前は `JGD2000 が用いられていた。そのコードは `EPSG:4612` である。データが作成された年によって両者を使い分けるとよい。詳細については、[空間情報クラブ](https://club.informatix.co.jp/?p=998)などを参照。)
+上の例はそれぞれ、全地球測位システム (Global Positioning System, GPS) 座標やその他多くのデータセットの基礎となる「WGS84」座標系という同じものを指している。(訳注: WGS84 は、世界で一般的に用いられている緯度経度座標系だが、日本の場合は、JGD2011 が用いられることが多い。そのコードは `EPSG:6668` である。なお、JGD2011 は東日本大震災の影響を考慮しており、震災以前は `JGD2000 が用いられていた。そのコードは `EPSG:4612` である。データが作成された年によって両者を使い分けるとよい。詳細については、[空間情報クラブ](https://club.informatix.co.jp/?p=998)などを参照。)
 しかし、どれが正しいのだろうか？
 
 \index{CRS!EPSG}
 一言でいうと、第三の CRS 識別方法が正しい。`EPSG:4326` は、本書で取り上げる **sf** と **terra**  (さらに **stars**) パッケージ、及び [QGIS](https://docs.qgis.org/3.16/en/docs/user_manual/working_with_projections/working_with_projections.html) や [PROJ](https://proj.org/development/quickstart.html) など地理データを扱う多くのソフトウェアプロジェクトが理解できる。
 `EPSG:4326` は将来を見据えたものである。
-さらに、機械可読でありながら、「EPSG:4326」は短く、覚えやすく、オンラインで非常に「見つけやすい」 (例えば、EPSG:4326 を検索すると、ウェブサイト [epsg.io](https://epsg.io/4326) の専用ページが表示される)。
+さらに、「EPSG:4326」は、機械可読でありながら、短く覚えやすく、オンラインで非常に「見つけやすい」 (例えば、EPSG:4326 を検索すると、ウェブサイト [epsg.io](https://epsg.io/4326) の専用ページが表示される)。
 より簡潔に `4326` だけでも **sf** によって理解されるが、 **曖昧さを防ぎ、文脈を提供するために、より明示的な `AUTHORITY:CODE` という形式を推奨する**。
 
 \index{CRS!WKT}
@@ -99,8 +99,8 @@ WKT の CRS 定義が登場する以前は、proj-string が座標操作の指�
 
 \index{CRS!proj-string}
 最近 (ver 6 以降) の PROJ のバージョンでは、座標操作を定義するために proj-string を使用することができるが、いくつかの proj-string キー (`+nadgrids` , `+towgs84` , `+k` , `+init=epsg:`) はもうサポートされていないか、推奨されないものである。
-また、proj-string に直接設定できる測地基準系 (datum) は3つ (WGS84、NAD83、NAD27) だけである。
-CRS の定義の進化と PROJ ライブラリの長い説明は、@bivand_progress_2021、@pebesma_spatial_2022 の第2章、[Floris Vanderhaeghe によるブログ](https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/)に記載されている。
+また、proj-string に直接設定できる測地基準系 (datum) は 3 つ (WGS84、NAD83、NAD27) だけである。
+CRS の定義の進化と PROJ ライブラリの長い説明は、@bivand_progress_2021、@pebesma_spatial_2022 の第 2 章、[Floris Vanderhaeghe によるブログ](https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/)に記載されている。
 [PROJ documentation](https://proj.org/development/reference/cpp/cpp_general.html) にも概説されているように、WKT CRS 形式には WKT1 と 2 種類の WKT2 があり、後者 (WKT2, 2018 仕様) は ISO 19111:2019 に対応するものである [@opengeospatialconsortium_wellknown_2019]。
 
 ## 座標系の照会と設定  {#crs-setting}
@@ -136,7 +136,7 @@ new_vector_crs = st_crs(new_vector)
 1. `User input` (この場合、`WGS 84`、入力ファイルから取得した `EPSG:4326` の同義語)、前述の CRS 識別子に対応する。
 2. `wkt` CRS に関するすべての関連情報を含む完全な WKT 文字列を含む。
 
-`input` 要素は柔軟性があり、入力ファイルやユーザー入力に応じて、`AUTHORITY:CODE` 表現 (例：`EPSG:4326`)、CRS の名前 (例：`WGS 84`)、あるいは proj-string 定義を含めることができる。
+`input` 要素は柔軟性があり、入力ファイルやユーザー入力に応じて、`AUTHORITY:CODE` 表現 (例: `EPSG:4326`)、CRS の名前 (例: `WGS 84`)、あるいは proj-string 定義を含めることができる。
 `wkt` 要素には WKT 表現が格納され、オブジェクトをファイルに保存したり、座標演算を行う際に使用される。
 上記で、`new_vector` のオブジェクトは、WGS84 楕円体を持ち、グリニッジ本初子午線を使用し、緯度・経度軸の順番になっていることがわかる。
 この場合、この CRS の使用に適したエリアを説明する `USAGE` や、CRS の識別子を示す `ID` (`EPSG:4326`) などの追加要素もある。
@@ -283,7 +283,7 @@ sf::sf_use_s2(TRUE)
 ```{block2 06-reproj-5, type="rmdnote"}
 子午線と呼ばれる 2 本の経線間の距離は、赤道では約 111 km である (正確な距離は `geosphere::distGeo(c(0, 0), c(1, 0))` を実行して調べられる)。\index{しごせん@子午線}
 これは極点でゼロに縮まる。
-例えば、ロンドンの緯度では、子午線の距離は 70 km 以下である (課題：これを検証するコードを実行しなさい)。
+例えば、ロンドンの緯度では、子午線の距離は 70 km 以下である (課題: これを検証するコードを実行しなさい)。
 <!-- `geosphere::distGeo(c(0, 51.5), c(1, 51.5))` -->
 一方、緯度線は緯度に関係なく等距離にあり、赤道や極付近を含めて常に 111 km 程度の間隔がある (Figure \@ref(fig:crs-buf) から Figure \@ref(fig:wintriproj)参照)。
 ```
@@ -339,7 +339,7 @@ plot(london_proj, add = TRUE)
 plot(st_geometry(uk), add = TRUE, border = "gray", lwd = 3)
 ```
 
-```{r crs-buf, fig.cap="ロンドン周辺のバッファで、S2球面幾何エンジンを用いて作成した緯度経度データ (左)、投影データ (中)、球面幾何を用いない緯度経度データ (右) の結果を示している。左のプロットは、投影されていないデータを sf でバッファ作成した結果を示しており、デフォルトで Google の S2 spherical geometry engine を max_cells を 1000 に設定して呼び出している (細線)。太い「ブロック状の」線は、max_cells を 100 に設定して同じ操作を行った結果を示している。", fig.scap="Buffers around London with a geographic and projected CRS.", echo=FALSE, fig.asp=0.39, fig.width = 8}
+```{r crs-buf, fig.cap="London 周辺のバッファで、S2 球面幾何エンジンを用いて作成した緯度経度データ (左)、投影データ (中)、球面幾何を用いない緯度経度データ (右) の結果を示している。左のプロットは、投影されていないデータを sf でバッファ作成した結果を示しており、デフォルトで Google の S2 spherical geometry engine を max_cells を 1000 に設定して呼び出している (細線)。太い「ブロック状の」線は、max_cells を 100 に設定して同じ操作を行った結果を示している。", fig.scap="Buffers around London with a geographic and projected CRS.", echo=FALSE, fig.asp=0.39, fig.width = 8}
 uk = rnaturalearth::ne_countries(scale = 50, returnclass = "sf") |> 
   filter(grepl(pattern = "United Kingdom|Ire", x = name_long))
 
@@ -373,7 +373,7 @@ tm3 = tm_shape(london_buff_lonlat, bbox = st_bbox(london_buff_s2_100_cells)) +
 tmap_arrange(tm1, tm2, tm3, nrow = 1)
 ```
 
-`s2` と適切に予測された CRS に基づくバッファは、バッファの境界のすべての部分がロンドンから等距離にあることを意味し、「つぶされた」ものではないことは、Figure \@ref(fig:crs-buf) から明らかである。
+`s2` と適切に予測された CRS に基づくバッファは、バッファの境界のすべての部分が London から等距離にあることを意味し、「つぶされた」ものではないことは、Figure \@ref(fig:crs-buf) から明らかである。
 入力に CRS がないか、`sf_use_s2()` がオフになっているため、`s2` が<u>使われていない</u>ときに緯度経度 CRS から生成される結果は、南北軸に細長く歪んでいる。緯度経度に投影データを仮定する (GEOS による) アルゴリズムを使うことが危険であることが明らかである。
 しかし、S2\index{S2} で生成された結果も、劇的な変化はないものの、歪んでいる。
 Figure \@ref(fig:crs-buf) (左) のバッファ境界はどちらもギザギザしているが、これは `s2` の引数 `max_cells` を 100 に設定して作成したバッファを表す太い境界の場合のみ、明らかまたは関連性があると考えられる。
@@ -421,9 +421,9 @@ st_distance(london_geo, london_proj)
 ある投影法を解析の一部に使い、別の投影法を別の部分に使い、さらに別の投影法を可視化することも可能である。
 常に自分の目標に最も適した CRS を選ぶように心がけよう。
 
-**地理的 CRS**\index{CRS!ちりてき@地理的} を選択する場合、[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84)  [日本語](https://ja.wikipedia.org/w/index.php?curid=52196)) という答えになることが多いようである。(訳注：上で既に述べたが、WGS84 に対応する日本の CRS は、東日本大震災以降の JGD2011 と、それ以前の JGD2000 である。大事なことなので繰り返す。)
+**地理的 CRS**\index{CRS!ちりてき@地理的} を選択する場合、[WGS84](https://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84)  [日本語](https://ja.wikipedia.org/w/index.php?curid=52196)) という答えになることが多いようである。(訳注: 上で既に述べたが、WGS84 に対応する日本の CRS は、東日本大震災以降の JGD2011 と、それ以前の JGD2000 である。大事なことなので繰り返す。)
 ウェブマッピングだけでなく、GPS データセットや何千ものラスタ、ベクタデータセットがこの CRS でデフォルトで提供されているため、利用されている。
-WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 を知っておくとよいだろう。(訳注：JGD2011は 6668、JGD2000 は 4612 である。)^[
+WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 を知っておくとよいだろう。(訳注: JGD2011は 6668、JGD2000 は 4612 である。)^[
 `"EPSG:4326"` の代わりに、`"OGC:CRS84"` を使うこともできる。前者では、経度の前に緯度が並べ替えられる。後者は、GeoJSON の標準形式であり、緯度の前に経度が並べ替えられる。]
 この「マジックナンバー」は、投影された CRS が異常なオブジェクトを、広く理解されるものに変換するために使用することができる。
 
@@ -431,11 +431,11 @@ WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 
 自由に決められないこともある。
 「多くの場合、投影の選択は公的な地図作成機関によって行われる」 [@bivand_applied_2013] 。
 つまり、現地のデータソースで作業する場合、公式の CRS が最も正確ではないとしても、互換性を確保するために、データが提供された CRS で作業することが望ましいと思われる。
-ロンドンの例は、(a) 英国ナショナルグリッド (関連する EPSG コード27700) がよく知られており、(b) 元のデータセット (`london`) がすでにその CRS を持っていたので、簡単に答えることができたのである。
+London の例は、(a) 英国ナショナルグリッド (関連する EPSG コード27700) がよく知られており、(b) 元のデータセット (`london`) がすでにその CRS を持っていたので、簡単に答えることができたのである。
 
 \index{UTM} 
 一般的に使われているデフォルトは Universal Transverse Mercator ([UTM](https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system) [日本語](https://ja.wikipedia.org/w/index.php?curid=118035)) で、地球を縦 60 個のくさびと横 20 個の緯度に分割した CRS のセットである。
-地球上のほとんどの場所には UTM コードがあり、例えば「60H」 は R が発明されたニュージーランド北部を指している。
+地球上のほとんどの場所には UTM コードがあり、例えば「60H」 は R が発明された New Zealand 北部を指している。
 UTM EPSG コードは、北半球では 32601 から 32660 まで、南半球では 32701 から 32760 まで順次表示される。
 
 その仕組みを説明するために、 [ここにある通り](https://stackoverflow.com/a/9188972/)、地球上の任意の地点に関連する EPSG コードを計算する関数 `lonlat2UTM()` を作ってみよう。 
@@ -451,7 +451,7 @@ lonlat2UTM = function(lonlat) {
 }
 ```
 
-次のコマンドは、この機能を利用して、オークランドとロンドンの UTM ゾーンと関連する EPSG コードを特定する。
+次のコマンドは、この機能を利用して、Auckland と London の UTM ゾーンと関連する EPSG コードを特定する。
 
 ```{r 06-reproj-14, echo=FALSE, eval=FALSE}
 stplanr::geo_code("Auckland")
@@ -469,7 +469,7 @@ UTM CRS で使用されている横メルカトル図法は等角 (conformal) �
 現在、適切な CRS を選択するためのツールも用意されており、これには **crssuggest** パッケージ<!--add ref or docs--> が含まれている。
 このパッケージのメイン関数である `suggest_crs()` は、地理的な CRS を持つ空間オブジェクトを受け取り、与えられた領域に使用可能な投影 CRS のリストを返す。^[また、本パッケージでは、CRS 情報を付加していないデータの真の CRS を把握することも可能。] 
 もう一つの便利なツールは、選択した場所とタイプに基づいて CRS をリストアップするウェブページ https://jjimenezshaw.github.io/crs-explorer/ である。
-重要な注意点：これらのツールは多くの場面で役立つが、適用する前に推奨される CRS の特性を知っておく必要がある。
+重要な注意点: これらのツールは多くの場面で役立つが、適用する前に推奨される CRS の特性を知っておく必要がある。
 
 \index{CRS!かすたむ@カスタム} 
 適切な CRS がすぐにわからない場合、CRS の選択は、その後の地図や分析において保存することが最も重要である特性によって決められるべきだろう。
