@@ -113,7 +113,7 @@ tm_shape(nz) +
 ```
 
 ```{r tmshape, echo=FALSE, message=FALSE, fig.cap="ニュージーランドの形状を **tmap** 関数で塗りつぶし (左)、境界 (中)、塗りつぶしと境界 (右) のレイヤを追加してプロット。", fig.scap="New Zealand's shape plotted using tmap functions."}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-tmshape.R", print.eval = TRUE)
+source("https://github.com/geocompx/geocompr/raw/main/code/09-tmshape.R", print.eval = TRUE)
 ```
 
 この場合、`tm_shape()` に渡されるオブジェクトは `nz` で、ニュージーランドの地域を表す `sf` オブジェクトである (`sf` オブジェクトについては Section \@ref(intro-sf) を参照)。
@@ -286,7 +286,7 @@ tm_shape(nz) + tm_polygons(fill = "Median_income",
 ```
 
 ```{r tmpal, message=FALSE, fig.cap="色設定に影響を与える設定の説明図。結果は (左から) デフォルト設定、手動区切り、N 区切り、パレットを変更した場合の結果を示している。", fig.scap="Illustration of settings that affect color settings.", echo=FALSE, fig.asp=0.56, warning=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/09-tmpal.R", print.eval = TRUE)
+source("https://github.com/geocompx/geocompr/raw/main/code/09-tmpal.R", print.eval = TRUE)
 ```
 
 ```{block2 break-style-note0, type='rmdnote'}
@@ -688,12 +688,12 @@ Section \@ref(faceted-maps) で紹介されているファセット・マップ�
 デジタル版でしか表示できないが、より多くのコンテンツがオンラインに移行するにつれて、これは問題ではなくなってきている。
 印刷された地図から地図アニメーション (またはインタラクティブ) バージョンを含むウェブページに読者をリンクすることで、地図を生き生きとさせることができる。
 R でアニメーションを生成する方法はいくつかあり、**ggplot2** をベースにした **ganimate** のようなアニメーションパッケージもある (Section \@ref(other-mapping-packages) を参照)。
-このセクションでは、**tmap** を使ったアニメーションマップの作成に焦点を当てる。構文はこれまでのセクションでも使っており、アプローチの柔軟性がある。
+このセクションでは、**tmap** を使った地図アニメーションの作成に焦点を当てる。構文はこれまでのセクションでも使っており、アプローチの柔軟性がある。
 
 Figure \@ref(fig:urban-animated) は、地図アニメーションの簡単な例である。
 ファセットプロットとは異なり、複数の地図を一画面に押し込むことはなく、世界で最も人口の多い集積地の空間分布が時間とともにどのように進化していくかを見ることができる (アニメーション版は同書のウェブサイトを参照)。
 
-```{r urban-animated, message=FALSE, fig.cap="1950年から2030年までの、国連による人口予測に基づく都市集積の上位30位を示したアニメーション地図。アニメーション版は、geocompr.robinlovelace.net で見ることができる。", fig.scap="Animated map showing the top 30 largest 'urban agglomerations'.", echo=FALSE, fig.height=3.3}
+```{r urban-animated, message=FALSE, fig.cap="1950年から2030年までの、国連による人口予測に基づく都市集積の上位30位を示した地図アニメーション。アニメーション版は、geocompr.robinlovelace.net で見ることができる。", fig.scap="Animated map showing the top 30 largest 'urban agglomerations'.", echo=FALSE, fig.height=3.3}
 if (knitr::is_latex_output()){
     knitr::include_graphics("figures/urban-animated.png")
 } else if (knitr::is_html_output()){
@@ -735,7 +735,7 @@ tmap_animation(urb_anim, filename = "urb_anim.gif", delay = 25)
 source("https://github.com/geocompx/geocompr/raw/main/code/09-usboundaries.R")
 ```
 
-```{r animus, echo=FALSE, message=FALSE, fig.cap="米国における人口増加、州形成、境界線の変化を示すアニメーション地図 (1790-2010年)。アニメーション版は r.geocompx.org でオンライン公開。", fig.scap="Animated map showing boundary changes in the United States."}
+```{r animus, echo=FALSE, message=FALSE, fig.cap="米国における人口増加、州形成、境界線の変化を示す地図アニメーション (1790-2010年)。アニメーション版は r.geocompx.org でオンライン公開。", fig.scap="Animated map showing boundary changes in the United States."}
 u_animus_html = "https://user-images.githubusercontent.com/1825120/38543030-5794b6f0-3c9b-11e8-9da9-10ec1f3ea726.gif"
 u_animus_pdf = "figures/animus.png"
 if (knitr::is_latex_output()){
@@ -767,7 +767,7 @@ tmap_mode("view")
 map_nz
 ```
 
-```{r tmview, message=FALSE, fig.cap="**tmap** のビューモードで作成されたニュージーランドのインタラクティブマップ。インタラクティブ版は r.geocompx.org からオンラインで入手可能。", fig.scap="Interactive map of New Zealand.", echo=FALSE}
+```{r tmview, message=FALSE, fig.cap="**tmap** のビューモードで作成されたニュージーランドのインタラクティブ地図。インタラクティブ版は r.geocompx.org からオンラインで入手可能。", fig.scap="Interactive map of New Zealand.", echo=FALSE}
 if (knitr::is_latex_output()){
     knitr::include_graphics("figures/tmview-1.png")
 } else if (knitr::is_html_output()){
@@ -796,7 +796,7 @@ tm_shape(world_coffee) + tm_polygons(facets) +
   tm_facets_wrap(nrow = 1, sync = TRUE)
 ```
 
-```{r sync, message=FALSE, fig.cap="2016年と2017年の世界のコーヒー生産量を同期させたファセット化されたインタラクティブマップで、tmapのビューモードの動作を実演。", fig.scap="Faceted interactive maps of global coffee production.", echo=FALSE}
+```{r sync, message=FALSE, fig.cap="2016年と2017年の世界のコーヒー生産量を同期させたファセット化されたインタラクティブ地図で、tmapのビューモードの動作を実演。", fig.scap="Faceted interactive maps of global coffee production.", echo=FALSE}
 knitr::include_graphics("figures/interactive-facets.png")
 ```
 
@@ -806,7 +806,7 @@ knitr::include_graphics("figures/interactive-facets.png")
 tmap_mode("plot")
 ```
 
-**tmap** を使いこなせない場合は、**mapview**\index{mapview (package)}  を使ってインタラクティブマップを作成するのが一番手っ取り早いだろう。
+**tmap** を使いこなせない場合は、**mapview**\index{mapview (package)}  を使ってインタラクティブ地図を作成するのが一番手っ取り早いだろう。
 以下の「ワンライナー」は、さまざまな地理データ形式をインタラクティブに探索するための信頼できる方法である。
 
 ```{r 08-mapping-29, eval=FALSE}
@@ -962,7 +962,7 @@ R の場合は幸運なことに、**shiny**\index{shiny (package)} を使って
 
 **shiny** の仕組みは、[shiny.posit.co](https://shiny.posit.co/) に詳しく書かれている。これは「フロントエンド」 (ユーザーが見る部分) と「バックエンド」コードという 2 つの構成要素を強調している。
 **shiny** アプリでは、これらの要素は通常、`app フォルダ`内にある `app.R` という R スクリプト内の  `ui` と `server` というオブジェクトで作成される。
-これにより、ウェブマッピングのアプリケーションを 1 つのファイルで表現することができ、例えば、本書の GitHub リポジトリにある [`CycleHireApp/app.R`](https://github.com/Robinlovelace/geocompr/blob/main/apps/CycleHireApp/app.R) ファイルのような単一のファイルで表現できる。
+これにより、ウェブマッピングのアプリケーションを 1 つのファイルで表現することができ、例えば、本書の GitHub リポジトリにある [`CycleHireApp/app.R`](https://github.com/geocompx/geocompr/blob/main/apps/CycleHireApp/app.R) ファイルのような単一のファイルで表現できる。
 
 ```{block2 shiny, type = 'rmdnote'}
 **shiny** アプリでは、これらは `ui.R` (ユーザーインターフェースの略) と `server.R` ファイルに分けられることが多い。この命名規則は、一般向けの Web サイトで shiny アプリを提供するサーバーサイド Linux アプリケーション、`shiny-server` で使用されている。
@@ -1008,7 +1008,7 @@ lifeApp の **ユーザーインターフェース** (`ui`) は `fluidPage()` �
 Figure \@ref(fig:lifeApp) に表示されているマップのスライダーを動かすと、ユーザーインターフェースでは見えないようになっているが、実際には R のコードが再実行される。
 
 この基本的な例をもとに、どこにヘルプがあるか (`?shiny` 参照) を知っておけば、あとは読むのをやめてプログラミングを始めるのが一番だろうね。
-次のステップとして推奨されるのは、以前に紹介した  [`CycleHireApp/app.R`](https://github.com/Robinlovelace/geocompr/blob/main/apps/CycleHireApp/app.R) スクリプトを任意の IDE で開き、それを修正して繰り返し実行することである。
+次のステップとして推奨されるのは、以前に紹介した  [`CycleHireApp/app.R`](https://github.com/geocompx/geocompr/blob/main/apps/CycleHireApp/app.R) スクリプトを任意の IDE で開き、それを修正して繰り返し実行することである。
 この例では、**shiny** で実装されたウェブマッピングアプリケーションのコンポーネントの一部が含まれており、それらがどのように動作するかを「照らす」べきものである。
 
 `CycleHireApp/app.R` スクリプトには、単純な 'lifeApp' の例で示されたものを超える **shiny** 関数が含まれている。

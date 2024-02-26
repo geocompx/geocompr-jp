@@ -13,7 +13,7 @@ source("code/before_script.R")
 文章を読むだけでなく、各章の<u>コードを実行</u>して、ジオコンピュテーションのスキルを身につけることを勧める。
 
 R のスクリプト、出力、その他ジオコンピュテーションに関連するものを保存するために、コンピュータに新しいフォルダを作成することから始めるとよいだろう。
-また、学習をサポートするため、[ソースコード](https://github.com/Robinlovelace/geocompr)を[ダウンロード](https://github.com/Robinlovelace/geocompr/archive/refs/heads/main.zip) または[クローン](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)しておくと良い。
+また、学習をサポートするため、[ソースコード](https://github.com/geocompx/geocompr)を[ダウンロード](https://github.com/geocompx/geocompr/archive/refs/heads/main.zip) または[クローン](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)しておくと良い。
 R コードを書く/実行する/テストする際には、 [RStudio](https://posit.co/download/rstudio-desktop/#download) (ほとんどの人に推奨)\index{RStudio} または [VS Code](https://github.com/REditorSupport/vscode-R)\index{VS Code} などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める。^[
 プロジェクト管理には、[RStudio projects](https://r4ds.had.co.nz/workflow-projects.html)、[VS Code workspaces](https://code.visualstudio.com/docs/editor/workspaces) などのシステムを利用することを勧める。
 RStudio でこれを行うには、**rstudioapi** パッケージを使用するのが手っ取り早い方法である。
@@ -125,7 +125,7 @@ Figure \@ref(fig:vectorplots) で青く描かれているのは、実は「偽�
 CRS については、Section \@ref(crs-intro) と Chapter \@ref(reproj-geo-data) で説明するが、この章では、座標が原点からの距離を表す 2 つの数値からなり、通常は $x$ と $y$ の次元であることを知っていれば十分である。
 
 ```{r vectorplots-source, include=FALSE, eval=FALSE}
-source("https://github.com/Robinlovelace/geocompr/raw/main/code/02-vectorplots.R") # generate subsequent figure
+source("https://github.com/geocompx/geocompr/raw/main/code/02-vectorplots.R") # generate subsequent figure
 ```
 
 ```{r vectorplots, fig.cap="原点 (青丸) を基準にロンドン (赤 X) の位置を表したベクトル (点) データの図解。左図は、緯度経度 0° を原点とする地理的な CRS。右図は、South West Peninsula の西側の海を原点とする投影 CRS を表している。", out.width="49%", fig.show='hold', echo=FALSE, fig.scap="Illustration of vector (point) data."}
@@ -140,7 +140,7 @@ knitr::include_graphics(c("figures/vector_lonlat.png", "figures/vector_projected
 - [S2](https://s2geometry.io/) は、Google が開発した C++ で書かれた球面幾何学エンジンである。[**s2**](https://r-spatial.github.io/s2/) パッケージ経由で、この章の Section \@ref(s2) と Chapter \@ref(reproj-geo-data) でカバーする。
 
 これらのインターフェースに関する情報は、パッケージが最初にロードされたときに **sf** によって表示される。この章の最初にある `library(sf)` コマンドの下に表示されるメッセージ `r print(capture.output(sf:::.onAttach(), type = "message"))` は、リンクされている GEOS\index{GEOS}、GDAL、PROJ ライブラリのバージョン (コンピュータや時期によって変わる) と S2\index{S2} インターフェースがオンになっているかどうかという情報を教えてくれる。
-今では当たり前のことであるが、そもそも再現性のあるジオコンピューティングを可能にするのは、様々な地理ライブラリとの緊密な連携に他ならない。
+今では当たり前のことであるが、そもそも再現性のあるジオコンピュテーションを可能にするのは、様々な地理ライブラリとの緊密な連携に他ならない。
 
 **sf** の特徴として、投影法未指定のデータで使用するデフォルトのジオメトリエンジンを変更することができる S2\index{S2} のスイッチを切るには、`sf::sf_use_s2(FALSE)` というコマンドを使う。つまり、平面ジオメトリエンジン GEOS が、投影されていないデータに対するジオメトリ操作を含む、すべてのジオメトリ操作にデフォルトで使用されることになる。
 Section \@ref(s2) で見るように、平面幾何学は2次元の空間に基づいている。
@@ -339,7 +339,7 @@ plot(asia, add = TRUE, col = "red")
 **sf** は R の基本的な描画メソッド `plot()` を拡張しているので、`plot()` の引数は `sf` オブジェクトでも動作する (`main =` などの引数の情報は、`?graphics::plot` と `?par` を参照)。^[
 注意：ファセットマップにおいて、1つ以上の `sf` 列がプロットされる場合、多くのプロット引数は無視される。]
 \index{base plot|see {map making}}\index{map making!base plotting} Figure \@ref(fig:contpop) は、この柔軟性を、世界地図の上に、直径 (`cex =` で設定) が各国の人口を表す円を重ねることで表現している。
-この図の非投影版は、以下のコマンドで作成できる (本章末の練習問題と、スクリプト [`02-contplot.R`](https://github.com/Robinlovelace/geocompr/blob/main/code/02-contpop.R) を使って Figure \@ref(fig:contpop) を再現することができる。)
+この図の非投影版は、以下のコマンドで作成できる (本章末の練習問題と、スクリプト [`02-contplot.R`](https://github.com/geocompx/geocompr/blob/main/code/02-contpop.R) を使って Figure \@ref(fig:contpop) を再現することができる。)
 
 ```{r 02-spatial-data-16, eval=FALSE}
 plot(world["continent"], reset = FALSE)
@@ -1124,7 +1124,7 @@ Chapter \@ref(reproj-geo-data) では、CRS について説明し、ある CRS �
 - `sf` オブジェクトの CRS は関数 `st_crs()` で問い合わせることができ、`terra` オブジェクトの CRS は関数 `crs()` を用いて問い合わせることができる。 
 
 ```{r vector-crs, echo=FALSE, fig.cap="ベクタデータ型の地理座標系 (WGS 84、左) と投影座標系 (NAD83 / UTMゾーン12N、右) の例。", message=FALSE, fig.asp=0.56, fig.scap="Examples of geographic and projected CRSs (vector data)."}
-# source("https://github.com/Robinlovelace/geocompr/raw/main/code/02-vector-crs.R")
+# source("https://github.com/geocompx/geocompr/raw/main/code/02-vector-crs.R")
 knitr::include_graphics("figures/02_vector_crs.png")
 ```
 

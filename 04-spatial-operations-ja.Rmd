@@ -164,7 +164,7 @@ Figure \@ref(fig:relations) の 3 番目と 4 番目のペア (左から右、�
 \index{topological relations}
 
 ```{r relations, echo=FALSE, fig.cap="Egenhofer and Herring (1990)の Figure 1 と Figure 2 を参考にした、ベクトル幾何学間のトポロジー関係。関数(x, y)が真となる関係が、各ジオメトリのペアについて印刷されており、xはピンク、yは青で表されている。各ペアの空間的関係の性質は、Dimensionally Extended 9-Intersection Model 文字列で記述されている。", fig.show='hold', message=FALSE, fig.asp=0.66, warning=FALSE, dev="ragg_png"}
-# source("https://github.com/Robinlovelace/geocompr/raw/main/code/de_9im.R")
+# source("https://github.com/geocompx/geocompr/raw/main/code/de_9im.R")
 source("code/de_9im.R")
 library(sf)
 xy2sfc = function(x, y) st_sfc(st_polygon(list(cbind(x, y))))
@@ -497,7 +497,7 @@ DE-9IM 文字列は、各タイプの関係の次元から導き出される。
 この場合、Figure \@ref(fig:de9imgg) の赤い交点は、 Table \@ref(tab:de9emtable) に示すように、0 (点)、1 (線)、2 (ポリゴン) の次元を持つ。
 
 ```{r de9emtable, echo=FALSE}
-# See https://github.com/Robinlovelace/geocompr/issues/699
+# See https://github.com/geocompx/geocompr/issues/699
 pattern = st_relate(p1, p3)
 matrix_de_9im = function(pattern) {
     string = unlist(strsplit(pattern , ""))
@@ -626,7 +626,7 @@ sel_table
 \index{spatial!join}
 
 例として、地球上にランダムに分布する 10 個の点があり、そのうちの陸地にある点はどの国のものかを調べたいとする。
-このアイデアを[再現可能な例](https://github.com/Robinlovelace/geocompr/blob/main/code/04-spatial-join.R)として実装することで、地理データを扱うスキルが身に付き、空間結合がどのように機能するかを知ることができる。
+このアイデアを[再現可能な例](https://github.com/geocompx/geocompr/blob/main/code/04-spatial-join.R)として実装することで、地理データを扱うスキルが身に付き、空間結合がどのように機能するかを知ることができる。
 まず、地表にランダムに散らばる点を作ることから始めよう。
 
 ```{r 04-spatial-operations-19}

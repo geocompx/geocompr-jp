@@ -862,7 +862,7 @@ world_laea2 = st_transform(world,
 ```
 
 ```{r laeaproj2, fig.cap="ニューヨークを中心とした世界のランベルト正積方位図法。", fig.scap="Lambert azimuthal equal-area projection centered on New York City.", warning=FALSE, echo=FALSE}
-# Currently fails, see https://github.com/Robinlovelace/geocompr/issues/460
+# Currently fails, see https://github.com/geocompx/geocompr/issues/460
 world_laea2_g = st_graticule(ndiscr = 10000) |>
   st_transform("+proj=laea +x_0=0 +y_0=0 +lon_0=-74 +lat_0=40.1 +ellps=WGS84 +no_defs") |>
   st_geometry()

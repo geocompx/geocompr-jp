@@ -753,7 +753,7 @@ tmap_obj = tm_shape(world) + tm_polygons(col = "lifeExp")
 tmap_save(tmap_obj, filename = "lifeExp_tmap.png")
 ```
 
-一方、**mapview** パッケージで作成したインタラクティブマップは、`mapshot2()` 関数を使用して HTML ファイルまたは画像として保存することができる。
+一方、**mapview** パッケージで作成したインタラクティブ地図は、`mapshot2()` 関数を使用して HTML ファイルまたは画像として保存することができる。
 
 ```{r 07-read-write-plot-38, eval=FALSE}
 library(mapview)

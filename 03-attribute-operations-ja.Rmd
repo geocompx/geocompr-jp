@@ -79,7 +79,7 @@ Chapter \@ref(spatial-class) では、`plot()` や `summary()` などの<u>ジ�
 **sf** はまた、`sf` オブジェクトが通常のデータフレームのように動作することを可能にするジェネリック関数を提供する。`sf` に対応するジェネリック関数は、以下で確認できる。
 
 ```{r 03-attribute-operations-3, eval=FALSE}
-methods(class = "sf") # sf オブジェクトのメソッド、最初の12
+methods(class = "sf") # sf オブジェクトのメソッド、最初の 12
 ```
 
 ```{r 03-attribute-operations-4}
@@ -703,7 +703,7 @@ source("code/03-cont-raster-plot.R", print.eval = TRUE)
 ### ラスタ部分集合  {#raster-subsetting}
 
 ラスタの部分集合は、R の基本演算子である `[` で行われ、さまざまな入力を受け入れることができる。
-\index{らすた@ラスタ!ぶぶんしゅうごう＠部分集合}
+\index{らすた@ラスタ!ぶぶんしゅうごう@部分集合}
 
 - 行・列のインデックス作成
 - セル ID
@@ -714,7 +714,7 @@ source("code/03-cont-raster-plot.R", print.eval = TRUE)
 空間オブジェクトをサブセットする必要がある場合、あるいは出力が空間オブジェクトである場合、これを空間サブセットと呼ぶことにする。
 後者の 2 つのオプションについては、次章で紹介する (Section \@ref(spatial-raster-subsetting))。
 
-\index{らすた@ラスタ!ぶぶんしゅうごう＠部分集合}
+\index{らすた@ラスタ!ぶぶんしゅうごう@部分集合}
 まず、二つの部分集合作成方法を以下のコマンドで示す。
 両者は、いずれもラスタオブジェクト `elev` の左上のピクセルの値を返す (結果は示していない)。
 
