@@ -66,7 +66,7 @@ GRASS GIS は、CLI をベースとしながらも GUI がある GIS の良い�
 
 - 学習曲線が「浅い」ので、新しい言語を何時間も学ぶことなく、地理データを探索し、可視化することができる
 - トレース、スナップ、トポロジーツールなど、「デジタイジング」 (新しいベクタデータセットの作成) のための優れたサポートを提供する^[**mapedit** パッケージは、R から開いたブラウザウィンドウでフィーチャを素早く編集することができるが、専門的で大規模な地図製作のデジタイズはできない。]
-- 地上基準点によるジオリファレンス (georeference、ラスタ画像と既存地図とのマッチング)、オルソレクティフィケーション (orthorectification) が可能である
+- 地上基準点によるジオリファレンス (georeference、ラスタ画像と既存地図とのマッチング)、オルソ補正 (orthorectification) が可能である
 - 立体視マッピング (LiDAR、Structure from Motion など) に対応する
 
 専用 GIS のもう一つの利点は、「GIS ブリッジ」を経由して何百もの「ジオアルゴリズム」 を利用できることである [@neteler_open_2008] 。
@@ -146,7 +146,7 @@ library(qgisprocess)
 このパッケージは、QGISのインストールを自動的に検出しようとし、検出できない場合は警告を発する。 ^[検出プロセスの詳細は、`qgis_configure()` を実行すると表示される。] 
 設定に失敗した場合の解決策としては、`options(qgisprocess.path = "path/to/your_qgis_process")`、環境変数 `R_QGISPROCESS_PATH` を設定する方法が考えられる。
 上記の方法は、複数の QGIS がインストールされており、どれを使うかを決めたい場合にも使える。
-詳細については、**qgisprocess** ['getting started' vignette](https://r-spatial.github.io/qgisprocess/articles/qgisprocess.html) を参照。ß
+詳細については、**qgisprocess** ['getting started' vignette](https://r-spatial.github.io/qgisprocess/articles/qgisprocess.html) を参照。
 次に、どのプラグイン (異なるソフトウェアを意味する) が自分のコンピュータで利用できるかを調べてみよう。
 
 ```{r plugins, eval=has_qgis_plugins}
@@ -196,8 +196,8 @@ qgis_providers()
 
 ### ベクタデータ  {#qgis-vector}
 
-異なる空間単位 (地域、行政単位など) を持つ2つのポリゴンオブジェクトがある場合を考えてみよう。
-この2つのオブジェクトを統合して、すべての境界線と関連する属性を含む1つのオブジェクトにすることが目標である。
+異なる空間単位 (地域、行政単位など) を持つ 2 つのポリゴンオブジェクトがある場合を考えてみよう。
+この 2 つのオブジェクトを統合して、すべての境界線と関連する属性を含む 1 つのオブジェクトにすることが目標である。
 Section \@ref(incongruent) (Figure \@ref(fig:uniondata)) でも見た不整合なポリゴン\index{くうかんせいごう@空間整合}を再び利用する。
 どちらのポリゴンデータセットも **spData** パッケージで提供されており、その両方に地理的な CRS\index{CRS!ちりてき@地理的} を使用したい (Chapter \@ref(reproj-geo-data) も参照)。
 
@@ -291,7 +291,7 @@ union
 #>  $ OUTPUT: 'qgis_outputVector' chr "/tmp/...gpkg"
 ```
 
-上記のコードを実行すると、2つの入力オブジェクトが一時的な .gpkg ファイルに保存され、選択されたアルゴリズムがそれらに実行され、一時的な .gpkg ファイルが出力として返される。
+上記のコードを実行すると、2 つの入力オブジェクトが一時的な .gpkg ファイルに保存され、選択されたアルゴリズムがそれらに実行され、一時的な .gpkg ファイルが出力として返される。
 **qgisprocess** パッケージは、`qgis_run_algorithm()` の結果を、この場合は出力ファイルへのパスを含むリストとして保存する。
 このファイルを R に読み戻すには、`read_sf()` (例,  `union_sf = read_sf(union[[1]])` を使うか、`st_as_sf()` を使って直接読み込むことができる。
 
@@ -299,7 +299,7 @@ union
 union_sf = st_as_sf(union)
 ```
 
-QGIS\index{QGIS} の和集合 (union\index{べくた@ベクタ!けつごう@結合 (union)}) の操作は、2 つの入力レイヤーの交差 (intersect)\index{べくた@ベクタ!こうさ@交差 (intersection)}  と対称差 (symmetrical difference) を用いて、2 つの入力レイヤを 1 つのレイヤにマージすることに注意 (ちなみに、これは GRASS GIS\index{GRASS GIS} と SAGA\index{SAGA} でユニオン操作をするときのデフォルトでもある)。
+QGIS\index{QGIS} の和集合 (union\index{べくた@ベクタ!けつごう@結合 (union)}) の操作は、2 つの入力レイヤの交差 (intersect)\index{べくた@ベクタ!こうさ@交差 (intersection)}  と対称差 (symmetrical difference) を用いて、2 つの入力レイヤを 1 つのレイヤにマージすることに注意 (ちなみに、これは GRASS GIS\index{GRASS GIS} と SAGA\index{SAGA} で結合操作をするときのデフォルトでもある)。
 これは `st_union(incongr_wgs, aggzone_wgs)` とは**違う**  (演習参照)!
 
 その結果である `union_sf` は、2 つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
@@ -344,12 +344,12 @@ qgis_get_argument_specs("grass7:v.clean") |>
 ```
 
 このアルゴリズムの主な引数は `input` で、これはベクタオブジェクトである。
-次に tool の選択であるが、これはクリーニングの方法である。 ^[It is also possible to select several tools, which will then be executed sequentially.] 
+次に tool の選択であるが、これはクリーニングの方法である。 ^[複数のツールを選択することもできる。この場合、順番に実行される。] 
 `v.clean` には、重複した形状の削除、線間の微小角度の削除、微小領域の削除など、12 種類のツールが存在する。
 今回は、後者のツール、`rmarea` を解説する。
 いくつかのツール (`rmarea` を含む) は、追加の引数 `threshold` を必要とし、その動作は選択されたツールに依存する。
 この場合、`rmarea` ツールは、`threshold` で与えられた値より小さいか等しい領域をすべて削除する。 
-なお、入力レイヤの空間参照系がなにであっても、単位は平方メートルである。
+なお、入力レイヤの空間参照系によらず単位は平方メートルである。
 
 このアルゴリズムを実行し、その出力を新しい `sf` オブジェクト `clean_sf` に変換してみよう。
 
@@ -437,7 +437,7 @@ options(qgisprocess.tmp_raster_ext = ".tif")
 Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マップを見ることができる。
 地形湿潤指数には単位がない。数値が小さいほど水がたまらず、数値が大きいほど水がたまるエリアであることを示す。
 
-また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon)\index{じおもるふぉん@ジオモルフォン} に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である [@jasiewicz_geomorphons_2013] 。
+また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon)\index{じおもるふぉん@ジオモルフォン} に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である [@jasiewicz_geomorphons_2013]。
 これらの表現型は、地滑りしやすさ、生態系サービス、人間の移動性、デジタル土壌マッピングなど、多くの研究で利用されている。 
 
 ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass7:r.geomorphon"` として見つけることができる。
@@ -450,7 +450,7 @@ qgis_show_help("grass7:r.geomorphon")
 ```
 
 ジオモルフォンの計算には、入力 DEM (`elevation`) が必要で、オプションの引数でカスタマイズすることができる。
-`search` -- 視線距離を計算する長さ、および ``-m`` -- 検索値を(セル数ではなく)メートル単位で提供することを指定するフラグが含まれている。
+フラグ `search` は視線距離を計算する長さ、および `-m` は検索値を (セル数ではなく) メートル単位で提供することを指定する。
 追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html) に記載されている。
 
 ```{r, eval=has_qgis_plugins}
@@ -460,7 +460,7 @@ dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
 )
 ```
 
-出力される `dem_geomorph$forms` は、10個のカテゴリーからなるラスタファイルで、それぞれが地形形状を表している。
+出力される `dem_geomorph$forms` は、10 個のカテゴリからなるラスタファイルで、それぞれが地形形状を表している。
 これを `qgis_as_terra()` で R に読み込んで可視化したり (Figure \@ref(fig:qgis-raster-map) 右図)、その後の計算で使うことができる。
 
 ```{r, eval=has_qgis_plugins}
@@ -480,7 +480,7 @@ System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:g
 また、Pythonインターフェース (SAGA Python API\index{API}) も用意されている。
 **Rsagacmd**\index{Rsagacmd (package)} は、前者を使って R 内で SAGA\index{SAGA} を実行している。
 
-この Section では、**Rsagacmd** を使用して、SAGA\index{だんぺん@断片} の seeded region growing アルゴリズムを使って、2000年9月22日のペルーの Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure \@ref(fig:sagasegments) 左図)。^[リモートセンシング画像から NDVI を算出する方法については、Section \@ref(local-operations) を参照。]
+この Section では、**Rsagacmd** を使用して、SAGA\index{だんぺん@断片} の seeded region growing アルゴリズムを使って、2000年9月22日の Peru の Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure \@ref(fig:sagasegments) 左図)。^[リモートセンシング画像から NDVI を算出する方法については、Section \@ref(local-operations) を参照。]
 
 ```{r, eval=FALSE}
 ndvi = rast(system.file("raster/ndvi.tif", package = "spDataLarge"))
@@ -520,11 +520,11 @@ ndvi_seeds = sg(ndvi, band_width = 2)
 #plot(ndvi_seeds$seed_grid)
 ```
 
-この出力は、3つのオブジェクトからなるリストである。`variance` -- 局所分散のラスタマップ、 `seed_grid` -- 生成されたシードを含むラスタマップ、 `seed_points` -- 生成されたシードを含む空間ベクタオブジェクト。
+この出力は、3 つのオブジェクトからなるリストである。`variance` は局所分散のラスタマップ、 `seed_grid` は生成されたシードを含むラスタマップ、`seed_points` は生成されたシードを含む空間ベクタオブジェクトである。
 
-2 つ目の SAGA ツールは `seeded_region_growing` である。^[詳細は https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html を参照]
+つぎの SAGA ツールとして `seeded_region_growing` を紹介しよう。^[詳細は https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html を参照]
 `seed_region_growing` ツールは、前のステップで計算した `seed_grid` と `ndvi` ラスタオブジェクトの 2 つの入力を必要とする。
-さらに、入力フィーチャを標準化するための `normalize` や `neighbour`  (4または8-neighborhood)、 `method` などのパラメータを指定することができる。
+さらに、入力フィーチャを標準化するための `normalize` や `neighbour`  (4 または 8-neighborhood)、 `method` などのパラメータを指定することができる。
 最後のパラメータには、`0` または `1` を指定することができる (ラスタセルの値とその位置に基づいて領域を成長させるか、値のみを成長させるか)。
 このメソッドの詳細な説明は、 @bohner_image_2006 を参照。
 
@@ -536,7 +536,7 @@ ndvi_srg = srg(ndvi_seeds$seed_grid, ndvi, method = 1)
 plot(ndvi_srg$segments)
 ```
 
-このツールは、3つのオブジェクトのリストを返す。このツールは、`segments`、`similarity`、`table` という 3 つのオブジェクトのリストを返す。
+このツールは、3 つのオブジェクトのリストを返す。このツールは、`segments`、`similarity`、`table` という 3 つのオブジェクトのリストを返す。
 `similarity` オブジェクトは、シードと他のセルとの類似性を示すラスタであり、`table` は入力シードに関する情報を格納したデータフレームである。
 最後に、`ndvi_srg$segments` は、結果として得られた領域 (Figure  \@ref(fig:sagasegments) 右図) を表すラスタである。
 これをポリゴンに変換するには、`as.polygons()` と `st_as_sf()` を使用する (Section \@ref(spatial-vectorization))。
@@ -560,9 +560,9 @@ R には、似たような値を持つポリゴン (いわゆるセグメント)
 
 ## GRASS GIS  {#grass}
 
-米国陸軍建設工学研究所 (U.S. Army - Construction Engineering Research Laboratory, USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (Geographical Resources Analysis Support System, GRASS GIS)\index{GRASS GIS}  の中核となるシステムを作成した [Table \@ref(tab:gis-comp); @neteler_open_2008]。 
+米国陸軍建設工学研究所 (U.S. Army - Construction Engineering Research Laboratory, USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (Geographical Resources Analysis Support System, GRASS GIS)\index{GRASS GIS} の中核となるシステムを作成した [Table \@ref(tab:gis-comp); @neteler_open_2008]。 
 アカデミアは1997年からこの作業を継続した。
-SAGA\index{SAGA}  と同様、グラスも当初はラスタ処理に注力し、その後、GRASS GIS 6.0 以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
+SAGA\index{SAGA} と同様、グラスも当初はラスタ処理に注力し、その後、GRASS GIS 6.0 以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
 
 GRASS は、入力データを内部データベースに格納する。
 ベクタデータに関して、GRASS GIS はデフォルトでトポロジカル GIS、すなわち隣接するフィーチャのジオメトリを一度だけ保存する。
@@ -598,7 +598,7 @@ points = cycle_hire[1:25, ]
 
 レンタルサイクルのステーションのデータの他に、この地域の道路網が必要である。
 OpenStreetMap\index{OpenStreetMap} から **osmdata**\index{osmdata (package)} パッケージの助けを借りてダウンロードすることができる (Section \@ref(retrieving-data) も参照)。
-そのために、道路網のクエリ (OSM 言語では "highway" とラベル付けされている) を `points` の bounding box \index{bounding box} に制限し、対応するデータを `sf`\index{sf} オブジェクトとして読み込む。
+そのために、道路網のクエリ (OSM 言語では "highway" とラベル付けされている) を `points` のバウンディングボックス\index{ばうんでぃんぐぼっくす@バウンディングボックス} に制限し、対応するデータを `sf`\index{sf} オブジェクトとして読み込む。
 `osmdata_sf()` は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連 ID のみを保持する。^[読者のために、 `london_streets` は、`data("london_streets", package = "spDataLarge")` で使用できるようにしてある。]
 
 ```{r 09-gis-25, eval=FALSE}
@@ -627,7 +627,7 @@ link2GI::linkGRASS(london_streets, ver_select = TRUE)
 GRASS GIS の geoalgorithm を使用する前に、GRASS GIS の空間データベースにデータを追加する必要がある。
 幸いなことに、便利な関数 `write_VECT()` がこれを代行してくれる。
 (ラスタデータには `write_RAST()` を使用する。)
-この例では、最初の属性カラムのみを使用して、道路と自転車レンタルポイントデータを追加し、GRASS GIS で `london_streets` と `points` という名前を付けている。
+この例では、最初の属性列のみを使用して、道路と自転車レンタル点データを追加し、GRASS GIS で `london_streets` と `points` という名前を付けている。
 
 ```{r 09-gis-31, eval=FALSE}
 write_VECT(terra::vect(london_streets), vname = "london_streets")
@@ -641,7 +641,7 @@ write_VECT(terra::vect(points[, 1]), vname = "points")
 現在、両方のデータセットが GRASS GIS のデータベースに存在している。
 ネットワーク\index{ねっとわーく@ネットワーク}の解析を行うには、トポロジカルクリーン\index{とぽろじーくりーにんぐ@トポロジークリーニング}な道路ネットワークが必要である。
 GRASS GIS の `"v.clean"` は、重複、小角、ダングルの除去などを行う。
-ここでは、後続のルーティングアルゴリズムが実際に交差点で右折または左折できるように、各交差点で改行し、その出力を `streets_clean` という名前の GRASS GIS オブジェクトに保存している。
+ここでは、後続のルート検索アルゴリズムが実際に交差点で右折または左折できるように、各交差点で改行し、その出力を `streets_clean` という名前の GRASS GIS オブジェクトに保存している。
 
 ```{r 09-gis-32, eval=FALSE}
 execGRASS(
@@ -729,7 +729,7 @@ QGIS\index{QGIS} は、GRASS GIS や SAGA と比較して、特に初めて GIS 
 したがって、**qgisprocess**\index{qgisprocess (package)} は、ほとんどのユースケースに適切な選択である。
 その主なメリットは
 
-- 複数の GIS に統一的にアクセスできるため、重複した機能を含む 1000 以上のジオアルゴリズム ( Table \@ref(tab:gis-comp) ) を提供。例えば、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS} などのジオアルゴリズムを使ってオーバーレイ操作を実行することが可能である。
+- 複数の GIS に統一的にアクセスできるため、重複した機能を含む 1,000 以上のジオアルゴリズム ( Table \@ref(tab:gis-comp) ) を提供。例えば、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS} などのジオアルゴリズムを使ってオーバーレイ操作を実行することが可能である。
 - データフォーマットの自動変換 (SAGAは `.sdat` グリッドファイル、GRASS GIS は独自のデータベースフォーマットを使用するが、対応する変換は QGIS が行う。) 
 - 地理的な R オブジェクトを QGIS ジオアルゴリズム\index{じおあるごりずむ@ジオアルゴリズム}に自動的に渡し、R に戻すことができる。
 - 名前付き引数、デフォルト値の自動取得をサポートする便利な機能 (**rgrass**\index{rgrass (package)} からインスパイアされた) 
@@ -759,7 +759,7 @@ link2GI::linkGDAL()
 
 これで、`system()` 関数を使用して、任意の GDAL ツールを呼び出すことができる。
 例えば、`ogrinfo` は、ベクタデータセットのメタデータを提供する。
-ここでは、このツールに2つのフラグを追加して呼び出する。 `-al` は全レイヤーの全フィーチャをリストアップし、`-so` は要約のみを取得する (完全なジオメトリのリストではない)。
+ここでは、このツールに 2 つのフラグを追加して呼び出する。 `-al` は全レイヤの全フィーチャをリストアップし、`-so` は要約のみを取得する (完全なジオメトリのリストではない)。
 
 ```{r 09-gis-36, eval=FALSE, message=FALSE}
 our_filepath = system.file("shapes/world.gpkg", package = "spData")
@@ -776,18 +776,18 @@ system(cmd)
 #> ...
 ```
 
-その他、よく使われるGDALのツールは以下の通り
+その他、よく使われる GDAL のツールは以下の通り
 
 - `gdalinfo`: ラスタデータセットのメタデータを提供
-- `gdal_translate`: 異なるラスタファイルフォーマット間の変換
-- `ogr2ogr`: 異なるベクターファイルフォーマット間で変換
+- `gdal_translate`: 異なるラスタファイル形式間の変換
+- `ogr2ogr`: 異なるベクタファイル形式間で変換
 - `gdalwarp`: ラスタデータセットの再投影、変換、切り抜き (clip)
 - `gdaltransform`: 座標変換
 
 GDAL ツールの全リストとそのヘルプファイルは https://gdal.org/programs/ 。
 
 **link2GI** が提供する GDAL への「リンク」は、R やシステムの CLI からより高度な GDAL の作業を行うための基盤として利用することができるだろう。
-TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-toolbox.org/) は、コマンドラインインタフェースを提供する空間データ処理ライブラリ/プログラムである -- 上記の例は、R を介してシステムのコマンドラインからこれらのライブラリにアクセスする方法である。
+TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-toolbox.org/) は、コマンドラインインタフェースを提供する空間データ処理ライブラリ/プログラムである。上記の例は、R を介してシステムのコマンドラインからこれらのライブラリにアクセスする方法である。
 これは、新しい R パッケージという形で、これらのライブラリへの適切なインタフェースを作成するための出発点となる可能性がある。
 
 しかし、新しいブリッジを作成するプロジェクトに飛び込む前に、既存の R パッケージのパワーと、`system()` の呼び出しがプラットフォームに依存しない (一部のコンピュータで失敗する) 可能性があることを認識しておくことが重要である。
@@ -850,7 +850,7 @@ dbListFields(conn, "highways")
 ```
 
 さて、利用可能なデータセットがわかったところで、いくつかのクエリを実行し、データベースに質問することができる。
-クエリーは、データベースが理解できる言語 (通常はSQL) で提供される必要がある。
+クエリは、データベースが理解できる言語 (通常はSQL) で提供される必要がある。
 最初のクエリは、`highways` テーブルから Maryland 州 (`MD`) の `US Route 1` を選択する。
 なお、`read_sf()` は、データベースへのオープンな接続とクエリが提供されれば、データベースから地理データを読み込むことができる。
 さらに、`read_sf()` は、どの列がジオメトリを表すかを知る必要がある (ここでは、`wkb_geometry`)。
@@ -880,7 +880,7 @@ buf = read_sf(conn, query = query)
 
 なお、これはおそらく読者がすでに知っている (`ST_Union()`\index{べくた@ベクタ!けつごう@結合 (union)}、`ST_Buffer()`\index{べくた@ベクタ!ばっふぁ@バッファ}) を使った空間クエリであった。
 また、**sf** パッケージにも同名のものがあるが、こちらは小文字になっている (`st_union()`、`st_buffer()`)。
-実際、**sf** パッケージの関数名は、PostGIS\index{PostGIS}  の命名規則にほぼ従っている。^[
+実際、**sf** パッケージの関数名は、PostGIS\index{PostGIS} の命名規則にほぼ従っている。^[
 接頭語 `st` は、空間／時間を意味する。
 ]
 
@@ -904,7 +904,7 @@ hardees = read_sf(conn, query = query)
 
 空間 SQL クエリの詳細な説明は @obe_postgis_2015 を参照。
 最後に、次のようにデータベース接続を閉じるのがよい方法である。^[
-QGIS Cloud (無料版) では同時接続が 10 個までしかできないため、ここで接続を終了することが重要。
+QGIS Cloud (無料版) では同時接続が 10 件までしかできないため、ここで接続を終了することが重要。
 ]
 
 ```{r 09-gis-43, eval=FALSE}
@@ -955,7 +955,7 @@ Amazon Web Services、Microsoft Azure / Planetary Computer、Google Cloud Platfo
 R を使えば、これらのアーカイブから直接データに接続し、処理することができる。理想的には、同じクラウドや地域のマシンから接続することができる。
 
 このような画像アーカイブをクラウド上で<u>より簡単</u>に、<u>より効率的</u>に利用するために、[SpatioTemporal Asset Catalog (STAC)](https://stacspec.org)\index{STAC}、[cloud-optimized GeoTIFF (COG)](https://www.cogeo.org/)\index{COG} 画像形式、データキューブ\index{でーたきゅーぶ@データキューブ}が有望視されている。
-Section \@ref(staccog) では、これらの個々の開発について紹介し、Rからどのように利用できるかを簡単に説明する。
+Section \@ref(staccog) では、これらの個々の開発について紹介し、R からどのように利用できるかを簡単に説明する。
 
 ここ数年、大規模なデータアーカイブをホストするだけでなく、地球観測データを処理するクラウドベースのサービス\index{くらうどこんぴゅーてぃんぐ@クラウドコンピューティング}も多数始まっている。
 その中には、R を含むプログラミング言語と様々なクラウドサービスとの間の統一的なインタフェースである OpenEO イニシアチブも含まれている。

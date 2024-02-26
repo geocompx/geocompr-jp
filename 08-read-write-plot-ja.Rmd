@@ -40,12 +40,12 @@ Section \@ref(retrieving-data) では、様々な<u>ジオポータル</u>とそ
 今日、ファイル形式の多様性は困惑するほどある。しかし、1960年代には、ハーバード大学で空間解析のための最初の広く配布されたプログラム ([SYMAP](https://news.harvard.edu/gazette/story/2011/10/the-invention-of-gis/)) などの初期の GIS ソフトウェアが開発された。それ以降、多くの統合と標準化が行われてきた [@coppock_history_1991]。
 
 \index{GDAL}
-GDAL (Geospatial Data Abstraction Library、「グードル」と発音する。「グー」の goo の oo 部分は、Object Oeirneted を表す) は、2000年のリリース以来、地理ファイルフォーマット間の非互換性に関連する多くの問題を解決した。
+GDAL (Geospatial Data Abstraction Library、「グードル」と発音する。「グー」の goo の oo 部分は、Object Oeirneted を表す) は、2000年のリリース以来、地理ファイル形式間の非互換性に関連する多くの問題を解決した。
 GDAL は、多くのラスタおよびベクタデータフォーマットの読み書きのための統一された高性能なインタフェースを提供する。^[Chapter \@ref(geometry-operations) で解説する通り、GDAL には、ラスタのモザイク処理、リサンプリング、クロッピング、再投影などを可能にするユーティリティ関数群もある。] 
 GRASS、ArcGIS\index{ArcGIS}、QGIS\index{QGIS} など、多くのオープンおよびプロプライエタリな GIS プログラムは、GUI\index{ぐらふぃかるゆーざいんたーふぇーす@グラフィカル・ユーザー・インターフェース} の背後に GDAL\index{GDAL}  を使用して、地理データを取り込み、適切な形式で出力するという足回りの作業を行なっている。
 
 GDAL\index{GDAL} は、200 以上のベクタおよびラスタデータフォーマットへのアクセスを提供する。
-Table \@ref(tab:formats) では、よく使われる空間ファイルフォーマットについての基本情報を紹介している。
+Table \@ref(tab:formats) では、よく使われる空間ファイル形式についての基本情報を紹介している。
 
 ```{r formats, echo=FALSE}
 file_formats = tibble::tribble(~名称, ~拡張子, ~情報, ~タイプ, ~モデル, 
@@ -53,7 +53,7 @@ file_formats = tibble::tribble(~名称, ~拡張子, ~情報, ~タイプ, ~モデ
                          "GeoJSON", ".geojson", "JSON 交換フォーマットを、シンプルフィーチャを含むように 拡張したもので、主に経度・緯度の座標を格納するために使用され、TopoJSON フォーマットによって拡張される。", "ベクタ", "オープン",
                          "KML", ".kml", "Google Earth で使用するために開発された、XML ベースの空間可視化フォーマット。ZIP 形式の KML ファイルは KMZ 形式。", "ベクタ", "オープン",
                          "GPX", ".gpx", "GPS データ交換のために作成された XML スキーマ。", "ベクタ", "オープン",
-                         "FlatGeobuf", ".fgb", "ベクターデータを高速に読み書きできる単一ファイル形式。ストリーミング機能を持つ。", "ベクタ", "オープン",
+                         "FlatGeobuf", ".fgb", "ベクタデータを高速に読み書きできる単一ファイル形式。ストリーミング機能を持つ。", "ベクタ", "オープン",
                          "GeoTIFF", ".tif/.tiff", "一般的なラスタフォーマット。空間メタデータを追加したTIFFファイル。", "ラスタ", "オープン",
                          "Arc ASCII", ".asc", "最初の6行がラスタヘッダーで、その後にラスタセルの値が行と列に並んでいるテキスト形式。", "ラスタ", "オープン",
                          "SQLite/SpatiaLite", ".sqlite", "スタンドアローンのリレーショナルデータベースである SpatiaLite は、SQLite の空間拡張版。", "ベクタとラスタ", "オープン",
@@ -71,15 +71,15 @@ knitr::kable(file_formats,
 
 \index{Shapefile}
 \index{GeoPackage}
-ファイルフォーマットの標準化とオープンソースを保証する重要な発展は、1994年の Open Geospatial Consortium ([OGC](https://www.ogc.org/)) の設立であった。
-OGC は、シンプルフィーチャというデータモデル (Section \@ref(intro-sf) 参照) を定義するだけでなく、例えば GML\index{GML}、KML\index{KML} や GeoPackage\index{GeoPackage} などのファイルフォーマットで使用されているようなオープンスタンダードの開発も調整している。
-OGC が推奨するオープンなファイルフォーマットは、プロプライエタリなフォーマットと比較して、いくつかの利点がある。標準が公開され、透明性が確保され、ユーザーがファイルフォーマットをさらに開発し、特定のニーズに合わせて調整する可能性が開かれることである。
+ファイル形式の標準化とオープンソースを保証する重要な発展は、1994年の Open Geospatial Consortium ([OGC](https://www.ogc.org/)) の設立であった。
+OGC は、シンプルフィーチャというデータモデル (Section \@ref(intro-sf) 参照) を定義するだけでなく、例えば GML\index{GML}、KML\index{KML} や GeoPackage\index{GeoPackage} などのファイル形式で使用されているようなオープンスタンダードの開発も調整している。
+OGC が推奨するオープンなファイル形式は、プロプライエタリなフォーマットと比較して、いくつかの利点がある。標準が公開され、透明性が確保され、ユーザーがファイル形式をさらに開発し、特定のニーズに合わせて調整する可能性が開かれることである。
 
 ESRI Shapefile\index{Shapefile}  は最も一般的なベクタデータ交換フォーマットであるが、オープンフォーマットではない (仕様はオープン)。
 1990 年代初頭に開発されたもので、多くの制約がある。
 まず、少なくとも 3 つのファイルで構成されるマルチファイル形式であること。
 255 列までしかサポートしておらず、列名は 10 文字まで、ファイルサイズは 2 GB までと制限されている。
-さらに、ESRI Shapefile\index{Shapefile}  は、ポリゴンと複合ポリゴンの区別ができないなど、可能なすべてのジオメトリタイプをサポートしていない。^[ESRI Shapefile の制限と可能な代替ファイルフォーマットについては、http://switchfromshapefile.org/ 参照。] 
+さらに、ESRI Shapefile\index{Shapefile}  は、ポリゴンと複合ポリゴンの区別ができないなど、可能なすべてのジオメトリタイプをサポートしていない。^[ESRI Shapefile の制限と可能な代替ファイル形式については、http://switchfromshapefile.org/ 参照。] 
 このような制約があるにもかかわらず、長い間、有力な代替手段が見つかっていなかった。 
 最近では、[GeoPackage](https://www.geopackage.org/)\index{GeoPackage} が登場し、ESRI Shapefile に取って代わろうとしている。
 Geopackage は、地理空間情報を交換するためのフォーマットで、OGC 規格の一つである。 
@@ -118,14 +118,14 @@ LiDAR 点群を格納するための LAS、LAZ 形式、多次元配列を格納
 \index{べくた@ベクタ!でーたにゅうりょく@データ入力}
 空間ベクタデータは、さまざまなファイル形式で提供されている。
 `.geojson` や `.gpkg` ファイルなど、よく使われる表現のほとんどは、裏で [GDAL のベクタドライバ](https://gdal.org/drivers/vector/index.html)\index{GDAL} を使う **sf** 関数 `read_sf()` (または同等の `st_read()`) で直接 R に取り込むことができる。
-`st_drivers()` は、最初の 2 列に `name` と `long_name` を含むデータフレームを返す。続く列に、Table \@ref(tab:drivers) の主要ファイルフォーマットについて図示しているように、データの書き込みやラスタデータの保存など GDAL (従って **sf**) で利用できる各ドライバの機能を返す。  
+`st_drivers()` は、最初の 2 列に `name` と `long_name` を含むデータフレームを返す。続く列に、Table \@ref(tab:drivers) の主要ファイル形式について図示しているように、データの書き込みやラスタデータの保存など GDAL (従って **sf**) で利用できる各ドライバの機能を返す。  
 
 ```{r drivers, echo=FALSE}
 sf_drivers = st_drivers() |>
   dplyr::filter(name %in% c("ESRI Shapefile", "GeoJSON", "KML", "GPX", "GPKG", "FlatGeobuf")) |> 
   tibble::as_tibble() # remove unhelpful row names
 knitr::kable(head(sf_drivers, n = 6),
-             caption = paste("ベクターデータを読み書きするための一般的な", 
+             caption = paste("ベクタデータを読み書きするための一般的な", 
                              "ドライバ/フォーマット。"),
              caption.short = "Sample of available vector drivers.",
              booktabs = TRUE) |> 
@@ -154,7 +154,7 @@ world = read_sf(f)
 ドライバによっては、`dsn` は、フォルダ名、データベースのアクセス認証情報、または GeoJSON 文字列表現として提供されることがある (詳細は、`read_sf()` のヘルプページの例を参照)。
 
 ベクタドライバのフォーマットには、複数のデータレイヤを格納できるものがある。
-デフォルトでは、`read_sf()` は `dsn` で指定されたファイルの最初のレイヤーを自動的に読み込む。しかし、`layer` 引数を使用すると、他のレイヤーを指定することができる。
+デフォルトでは、`read_sf()` は `dsn` で指定されたファイルの最初のレイヤを自動的に読み込む。しかし、`layer` 引数を使用すると、他のレイヤを指定することができる。
 
 \index{OGR SQL}
 また、`read_sf()` 関数は、ファイルの一部だけを RAM に読み込むことができる方法が２つある。
@@ -168,7 +168,7 @@ tanzania = read_sf(f, query = 'SELECT * FROM world WHERE name_long = "Tanzania"'
 
 利用可能な列の名前がわからない場合、`'SELECT * FROM world WHERE FID = 1'` でデータの1行だけを読み込むのが良い方法である。
 `FID` は<u>フィーチャ ID</u>を表し、多くの場合行番号であるが、その値は使用するファイル形式に依存する。 
-例えば、`FID` は、ESRI Shapefile では 0 から始まり、他のファイルフォーマットでは 1 から始まるか任意とすることができる。
+例えば、`FID` は、ESRI Shapefile では 0 から始まり、他のファイル形式では 1 から始まるか任意とすることができる。
 
 ```{r, eval=FALSE, echo=FALSE}
 read_sf(f, query = 'SELECT * FROM world WHERE FID = 0')
@@ -314,7 +314,7 @@ snow_rey
 
 この方法では、大きな GeoTIFF ファイル全体をダウンロードするのではなく、一つの値だけをダウンロードすることになる。
 上記の例は、単純な (しかし有用な) 1つのケースを示しただけであるが、もっと探求すべきことがある。
-また、`/vsicurl/` のプレフィックスは、ラスタだけでなく、ベクタファイルフォーマットにも有効である。
+また、`/vsicurl/` のプレフィックスは、ラスタだけでなく、ベクタファイル形式にも有効である。
 ベクタファイルのURLの前に接頭辞を付けるだけで、`read_sf()`、オンラインストレージから直接ベクタを読み込むことができるようになる。
 
 重要なのは、GDAL が提供する接頭辞は `/vsicurl/` だけではないことである。ZIP アーカイブから空間ファイルを解凍せずに読み込むための `/vsizip/` や、AWS S3 バケットにあるファイルをオンザフライで読み込むための `/vsis3/` など、他にも多くの接頭辞が存在するのである。
@@ -338,7 +338,7 @@ file.remove(world_files)
 ```
 
 `read_sf()` と対になるのは `write_sf()` である。
-`.geojson`、`.shp`、`.gpkg` などの最も一般的なものを含む、広範囲の地理ベクタファイルフォーマットに **sf** オブジェクトを書き込むことができる。
+`.geojson`、`.shp`、`.gpkg` などの最も一般的なものを含む、広範囲の地理ベクタファイル形式に **sf** オブジェクトを書き込むことができる。
 ファイル名から、`write_sf()` が自動的に使用するドライバを決定する。 
 また、書き込み速度はドライバに依存する。
 
@@ -384,7 +384,7 @@ file.remove(world_files)
 
 \index{らすた@ラスタ!でーたしゅつりょく@データ出力}
 `writeRaster()` 機能は、`SpatRaster` のオブジェクトをディスク上のファイルに保存する。 
-この関数は、出力データ型とファイルフォーマットに関する入力を期待するが、選択されたファイルフォーマットに固有のGDALオプションも受け付ける (詳しくは `?writeRaster` を参照)。
+この関数は、出力データ型とファイル形式に関する入力を期待するが、選択されたファイル形式に固有のGDALオプションも受け付ける (詳しくは `?writeRaster` を参照)。
 
 \index{らすた@ラスタ!でーたがた@データ型}
 ラスタを保存する際、**terra** パッケージは以下の7つのデータ形式を提供する：INT1U、INT2S、INT2U、INT4S、INT4U、FLT4S、FLT8S。^[
@@ -394,7 +394,7 @@ R は 32 ビット符号なし整数をサポートしていないため、INT4U
 データ型が表現できる値が多いほど、ディスク上のファイルサイズは大きくなる。
 符号なし整数 (INT1U、INT2U、INT4U) はカテゴリデータに適しており、浮動小数点数 (FLT4S、FLT8S) は通常連続データを表す。
 `writeRaster()` は FLT4S をデフォルトとして使用する。
-これはほとんどの場合において有効であるが、二値やカテゴリーデータを保存する場合、出力ファイルのサイズは不必要に大きくなる。
+これはほとんどの場合において有効であるが、二値やカテゴリデータを保存する場合、出力ファイルのサイズは不必要に大きくなる。
 したがって、最小限の記憶容量を必要とし、なおかつすべての値を表現できるデータ型を使用することを勧める (`summary()` 関数で値の範囲を確認する)。
 
 ```{r datatypes, echo=FALSE}
@@ -420,7 +420,7 @@ knitr::kable(dT, caption = "terra パッケージが対応しているデータ�
 writeRaster(single_layer, filename = "my_raster.tif", datatype = "INT2U")
 ```
 
-ラスタファイルフォーマットによっては、追加オプションがあり、`writeRaster()` の `options` 引数に [GDAL parameters](https://gdal.org/formats_list.html) を与えることで設定できる。
+ラスタファイル形式によっては、追加オプションがあり、`writeRaster()` の `options` 引数に [GDAL parameters](https://gdal.org/formats_list.html) を与えることで設定できる。
 GeoTIFF ファイルは、デフォルトで **terra** で記述され、LZW 圧縮が施されている `gdal = c("COMPRESS=LZW")`。
 圧縮を変更したり無効にしたりするには、この引数を変更する必要がある。
 
@@ -453,7 +453,7 @@ GeoTIFF 形式の圧縮については、Paul Ramsey の [GeoTIFF 圧縮につ�
 また、米国航空宇宙局 (NASA) が運営するポータルサイト [SEDAC](https://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
 
 ジオポータルは、ほとんどの場合空間的および時間的範囲などの特性に基づいてデータセットを照会できるグラフィカルなインターフェースを提供している。米国地質調査所の [EarthExplorer](https://earthexplorer.usgs.gov/) はその代表例である。
-ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤーを理解する上で効果的な方法である。
+ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤを理解する上で効果的な方法である。
 しかし、データの<u>ダウンロード</u>は、再現性と効率性の観点から、コードで行うのがベストである。
 ダウンロードは、主に URL や API\index{API} を経由して、様々な手法でコマンドラインから開始することができる (例: [Copernicus APIs](https://dataspace.copernicus.eu/analyse/apis) を参照)。^[Section \@ref(staccog) に、STAC API を使用して Sentinel-2 データをダウンロードする例を示している。]
 静的 URL にホストされているファイルは、`download.file()` でダウンロードすることができる。以下のコードは、 [pangaea.de](https://doi.pangaea.de/10.1594/PANGAEA.868349) から米国の国立公園のデータにアクセスする例である。
@@ -476,7 +476,7 @@ usa_parks = read_sf(dsn = "nps_boundary.shp")
 datapackages = tibble::tribble(
   ~`パッケージ`, ~説明,
   "climateR", "2,000を超えるデータプロバイダーが提供する10万kを超えるグリッド化された気候および景観データセットに、関心のある分野ごとにアクセスできる。",
-  "elevatr", "さまざまなソースからのポイントおよびラスター標高データにアクセスする。",
+  "elevatr", "さまざまなソースからのポイントおよびラスタ標高データにアクセスする。",
   "FedData", "米国連邦政府のデータセット。標高や地表などのデータがある。",
   "geodata", "行政データ、標高データ、WorldClim データのダウンロードとインポート。",
   "osmdata", "OpenStreetMap の小さなデータセットをダウンロードし、インポート。",
@@ -523,7 +523,7 @@ class(worldclim_prec)
 ```
 
 3 つ目の例では、**osmdata** パッケージ [@R-osmdata]  を使って、OpenStreetMap\index{OpenStreetMap} (OSM) データベースから公園を検索してみよう。
-以下のコードチャンクに示すように、クエリーは関数 `opq()` (OpenStreetMap query の略) で始まり、最初の引数は bounding box、またはつまり境界線を表すテキスト文字列 (この場合はリーズ市) である。
+以下のコードチャンクに示すように、クエリは関数 `opq()` (OpenStreetMap query の略) で始まり、最初の引数は bounding box、またはつまり境界線を表すテキスト文字列 (この場合はリーズ市) である。
 その結果は、どの OSM 要素 (この場合は公園) に興味があるかを選択する関数に渡され、<u>key-value ペア</u>で表される。
 次に、これらのデータは関数 `osmdata_sf()` に渡され、データのダウンロードと `sf` オブジェクトのリストへの変換が行われる (詳しくは `vignette('osmdata')` を参照)。
 

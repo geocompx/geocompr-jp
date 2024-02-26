@@ -43,9 +43,9 @@ library(progressr)          # 進捗状況を報告
 統計的学習\index{とうけいてきがくしゅう@統計的学習}とは、統計学\index{とうけいがく@統計学}と機械学習\index{きかいがくしゅう@機械学習}の手法を組み合わせたもので、教師あり手法と教師なし手法に分類される。
 どちらも物理学、生物学、生態学から地理学、経済学に至るまで、ますます多くの分野で利用されるようになっている [@james_introduction_2013]。
 
-この章では、クラスタリング\index{clustering}のような教師なし技術とは対照的に、学習データセットが存在する教師あり技術に焦点を当てていきたい。
+この章では、クラスタリング\index{くらすたりんぐ@クラスタリング}のような教師なし技術とは対照的に、学習データセットが存在する教師あり技術に焦点を当てていきたい。
 応答変数は、二値 (地滑りの発生など)、カテゴリ (土地利用)、整数 (種の豊富さ数)、数値 (土壌酸性度の測定された pH 値) のいずれでもよい。
-教師あり技術は、オブザベーションのサンプルについて既知の応答と、1つまたは複数の予測変数の間の関係をモデル化する。
+教師あり技術は、観測のサンプルについて既知の応答と、1つまたは複数の予測変数の間の関係をモデル化する。
 
 多くの機械学習\index{きかいがくしゅう@機械学習}において、研究の主な目的は優れた予測を行うことである。
 機械学習が「ビッグデータ」\index{びっぐでーた@ビッグデータ}の時代に繁栄しているのは、その手法が入力変数に関する仮定をほとんど必要とせず、巨大なデータセットを扱えるからである。
@@ -62,7 +62,7 @@ CV\index{くろすばりでーしょん@クロスバリデーション} デー�
 CV は過適合\index{かてきごう@過適合}を検出するのに役立つ。なぜなら、学習データをあまりに忠実に予測するモデル (ノイズ) は、テストデータでのパフォーマンスが低くなる傾向があるからである。
 
 空間データをランダムに分割することで、テスト点と空間的に隣接する学習点を得ることができる。
-空間的に自己相関\index{autocorrelation!spatial}していると、このシナリオではテストとトレーニングのデータセットが独立しておらず、結果として CV \index{くろすばりでーしょん@クロスバリデーション}  は過適合\index{かてきごう@過適合}の可能性を検出できなくなる。
+空間的に自己相関\index{じこそうかん@自己相関!くうかんてき@空間的}していると、このシナリオではテストとトレーニングのデータセットが独立しておらず、結果として CV \index{くろすばりでーしょん@クロスバリデーション}  は過適合\index{かてきごう@過適合}の可能性を検出できなくなる。
 空間 CV\index{くろすばりでーしょん@クロスバリデーション!くうかん@空間 CV} は、本章の**中心**テーマであり、この問題を軽減する。。
 
 繰り返しになるが、この章ではモデルの**予測性能**に焦点を当てる。
@@ -207,14 +207,14 @@ pred = terra::predict(ta, model = fit, type = "response")
 knitr::include_graphics("figures/lsl-susc-1.png")
 ```
 
-ここで、予測を行う際には、空間自己相関構造があってもなくても平均的に予測精度は変わらないと仮定しているため、空間自己相関\index{autocorrelation!spatial}を無視する。
-空間自己相関\index{autocorrelation!spatial} を、モデルと予測に組み入れることも可能である。
+ここで、予測を行う際には、空間自己相関構造があってもなくても平均的に予測精度は変わらないと仮定しているため、空間自己相関\index{じこそうかん@自己相関!くうかんてき@空間的}を無視する。
+空間自己相関\index{じこそうかん@自己相関!くうかんてき@空間的} を、モデルと予測に組み入れることも可能である。
 これは本書の範疇を越えるが、いくつかの資料を紹介する。
 
 1. 回帰クリギングの予測値は、回帰の予測値と回帰の残差のクリギングを組み合わせたものである [@goovaerts_geostatistics_1997; @hengl_practical_2007; @bivand_applied_2013]。
 2. また、一般化最小二乗モデルに空間相関 (依存関係) 構造を追加することもできる (`nlme::gls()`; @zuur_mixed_2009; @zuur_beginners_2017)。
 3. また、混合効果モデリング・アプローチを使用することもできる。
-基本的に、ランダム効果は、応答変数に従属構造を課し、それによって、あるクラスのオブザベーションが、他のクラスのオブザベーションよりも互いに類似していることを可能にする [@zuur_mixed_2009]。
+基本的に、ランダム効果は、応答変数に従属構造を課し、それによって、あるクラスの観測が、他のクラスの観測よりも互いに類似していることを可能にする [@zuur_mixed_2009]。
 クラスは、例えば、ハチの巣、フクロウの巣、植生トランセクト、標高の層別などである。
 この混合モデリングのアプローチは、正規かつ独立に分布するランダム切片を仮定している。
 これは、正規分布で空間的に依存するランダム切片を使用することによっても拡張することができる。
@@ -240,24 +240,24 @@ AUROC\index{AUROC} の値 0.82 は良好な適合性を示している。
 ##  (空間) クロスバリデーションの紹介   {#intro-cv}
 
 クロスバリデーション\index{くろすばりでーしょん@クロスバリデーション}  は、リサンプリング法\index{resampling}のファミリーに属する [@james_introduction_2013]。
-基本的な考え方は、データセットをトレーニングセットとテストセットに分割 (繰り返し) し、トレーニングデータを使ってモデルを適合させ、それをテストセットに適用することである。
+基本的な考え方としては、データセットをトレーニングセットとテストセットに (繰り返し) 分割し、トレーニングデータを使ってモデルを適合させ、それをテストセットに適用する。
 予測値とテストセットの既知の応答値を比較することにより (二項式の場合は AUROC\index{AUROC}  のような性能指標を使用)、学習した関係を独立したデータに一般化するモデルの能力について、バイアスを低減した評価を得ることができる。
-例えば、5倍クロスバリデーションを100回繰り返すとは、データをランダムに5分割 (フォールド) し、各フォールドをテストセットとして1回使用することを意味する (Figure \@ref(fig:partitioning) の上段を参照)。 
-これは、各観測が1つのテストセットで1回使用されることを保証し、5つのモデルの適合を必要とする。
-その後、この手順を100回繰り返す。
+例えば、5 倍クロスバリデーションを 100 回繰り返すとは、データをランダムに 5 分割 (フォールド) し、各フォールドをテストセットとして 1 回使用することを意味する (Figure \@ref(fig:partitioning) の上段を参照)。 
+これは、各観測が 1 つのテストセットで 1 回使用されることを保証し、5 つのモデルの適合を必要とする。
+その後、この手順を 100 回繰り返す。
 もちろん、データの分割は繰り返しごとに異なる。
-全体として、これは500のモデルに合計される。一方、すべてのモデルの平均性能指標 (AUROC\index{AUROC}) は、モデルの全体的な予測力である。
+全体として、これは 500 のモデルに合計される。一方、すべてのモデルの平均性能指標 (AUROC\index{AUROC}) は、モデルの全体的な予測力である。
 
-しかし、地理的なデータは特別である。
+しかし、地理的なデータは特殊である。
 Chapter \@ref(transport) で見るように、地理学の「第一法則」は、互いに近い地点は、一般に、遠い地点よりも似ているとするものである [@miller_tobler_2004]。
 つまり、従来の CV\index{くろすばりでーしょん@クロスバリデーション}  では学習点とテスト点が近すぎることが多いため、点が統計的に独立していないことになる (Figure \@ref(fig:partitioning) の最初の行を参照)。
 「テスト」観測の近くにある「トレーニング」観測は、一種の「カンニング」を提供することができる。
 すなわち、学習データセットでは利用できないはずの情報である。
-この問題を軽減するために、オブザベーションを空間的に不連続なサブセットに分割する「空間分割」が使用される (*k*-means クラスタリング\index{clustering!kmeans}でオブザベーションの座標を使用; @brenning_spatial_2012; Figure \@ref(fig:partitioning) の2行目)。
+この問題を軽減するために、観測を空間的に不連続なサブセットに分割する「空間分割」が使用される (*k*-means クラスタリング\index{くらすたりんぐ@クラスタリング!kmeans}で観測の座標を使用; @brenning_spatial_2012; Figure \@ref(fig:partitioning) の 2 行目)。
 この分割戦略が、従来のCVとの**唯一**の違いである。
 その結果、空間的 CV はモデルの予測性能のバイアスを低減させ、過適合\index{かてきごう@過適合}を回避するのに役立つ。
 
-```{r partitioning, fig.cap="1 回の繰り返しのクロスバリデーションで選択されたテストおよびトレーニングのオブザベーションの空間的な可視化。ランダム (上段) および空間分割 (下段)。", echo=FALSE, fig.scap="Spatial visualization of selected test and training observations."}
+```{r partitioning, fig.cap="1 回の繰り返しのクロスバリデーションで選択されたテストおよびトレーニングの観測の空間的な可視化。ランダム (上段) および空間分割 (下段)。", echo=FALSE, fig.scap="Spatial visualization of selected test and training observations."}
 knitr::include_graphics("figures/12_partitioning.png")
 ```
 
@@ -268,7 +268,7 @@ knitr::include_graphics("figures/12_partitioning.png")
 クロスバリデーションやハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}のチューニング方法など、各パッケージに精通することは時間のかかる作業である。
 異なるパッケージのモデル結果を比較するのは、さらに手間がかかる。
 これらの問題を解決するために開発されたのが、**mlr3** パッケージとエコシステムである。
-これは「メタパッケージ」として機能し、分類、回帰 \index{かいき@回帰}、生存時間分析、クラスタリング\index{clustering}など、一般的な教師あり・教師なしの統計学習技術への統一的なインタフェースを提供する [@lang_mlr3_2019; @becker_mlr3_2022] 。
+これは「メタパッケージ」として機能し、分類、回帰 \index{かいき@回帰}、生存時間分析、クラスタリング\index{くらすたりんぐ@クラスタリング}など、一般的な教師あり・教師なしの統計学習技術への統一的なインタフェースを提供する [@lang_mlr3_2019; @becker_mlr3_2022] 。
 標準化された **mlr3** インターフェースは、8 つの「ビルディングブロック」に基づいている。
 Figure \@ref(fig:building-blocks) に示すように、これらは明確な順序を持っている。
 
@@ -341,19 +341,19 @@ mlr3extralearners::list_mlr3learners(
 # dput(lrns_df)
 lrns_df = structure(list(Class = c("classif.adaboostm1", "classif.binomial",
 "classif.featureless", "classif.fnn", "classif.gausspr", "classif.IBk"
-), Name = c("ada Boosting M1", "Binomial Regression", "Featureless classifier",
-"Fast k-Nearest Neighbour", "Gaussian Processes", "k-Nearest Neighbours"
+), Name = c("ada Boosting M1", "二項回帰", "Featureless classifier",
+"Fast k-Nearest Neighbour", "ガウス過程", "k-近傍法"
 ), `Short name` = c("adaboostm1", "binomial", "featureless",
 "fnn", "gausspr", "ibk"), Package = c("RWeka", "stats", "mlr",
 "FNN", "kernlab", "RWeka")), row.names = c(NA, 6L), class = "data.frame")
 knitr::kable(lrns_df, 
-             caption = paste("Sample of available learners for binomial", 
-                             "tasks in the mlr3 package."), 
+             caption = paste("パッケージ mlr3 の二項タスク向け", 
+                             "にある学習器のサンプル。"), 
              caption.short = "Sample of available learners.", booktabs = TRUE)
 ```
 
 これにより、すべての学習器が 2 クラス問題 (地滑りの有無) をモデル化することができるようになった。
-Section \@ref(conventional-model) で使用され、**mlr3learners** では `classif.log_reg` として実装されている二項分類 \index{ぶんるい@分類} 方式を選択することにする。
+Section \@ref(conventional-model) で使用され、**mlr3learners** では `classif.log_reg` として実装されている二項分類\index{ぶんるい@分類}方式を選択することにする。
 さらに、予測の種類を決める `predict.type` を指定する必要がある。`prob` は、地滑り発生の予測確率を 0 から 1 の間で決定する (これは `type = response` の `predict.glm()` に対応する)。
 
 ```{r 12-spatial-cv-13, eval=FALSE}
@@ -392,7 +392,7 @@ identical(fit$coefficients, learner$model$coefficients)
 しかし、この一つのインターフェースで、`mlr3extralearners::list_mlr3learners()` が示す 130 種類以上の学習器にアクセスできることを思い出してほしい。各学習器のインターフェースを学ぶことはもっと退屈である。
 さらに、リサンプリング技術の簡単な並列化と、機械学習のハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}を調整できることも利点である ( Section \@ref(svm) を参照)。
 最も重要なことは、**mlr3spatiotempcv** [@schratz_mlr3spatiotempcv_2021]  の (空間) リサンプリングは簡単で、リサンプリング法の指定と実行という2つのステップを追加するだけでよいということである。
-100 回繰り返される5回空間 CV\index{くろすばりでーしょん@クロスバリデーション!くうかん@空間 CV} : `task` で提供された座標に基づいて5つのパーティションが選ばれ、パーティショニングは100回繰り返される。 [^13] 
+100 回繰り返される 5 回空間 CV\index{くろすばりでーしょん@クロスバリデーション!くうかん@空間 CV} : `task` で提供された座標に基づいて 5 つのパーティションが選ばれ、パーティショニングは 100 回繰り返される。 [^13] 
 
 [^13]:
 
@@ -443,7 +443,7 @@ mean(score_spcv_glm$classif.auc) |>
 ```
 
 これらの結果を整理するために、100 回繰り返した 5 回非空間クロスバリデーションの AUROC\index{AUROC} 値と比較してみよう (Figure \@ref(fig:boxplot-cv) ; 非空間CV\index{くろすばりでーしょん@クロスバリデーション}のコードはここでは示さないが、演習セクションで検討する)。
-予想通り (Section \@ref(intro-cv) 参照)、空間交差検証の結果は、従来の交差検証アプローチよりも平均して低い AUROC 値をもたらし、空間自己相関\index{autocorrelation!spatial}のため、後者の空間自己相関\index{autocorrelation!spatial}による楽観的な予測性能が強調された。
+予想通り (Section \@ref(intro-cv) 参照)、空間交差検証の結果は、従来の交差検証アプローチよりも平均して低い AUROC 値をもたらし、空間自己相関\index{じこそうかん@自己相関!くうかんてき@空間的}のため、後者の空間自己相関による楽観的な予測性能が強調された。
 
 ```{r boxplot-cv, echo=FALSE, message=FALSE, out.width="75%", fig.cap="空間CV と従来の 100 回繰り返し 5 回 CV におけるGLM AUROC 値の差を示す箱ひげ図。", fig.scap="Boxplot showing AUROC values."}
 library(ggplot2)
@@ -462,7 +462,7 @@ ggplot2::ggplot(data = score[learner_id == "classif.log_reg"],
 
 ### 機械学習のハイパーパラメータの空間的チューニング  {#svm}
 
-Section \@ref(intro-cv) では、統計的学習\index{とうけいてきがくしゅう@統計的学習}の一環として、機械学習\index{きかいがくしゅう@機械学習}を導入した 。
+Section \@ref(intro-cv) では、統計的学習\index{とうけいてきがくしゅう@統計的学習}の一環として、機械学習\index{きかいがくしゅう@機械学習}を導入した。
 もう一度確認しよう。[Jason Brownlee](https://machinelearningmastery.com/linear-regression-for-machine-learning/) による機械学習の以下の定義に従う。
 
 > 機械学習、より具体的には予測モデリングの分野では、説明可能性を犠牲にして、モデルの誤差を最小化すること、あるいは可能な限り正確な予測を行うことに主眼が置かれている。
@@ -474,7 +474,7 @@ Section \@ref(glm) では、GLM を用いて地滑りしやすさを予測した
 本節では、 (空間) ハイパーパラメータのチューニングが主な目的であるため、SVM を用いることにする。
 ランダムフォレストモデルを適用したい方は、この章を読んでから Chapter \@ref(eco) に進むことを勧める。この章では、現在取り上げられている概念と技術を応用して、ランダムフォレストモデルに基づく空間分布図を作成する方法を説明する。
 
-SVM\index{SVM} クラスを分離するための最適な「超平面」を探索し (分類 \index{ぶんるい@分類}  の場合)、特定のハイパーパラメータで「カーネル」を推定して、クラス間の非線形境界を作成する [@james_introduction_2013]。
+SVM\index{SVM} クラスを分離するための最適な「超平面」を探索し (分類\index{ぶんるい@分類}  の場合)、特定のハイパーパラメータで「カーネル」を推定して、クラス間の非線形境界を作成する [@james_introduction_2013]。
 機械学習には、ハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}とパラメータがある。
 パラメータはデータから推定できるが、ハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}は学習開始前に設定しなければならない (mlr3 本の[machine mastery blog](https://machinelearningmastery.com/difference-between-a-parameter-and-a-hyperparameter/)と[hyperparameter optimization chapter](https://mlr3book.mlr-org.com/chapters/chapter4/hyperparameter_optimization.html) も参照)。
 最適なハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}は、通常、クロスバリデーション法を用いて定義された範囲内で決定する。
@@ -644,7 +644,7 @@ GLM\index{GLM} (集計された AUROC\index{AUROC} は `r score [score $resampli
 
 リサンプリング手法は、データサイエンティストのツールボックスの重要なものの一つである [@james_introduction_2013]。
 この章では、CV\index{くろすばりでーしょん@クロスバリデーション} を用いて、様々なモデルの予測性能を評価した。
-Section \@ref(intro-cv) で述べたように、空間座標を持つオブザベーションは、空間自己相関\index{じこそうかん@自己相関!くうかんてき@空間的}のために統計的に独立でない場合があり、クロスバリデーションの基本的な仮定に違反する。
+Section \@ref(intro-cv) で述べたように、空間座標を持つ観測は、空間自己相関\index{じこそうかん@自己相関!くうかんてき@空間的}のために統計的に独立でない場合があり、クロスバリデーションの基本的な仮定に違反する。
 空間 CV\index{くろすばりでーしょん@クロスバリデーション!くうかん@空間 CV}  この問題は、空間的自己相関\index{じこそうかん@自己相関!くうかんてき@空間的}によってもたらされるバイアスを低減することで解決される。 
 
 **mlr3**\index{mlr3 (package)} パッケージは、線形回帰\index{かいき@回帰!せんけい@線形}、一般化加法モデル\index{いっぱんかかほうもでる@一般化加法モデル}などのセミパラメトリックモデルなどの統計学習\index{とうけいてきがくしゅう@統計的学習}、あるいはランダムフォレスト\index{らんだむふぉれすと@ランダムフォレスト}、SVM \index{SVM}、ブースト回帰木 [@bischl_mlr:_2016;@schratz_hyperparameter_2019]  などの機械学習\index{きかいがくしゅう@機械学習}  技術と組み合わせることで、 (空間) リサンプリング技法\index{resampling}を容易にしている。
@@ -657,7 +657,7 @@ Section \@ref(intro-cv) で述べたように、空間座標を持つオブザ�
 - **mlr3 book** (@becker_mlr3_2022; https://mlr3book.mlr-org.com/) と、特に [chapter on the handling of spatio-temporal data](https://mlr3book.mlr-org.com/chapters/chapter13/beyond_regression_and_classification.html#sec-spatiotemporal) を参考。
 - ハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}チューニングに関する学術論文 [@schratz_hyperparameter_2019] 
 - **mlr3spatiotempcv** の使用方法に関する学術論文 [@schratz_mlr3spatiotempcv_2021] 
-- 時空間データの場合、空間的\index{autocorrelation!spatial}と時間的\index{autocorrelation!temporal}の自己相関を考慮した上で CV\index{くろすばりでーしょん@クロスバリデーション} を行う必要がある [@meyer_improving_2018]。
+- 時空間データの場合、空間的\index{じこそうかん@自己相関!くうかんてき@空間的}と時間的\index{autocorrelation!temporal}の自己相関を考慮した上で CV\index{くろすばりでーしょん@クロスバリデーション} を行う必要がある [@meyer_improving_2018]。
 
 ## 演習
 

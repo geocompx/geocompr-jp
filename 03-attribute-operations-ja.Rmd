@@ -688,7 +688,7 @@ levels(grain2) = data.frame(value = c(0, 1, 2), wetness = c("wet", "moist", "dry
 levels(grain2)
 ```
 
-```{r cont-raster, echo = FALSE, message = FALSE, fig.asp=0.5, fig.cap = "数値 (左) とカテゴリー値 (右) を持つラスタデータセット。", fig.scap="Raster datasets with numeric and categorical values.", warning=FALSE}
+```{r cont-raster, echo = FALSE, message = FALSE, fig.asp=0.5, fig.cap = "数値 (左) とカテゴリ値 (右) を持つラスタデータセット。", fig.scap="Raster datasets with numeric and categorical values.", warning=FALSE}
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/146617366-7308535b-30f6-4c87-83f7-21702c7d993b.png")
 source("code/03-cont-raster-plot.R", print.eval = TRUE)
 ```

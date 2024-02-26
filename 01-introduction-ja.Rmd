@@ -331,7 +331,7 @@ length(revdep_sf) # 739 # 2023-11-16
 
 \index{raster (package)}
 **sp** エコシステムの限界は、ラスタデータのサポートが限定的であることであった。
-これを克服したのが、2010年に初めてリリースされた **raster**\index{raster} である [@R-raster]。
+これを克服したのが、2010年に初めてリリースされた **raster**\index{らすた@ラスタ} である [@R-raster]。
 Section \@ref(raster-data) にあるように、**raster** クラスシステムと関数によって、さまざまなラスタ操作が可能になり、現在では **terra** パッケージに実装されている。
 **raster** と **terra** の重要な機能は、RAM に収まらないほど大きなデータセットを扱うことができることであり、ディスク外操作もサポートしている。
 **raster** および **terra** は、Section \@ref(map-algebra) で説明されているように、マップ代数もサポートしている。
