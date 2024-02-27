@@ -466,7 +466,7 @@ box = st_convex_hull(pmulti)
 \index{べくた@ベクタ!けつごう@結合} 
 \index{しゅうやく@集約!くうかん@空間} 
 Section \@ref(vector-attribute-aggregation) で見たように、空間的な集約は、同グループの接しているポリゴンのジオメトリを静かにディゾルブ (dissolve) させることができる。
-以下のコードでは、49 個の `us_states` が Base と **dplyr**\index{dplyr (package)} 関数を使って 4 つの地域に集約されている (結果は Figure \@ref(fig:us-regions) を参照)。
+以下のコードでは、Base と **dplyr**\index{dplyr (package)} 関数を使って 48 の米国の州と District of Columbia  (`us_states`) を 4 つの地域に集約している (結果は Figure \@ref(fig:us-regions) を参照)。
 
 ```{r 05-geometry-operations-23}
 regions = aggregate(x = us_states[, "total_pop_15"], by = list(us_states$REGION),

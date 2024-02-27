@@ -4,7 +4,7 @@ library(dplyr)
 library(spData)
 ```
 
-E1. Canterbury は、New Zealand の最高峰 100 地点のほとんどを含む地域であることは、Section \@ref(spatial-vec) で述べたとおりである。
+E1. Canterbury は、New Zealand の最高峰 101 地点のほとんどを含む地域であることは、Section \@ref(spatial-vec) で述べたとおりである。
 Canterbury 地方には、これらの高地がいくつあるだろうか？
 
 **ボーナス:** その結果を `plot()` 関数を使って次のように表示しなさい。、まず、New Zealand 全土を示し、`canterbury` 地域を黄色で強調し、高地を赤い十字 (ヒント: `pch = 7`)、かつ他の地域の高地は青い円で表示しなさい。異なる `pch` 値の図解を含む詳細については、ヘルプページ `?points` を参照。

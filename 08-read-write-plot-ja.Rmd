@@ -158,7 +158,7 @@ world = read_sf(f)
 
 \index{OGR SQL}
 また、`read_sf()` 関数は、ファイルの一部だけを RAM に読み込むことができる方法が２つある。
-1つ目は、`query` の引数に関連して、[OGR SQL query text](https://gdal.org/user/ogr_sql_dialect.html) でデータのどの部分を読み取るかを指定できるようにしたものである。
+1 つ目は、`query` の引数に関連して、[OGR SQL query text](https://gdal.org/user/ogr_sql_dialect.html) でデータのどの部分を読み取るかを指定できるようにしたものである。
 以下の例では、タンザニアのみのデータを抽出している (Figure \@ref(fig:readsfquery) :A)。
 これは、`"world"` のレイヤから、`name_long` が `"Tanzania"` と等しいすべての列 (`SELECT *`) を取得したい、と指定することで実現する。
 
@@ -174,7 +174,7 @@ tanzania = read_sf(f, query = 'SELECT * FROM world WHERE name_long = "Tanzania"'
 read_sf(f, query = 'SELECT * FROM world WHERE FID = 0')
 ```
 
-2つ目の仕組みは、`wkt_filter` の引数を使用する。
+2 つ目の仕組みは、`wkt_filter` の引数を使用する。
 この引数は、データを抽出したい研究領域を表すよく知られたテキストを想定している。
 タンザニアの国境線 50,000 m と交差するポリゴンをファイルから読み込む。
 そのためには、(a) バッファを作成するか (Section \@ref(buffers))、(b) `st_geometry()` で `sf` バッファオブジェクトを `sfc` ジオメトリオブジェクトに変換するか、(c) `st_as_text()` でジオメトリを WKT に変換する、のいずれかの方法で「フィルタ」を準備する必要がある。
@@ -231,7 +231,7 @@ cycle_hire_xy = read_sf(cycle_hire_txt,
   options = c("X_POSSIBLE_NAMES=X", "Y_POSSIBLE_NAMES=Y"))
 ```
 
-「XY」座標を記述する代わりに、1つの列でジオメトリ情報を記述することも可能である。
+「XY」座標を記述する代わりに、1 つの列でジオメトリ情報を記述することも可能である。
 Well-known text (WKT)\index{well-known text}、well-known binary (WKB)\index{well-known binary}、GeoJSON 形式がその例である。
 例えば、`world_wkt.csv` のファイルには、世界の国々のポリゴンを表す `WKT` という列がある。
 このことを示すために、今回も `options` パラメータを使用する。
@@ -313,7 +313,7 @@ snow_rey
 ```
 
 この方法では、大きな GeoTIFF ファイル全体をダウンロードするのではなく、一つの値だけをダウンロードすることになる。
-上記の例は、単純な (しかし有用な) 1つのケースを示しただけであるが、もっと探求すべきことがある。
+上記の例は、単純な (しかし有用な) 1 つのケースを示しただけであるが、もっと探求すべきことがある。
 また、`/vsicurl/` のプレフィックスは、ラスタだけでなく、ベクタファイル形式にも有効である。
 ベクタファイルのURLの前に接頭辞を付けるだけで、`read_sf()`、オンラインストレージから直接ベクタを読み込むことができるようになる。
 
@@ -326,7 +326,7 @@ snow_rey
 ## データ出力 (O)   {#data-output}
 
 地理データの書き込みでは、あるフォーマットから別のフォーマットへの変換や、新しく作成したオブジェクトの保存が可能である。
-データの種類 (ベクタまたはラスタ)、オブジェクトのクラス (例: `sf` または `SpatRaster` )、保存される情報の種類と量 (オブジェクトのサイズ、値の範囲など) に応じて、空間ファイルを最も効率的に保存する方法を知ることが重要である。
+データの種類 (ベクタまたはラスタ)、オブジェクトのクラス (例: `sf` または `SpatRaster`)、保存される情報の種類と量 (オブジェクトのサイズ、値の範囲など) に応じて、空間ファイルを最も効率的に保存する方法を知ることが重要である。
 次の 2 つのセクションでは、その方法を説明する。
 
 ### ベクタデータ
@@ -384,7 +384,7 @@ file.remove(world_files)
 
 \index{らすた@ラスタ!でーたしゅつりょく@データ出力}
 `writeRaster()` 機能は、`SpatRaster` のオブジェクトをディスク上のファイルに保存する。 
-この関数は、出力データ型とファイル形式に関する入力を期待するが、選択されたファイル形式に固有のGDALオプションも受け付ける (詳しくは `?writeRaster` を参照)。
+この関数は、出力データ型とファイル形式に関する入力を期待するが、選択されたファイル形式に固有の GDAL オプションも受け付ける (詳しくは `?writeRaster` を参照)。
 
 \index{らすた@ラスタ!でーたがた@データ型}
 ラスタを保存する際、**terra** パッケージは以下の 7 つのデータ形式を提供する: INT1U、INT2S、INT2U、INT4S、INT4U、FLT4S、FLT8S。^[
@@ -456,7 +456,7 @@ GeoTIFF 形式の圧縮については、Paul Ramsey の [GeoTIFF 圧縮につ�
 ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤを理解する上で効果的な方法である。
 しかし、データの<u>ダウンロード</u>は、再現性と効率性の観点から、コードで行うのがベストである。
 ダウンロードは、主に URL や API\index{API} を経由して、様々な手法でコマンドラインから開始することができる (例: [Copernicus APIs](https://dataspace.copernicus.eu/analyse/apis) を参照)。^[Section \@ref(staccog) に、STAC API を使用して Sentinel-2 データをダウンロードする例を示している。]
-静的 URL にホストされているファイルは、`download.file()` でダウンロードすることができる。以下のコードは、 [pangaea.de](https://doi.pangaea.de/10.1594/PANGAEA.868349) から米国の国立公園のデータにアクセスする例である。
+静的 URL にホストされているファイルは、`download.file()` でダウンロードすることができる。以下のコードは、[pangaea.de](https://doi.pangaea.de/10.1594/PANGAEA.868349) から米国の国立公園のデータにアクセスする例である。
 
 ```{r 07-read-write-plot-2, eval=FALSE}
 download.file(url = "https://irma.nps.gov/DataStore/DownloadFile/673366",
@@ -500,7 +500,7 @@ knitr::kable(datapackages,
 
 Table \@ref(tab:datapackages) は、利用可能な地理データパッケージのごく一部に過ぎないことを強調しておく。
 この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r/) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
-同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czechia)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
+同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czech)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
 
 各データパッケージは、データにアクセスするためのコードの書き方がそれぞれ異なる。
 Table \@ref(tab:datapackages) の 3 つのパッケージについて、違いを確認できるようにデータを取得するコードチャンクを示す。^[R 専用パッケージを使用したデータダウンロードの他の例は、以下を参照。 https://rspatialdata.github.io/] 

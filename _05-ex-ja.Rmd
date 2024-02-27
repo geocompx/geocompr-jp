@@ -45,7 +45,7 @@ E2. 空間データ操作の章の最初の演習で、Canterbury 地方には N
 
 ```{r 05-ex-e2}
 canterbury = nz[nz$Name == "Canterbury", ]
-cant_buff = st_buffer(canterbury, 100)
+cant_buff = st_buffer(canterbury, 100000)
 nz_height_near_cant = nz_height[cant_buff, ]
 nrow(nz_height_near_cant) # 75 - 5 more
 ```
