@@ -19,7 +19,7 @@ library(data.table)        # 高速な data_frame 操作 (mlr3 が使用)
 library(mlr3)              # 機械学習 (Chapter 12 参照)
 library(mlr3spatiotempcv)  # 時空間リサンプリング
 library(mlr3tuning)        # ハイパーパラメータのチューニング
-library(mlr3learners)      # 最重要の機械学習へのインターフェイス
+library(mlr3learners)      # 最重要の機械学習へのインターフェース
 library(paradox)           # ハイパーパラメータ空間を定義
 library(ranger)            # ランダムフォレスト
 library(qgisprocess)       # bridge to QGIS へのブリッジ (Chapter 10)

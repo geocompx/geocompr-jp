@@ -132,7 +132,7 @@ source("https://github.com/geocompx/geocompr/raw/main/code/02-vectorplots.R") # 
 knitr::include_graphics(c("figures/vector_lonlat.png", "figures/vector_projected.png"))
 ```
 
-**sf** パッケージは、地理ベクタデータ用のクラスと、以下に説明する地理計算のための重要な低レベルライブラリへのコマンドラインインターフェイスを一貫した方法で提供する。
+**sf** パッケージは、地理ベクタデータ用のクラスと、以下に説明する地理計算のための重要な低レベルライブラリへのコマンドラインインターフェースを一貫した方法で提供する。
 
 - [GDAL](https://gdal.org/)\index{GDAL} は、Chapter \@ref(read-write) でカバーされる広範な地理データ形式の読み取り、書き込み、操作のためのものである。 
 - [PROJ](https://proj.org/) は、 Chapter \@ref(reproj-geo-data) で扱う内容の根幹をなす座標系変換のための強力なライブラリ。 
@@ -170,7 +170,7 @@ knitr::include_graphics("figures/sf-classes.png")
 また、**sf** はジオメトリコレクションをサポートしており、1つのオブジェクトに複数のジオメトリ型を格納することができる。
 **sf** は、データクラスの **sp**\index{sp (package)} [@R-sp]、GDAL と PROJ を通したデータ読み書きの **rgdal** [@R-rgdal]、GEOS を通した空間演算の **rgeos** [@R-rgeos] という 3 パッケージで提供されていたものと同じ機能 (およびそれ以上) を提供する。
 
-Chapter 1 の繰り返しになるが、R の地理パッケージは低レベルのライブラリとのインターフェイスとの長い歴史がある。**sf** はこの伝統を受け継ぎ、最新バージョンの幾何演算 GEOS、地理データファイルの読み書きのための GDAL、投影座標参照系の表現と変換のための PROJ ライブラリと統一されたインターフェイスを提供する。
+Chapter 1 の繰り返しになるが、R の地理パッケージは低レベルのライブラリとのインターフェースとの長い歴史がある。**sf** はこの伝統を受け継ぎ、最新バージョンの幾何演算 GEOS、地理データファイルの読み書きのための GDAL、投影座標参照系の表現と変換のための PROJ ライブラリと統一されたインターフェースを提供する。
 **s2**、すなわち「Google の球面幾何学ライブラリ [`s2`](https://s2geometry.io/) への R インタフェース」を通して、**sf** は高速で正確な「非平面形状の測定と操作」 [@bivand_progress_2021] にアクセスすることができる。
 [2021年6月](https://cran.r-project.org/src/contrib/Archive/sf/)に公開された **sf** バージョン 1.0.0 からは、地理 (経度・緯度) 座標系を持つジオメトリに対して[デフォルト](https://r-spatial.org/r/2020/06/17/s2.html)で **s2**\index{S2} 機能が使われるようになった。これは、**sf** 独自の特徴であり、Python パッケージ [GeoPandas](geopandas/geopandas/issues/2098) など、ジオメトリ演算に GEOS にしか対応していない空間ライブラリとは異なる。
 **s2** については、以降の章で説明する。
@@ -935,7 +935,7 @@ Section \@ref(the-history-of-r-spatial) にあるように、その中でも特�
 古いスクリプトやパッケージとの後方互換性を確保するために、2種類のオブジェクトをシームレスに変換することができる。例えば、**raster** パッケージの [`raster()`](https://rspatial.github.io/raster/reference/raster.html)、[`stack()`](https://rspatial.github.io/raster/reference/stack.html)、`brick()` などの関数がある (地理データを扱うための R パッケージの進化については、前の章を参照)。
 
 ラスタデータを操作するための関数に加え、**terra** はラスタデータセットを扱うための新しいツールを開発するための基盤となる低レベルの関数を多数提供している。
-\index{terra (package)|{terra} 参照}
+\index{terra (package)}
 また、**terra** では、メインメモリに収まりきらないような大きなラスタデータセットを扱うことができる。
 この場合、**terra** はラスタを小さなチャンクに分割し、ラスタファイル全体を RAM にロードする代わりに、それらを繰り返し処理することが可能である。
 

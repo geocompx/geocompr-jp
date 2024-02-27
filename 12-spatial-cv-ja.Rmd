@@ -23,7 +23,7 @@ library(terra)
 library(dplyr)
 library(future)             # 並列処理
 library(lgr)                # logging framework for R
-library(mlr3)               # 機械学習アルゴリズムへの統一インターフェイス
+library(mlr3)               # 機械学習アルゴリズムへの統一インターフェース
 library(mlr3learners)       # 最重要の機械学習アルゴリズム
 library(mlr3extralearners)  # その他の機械学習アルゴリズム
 library(mlr3spatiotempcv)   # 時空間リサンプリング
@@ -286,7 +286,7 @@ knitr::include_graphics("figures/12_ml_abstraction_crop.png")
 ### 一般化線形モデル  {#glm}
 
 GLM\index{GLM} を **mlr3**\index{mlr3 (package)} で使うためには、地すべりデータを含む **task** を作成する必要がある。
-応答は二値 (2 カテゴリの変数) で、空間次元を持つので、**mlr3spatiotempcv** パッケージの `as_task_classif_st()` を使用し、分類\index{ぶんるい@分類}タスクを作成する [@schratz_mlr3spatiotempcv_2021 、非空間 task には `mlr3::as_task_classif()`、回帰\index{かいき@回帰} には `as_task_regr()` を使用。他の task の詳細は、`?Task` を参照。] 。^[**mlr3** エコシステムは **data.table** と **R6** というクラスを多用する。これらのクラスの仕様を知らなくても **mlr3** を使うことはできるが、知っておくと有利である。 **data.table**, の詳細は https://rdatatable.gitlab.io/data.table/。**R6** について学びたい方は、Advanced R book (日本語版は共立出版「R 言語徹底解説」だが、旧版を元にしている)  [@wickham_advanced_2019] の [Chapter 14](https://adv-r.hadley.nz/fp.html) を参照。]
+応答は二値 (2 カテゴリの変数) で、空間次元を持つので、**mlr3spatiotempcv** パッケージの `as_task_classif_st()` を使用し、分類\index{ぶんるい@分類}タスクを作成する [@schratz_mlr3spatiotempcv_2021 、非空間 task には `mlr3::as_task_classif()`、回帰\index{かいき@回帰}には `as_task_regr()` を使用。他の task の詳細は、`?Task` を参照。] 。^[**mlr3** エコシステムは **data.table** と **R6** というクラスを多用する。これらのクラスの仕様を知らなくても **mlr3** を使うことはできるが、知っておくと有利である。 **data.table**, の詳細は https://rdatatable.gitlab.io/data.table/。**R6** について学びたい方は、Advanced R book (日本語版は共立出版「R 言語徹底解説」だが、旧版を元にしている)  [@wickham_advanced_2019] の [Chapter 14](https://adv-r.hadley.nz/fp.html) を参照。]
 `as_task_` 関数の最初の必須引数は、`backend` である。
 `backend` は、入力データが応答変数と予測変数を含んでいることを想定している。
 `target` の引数は応答変数の名前を示し (ここでは `lslpts` )、`positive` は応答変数の2つの因子レベルのうちどちらが地滑り開始点を示すかを決定する (ここでは `TRUE`)。

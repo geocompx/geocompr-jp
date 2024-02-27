@@ -43,7 +43,7 @@ RStudio や VS Code などの対話型開発環境を使った作業では、通
 
 CLI は R だけのものではない。初期のコンピュータ環境は、おおむねコマンドライン「シェル」に依存しており、GUI\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} が一般的になったのは、コンピューターのマウスが普及した1990年代以降のことである。
 例えば、最も長い歴史を持つ GIS\index{GIS} プログラムの一つである GRASS GIS は、洗練された GUI [@landa_new_2008]  を獲得するまでは、主にコマンドラインでの対話に依存していた。
-ほとんどの GIS\index{GIS} パッケージは、グラフィカルユーザーインターフェイス (Grafical User Interface, GUI)\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} を採用している。
+ほとんどの GIS\index{GIS} パッケージは、グラフィカルユーザーインターフェース (Grafical User Interface, GUI)\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} を採用している。
 QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS}、gvSIG を、システムターミナルや組み込み CLI\index{こまんどらいんいんたーふぇーす@コマンドラインインターフェース} から操作することも<u>可能</u>であるが、「マウス操作」が一般的である。
 これは多くの GIS\index{GIS}  ユーザーがコマンドラインの利点を見逃していることを意味する。
 QGIS\index{QGIS} [@sherman_desktop_2008] の作成者によれば、
@@ -82,7 +82,7 @@ R はインターフェース言語として<u>誕生</u>したため、再現�
 R (および、その前身である S) は、他の言語 (特に FORTRAN\index{FORTRAN} と C) の統計アルゴリズムへのアクセスを提供しており、また C と FORTRAN にはない高レベルの REPL 環境からアクセスできるようになっていた [@chambers_extending_2016]。
 R はこの伝統を受け継ぎ、特に C++\index{C++}  などの多くの言語へのインタフェースを提供している。
 
-R は GIS として設計されたものではない。しかし、専用の GIS とのインターフェイスが可能なため、驚異的な地理空間能力を発揮する。
+R は GIS として設計されたものではない。しかし、専用の GIS とのインターフェースが可能なため、驚異的な地理空間能力を発揮する。
 GIS ブリッジを通すことで、R はさまざまな作業を実行でき、さらには CLI の持っている再現可能性、拡張性、生産性といった付加価値をもたらす。
 さらに、R は、インタラクティブ地図/地図アニメーション作成 (Chapter \@ref(adv-map) 参照) や空間統計モデリング ( Chapter \@ref(spatial-cv) 参照) など、ジオコンピュテーション\index{じおこんぴゅてーしょん@ジオコンピュテーション}のいくつかの分野では GIS を凌駕する性能を有している。
 
@@ -120,7 +120,7 @@ knitr::kable(
 ## **qgisprocess**: QGIS へのブリッジなど  {#rqgis}
 
 QGIS\index{QGIS} は、最も人気のあるオープンソース GIS である (Table \@ref(tab:gis-comp); @graser_processing_2015)。 
-QGIS は、統一されたインターフェイスで、QGIS 自身のジオアルゴリズム、GDAL\index{GDAL}、さらにインストールされている場合には GRASS GIS\index{GRASS GIS}、SAGA\index{SAGA} などの<u>プロバイダ</u>を利用することができる [@graser_processing_2015]。 
+QGIS は、統一されたインターフェースで、QGIS 自身のジオアルゴリズム、GDAL\index{GDAL}、さらにインストールされている場合には GRASS GIS\index{GRASS GIS}、SAGA\index{SAGA} などの<u>プロバイダ</u>を利用することができる [@graser_processing_2015]。 
 バージョン 3.14 (2020年夏にリリース) 以降、QGIS は、さまざまジオコンピュテーション機能にアクセスできる `qgis_process` コマンドラインを提供している。
 `qgis_process` は、標準的 QGIS に備わる 300 以上のジオアルゴリズムと、GRASS GIS や SAGA など 1000 以上の外部プロバイダへのアクセスを提供している。
 
@@ -476,7 +476,7 @@ knitr::include_graphics("figures/10-qgis-raster-map.png")
 
 ## SAGA  {#saga}
 
-System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:gis-comp)) は、コマンドラインインタフェース\index{こまんどらいんいんたーふぇいす@コマンドラインインターフェイス} (Windows では `saga_cmd.exe`、Linux では単に `saga_cmd`) を介して SAGA モジュールを実行する可能性を提供する ([SAGA wiki on modules](https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/) を参照)。
+System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:gis-comp)) は、コマンドラインインタフェース\index{こまんどらいんいんたーふぇいす@コマンドラインインターフェース} (Windows では `saga_cmd.exe`、Linux では単に `saga_cmd`) を介して SAGA モジュールを実行する可能性を提供する ([SAGA wiki on modules](https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/) を参照)。
 また、Pythonインターフェース (SAGA Python API\index{API}) も用意されている。
 **Rsagacmd**\index{Rsagacmd (package)} は、前者を使って R 内で SAGA\index{SAGA} を実行している。
 
@@ -791,7 +791,7 @@ TauDEM (http://hydrology.usu.edu/taudem) や Orfeo Toolbox (https://www.orfeo-to
 これは、新しい R パッケージという形で、これらのライブラリへの適切なインタフェースを作成するための出発点となる可能性がある。
 
 しかし、新しいブリッジを作成するプロジェクトに飛び込む前に、既存の R パッケージのパワーと、`system()` の呼び出しがプラットフォームに依存しない (一部のコンピュータで失敗する) 可能性があることを認識しておくことが重要である。
-一方、**sf** は GDAL\index{GDAL}、GEOS\index{GEOS}、PROJ\index{PROJ} が提供するパワーのほとんどを **Rcpp** が提供する R/C++\index{C++} インターフェイスを介して R にもたらし、`system()` の呼び出しを回避している。^[**vapour** と **gdalraster** は、GDAL\index{GDAL} への低レベルインターフェースを提供している。]
+一方、**sf** は GDAL\index{GDAL}、GEOS\index{GEOS}、PROJ\index{PROJ} が提供するパワーのほとんどを **Rcpp** が提供する R/C++\index{C++} インターフェースを介して R にもたらし、`system()` の呼び出しを回避している。^[**vapour** と **gdalraster** は、GDAL\index{GDAL} への低レベルインターフェースを提供している。]
 
 ## 空間データベースへのブリッジ  {#postgis}
 
