@@ -143,7 +143,7 @@ library(qgisprocess)
 #> ...
 ```
 
-このパッケージは、QGISのインストールを自動的に検出しようとし、検出できない場合は警告を発する。 ^[検出プロセスの詳細は、`qgis_configure()` を実行すると表示される。] 
+このパッケージは、QGIS のインストールを自動的に検出しようとし、検出できない場合は警告を発する。 ^[検出プロセスの詳細は、`qgis_configure()` を実行すると表示される。] 
 設定に失敗した場合の解決策としては、`options(qgisprocess.path = "path/to/your_qgis_process")`、環境変数 `R_QGISPROCESS_PATH` を設定する方法が考えられる。
 上記の方法は、複数の QGIS がインストールされており、どれを使うかを決めたい場合にも使える。
 詳細については、**qgisprocess** ['getting started' vignette](https://r-spatial.github.io/qgisprocess/articles/qgisprocess.html) を参照。
@@ -169,7 +169,7 @@ qgis_enable_plugins(c("grassprovider", "processing_saga_nextgen"),
 ```
 
 SAGA のほかにも、QGIS Python プラグイン Processing Saga NextGen をインストールしておく必要がある。
-このプラグインは、[Plugin Manager](https://docs.qgis.org/latest/en/docs/training_manual/qgis_plugins/fetching_plugins.html) あるいは、Python パッケージの [qgis-plugin-manager](https://github.com/3liz/qgis-plugin-manager) (at least on Linux) からインストールすることができる。
+このプラグインは、[プラグインの管理とインストール](https://docs.qgis.org/latest/en/docs/training_manual/qgis_plugins/fetching_plugins.html) あるいは、Python パッケージの [qgis-plugin-manager](https://github.com/3liz/qgis-plugin-manager) (Linux の場合) からインストールすることができる。
 
 `qgis_providers()` で、ソフトウェアの名称と対応するジオアルゴリズム数の一覧を表示する。
 
@@ -243,9 +243,9 @@ qgis_search_algorithms("union")
 #> 2 native   QGIS (native c++) Vector overlay native:union      Union  
 ```
 
-上記のリストにあるアルゴリズムの1つ、`"native:union"` は、探している機能の可能性が高そうである。
-次のステップは、このアルゴリズムが何をするのか、どう使えばいいのかを知ることである。
-`qgis_show_help()` がそのためにある。これは、アルゴリズムが何をし、引数や出力についての要約を返す。^[`qgis_get_description()`、`qgis_get_argument_specs()`、`qgis_get_output_specss()` それぞれからの情報の一部のみ示す。]
+上記のリストにあるアルゴリズムの 1 つ `"native:union"` は、探している機能の可能性が高そうである。
+次のステップとしては、このアルゴリズムが何をするのか、どう使えばいいのかを調べよう。
+`qgis_show_help()` は、アルゴリズムが何をし、引数や出力についての要約を返す。^[`qgis_get_description()`、`qgis_get_argument_specs()`、`qgis_get_output_specss()` それぞれからの情報の一部のみ示す。]
 これによって、出力が長くなる。
 以下のコマンドは、各行に `"native:union"` が必要とする引数を表すデータフレームを返し、各列は名前、説明、種類、デフォルト値、とりうる値を示す。
 
@@ -305,7 +305,7 @@ QGIS\index{QGIS} の和集合 (union\index{べくた@ベクタ!けつごう@結�
 その結果である `union_sf` は、2 つの入力オブジェクトよりも多くのフィーチャを持つポリゴンとなる。
 しかし、これらのポリゴンの多くは小さく、実際の領域を表しているわけではなく、2 つのデータセットの細部が異なるために生じたものであることに注意しておこう。
 こうした誤差によってできたものは、スライバー (sliver) ポリゴンと呼ばれている (Figure \@ref(fig:sliver) の左側のパネルにある赤い色のポリゴンを参照)。
-スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25000 m^2^ を見つけ、次にそれを削除する。
+スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25,000 m^2^ を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。
 
 ```{r, eval=has_qgis_plugins}
@@ -477,7 +477,7 @@ knitr::include_graphics("figures/10-qgis-raster-map.png")
 ## SAGA  {#saga}
 
 System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:gis-comp)) は、コマンドラインインタフェース\index{こまんどらいんいんたーふぇいす@コマンドラインインターフェース} (Windows では `saga_cmd.exe`、Linux では単に `saga_cmd`) を介して SAGA モジュールを実行する可能性を提供する ([SAGA wiki on modules](https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/) を参照)。
-また、Pythonインターフェース (SAGA Python API\index{API}) も用意されている。
+また、Python インターフェース (SAGA Python API\index{API}) も用意されている。
 **Rsagacmd**\index{Rsagacmd (package)} は、前者を使って R 内で SAGA\index{SAGA} を実行している。
 
 この Section では、**Rsagacmd** を使用して、SAGA\index{だんぺん@断片} の seeded region growing アルゴリズムを使って、2000年9月22日の Peru の Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure \@ref(fig:sagasegments) 左図)。^[リモートセンシング画像から NDVI を算出する方法については、Section \@ref(local-operations) を参照。]
@@ -624,7 +624,7 @@ library(rgrass)
 link2GI::linkGRASS(london_streets, ver_select = TRUE)
 ```
 
-GRASS GIS の geoalgorithm を使用する前に、GRASS GIS の空間データベースにデータを追加する必要がある。
+GRASS GIS のジオアルゴリズムを使用する前に、GRASS GIS の空間データベースにデータを追加する必要がある。
 幸いなことに、便利な関数 `write_VECT()` がこれを代行してくれる。
 (ラスタデータには `write_RAST()` を使用する。)
 この例では、最初の属性列のみを使用して、道路と自転車レンタル点データを追加し、GRASS GIS で `london_streets` と `points` という名前を付けている。
@@ -730,7 +730,7 @@ QGIS\index{QGIS} は、GRASS GIS や SAGA と比較して、特に初めて GIS 
 その主なメリットは
 
 - 複数の GIS に統一的にアクセスできるため、重複した機能を含む 1,000 以上のジオアルゴリズム ( Table \@ref(tab:gis-comp) ) を提供。例えば、QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS} などのジオアルゴリズムを使ってオーバーレイ操作を実行することが可能である。
-- データフォーマットの自動変換 (SAGAは `.sdat` グリッドファイル、GRASS GIS は独自のデータベースフォーマットを使用するが、対応する変換は QGIS が行う。) 
+- データ形式の自動変換 (SAGAは `.sdat` グリッドファイル、GRASS GIS は独自のデータベース形式を使用するが、対応する変換は QGIS が行う。) 
 - 地理的な R オブジェクトを QGIS ジオアルゴリズム\index{じおあるごりずむ@ジオアルゴリズム}に自動的に渡し、R に戻すことができる。
 - 名前付き引数、デフォルト値の自動取得をサポートする便利な機能 (**rgrass**\index{rgrass (package)} からインスパイアされた) 
 
@@ -1027,7 +1027,7 @@ STAC\index{STAC}、COGs\index{COG}、データキューブ\index{でーたきゅ
 OpenEO [@schramm_openeo_2021]\index{OpenEO} は、データ処理のための共通言語を定義することによって、クラウドサービス間の相互運用性を支援するイニシアチブである。
 最初のアイデアは[r-spatial.org blog post](https://r-spatial.org/2016/11/29/openeo.html)で説明されており、ユーザーができるだけ少ないコード変更で簡単にクラウドサービス間を変更できるようにすることを目的としている。
 [標準化プロセス](https://processes.openeo.org)では、データへのインタフェースとして多次元データキューブモデル\index{でーたきゅーぶ@データキューブ}を使用している。
-8種類のバックエンドの実装が用意されており (https://hub.openeo.org)、ユーザーは R、Python、JavaScript、QGIS、Web エディタで接続し、コレクションに対してプロセスを定義 (およびチェーン) することができる。
+8 種類のバックエンドの実装が用意されており (https://hub.openeo.org)、ユーザーは R、Python、JavaScript、QGIS、Web エディタで接続し、コレクションに対してプロセスを定義 (およびチェーン) することができる。
 バックエンドによって機能や利用できるデータが異なるため、**openeo** R パッケージ [@lahn_openeo_2021] は接続されたバックエンドから利用できるプロセスとコレクションを動的にロードする。
 その後、ユーザーは画像コレクションのロード、プロセスの適用と連鎖、ジョブの送信、結果の探索とプロットを行うことができる。
 
