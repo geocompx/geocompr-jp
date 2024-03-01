@@ -73,7 +73,7 @@ R は、他の言語へのインターフェースを提供し [@eddelbuettel_ex
 RAM を十分に (少なくとも 8 GB 以上) 搭載したノートパソコンがあれば、一般に公開されているデータセットにジオコンピュテーション用のソフトウェアをインストール・実行し、また本書を再現することができるはずである。
 1990年代から2000年代初頭にかけて、高性能なコンピュータが一般の人々にとって手の届かないものであったために存在したジオコンピュテーションに対する金銭的・ハード的な障害は、現在では取り除かれている。^[
 この条件に適合するノートパソコンは、多くの国では [Ebay](https://www.ebay.com/sch/i.html?_from=R40&_nkw=laptop&_sacat=0&_oaa=1&_udhi=100&rt=nc&RAM%2520Size=4%2520GB%7C16%2520GB%7C8%2520GB&_dcat=177) などのサイトで $100 以下で購入することができる。
-[Ubuntu 22.04](https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/) などの最新 OS における R のインストール方法は、Chapter \@ref(spatial-class) で詳しく述べる。
+R とコードエディタのインストール方法は、Chapter \@ref(spatial-class) で簡単に述べる。
 ] 
 また、公的に入手できるデータセットが広く普及してきたことも、ジオコンピュテーションはより身近になってきた理由の一つである。この点については、Chapter \@ref(read-write) で扱う。
 この分野の初期の作品とは異なり、本書で紹介するすべての研究は、本書と一緒に提供されるコードと **spData** のサンプルデータを使って再現可能である。**spData** などの R\index{R} パッケージのインストールは Chapter \@ref(spatial-class) で解説する。

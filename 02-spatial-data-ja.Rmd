@@ -14,15 +14,19 @@ source("code/before_script.R")
 
 R のスクリプト、出力、その他ジオコンピュテーションに関連するものを保存するために、コンピュータに新しいフォルダを作成することから始めるとよいだろう。
 また、学習をサポートするため、[ソースコード](https://github.com/geocompx/geocompr)を[ダウンロード](https://github.com/geocompx/geocompr/archive/refs/heads/main.zip) または[クローン](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)しておくと良い。
-R コードを書く/実行する/テストする際には、 [RStudio](https://posit.co/download/rstudio-desktop/#download) (ほとんどの人に推奨)\index{RStudio} または [VS Code](https://github.com/REditorSupport/vscode-R)\index{VS Code} などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める。^[
-プロジェクト管理には、[RStudio projects](https://r4ds.had.co.nz/workflow-projects.html)、[VS Code workspaces](https://code.visualstudio.com/docs/editor/workspaces) などのシステムを利用することを勧める。
-RStudio でこれを行うには、**rstudioapi** パッケージを使用するのが手っ取り早い方法である。
-RStudio の R コンソールから以下のコマンドで、ホームディレクトリに 'geocompr-learning' という新しいプロジェクトを開く (例: `rstudioapi::openProject("~/geocompr-learning")`)
-]
+R コードを書く/実行する/テストする際には、 [RStudio](https://posit.co/download/rstudio-desktop/#download) (ほとんどの人に推奨)\index{RStudio} または [VS Code](https://github.com/REditorSupport/vscode-R)\index{VS Code} などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める。
 
 R を初めて使う方は、R のコードを使ったジオコンピュテーションに入る前に、Garrett Grolemund の [Hands on Programming with R](https://rstudio-education.github.io/hopr/starting.html) や Claudia Engel の [Introduction to R](https://cengel.github.io/R-intro/) などの R 入門リソースに従うことを勧める。
+これらのリソースには R のインストール方法が詳細に書かれており、[Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/) から最新バージョンをダウンロードすることも書かれている。
+下記の注記は、Mac と Linux について、ジオコンピュテーションするために R をインストールするための情報がある。
 作業内容を整理し (例: RStudio プロジェクト)、スクリプトに `chapter-02-notes.R` などのわかりやすい名前を付けて、学習しながらコードを記録するとよい。
-\index{R!pre-requisites}
+\index{R!じゅんび@準備}
+
+\index{R!いんすとーる@インストール}
+```{block2 02-spatial-data-2, type='rmdnote'}
+Mac と Linux のオペレーティングシステム (OS) は、追加の条件が必要になる。これは、[**sf** package](https://github.com/r-spatial/sf) の README に書かれている。
+OS 固有のインストールについては [rtask.thinkr.fr](https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/) も参考になる。こちらはオープンソース OS の Ubuntu での R のインストールについても書かれている。
+```
 
 セットアップが完了したら、いよいよコードを実行する。
 以下のパッケージをまだインストールしていない場合、まず以下のコマンドで最初にこの章で使用する基礎的な R パッケージをインストールする。^[
@@ -41,13 +45,6 @@ install.packages("spDataLarge", repos = "https://nowosad.r-universe.dev")
 #| message: FALSE
 #| eval: FALSE
 remotes::install_github("r-tmap/tmap")
-```
-
-\index{R!installation}
-```{block2 02-spatial-data-2, type='rmdnote'}
-Mac や Linux を使っている場合、上の **sf** をインストールするコマンドは初回ではうまくいかないことがある。
-Mac/Linux には、パッケージの [README](https://github.com/r-spatial/sf) に記載されている「システム要件」がある。
-また、ブログ [rtask.thinkr.fr](https://rtask.thinkr.fr/installation-of-r-4-2-on-ubuntu-22-04-lts-and-tips-for-spatial-packages/) の記事 *Installation of R 4.2 on Ubuntu 22.04.1 LTS* など、他の OS 向けの解説もオンラインで見つけることができる。
 ```
 
 本書の第 1 部を再現するために必要なパッケージは、コマンド `remotes::install_github("geocompx/geocompkg")` でインストールできる。
@@ -167,7 +164,7 @@ knitr::include_graphics("figures/sf-classes.png")
 **sf** は、点、線、ポリゴン、およびそれらの「複合」バージョン (同じ種類のフィーチャをまとめて 1 つのフィーチャとするもの) という一般的なベクタフィーチャのタイプをすべて表現できる (ラスタデータクラスは **sf** ではサポートされていない)。
 \index{sf}
 \index{sf (package)|see {sf}}
-また、**sf** はジオメトリコレクションをサポートしており、1つのオブジェクトに複数のジオメトリ型を格納することができる。
+また、**sf** はジオメトリコレクションをサポートしており、1 つのオブジェクトに複数のジオメトリ型を格納することができる。
 **sf** は、データクラスの **sp**\index{sp (package)} [@R-sp]、GDAL と PROJ を通したデータ読み書きの **rgdal** [@R-rgdal]、GEOS を通した空間演算の **rgeos** [@R-rgeos] という 3 パッケージで提供されていたものと同じ機能 (およびそれ以上) を提供する。
 
 Chapter 1 の繰り返しになるが、R の地理パッケージは低レベルのライブラリとのインターフェースとの長い歴史がある。**sf** はこの伝統を受け継ぎ、最新バージョンの幾何演算 GEOS、地理データファイルの読み書きのための GDAL、投影座標参照系の表現と変換のための PROJ ライブラリと統一されたインターフェースを提供する。
@@ -194,7 +191,7 @@ vignette("sf6") # その他の情報
 vignette("sf7") # 球面幾何学演算
 ```
 
-最初の vignette で説明されているように、R のシンプルフィーチャオブジェクトはデータフレームに格納され、地理データは通常 'geom' または 'geometry'\index{ベクタ!geometry} という名前の特別な列を占める。
+最初の vignette で説明されているように、R のシンプルフィーチャオブジェクトはデータフレームに格納され、地理データは通常 'geom' または 'geometry'\index{べくた@ベクタ!じおめとり@ジオメトリ} という名前の特別な列を占める。
 本章の冒頭で読み込んだ **spData** [@R-spData] が提供する `world` データセットを使って、`sf` オブジェクトの内容とその動作について説明する。
 `world` は、空間と属性の列を含む「`sf` データフレーム」で、属性列の名前は関数 `names()` によって返される (この例の最後の列は地理情報を含んでいる)。
 
@@ -338,7 +335,7 @@ plot(asia, add = TRUE, col = "red")
 **sf** の `plot()` メソッドでマップを修正する方法はいろいろある。
 **sf** は R の基本的な描画メソッド `plot()` を拡張しているので、`plot()` の引数は `sf` オブジェクトでも動作する (`main =` などの引数の情報は、`?graphics::plot` と `?par` を参照)。^[
 注意: ファセットマップにおいて、1つ以上の `sf` 列がプロットされる場合、多くのプロット引数は無視される。]
-\index{base plot|see {map making}}\index{map making!base plotting} Figure \@ref(fig:contpop) は、この柔軟性を、世界地図の上に、直径 (`cex =` で設定) が各国の人口を表す円を重ねることで表現している。
+\index{べーすぷろっと@ベースプロット|{地図作成} 参照}\index{ちずさくせい@地図作成!べーすぷろっと@ベースプロット} Figure \@ref(fig:contpop) は、この柔軟性を、世界地図の上に、直径 (`cex =` で設定) が各国の人口を表す円を重ねることで表現している。
 この図の非投影版は、以下のコマンドで作成できる (本章末の練習問題と、スクリプト [`02-contplot.R`](https://github.com/geocompx/geocompr/blob/main/code/02-contpop.R) を使って Figure \@ref(fig:contpop) を再現することができる。)
 
 ```{r 02-spatial-data-16, eval=FALSE}
@@ -865,7 +862,7 @@ sf_use_s2(TRUE)
 しかし、他にも回転格子、せん断格子、直線格子、曲線格子など、いくつかの種類の格子が存在する (@pebesma_spatial_2022 の第 1 章、または @tennekes_elegant_2022 の第 2 章を参照のこと)。
 
 
-ラスタデータモデルは通常、ラスタヘッダ\index{raster!header}と、等間隔に並んだセル (ピクセルとも呼ばれる; Figure \@ref(fig:raster-intro-plot) :A) を表す行列 (行と列を持つ) から構成される。^[
+ラスタデータモデルは通常、ラスタヘッダ\index{らすた@ラスタ!へっだ@ヘッダ}と、等間隔に並んだセル (ピクセルとも呼ばれる; Figure \@ref(fig:raster-intro-plot) :A) を表す行列 (行と列を持つ) から構成される。^[
 ファイル形式によって、ヘッダは GeoTIFF などの実際の画像データファイルの一部であるか、ASCII グリッド形式などの追加のヘッダファイルまたはワールドファイルに格納される。 
 また、ヘッダレス (フラット) 二値ラスタフォーマットもあり、様々なソフトウェアへのインポートが容易になるはずである] 
 ラスタヘッダ\index{らすた@ラスタ!へっだ@ヘッダ}は、座標参照系、範囲、原点を定義する。
@@ -940,7 +937,7 @@ Section \@ref(the-history-of-r-spatial) にあるように、その中でも特�
 この場合、**terra** はラスタを小さなチャンクに分割し、ラスタファイル全体を RAM にロードする代わりに、それらを繰り返し処理することが可能である。
 
 **terra** の概念を説明するために、**spDataLarge** [@R-spDataLarge] のデータセットを使ってみよう。
-これは、ザイオン国立公園 (米国ユタ州) のエリアをカバーする数個のラスタオブジェクトと 1 個のベクタオブジェクトから構成されている。
+これは、Zion 国立公園 (米国 Utah 州) のエリアをカバーする数個のラスタオブジェクトと 1 個のベクタオブジェクトから構成されている。
 例えば、`srtm.tif` はこの地域のデジタル標高モデルである (詳しくは、そのドキュメント `?srtm` を参照)。
 まず、`my_rast` という名前の `SpatRaster` オブジェクトを作成しよう。
 
@@ -1052,7 +1049,7 @@ multi_rast34 = c(multi_rast3, multi_rast4)
 
 ## 地理・投影座標参照系  {#crs-intro}
 
-\index{CRS!introduction}
+\index{CRS!いんとろだくしょん@イントロダクション}
 ベクタとラスタの空間データ型は、空間データに内在する概念を共有している。
 このうち最も基本的なものは座標参照系 (CRS) で、データの空間要素が地球 (または他の天体) の表面とどのように関連しているかを定義するものである。
 CRSには、本章の冒頭で紹介したように、地理的なものと投影的なものがある (Figure \@ref(fig:vectorplots) 参照)。
@@ -1094,7 +1091,7 @@ knitr::include_graphics("figures/02_datum_fig.png")
 
 ### 投影座標参照系  {#projected-coordinate-reference-systems}
 
-\index{CRS!projected}
+\index{CRS!とうえい@投影}
 すべての投影 CRS は、前節で説明した地理的 CRS に基づいており、地図投影に依存して、地球の 3 次元表面を投影 CRS の東方向距離 (easting) と北方向距離 (northing) (x と y) の値に変換している。
 投影 CRS は、暗黙のうちに平坦な表面上のデカルト座標に基づいている (Figure \@ref(fig:vector-crs) 右図)。
 投影 CRS には、原点、X 軸とY 軸、メートルなど線形単位がある。

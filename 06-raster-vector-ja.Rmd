@@ -412,7 +412,7 @@ california_raster1 = rasterize(california_borders, raster_template2,
 california_raster2 = rasterize(california, raster_template2) 
 ```
 
-```{r vector-rasterization2, echo=FALSE, fig.cap="線とポリゴンのラスタ化の例。", warning=FALSE, dev="ragg_png"}
+```{r vector-rasterization2, echo=FALSE, fig.cap="線とポリゴンのラスタ化の例。", warning=FALSE, message=FALSE, dev="ragg_png"}
 source("code/06-vector-rasterization2-ja.R", print.eval = TRUE)
 ```
 
