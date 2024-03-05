@@ -211,8 +211,8 @@ future:::ClusterRegistry("stop")
 autoplot(bmr, measure = msr("classif.auc"))
 ```
 
-E5. 二次判別分析 (quadratic discriminant analysis, QDA) を用いて地すべり感受性をモデル化。
-QDA の予測性能を評価する。
+E5. 二次判別分析 (quadratic discriminant analysis, QDA) を用いて地すべり感受性をモデル化しなさい。
+QDA の予測性能を評価しなさい。
 QDA と GLM の空間クロスバリデーション平均 AUROC 値の差は?
 
 ```{r 12-ex-e5, eval=FALSE}
@@ -225,9 +225,9 @@ autoplot(bmr, measure = msr("classif.auc"))
 # non-linear boundaries
 ```
 
-E6. ハイパーパラメータを調整せずに SVM を実行する。
-`rbfdot` カーネルを $sigma$ = 1 と *C* = 1 で使用する。
-**kernlab** の `ksvm()` でハイパーパラメータを指定しないままにしておくと、自動的に非空間的なハイパーパラメータチューニングが初期化される。
+E6. ハイパーパラメータを調整せずに SVM を実行しなさい。
+`rbfdot` カーネルを $sigma$ = 1 と *C* = 1 で使用しなさい。
+**kernlab** の `ksvm()` でハイパーパラメータを指定しないままにしておくと、自動的に非空間的なハイパーパラメータチューニングが初期化しなさい。
 
 ```{r 12-ex-e6, eval=FALSE}
 # データをアタッチ (E4 で行っていない場合)
