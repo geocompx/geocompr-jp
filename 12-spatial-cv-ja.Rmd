@@ -11,7 +11,7 @@ knitr::opts_chunk$set(warning = FALSE)
 ## 必須パッケージ  {- #prerequisites-12}
 
 本章では、Chapter \@ref(spatial-class) から Chapter \@ref(reproj-geo-data) までの内容を学習し、演習を行うなどして、地理データ解析\index{ちりでーたかいせき@地理データ解析}  に習熟していることを前提としている。
-一般化線形モデル (GLM)\index{GLM}と機械学習\index{きかいがくしゅう@機械学習}  に精通していることを強く推奨する [例えば @zuur_mixed_2009;@james_introduction_2013]。
+一般化線形モデル (GLM)\index{GLM} と機械学習\index{きかいがくしゅう@機械学習}に精通していることを強く推奨する [例えば @zuur_mixed_2009;@james_introduction_2013]。
 
 この章では、以下のパッケージを使用する。^[
 パッケージ **GGally**、**lgr**、**kernlab**、**mlr3measures**、**paradox**、**pROC**、**progressr**、**spDataLarge** もインストールする必要があるが、ロードしておく必要はない。
@@ -38,7 +38,7 @@ library(progressr)          # 進捗状況を報告
 
 統計的学習\index{とうけいてきがくしゅう@統計的学習}は、データのパターンを特定し、そのパターンから予測するための統計的・計算的モデルの使用に関するものである。
 その起源から、統計的学習\index{とうけいてきがくしゅう@統計的学習}は R\index{R} の  の大きな強みの一つである ( Section \@ref(software-for-geocomputation) 参照)。^[
-地理データに統計的手法を適用することは、地理統計学、空間統計学、ポイントパターン解析の分野において、何十年にもわたって活発な研究テーマとなっている [@diggle_modelbased_2007; @gelfand_handbook_2010; @baddeley_spatial_2015]。
+地理データに統計的手法を適用することは、地理統計学、空間統計学、点パターン解析の分野において、何十年にもわたって活発な研究テーマとなっている [@diggle_modelbased_2007; @gelfand_handbook_2010; @baddeley_spatial_2015]。
 ]
 統計的学習\index{とうけいてきがくしゅう@統計的学習}とは、統計学\index{とうけいがく@統計学}と機械学習\index{きかいがくしゅう@機械学習}の手法を組み合わせたもので、教師あり手法と教師なし手法に分類される。
 どちらも物理学、生物学、生態学から地理学、経済学に至るまで、ますます多くの分野で利用されるようになっている [@james_introduction_2013]。

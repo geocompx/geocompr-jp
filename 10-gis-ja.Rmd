@@ -1,4 +1,4 @@
-# GISソフトウェアへのブリッジ  {#gis}
+# GIS ソフトウェアへのブリッジ  {#gis}
 
 ```{r, include=FALSE}
 source("code/before_script.R")
