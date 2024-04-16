@@ -115,7 +115,7 @@ tm_shape(terra::mask(hs, study_mask), bbox = bbx) +
 	          legend.title.size = 0.9)
 ```
 
-E4. GLM 学習器に基づき、100 回繰り返した 5 フォールドの非空間クロスバリデーションと空間 CV を計算し、箱ひげ図を用いて両方のリサンプリング戦略からの AUROC 値を比較しなさい。
+E4. GLM 学習器に基づき、100 回繰り返した 5 フォールドの非空間交差検証と空間交差検証を計算し、箱ひげ図を用いて両方のリサンプリング戦略からの AUROC 値を比較しなさい。
 
 ヒント: 非空間リサンプリング戦略を指定する必要がある。
 
@@ -213,7 +213,7 @@ autoplot(bmr, measure = msr("classif.auc"))
 
 E5. 二次判別分析 (quadratic discriminant analysis, QDA) を用いて地すべり感受性をモデル化しなさい。
 QDA の予測性能を評価しなさい。
-QDA と GLM の空間クロスバリデーション平均 AUROC 値の差は?
+QDA と GLM の空間交差検証平均 AUROC 値の差は?
 
 ```{r 12-ex-e5, eval=FALSE}
 # データをアタッチ (E4 で行っていない場合)
