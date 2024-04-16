@@ -449,8 +449,11 @@ Section \@ref(svm) で、100 回繰り返しの 5 回空間クロスバリデー
 
 ```{r 15-eco-20}
 # task を作成
-task = mlr3spatiotempcv::as_task_regr_st(select(rp, -id, -spri),
-  id = "mongon", target = "sc")
+task = mlr3spatiotempcv::as_task_regr_st(
+  select(rp, -id, -spri),
+  target = "sc",
+  id = "mongon"
+)
 ```
 
 バックエンドとして `sf` オブジェクトを使用すると、後の空間分割に必要なジオメトリ情報が自動的に提供される。
