@@ -179,7 +179,7 @@ qgis_providers()
 #>   provider provider_title    algorithm_count
 #>   <chr>    <chr>                       <int>
 #> 1 gdal     GDAL                           56
-#> 2 grass7   GRASS                         306
+#> 2 grass    GRASS                         306
 #> 3 qgis     QGIS                           50
 #> 4 3d       QGIS (3D)                       1
 #> 5 native   QGIS (native c++)             243
@@ -313,17 +313,22 @@ qgis_search_algorithms("clean")
 #> # A tibble: 1 × 5
 #>   provider provider_title group        algorithm      algorithm_title
 #>   <chr>    <chr>          <chr>        <chr>          <chr>
-#> 1 grass7   GRASS          Vector (v.*) grass7:v.clean v.clean
+#> 1 grass    GRASS          Vector (v.*) grass:v.clean v.clean
 ```
 
 今回見つかったアルゴリズム (`v.clean`) は、QGIS ではなく、GRASS GIS\index{GRASS GIS} に含まれている。
 GRASS GIS の `v.clean` は、空間ベクタデータのトポロジーをクリーニング\index{とぽろじーくりーにんぐ@トポロジークリーニング}する強力なツールである。 
 重要なのは、**qgisprocess** を通して使用できることである。
 
+```{block2 grass7, type='rmdnote'}
+QGIS の GRASS GIS provider は、QGIS version 3.34 まで `grass7` という名称だった。
+よって、QGIS バージョンが古い場合、`grass` ではなく `grass7` とする。
+```
+
 前のステップと同様に、このアルゴリズムのヘルプを見るところから始めよう。
 
 ```{r, eval=FALSE}
-qgis_show_help("grass7:v.clean")
+qgis_show_help("grass:v.clean")
 ```
 
 ここでは出力を省略した。実際のヘルプテキストはかなり長く、多くの引数を含んでいる。^[また、QGIS の引数とは異なり、小文字になる。] 
@@ -331,7 +336,7 @@ qgis_show_help("grass7:v.clean")
 この例では、いくつかの引数に絞って説明するが、`v.clean` の機能については、 [このアルゴリズムのドキュメント](https://grass.osgeo.org/grass-stable/manuals/v.clean.html)を勧める。
 
 ```{r, eval=FALSE}
-qgis_get_argument_specs("grass7:v.clean") |>
+qgis_get_argument_specs("grass:v.clean") |>
   select(name, description) |>
   slice_head(n = 4)
 #> # A tibble: 4 × 2
@@ -354,7 +359,7 @@ qgis_get_argument_specs("grass7:v.clean") |>
 このアルゴリズムを実行し、その出力を新しい `sf` オブジェクト `clean_sf` に変換してみよう。
 
 ```{r 09-gis-7c, eval=has_qgis_plugins, message=FALSE}
-clean = qgis_run_algorithm("grass7:v.clean",
+clean = qgis_run_algorithm("grass:v.clean",
   input = union_sf,
   tool = "rmarea", threshold = 25000
 )
@@ -440,12 +445,12 @@ Figure \@ref(fig:qgis-raster-map) の左パネルに出力された TWI マッ�
 また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon)\index{じおもるふぉん@ジオモルフォン} に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である [@jasiewicz_geomorphons_2013]。
 これらの表現型は、地滑りしやすさ、生態系サービス、人間の移動性、デジタル土壌マッピングなど、多くの研究で利用されている。 
 
-ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass7:r.geomorphon"` として見つけることができる。
+ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、**qgisprocess** のリストで `"grass:r.geomorphon"` として見つけることができる。
 
 ```{r, eval=FALSE}
 qgis_search_algorithms("geomorphon")
-#> [1] "grass7:r.geomorphon" "sagang:geomorphons" 
-qgis_show_help("grass7:r.geomorphon")
+#> [1] "grass:r.geomorphon" "sagang:geomorphons" 
+qgis_show_help("grass:r.geomorphon")
 # 出力は非表示
 ```
 
@@ -454,7 +459,7 @@ qgis_show_help("grass7:r.geomorphon")
 追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html) に記載されている。
 
 ```{r, eval=has_qgis_plugins}
-dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
+dem_geomorph = qgis_run_algorithm("grass:r.geomorphon",
   elevation = dem,
   `-m` = TRUE, search = 120
 )
