@@ -395,16 +395,16 @@ R のシンプルフィーチャは、**sf** パッケージがサポートす�
 
 一般に、シンプルフィーチャの符号化方式としては、WKB (Well-known binary) や WKT (Well-known text) が標準的である。
 \index{well-known text}
-\index{WKT|{well-known text} 参照}
+\index{WKT|well-known text 参照}
 \index{well-known binary}
-\index{WKB|{well-known binary} 参照}
+\index{WKB|well-known binary 参照}
 WKB の表現は通常、コンピュータで読みやすい16進数の文字列である。
 このため、GIS や空間データベースでは、ジオメトリオブジェクトの転送や保存に WKB を使用している。
 一方、WKT は、シンプルフィーチャを人間が読みやすいテキストマークアップで記述したものである。 
 どちらの形式も交換可能であり、ここでは当然 WKT で表す。
 
 各ジオメトリ型の基本は点である。 
-点 (point) とは、2次元、3次元、4次元空間 (詳しくは `vignette("sf1")` を参照、訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html#sf)) の座標で、次のようなものである (Figure \@ref(fig:sfcs) 左図)。
+点 (point) とは、2 次元、3 次元、4 次元空間 (詳しくは `vignette("sf1")` を参照、訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html#sf)) の座標で、次のようなものである (Figure \@ref(fig:sfcs) 左図)。
 \index{sf!point}
 
 - `POINT (5 2)` 
@@ -794,7 +794,7 @@ st_crs(df_sf) = "EPSG:4326"
 Chapter \@ref(geometry-operations) で取り上げた、異なるタイプのジオメトリ列を「キャスト」する際に、高速かつ信頼性の高い処理を行うことができる。
 パッケージの [documentation](https://dcooley.github.io/sfheaders/articles/examples.html#performance) やこの本のために開発されたテストコードでのベンチマークでは、このような操作に対して `sf` パッケージよりもはるかに高速であることが示されている。
 
-### S2による球面幾何学操作  {#s2}
+### S2 による球面幾何学操作  {#s2}
 
 球面幾何学エンジンは、世界が丸いという事実に基づいているが、2点間の直線やポリゴンに囲まれた面積の計算など、地盤計算のための簡単な数学的手続きは、平面 (投影) 幾何学を前提としている。
 **sf** バージョン 1.0.0 以降、R は Google の S2 球面幾何エンジンとのインターフェース **s2** インターフェースパッケージにより、球面幾何の操作を「すぐに」(かつデフォルトで) サポートする。
@@ -804,7 +804,7 @@ S2 は、離散型グローバルグリッドシステム (Discrete Global Grid 
 
 S2 は、文字列を使って地球上の任意の場所を記述できる機能があり、これは役立つ場合もあるかもしれない。しかし、 **sf** が S2 を採用する利点は、距離、バッファ、面積計算などの計算のためのドロップイン関数を提供している点である。これは **sf** のドキュメントで説明されており、コマンド [`vignette("sf7")`](https://r-spatial.github.io/sf/articles/sf7.html) で開くことができる (訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html#sf))。
 
-**sf** は、S2 に対して、オンとオフの2つのモードで動作させることができる。
+**sf** は、S2 に対して、オンとオフの 2 つのモードで動作させることができる。
 S2 ジオメトリエンジンはデフォルトでオンになっている。以下のコマンドで確認することができる。
 
 ```{r}

@@ -1,5 +1,5 @@
-Some of the following exercises use a vector (`zion_points`) and raster dataset (`srtm`) from the **spDataLarge** package.
-They also use a polygonal 'convex hull' derived from the vector dataset (`ch`) to represent the area of interest:
+以下の演習では、**spDataLarge** パッケージのベクタデータ (`zion_points`) とラスタデータ (`srtm`) を使うことがある。
+まず、ベクタデータ (`ch`) から、ポリゴンの「凸多面体」で領域を示す。
 
 ```{r 06-ex-e0, message=FALSE, include=TRUE}
 library(sf)

@@ -359,7 +359,7 @@ qgis_get_argument_specs("grass:v.clean") |>
 このアルゴリズムを実行し、その出力を新しい `sf` オブジェクト `clean_sf` に変換してみよう。
 
 ```{r 09-gis-7c, eval=has_qgis_plugins, message=FALSE}
-clean = qgis_run_algorithm("grass:v.clean",
+clean = qgis_run_algorithm("grass7:v.clean",
   input = union_sf,
   tool = "rmarea", threshold = 25000
 )
@@ -459,7 +459,7 @@ qgis_show_help("grass:r.geomorphon")
 追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html) に記載されている。
 
 ```{r, eval=has_qgis_plugins}
-dem_geomorph = qgis_run_algorithm("grass:r.geomorphon",
+dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
   elevation = dem,
   `-m` = TRUE, search = 120
 )
