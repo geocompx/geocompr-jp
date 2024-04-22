@@ -43,21 +43,21 @@ if (is_html) {
 ```{asis index-2, echo=is_html}
 # ようこそ {- #index}
 
-ここは、地理データの解析、可視化、モデリングに関する書籍である *Geocomputation with R* のオンラインホーム (日本語版) である。
+ここは、地理データの解析、可視化、モデリングに関する書籍 *Geocomputation with R* のオンラインホーム (日本語版) です。
 
 <a href="https://www.routledge.com/9781138304512"><img src="images/cover.png" width="250" height="375" alt="The geocompr book cover" align="right" style="margin: 0 1em 0 1em" /></a>
   
-**注**: 本書の原著初版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されている。
-[CRC Press](https://www.routledge.com/9781138304512) または [Amazon](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/) で購入ができる。また、**第一版** が、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) で保存されている。
+**注**: 本書の原著初版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されています。
+[CRC Press](https://www.routledge.com/9781138304512) または [Amazon](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/) で購入できます。また、**初版** は、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) で保存されています。
 
-本書は、Free and Open Source Software for Geospatial ([FOSS4G](https://foss4g.org/)) の活動に触発されているため、本書の基盤となるコードと解説はオープンにしてあり、内容の再現性、透明性、アクセス性を保証している。
-[GitHub](https://github.com/geocompx/geocompr) でソースコードを公開しているため、誰でも課題 (Issue) を開いたり、新しいコンテンツや誤植の修正に貢献することでプロジェクトに関わり、みんなのために役立てることができる。
+本書は、Free and Open Source Software for Geospatial ([FOSS4G](https://foss4g.org/)) の活動に触発されているおり、本書の基盤となるコードと解説はオープンであり、内容の再現性、透明性、アクセス性を保証しています。
+[GitHub](https://github.com/geocompx/geocompr) でソースコードを公開しているため、誰でも課題 (Issue) を開いたり、新しいコンテンツや誤植の修正に貢献することでプロジェクトに関わり、みんなのために役立てることができます。
 
 [![](https://img.shields.io/github/stars/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr)
 [![](https://img.shields.io/github/contributors/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr/graphs/contributors)
 
-本書のオンライン版は、[r.geocompx.org](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されている。(訳注: 日本語版は、[https://babayoshihiko.ddns.net/geo](https://babayoshihiko.ddns.net/geo) と[http://124.219.182.167/geo/](http://124.219.182.167/geo/)でホストされている。)
-現在の「ビルド状況」は以下の通りである。
+本書のオンライン版は、[r.geocompx.org](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されています。(訳注: 日本語版は、[https://babayoshihiko.ddns.net/geo](https://babayoshihiko.ddns.net/geo) と[http://124.219.182.167/geo/](http://124.219.182.167/geo/)でホストされている。)
+現在の「ビルド状況」は以下の通りです。
 
 [![Actions](https://github.com/geocompx/geocompr/workflows/Render/badge.svg)](https://github.com/geocompx/geocompr/actions)
 ```
@@ -71,29 +71,29 @@ if (is_on_ghactions){
 ```
 
 ```{asis index-2-3, echo=is_html}
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />本書は、<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> ライセンスで提供されている。
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />本書は、<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> ライセンスで提供。
 
-<a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/"><img alt="Creative Commons License" style="border-width:0" src="https://licensebuttons.net/l/zero/1.0/88x31.png"/></a><br/>本書のサンプルコードは、<a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal (CC0 1.0)</a> ライセンスで提供されている。
+<a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/"><img alt="Creative Commons License" style="border-width:0" src="https://licensebuttons.net/l/zero/1.0/88x31.png"/></a><br/>本書のサンプルコードは、<a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal (CC0 1.0)</a> ライセンスで提供されています。
 
 ## 貢献するには {- #how-to-contribute}
 
-**bookdown** では、GitHub のアカウント ([sign-up at github.com](https://github.com/join)) があれば、Wiki を編集するように簡単に本を編集することが可能である。
-GitHub にログイン後、書籍サイトの右パネルにある「Edit this page」アイコンをクリックする。
-これで、今読んでいるこのページを生成したソース [R Markdown](http://rmarkdown.rstudio.com/) ファイルの編集可能なバージョンに移動する。
+**bookdown** では、GitHub のアカウント ([sign-up at github.com](https://github.com/join)) があれば、Wiki を編集するように簡単に本を編集することができます。
+GitHub にログイン後、書籍サイトの右パネルにある「Edit this page」アイコンをクリックしてください。
+これで、今読んでいるこのページを生成したソース [R Markdown](http://rmarkdown.rstudio.com/) ファイルの編集可能なバージョンに移動します。
 
-この本の内容に関する問題提起 (コードが実行されないなど) や機能リクエストは、[Issue Tracker](https://github.com/geocompx/geocompr/issues) 課題追跡システムで確認できる。 
+この本の内容に関する問題提起 (コードが実行されないなど) や機能リクエストは、[Issue Tracker](https://github.com/geocompx/geocompr/issues) 課題追跡システムで確認できます。 
 
-管理者と貢献者は、このリポジトリの[行動規範](https://github.com/geocompx/geocompr/blob/main/CODE_OF_CONDUCT.md) に従っていただきたい。
+管理者と貢献者は、このリポジトリの[行動規範](https://github.com/geocompx/geocompr/blob/main/CODE_OF_CONDUCT.md) に従ってください。
 
 ## 本書のコードを再現  {- #reproducibility}
 
-R で初めて地理データを扱う上で、本書の内容を再現する最も早い方法は、ウェブブラウザで[Binder](https://mybinder.org/) というサイトにアクセスすることである。
-以下のリンクをクリックすると、RStudio Server を含む新しいウィンドウがウェブブラウザで開き、各章のファイルを開いたり、コードチャンクを実行して、コードが再現可能かどうかテストすることができる (訳注: 英語版が開く)。
+初めて R で地理データを扱うのであれば、手軽に本書の内容を再現する方法は、ウェブブラウザで [Binder](https://mybinder.org/) というサイトにアクセスすることでしょう。
+以下のリンクをクリックすると、RStudio Server を含む新しいウィンドウがウェブブラウザで開き、各章のファイルを開いたり、コードチャンクを実行して、コードが再現可能かどうかテストすることができます (訳注: 英語版が開く)。
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/geocompx/geocompr/main?urlpath=rstudio)
 
-下の画像のようなものが表示されたら成功である。
-[mybinder.org ユーザガイドライン](https://mybinder.readthedocs.io/en/latest/about/user-guidelines.html)に従い、クラウドベースの環境で R によるジオコンピュテーションの探求を始めるよう。
+下の画像のようなものが表示されたら成功です。
+[mybinder.org ユーザガイドライン](https://mybinder.readthedocs.io/en/latest/about/user-guidelines.html)に従い、クラウドベースの環境で R によるジオコンピュテーションの探求を始めてください。
 ```
 
 ```{r index-2-4, echo=FALSE, fig.cap="Geocomputation with R に含まれる再現可能なコードを、Binder が提供するブラウザ上の RStudio Server で実行した画面", eval=is_html}
@@ -101,8 +101,8 @@ knitr::include_graphics("https://user-images.githubusercontent.com/1825120/13480
 ```
 
 ```{asis index-2-5, echo=is_html}
-この本のコードを自分のコンピュータで再現するには、最近のバージョンの [R](https://cran.r-project.org/) と最新のパッケージが必要である。
-パッケージは [**remotes**](https://github.com/r-lib/remotes) パッケージを使用してインストールすることができる。
+この本のコードを自分のコンピュータで再現するには、最近のバージョンの [R](https://cran.r-project.org/) と最新のパッケージが必要です。
+パッケージは [**remotes**](https://github.com/r-lib/remotes) パッケージを使用してインストールすることができます。
 ```
 
 ```{r index-3, message=FALSE, eval=FALSE, echo=is_html, results='hide'}
@@ -111,9 +111,9 @@ remotes::install_github("geocompr/geocompkg")
 ```
 
 ```{asis index-3-1a, echo=is_html}
-この本で使用するパッケージやデータをインストールした後、テストや教育目的のためにこの本を再構築することができる。
-再構築するには、この本のソースコードを [ダウンロード](https://github.com/geocompx/geocompr/archive/refs/heads/main.zip)して解凍するか、 [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) する。
-[RStudio](https://posit.co/download/rstudio-desktop/#download) (または [VS Code](https://github.com/REditorSupport/vscode-R) などの他の IDE) で `geocompr.Rproj` プロジェクトを開き、以下のコマンドで内容を再現することができるようになる。
+この本で使用するパッケージやデータをインストールした後、テストや教育目的のためにこの本を再構築することができます。
+再構築するには、この本のソースコードを [ダウンロード](https://github.com/geocompx/geocompr/archive/refs/heads/main.zip)して解凍するか、 [clone](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) してください。
+[RStudio](https://posit.co/download/rstudio-desktop/#download) (または [VS Code](https://github.com/REditorSupport/vscode-R) などの他の IDE) で `geocompr.Rproj` プロジェクトを開き、以下のコマンドで内容を再現することができるようになります。
 ```
 
 ```{r index-3-1, eval=FALSE, echo=is_html}
@@ -137,7 +137,7 @@ if(!geocompkg_is_installed){
 ```{asis index-22, echo=is_html}
 ## プロジェクトに参加 {- #getting-involved}
 
-もし、この本が役に立つと思ったら、以下の方法で応援していただきたい。
+もし、この本が役に立つと思ったら、以下の方法で応援してください。
 
 - この本について、人々に話す
 - [geocompr GitHub repository](https://github.com/geocompx/geocompr) に[スターをつける](https://help.github.com/articles/about-stars/)
@@ -157,10 +157,10 @@ if(!geocompkg_is_installed){
 
 <hr>
 
-本書で使用している地球儀のアイコンは、[Jean-Marc Viglino](https://github.com/Viglino) によって作成され、[CC-BY 4.0 International](https://github.com/Viglino/font-gis/blob/main/LICENSE-CC-BY.md) のライセンスで提供されている。
+本書で使用している地球儀のアイコンは、[Jean-Marc Viglino](https://github.com/Viglino) によって作成され、[CC-BY 4.0 International](https://github.com/Viglino/font-gis/blob/main/LICENSE-CC-BY.md) のライセンスで提供されています。
 
 <a href="https://www.netlify.com"><img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg"/></a>
-本書のウェブサイト (英語版) は、[Netlify](https://www.netlify.com/) でホストされている。
+本書のウェブサイト (英語版) は、[Netlify](https://www.netlify.com/) でホストされています。
 ```
 
 ```{asis index-5a, echo=!is_html}
