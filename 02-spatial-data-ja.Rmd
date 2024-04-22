@@ -74,7 +74,7 @@ library(spDataLarge)  # 大きい地理データをロード
 
 ## イントロダクション  {#intro-spatial-class}
 
-この章では、基本的な地理データモデル\index{data models}であるベクタとラスタについて説明する。(訳注: 本書では、GIS で用いられる vector は「ベクタ」と訳し、R のデータ形式の vector は「ベクトル」と訳す。)
+この章では、基本的な地理データモデル\index{でーたもでる@データモデル}であるベクタとラスタについて説明する。(訳注: 本書では、GIS で用いられる vector は「ベクタ」と訳し、R のデータ形式の vector は「ベクトル」と訳す。)
 それぞれのデータモデルの背景にある理論や、データモデルが得意とする分野を紹介し、R での実際に演習する。
 
 <u>ベクタデータモデル</u>は、点、線、ポリゴンを使って世界を表現する。
@@ -963,7 +963,7 @@ my_rast
 ### 基本的な地図の作り方  {#basic-map-raster}
 
 **sf** パッケージと同様に、**terra** も独自のクラスに対して `plot()` メソッドを提供する。
-\index{map making!basic raster}
+\index{ちずさくせい@地図作成!らすた@ラスタ}
 
 ```{r basic-new-raster-plot, fig.cap="異本的なラスタのプロット。"}
 plot(my_rast)
@@ -980,7 +980,7 @@ R でラスタデータをプロットすることはこのセクションの範
 \index{terra (package)}
 `SpatRaster` クラスは、**terra** のラスタオブジェクトを表する。
 R でラスタオブジェクトを作成する最も簡単な方法は、ディスクまたはサーバからラスタファイルを読み込むことである (Section \@ref(raster-data-read))。
-\index{raster!class}
+\index{らすた@ラスタ!くらす@クラス}
 
 ```{r 02-spatial-data-41}
 single_raster_file = system.file("raster/srtm.tif", package = "spDataLarge")

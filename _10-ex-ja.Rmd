@@ -96,7 +96,7 @@ tmap_arrange(tm1, tm2)
 E4. `data(random_points, package = "spDataLarge")` をアタッチし、 `system.file("raster/dem.tif", package = "spDataLarge")` を　R に読み込みなさい。
 `random_points` からランダムに点を選択し、この点から見えるすべての `dem` ピクセルを見つけなさい (ヒント: viewhedindex{viewshed} は GRASS GIS を使って計算できる)。
 結果を視覚化する。
-例えば、hillshade\index{hillshade}、digital elevation model\index{digital標高モデル}、viewhed\index{viewshed} 出力、ポイントをプロットしなさい。
+例えば、hillshade\index{hillshade}、digital elevation model\index{でじたるひょうこうもでる@デジタル標高モデル}、viewhed\index{viewshed} 出力、ポイントをプロットしなさい。
 さらに、`mapview` を試してみよう。
 
 ```{r}

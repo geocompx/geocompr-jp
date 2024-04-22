@@ -26,7 +26,7 @@ library(spData)
 しかし、空間演算は非空間演算と異なる点がいくつもある。
 例えば空間結合は、ターゲットデータセットと交差する、または一定の距離内にあるモノのマッチングなど、結合方法は多数ある。一方、前章の Section \@ref(vector-attribute-joining) で説明した属性結合は、1 つの方法でしかできない　(ただし [**fuzzyjoin**](https://cran.r-project.org/package=fuzzyjoin) パッケージのドキュメントで説明した、ファジー結合を使う場合は別)。
 オブジェクト間の空間的関係のさまざまな<u>タイプ</u> (intersect と disjoint を含む) については、Section \@ref(topological-relations) で説明する。
-\index{spatial operations}
+\index{くうかんそうさ@空間操作}
 空間オブジェクトのもう一つのユニークな側面は距離である。すべての空間オブジェクトは空間を通じて関連しており、距離計算を行うことでこの関係の強さを調べることができる。これは、Section \@ref(distance-relations) と Section \@ref(DE-9IM-strings) のベクタデータで説明する。
 
 ラスタの空間演算として、部分集合は Section \@ref(spatial-raster-subsetting) で説明する。
@@ -51,8 +51,8 @@ library(spData)
 <u>属性部分集合</u> (Section \@ref(vector-attribute-subsetting) で説明) と同様に、`sf` データフレームの部分集合は、角括弧を使用して作成できる (`[`) を使い、`x[y, , op = st_intersects]` という文法を使う。ここで `x` は行の部分集合が返される `sf` オブジェクト、`y` は「部分集合・オブジェクト」、`op = st_intersects` は部分集合を行うために使われる位相関係 (二項述語 binary predicate としても知られている) を指定するオプションの引数である。
 `op` 引数がないときに使用されるデフォルトの位相関係は、`st_intersects()`である。つまり、コマンド `x[y, ] ` は `x[y, , op = st_intersects]` と同じであり `x[y, , op = st_disjoint]` とは異なる (これらのトポロジカル関係の意味と他のトポロジカル関係は次のセクションで説明する)。
 **tidyverse**\index{tidyverse (package)} の `filter()` 関数も使用できるが、この方法は、以下の例で見るように、より冗長である。
-\index{vector!subsetting}
-\index{spatial!subsetting}
+\index{べくた@ベクタ!ぶぶんしゅうごうか@部分集合化}
+\index{くうかん@空間!ぶぶんしゅうごうか@部分集合化}
 
 空間部分集合を示すために、**spData** パッケージの `nz` と `nz_height` データセットを使用する。これは、New Zealand の 16 の主要地域と 101 の最高地点に関する地理データをそれぞれ含み (Figure \@ref(fig:nz-subset))、投影座標参照系で表示されるものである。
 次のコードでは、Canterbury を表すオブジェクトを作成し、空間部分集合を使用して、対象地域のすべての高点を返す。
@@ -161,7 +161,7 @@ Figure \@ref(fig:relations) は、様々なジオメトリペアとその関連�
 Figure \@ref(fig:relations) の 3 番目と 4 番目のペア (左から右、そして下) は、ある関係では順序が重要であることを示している。
 関係 *equals*、*intersects*、*crosses*、*touches*、*overlaps* は対称であり、`function(x, y)` が真なら `function(y, x)` も真となる。一方、*contains* と *within* など幾何学の順序が重要である関係は、そうではない。
 各ジオメトリペアには、次節で説明する FF2F11212 のような「DE-9IM」文字列があることを確認しておこう。
-\index{topological relations}
+\index{いそうかんけい@位相関係}
 
 ```{r relations, echo=FALSE, fig.cap="Egenhofer and Herring (1990)の Figure 1 と Figure 2 を参考にした、ベクトル幾何学間のトポロジー関係。関数(x, y)が真となる関係が、各ジオメトリのペアについて印刷されており、xはピンク、yは青で表されている。各ペアの空間的関係の性質は、Dimensionally Extended 9-Intersection Model 文字列で記述されている。", fig.show='hold', message=FALSE, fig.asp=0.66, warning=FALSE, dev="ragg_png"}
 # source("https://github.com/geocompx/geocompr/raw/main/code/de_9im.R")
@@ -240,9 +240,9 @@ st_intersects(point_sf, polygon_sfc, sparse = FALSE)
 ```
 
 上記の出力では、各行がターゲット (引数 `x`) オブジェクトのフィーチャ、各列が選択オブジェクト (`y`) のフィーチャを表している。
-この場合、`y` オブジェクト `polygon_sfc` にはフィーチャが1つしかないので、Section \@ref(spatial-subsetting) で見たように部分集合に使える結果は 1 列だけである。
+この場合、`y` オブジェクト `polygon_sfc` にはフィーチャが 1 つしかないので、Section \@ref(spatial-subsetting) で見たように部分集合に使える結果は 1 列だけである。
 
-`st_intersects()` は、フィーチャが接触しているだけの場合でも `TRUE` を返す。*intersects*\index{intersects} は、Figure \@ref(fig:relations) に示されているように、多くのタイプの空間的関係を識別する「全て捕まえる」トポロジー操作である。
+`st_intersects()` は、フィーチャが接触しているだけの場合でも `TRUE` を返す。*intersects*\index{こうさ@交差 (intersects)} は、Figure \@ref(fig:relations) に示されているように、多くのタイプの空間的関係を識別する「全て捕まえる」トポロジー操作である。
 Figure \@ref(fig:relations) より限定的な質問としては、どの点がポリゴン内にあるか、どのフィーチャが `y` と共有の境界線上にあるか、またはそれを含んでいるか、などがある。
 こうした問いには、次のように答えることができる (結果は示していない)。
 
@@ -622,8 +622,8 @@ sel_table
 2 つの非空間データセットを結合する場合、Section \@ref(vector-attribute-joining) で説明されているように、共有の「キー」変数に依存する。
 空間データ結合も概念的には同様であるが、変数ではなく前節で説明した空間関係に依存する。
 属性データの場合と同様に、結合では、ソースオブジェクト (`y`) からターゲットオブジェクト (結合関数の引数 `x` ) に新しい列を追加する。
-\index{join!spatial}
-\index{spatial!join}
+\index{けつごう@結合!くうかんてき@空間的}
+\index{くうかんてき@空間的!けつごう@結合}
 
 例として、地球上にランダムに分布する 10 個の点があり、そのうちの陸地にある点はどの国のものかを調べたいとする。
 このアイデアを[再現可能な例](https://github.com/geocompx/geocompr/blob/main/code/04-spatial-join.R)として実装することで、地理データを扱うスキルが身に付き、空間結合がどのように機能するかを知ることができる。
@@ -665,7 +665,7 @@ source("code/04-spatial-join.R", print.eval = TRUE)
 2 つの地理データセットが交差 (intersect) していなくても、近接関係により地理的に強い関係がある場合がある。
 すでに **spData** パッケージに含まれているデータセット `cycle_hire` と `cycle_hire_osm` が良い例となる。
 これらをプロットすると、Figure \@ref(fig:cycle-hire) に示すように、しばしば密接に関連しているが、接触していないことがわかる。このベースバージョンは、以下のコードで作成される。
-\index{join!non-overlapping}
+\index{けつごう@結合!ひせっしょく@非接触}
 
 ```{r 04-spatial-operations-21, eval=FALSE}
 plot(st_geometry(cycle_hire), col = "blue")
@@ -749,9 +749,9 @@ plot(z["capacity"])
 ### 空間的な集計  {#spatial-aggr}
 
 属性データの集約と同様に、空間データの集約では、集約された出力は集約されていない入力よりも少ない行数で済む。
-平均値や合計値などの統計的\index{statistics}な<u>集約関数</u>は、変数の複数の値を要約し、<u>グループ化変数</u>ごとに単一の値を返す。
+平均値や合計値などの統計的\index{とうけいがく@統計学}な<u>集約関数</u>は、変数の複数の値を要約し、<u>グループ化変数</u>ごとに単一の値を返す。
 Section \@ref(vector-attribute-aggregation) は、`aggregate()` と `group_by() |> summarize()` が属性変数に基づいてデータを集約する方法を示したが、このセクションでは、同じ関数が空間オブジェクトでどのように機能するかを示す。
-`aggregate()` `group_by() |> summarize()` \index{aggregation!spatial}
+`aggregate()` `group_by() |> summarize()` \index{ぞくせいしゅうけい@属性集計!くうかんてき@空間的}
 
 New Zealand の例に戻って、各地域の高所の平均的な高さを求めよう。ソース (この場合は `y` または `nz`) のジオメトリが、ターゲットオブジェクト (`x` または `nz_height`) の値がどのようにグループ化されるかを定義する。
 これは、Base R の `aggregate()` メソッドで 1 行のコードで書くことができる。
@@ -793,7 +793,7 @@ plot(nz_agg2)
 
 ### 不一致レイヤを結合  {#incongruent}
 
-空間一致 (Spatial congruence\index{spatial congruence}) は、空間的集計に関連する重要な概念である。
+空間一致 (Spatial congruence\index{くうかんいっち@空間一致}) は、空間的集計に関連する重要な概念である。
 <u>集合体</u> (ここでは `y` と呼ぶ) は、2 つのオブジェクトが境界を共有している場合、ターゲットオブジェクト (`x`) と<u>一致</u>している。
 行政区域のデータでは、大きな単位、例えばイギリスの Middle Layer Super Output Area ([MSOAs](https://www.ons.gov.uk/methodology/geography/ukgeographies/censusgeography)) や他の多くのヨーロッパ諸国の地区が、多くの小さな単位で構成されていることがよくあることである。
 
@@ -839,8 +839,8 @@ grain = rast(system.file("raster/grain.tif", package = "spData"))
 部分集合に座標を使用するには、**terra** の関数 `cellFromXY()` で座標をセル ID に「変換」することができる。
 別の方法として、`terra::extract()` (注意:  **tidyverse**\index{tidyverse (package)} の中にも `extract()` という関数がある) を使って値を抽出することができる。
 以下に、座標 0.1, 0.1 に位置する点を覆うセルの値を求める方法を示す。
-\index{raster!subsetting}
-\index{spatial!subsetting}
+\index{らすた@ラスタ!ぶぶんしゅうごうか@部分集合化}
+\index{くうかん@空間!ぶぶんしゅうごうか@部分集合化}
 
 ```{r 04-spatial-operations-34, eval = FALSE}
 id = cellFromXY(elev, xy = matrix(c(0.1, 0.1), ncol = 2))
@@ -913,7 +913,7 @@ elev[elev < 20] = NA
 
 ### マップ代数  {#map-algebra}
 
-\index{map algebra}
+\index{まっぷだいすう@マップ代数}
 「マップ代数」(map algebra) という用語は、1970年代後半に、地理的なラスタデータ<u>および</u> (あまり目立たないが) ベクタデータを分析するための「規則、機能、および技術のセット」を表すために作られたものである [@tomlin_map_1994]。
 ここでは、マップ代数をより狭く定義し、周囲のセル、ゾーン、またはすべてのセルに適用される統計関数を参照して、ラスタセル値を修正または要約する操作としている。
 
@@ -942,7 +942,7 @@ elev[elev < 20] = NA
 
 ### ローカル操作  {#local-operations}
 
-\index{map algebra!local operations}
+\index{まっぷだいすう@マップ代数!ろーかるそうさ@ローカル操作}
 **ローカル**操作は、1 つまたは複数のレイヤにおけるすべてのセル単位の操作で構成されている。
 これには、ラスタからの値の加算や減算、ラスタの二乗や乗算が含まれる。
 ラスタ代数では、特定の値 (下の例では 5) より大きいラスタセルをすべて見つけるなどの論理演算も可能である。
@@ -1049,7 +1049,7 @@ knitr::include_graphics("figures/04-ndvi.png")
 
 ### フォーカル操作  {#focal-operations}
 
-\index{map algebra!focal operations}
+\index{まっぷだいすう@マップ代数!ふぉーかるそうさ@フォーカル操作}
 ローカルな機能とは、1 つのセル (複数の層からなる可能性もある) を対象とするものであるのに対し、**フォーカル**な機能とは、中心 (焦点) のセルとその近隣のセルを考慮したものである。
 近傍領域 (カーネル、フィルタ、移動窓とも呼ばれる) は、通常、3×3 セル (つまり、中心セルとその周囲 8 個の近傍セル) のサイズであるが、ユーザーが定義する他のサイズや形状 (必ずしも長方形ではない) をとることができる。
 フォーカル操作は、指定された近傍領域内のすべてのセルに集約関数を適用し、対応する出力を中心セルの新しい値として使用し、次の中心セル (Figure \@ref(fig:focal-example)) へと進む。
@@ -1088,7 +1088,7 @@ Chapter \@ref(gis) は、このような GIS 機能を R 内からアクセス�
 
 ### ゾーン操作  {#zonal-operations}
 
-\index{map algebra!zonal operations}
+\index{まっぷだいすう@マップ代数!ぞーんそうさ@ゾーン操作}
 ゾーン演算は、フォーカル演算と同様に、複数のラスタセルに集計関数を適用する。
 しかし、前節で紹介したフォーカル操作の場合の近傍窓とは対照的に、ゾーン操作の場合は、通常カテゴリ値で構成される第二ラスタが<u>ゾーンフィルター/u> (または「ゾーン」) を定義する。
 そのため、ゾーンフィルタを定義するラスタセルは、必ずしも隣接している必要はない。
@@ -1103,8 +1103,8 @@ z = zonal(elev, grain, fun = "mean")
 z
 ```
 
-これは、各カテゴリの統計値 \index{statistics}、ここでは各粒度クラスの平均高度を返す。
-注:  `as.raster` 引数を `TRUE` に設定することで、各ゾーンの統計情報を計算したラスタを取得することも可能である。
+これは、各カテゴリの統計値 \index{とうけいがく@統計学}、ここでは各粒度クラスの平均高度を返す。
+注: `as.raster` 引数を `TRUE` に設定することで、各ゾーンの統計情報を計算したラスタを取得することも可能である。
 
 ### グローバルな操作と距離  {#global-operations-and-distances}
 

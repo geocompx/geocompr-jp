@@ -1,6 +1,6 @@
 # (PART) 拡張機能 {- #extensions}
 
-# R で地図を作る  {#adv-map}
+# R で地図を作成  {#adv-map}
 
 ```{r, include=FALSE}
 source("code/before_script.R")

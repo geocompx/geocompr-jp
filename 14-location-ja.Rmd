@@ -61,9 +61,9 @@ library(spDataLarge)
 - 集計された国勢調査データをラスタ\index{らすた@ラスタ}オブジェクトに変換 (Section \@ref(create-census-rasters) )
 - 人口密度の高い都市圏の特定 (Section \@ref(define-metropolitan-areas) )
 - これらの地域の詳細な地理データ (**osmdata**\index{osmdata (package)} で OpenStreetMap\index{OpenStreetMap}) をダウンロード (Section \@ref(points-of-interest))
-- 地図代数\index{map algebra}を用いて異なる場所の相対的な望ましさをスコアリングするためのラスタ\index{らすた@ラスタ}を作成 (Section \@ref(identifying-suitable-locations))
+- マップ代数\index{まっぷだいすう@マップ代数}を用いて異なる場所の相対的な望ましさをスコアリングするためのラスタ\index{らすた@ラスタ}を作成 (Section \@ref(identifying-suitable-locations))
 
-これらのステップは、特定のケーススタディに適用されたが、店舗立地や公共サービス提供の多くのシナリオに一般化することが可能である。
+これらのステップは、特定のケーススタディに適用されたが、店舗立地や公共サービス提供の多くのシナリオに一般化することができる。
 
 ## 入力データを整頓  {#tidy-the-input-data}
 
@@ -215,7 +215,7 @@ reclass # 出力は一部省略
 ## 大都市圏を定義  {#define-metropolitan-areas}
 
 大都市圏とは、50 万人以上が住む 20 km^2^ のピクセルと定義している。
-この粗い解像度のピクセルは、Section \@ref(aggregation-and-disaggregation) で紹介したように、`aggregate()`\index{aggregation}、速やかに作成することができる。
+この粗い解像度のピクセルは、Section \@ref(aggregation-and-disaggregation) で紹介したように、`aggregate()`\index{ぞくせいしゅうけい@属性集計}、速やかに作成することができる。
 以下のコマンドは、引数 `fact = 20`、結果の解像度を 20 倍にしている (元のラスタの解像度が 1 km^2^ であったことを思い出そう)。
 
 ```{r 14-location-11, warning=FALSE, cache=TRUE, cache.lazy=FALSE}
@@ -350,7 +350,7 @@ data("shops", package = "spDataLarge")
 重要なのは、ここで `length()` 関数を用いて、各セルのショップ数を算出していることである。
 
 そのため、後続のコードチャンクの結果は、店舗密度 (店舗/km^2^) の推定値となる。
-`st_transform()`\index{sf!st\_transform} は、両入力の CRS\index{CRS} が一致するように、`rasterize()`\index{raster!rasterize} の前に使用される。
+`st_transform()`\index{sf!st\_transform} は、両入力の CRS\index{CRS} が一致するように、`rasterize()`\index{らすた@ラスタ!らすたか@ラスタ化} の前に使用される。
 
 ```{r tmmppp21, echo=FALSE, message=FALSE, warning=FALSE}
 shops = sf::st_transform(shops, st_crs(reclass))
