@@ -329,13 +329,13 @@ plot(asia, add = TRUE, col = "red")
 ```{block2 plottingpacks, type='rmdnote'}
 このようにレイヤを追加していくことで、レイヤ間の地理的な対応関係を検証することができる。 
 `plot()` 関数は、実行速度が速く、必要なコード行数も少ないのであるが、幅広いオプションを持つインタラクティブなマップを作成することはできない。
-より高度な地図作成には、**tmap** [@tmap2018] などの専用可視化パッケージの利用を勧める (Chapter \@ref(adv-map) 参照)。
+より高度な地図作成には、**tmap** [@tmap2018] などの可視化専用パッケージの利用を勧める (Chapter \@ref(adv-map) 参照)。
 ```
 
 **sf** の `plot()` メソッドでマップを修正する方法はいろいろある。
 **sf** は R の基本的な描画メソッド `plot()` を拡張しているので、`plot()` の引数は `sf` オブジェクトでも動作する (`main =` などの引数の情報は、`?graphics::plot` と `?par` を参照)。^[
-注意: ファセットマップにおいて、1つ以上の `sf` 列がプロットされる場合、多くのプロット引数は無視される。]
-\index{べーすぷろっと@ベースプロット|{地図作成} 参照}\index{ちずさくせい@地図作成!べーすぷろっと@ベースプロット} Figure \@ref(fig:contpop) は、この柔軟性を、世界地図の上に、直径 (`cex =` で設定) が各国の人口を表す円を重ねることで表現している。
+注意: ファセット地図において、1 つ以上の `sf` 列がプロットされる場合、多くのプロット引数は無視される。]
+\index{べーすぷろっと@ベースプロット|see{ちずさくせい@地図作成}}\index{ちずさくせい@地図作成!べーすぷろっと@ベースプロット} Figure \@ref(fig:contpop) は、この柔軟性を、世界地図の上に、直径 (`cex =` で設定) が各国の人口を表す円を重ねることで表現している。
 この図の非投影版は、以下のコマンドで作成できる (本章末の練習問題と、スクリプト [`02-contplot.R`](https://github.com/geocompx/geocompr/blob/main/code/02-contpop.R) を使って Figure \@ref(fig:contpop) を再現することができる。)
 
 ```{r 02-spatial-data-16, eval=FALSE}
@@ -393,11 +393,11 @@ R のシンプルフィーチャは、**sf** パッケージがサポートす�
 \index{sf!じおめとりがた@ジオメトリ型}
 この章では、最もよく使われる以下の 7 つの型に焦点を当てる: `POINT`、`LINESTRING`、`POLYGON`、`MULTIPOINT`、`MULTILINESTRING`、`MULTIPOLYGON`、`GEOMETRYCOLLECTION`。
 
-一般に、シンプルフィーチャの符号化方式としては、WKB (Well-known binary) や WKT (Well-known text) が標準的である。
+一般に、シンプルフィーチャの符号化方式としては、WKB (well-known binary) や WKT (well-known text) が標準的である。
 \index{well-known text}
-\index{WKT|well-known text 参照}
+\index{WKT|see{well-known text}}
 \index{well-known binary}
-\index{WKB|well-known binary 参照}
+\index{WKB|see{well-known binary}}
 WKB の表現は通常、コンピュータで読みやすい16進数の文字列である。
 このため、GIS や空間データベースでは、ジオメトリオブジェクトの転送や保存に WKB を使用している。
 一方、WKT は、シンプルフィーチャを人間が読みやすいテキストマークアップで記述したものである。 
@@ -405,11 +405,11 @@ WKB の表現は通常、コンピュータで読みやすい16進数の文字�
 
 各ジオメトリ型の基本は点である。 
 点 (point) とは、2 次元、3 次元、4 次元空間 (詳しくは `vignette("sf1")` を参照、訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html#sf)) の座標で、次のようなものである (Figure \@ref(fig:sfcs) 左図)。
-\index{sf!point}
+\index{sf!てん@点}
 
 - `POINT (5 2)` 
 
-\index{sf!linestring}
+\index{sf!せん@線}
 線 (linestring、polyline) とは、例えば、点と点を結ぶ直線の列のことである (Figure \@ref(fig:sfcs) 中央)。
 
 - `LINESTRING (1 5, 4 4, 4 1, 2 2, 3 2)` 
@@ -419,7 +419,7 @@ WKB の表現は通常、コンピュータで読みやすい16進数の文字�
 ポリゴンの定義では、外側の境界 (外環) は 1 つで、内側の境界 (内環) は 0 個以上で、穴とも呼ばれる。
 穴の開いたポリゴンは、例えば次のようになる。`POLYGON ((1 5, 2 2, 4 1, 4 4, 1 5), (2 4, 3 4, 3 3, 2 3, 2 4))` 
 ]
-\index{sf!hole}
+\index{sf!あな@穴}
 
 - 穴のないポリゴン `POLYGON ((1 5, 2 2, 4 1, 4 4, 1 5))` 
 

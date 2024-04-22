@@ -533,7 +533,7 @@ desire_lines_short = desire_lines |>
 ```
 
 上記のコードで、`st_length()` は Section \@ref(distance-relations) にあるように、各希望線の長さを計算している。
-Section \@ref(vector-attribute-subsetting) で述べるように、**dplyr** の `filter()` 関数で、上記の条件に基づいて `desire_lines` データセットにフィルタをかけている\index{ふぃるたそうさ@フィルタ操作|ぞくせい@属性!ぶぶんしゅうごう@部分集合} 参照}。
+Section \@ref(vector-attribute-subsetting) で述べるように、**dplyr** の `filter()` 関数で、上記の条件に基づいて `desire_lines` データセットにフィルタをかけている\index{ふぃるたそうさ@フィルタ操作|ぞくせい@see{ぞくせい@属性!ぶぶんしゅうごう@部分集合}}。
 次に、この希望線をルートに変換する。
 これは一般に公開されている OSRM サービスを用いて、以下のコードにある **stplanr** 関数 `route()` と `route_osrm()`\index{stplanr (package)} で行われる。
 
