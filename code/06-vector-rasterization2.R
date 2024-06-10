@@ -24,7 +24,7 @@ r1po = tm_shape(california_raster1) +
   tm_shape(california_raster_centr) +
   tm_symbols(shape = 20, col = "black", size = 0.2) + 
   tm_shape(california) + tm_borders() + 
-  tm_title("A. Line rasterization") + 
+  tm_title("A. 線のラスタ化") + 
   tm_layout(legend.show = FALSE, frame = FALSE)
 
 r2po = tm_shape(california_raster2) +
@@ -33,7 +33,7 @@ r2po = tm_shape(california_raster2) +
   tm_shape(california_raster_centr) + 
   tm_symbols(shape = 20, col = "black", size = 0.2) + 
   tm_shape(california) + tm_borders() + 
-  tm_title("B. Polygon rasterization")  + 
+  tm_title("B. ポリゴンのラスタ化")  + 
   tm_layout(legend.show = FALSE, frame = FALSE)
 
 tmap_arrange(r1po, r2po, ncol = 2)

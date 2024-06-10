@@ -11,8 +11,8 @@ bookdown::bs4_book:
     code_font:
       google: 
         family: Roboto Mono
-    bg: "#fefefe" #backgrounds
-    fg: "#000000" #fonts
+    bg: "#fefefe" # backgrounds
+    fg: "#000000" # fonts
   repo: 
     base: https://github.com/geocompx/geocompr
     branch: main
@@ -20,11 +20,3 @@ bookdown::bs4_book:
     in_header: style/ga.html
   template: style/bs4_book.html
   css: style/style.css
-rmdja::pdf_book_ja:
-  latex_engine: xelatex
-  citation_package: natbib
-  keep_tex: true
-  keep_md: true
-  includes:
-    in_header:  preamble.tex
-    after_body: after_body.tex
