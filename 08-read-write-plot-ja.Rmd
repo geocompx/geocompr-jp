@@ -64,9 +64,11 @@ knitr::kable(file_formats,
              caption = "代表的な空間ファイル形式。",
              caption.short = "Selected spatial file formats.",
              booktabs = TRUE) |> 
-  kableExtra::column_spec(2, width = "7em") |> 
-  kableExtra::column_spec(3, width = "14em") |> 
-  kableExtra::column_spec(5, width = "7em")
+  kableExtra::column_spec(2, width = "5em") |> 
+  kableExtra::column_spec(3, width = "12em") |> 
+  kableExtra::column_spec(4, width = "4em") |> 
+  kableExtra::column_spec(5, width = "5em") |> 
+  kableExtra::kable_styling(latex_options = "scale_down")
 ```
 
 \index{Shapefile}
@@ -429,6 +431,7 @@ writeRaster(x = single_layer, filename = "my_raster.tif",
             gdal = c("COMPRESS=NONE"), overwrite = TRUE)
 ```
 
+\index{COG}
 さらに、`filetype = "COG"` のオプションでラスタオブジェクトを COG (*Cloud Optimized GeoTIFF*, Section \@ref(file-formats) ) として保存することができる。
 
 ```{r 07-read-write-plot-35b, eval=FALSE}
@@ -441,7 +444,7 @@ GeoTIFF 形式の圧縮については、Paul Ramsey の [GeoTIFF 圧縮につ�
 ## オープンデータの取得  {#retrieving-data}
 
 \index{おーぷんでーた@オープンデータ}
-インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。^[例えば、自由に使える地理データの長いサイト一覧が https://freegisdata.rtwilson.com/ にある。]
+インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。^[例えば、自由に使える地理データの長いサイト一覧が [https://freegisdata.rtwilson.com/](https://freegisdata.rtwilson.com/) にある。]
 同じデータセットにアクセスする場所が複数あるという意味で、ある意味、データは<u>多すぎる</u>くらいにある。
 一部のデータセットは品質が低い。
 そこで、最初に最も重要な情報源をいくつか紹介する。
@@ -485,10 +488,11 @@ datapackages = tibble::tribble(
   "rnoaa", "米国海洋大気庁 (National Oceanic and Atmospheric Administration, NOAA) の気候データをインポート。"
 )
 knitr::kable(datapackages, 
-             caption = "地理データ取得の代表的 R パッケージ", 
+             caption = "Selected R packages for geographic data retrieval.", 
              caption.short = "Selected R packages for geographic data retrieval.",
-             booktabs = TRUE) |>
-  kableExtra::kable_styling(latex_options="scale_down")
+             booktabs = TRUE) |> 
+  kableExtra::column_spec(1, width = "5em") |> 
+  kableExtra::column_spec(2, width = "22em")
 ```
 
 
@@ -591,7 +595,7 @@ Chapter \@ref(gis) で紹介するように、地理データは地理ソフト�
 
 地理メタデータは **geometa** で管理することができる。**geometa** は ISO/OGC 標準に従って地理メタデータの書き込み、読み込み、検証ができるパッケージである。
 **geometa** は、ISO 19110 (Feature catalogue)、ISO 19115-1 および 19115-2 (Geographic metadata for vector and gridded/imagery datasets)、ISO 19119 (geographic metadata for service)、ISO 19136 (Geographic Markup Language) など、地理メタデータ情報に関するさまざまな国際標準をすでにサポートしており、ISO/TS 19139 (XML) 技術仕様を使ってRから地理メタデータを読み込んだり、検証したり、書き込んだりする方法を提供しています。
-規格の複雑さと網羅性、そしてそれらを使用するために必要な高度な知識に対処するために、[geoflow](https://github.com/r-geoflow/geoflow) のような補完的なパッケージが、メタデータの管理を容易にし、自動化するために構築されている。
+<!-- 規格の複雑さと網羅性、そしてそれらを使用するために必要な高度な知識に対処するために、[geoflow](https://github.com/r-geoflow/geoflow) のような補完的なパッケージが、メタデータの管理を容易にし、自動化するために構築されている。 -->
 地理メタデータは、**geometa** で以下のように作成することができ、メタデータファイルを作成して保存する。
 
 ```{r 07-read-write-plot-m5, eval=FALSE}
@@ -698,10 +702,9 @@ fao_areas = read_sf(file)
 しかし、多くの日常的な作業には、より高レベルのインターフェースの方が適している場合があり、この目的のために多くのRパッケージやチュートリアルが開発されている。
 OWS サービスを利用する **ows4R** というパッケージが開発された。
 WFS、データ用の WCS、メタデータ用の CSW、処理用の WPS など、一般的なアクセスサービスへの安定したインタフェースを提供する。
-OGC のサービスカバレッジは[こちら](https://github.com/eblondel/ows4R?tab=readme-ov-file#ogc-standards-coverage-status)に記載されており、新しい標準プロトコルは調査/開発中である。
+OGC のサービスカバレッジは [github.com/eblondel/ows4R](https://github.com/eblondel/ows4R?tab=readme-ov-file#ogc-standards-coverage-status) にあるパッケージの README に記載されており、新しい標準プロトコルは調査/開発中である。
 
-上記の例に基づいて、このパッケージで　`getCapabilities`　と　`getFeatures`　の操作を実行する方法を以下のコードに示します。
-
+上記の例に基づいて、このパッケージで `getCapabilities` と `getFeatures` の操作を実行する方法を以下のコードに示す。
 **ows4R** パッケージはクライアントの原理に依存している。
 OWSサービス (WFS など) と対話するために、以下のようにクライアントを作成する。
 

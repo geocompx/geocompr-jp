@@ -94,7 +94,7 @@ tm_shape(region_all[1, ], bbox = region_all) +
 ```
 
 ```{r bristol, echo=FALSE, fig.cap="Bristol の交通網は、アクティブ (緑)、公共 (鉄道、青)、自家用車 (赤) の各移動手段を色分けして表現している。黒い境界線は、市街地の境界線 (黄色でハイライト) と、より広い TTWA (Travel To Work Area) を表している。", fig.scap="Bristol's transport network."}
-knitr::include_graphics("figures/13_bristol.png")
+knitr::include_graphics("images/13_bristol.png")
 ```
 
 Bristol は England で 10 番目に大きい市で、人口は 50 万人であるが、そのトラベルキャッチメントエリア\index{きゃっちめんとえりあ@キャッチメントエリア}はもっと大きい (Section \@ref(transport-zones) 参照)。
@@ -788,7 +788,7 @@ tm_shape(existing_cycleways_buffer, bbox = bristol_region) +
            lwd.scale = tm_scale(values.scale = 3),
            lwd.legend = tm_legend(title = "自転車トリップ数 (モデル化、一方向)"),
                                   position = tm_pos_out("center", "bottom"))
-knitr::include_graphics("figures/bristol_cycleways_zoomed.png")
+knitr::include_graphics("images/bristol_cycleways_zoomed.png")
 ```
 
 この方法には限界がある。現実には、人々はゾーン重心に移動したり、特定のモードの最短ルート\index{さいたんるーと@最短ルート}アルゴリズムを常に使用するわけではない。

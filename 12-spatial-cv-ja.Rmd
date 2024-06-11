@@ -106,9 +106,9 @@ ta = terra::rast(system.file("raster/ta.tif", package = "spDataLarge"))
 #   tm_symbols(fill = "lslpts", size = 0.5, col = "white",
 #              fill.scale = tm_scale(values = c("#0071A6", "#C73000")), fill.legend = tm_legend(title = "Landslide: ")) +
 #   tm_layout(inner.margins = rep(0, 4), legend.bg.color = "white", legend.position = tm_pos_in())
-# tmap::tmap_save(map, filename = "figures/lsl-map-1.png", width = 11,
+# tmap::tmap_save(map, filename = "images/lsl-map-1.png", width = 11,
 #               height = 11, units = "cm")
-knitr::include_graphics("figures/lsl-map-1.png")
+knitr::include_graphics("images/lsl-map-1.png")
 ```
 \index{hillshade}
 
@@ -202,9 +202,9 @@ pred = terra::predict(ta, model = fit, type = "response")
 # 	tm_layout(legend.position = c("LEFT", "BOTTOM"),
 # 	          legend.title.size = 0.8,
 # 	          inner.margins = rep(0, 4))
-# tmap::tmap_save(map2, filename = "figures/lsl-susc-1.png", width = 11,
+# tmap::tmap_save(map2, filename = "images/lsl-susc-1.png", width = 11,
 #               height = 13, units = "cm")
-knitr::include_graphics("figures/lsl-susc-1.png")
+knitr::include_graphics("images/lsl-susc-1.png")
 ```
 
 ここで、予測を行う際には、空間自己相関構造があってもなくても平均的に予測精度は変わらないと仮定しているため、空間自己相関\index{じこそうかん@自己相関!くうかん@空間}を無視する。
@@ -258,7 +258,7 @@ Chapter \@ref(transport) で見るように、地理学の「第一法則」は�
 その結果、空間 CV はモデルの予測性能のバイアスを低減させ、過適合\index{かてきごう@過適合}を回避するのに役立つ。
 
 ```{r partitioning, fig.cap="1 回の繰り返しの交差検証で選択されたテストおよびトレーニングの観測の空間的な可視化。ランダム (上段) および空間分割 (下段)。", echo=FALSE, fig.scap="Spatial visualization of selected test and training observations."}
-knitr::include_graphics("figures/12_partitioning.png")
+knitr::include_graphics("images/12_partitioning.png")
 ```
 
 ## **mlr3** を用いた空間交差検証  {#spatial-cv-with-mlr3}
@@ -275,7 +275,7 @@ Figure \@ref(fig:building-blocks) に示すように、これらは明確な順�
 (ref:building-blocks) mlr3 パッケージの基本的な構成要素。Source: @becker_mlr3_2022 (この図の再利用を快く承諾していただいた。) 
 
 ```{r building-blocks, echo=FALSE, fig.height=4, fig.width=4, fig.cap="(ref:building-blocks)", fig.scap="Basic building blocks of the mlr3 package."}
-knitr::include_graphics("figures/12_ml_abstraction_crop.png")
+knitr::include_graphics("images/12_ml_abstraction_crop.png")
 ```
 
 **mlr3** のモデリングプロセスは、主に3つのステージで構成されている。
@@ -521,7 +521,7 @@ perf_level = mlr3::rsmp("repeated_spcv_coords", folds = 5, repeats = 100)
 これは、ネストされた空間交差検証 \index{こうさけんしょう@交差検証!くうかん@空間}  を用いることで回避することができる。
 
 ```{r inner-outer, echo=FALSE, fig.cap="CV におけるハイパーパラメータのチューニングと性能推定レベルの模式図 (図は Schratz et al. (2019) から引用した。快く再利用の許可をいただいた)。", fig.scap="Schematic of hyperparameter tuning."}
-knitr::include_graphics("figures/12_cv.png")
+knitr::include_graphics("images/12_cv.png")
 ```
 
 これは、各フォールドを空間的に不連続な 5 つのサブフォールドに再び分割し、最適なハイパーパラメータ \index{はいぱーぱらめーた@ハイパーパラメータ} (`tune_level` 以下のコードチャンクのオブジェクト。視覚的表現については Figure \@ref(fig:inner-outer) を参照) を決定するために使用することを意味する。

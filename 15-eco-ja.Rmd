@@ -47,7 +47,7 @@ Mongón 山での野外調査において、2011年の冬に無作為にサン�
 このため、沿岸部の砂漠では例年よりもさらに高いレベルの乾燥が発生し、Peru の**ロマ植生**山脈の南斜面では霧の活動が活発化した。
 
 ```{r study-area-mongon, echo=FALSE, fig.cap="Mongón 山調査地、Muenchow, Schratz, and Brenning (2017) より。", out.width="60%", fig.scap="The Mt. Mongón study area."}
-knitr::include_graphics("figures/15_study_area_mongon.png")
+knitr::include_graphics("images/15_study_area_mongon.png")
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/38989956-6eae7c9a-43d0-11e8-8f25-3dd3594f7e74.png")
 ```
 
@@ -114,7 +114,7 @@ Figure \@ref(fig:sa-mongon) に示すように、`dem` に `random_points` と `
 # tmap_save(tm, "figures/15_sa_mongon_sampling.png",
 #           width = 12, height = 7, units = "cm")
 
-knitr::include_graphics("figures/15_sa_mongon_sampling.png")
+knitr::include_graphics("images/15_sa_mongon_sampling.png")
 ```
 
 次のステップは、モデリングと予測地図作成に必要な変数 (Section \@ref(predictive-mapping) 参照) だけでなく、非計量多次元尺度構成法 (Non-Metric Multidimensional Scaling, NMDS\index{NMDS}) 軸を調査地域の主要勾配、高度と湿度にそれぞれ整合させるための変数も計算することである (Section \@ref(nmds) 参照)。
@@ -307,7 +307,7 @@ elev = dplyr::filter(random_points, id %in% rownames(pa)) |>
 rotnmds = vegan::MDSrotate(nmds, elev)
 # 最初の2軸の抽出
 sc = vegan::scores(rotnmds, choices = 1:2, display = "sites")
-knitr::include_graphics("figures/15_xy_nmds.png")
+knitr::include_graphics("images/15_xy_nmds.png")
 ```
 
 ```{r 15-eco-15, eval=FALSE, echo=FALSE}
@@ -398,7 +398,7 @@ text(tree_mo, pretty = 0)
 # plot(tree_mo)
 # text(tree_mo, pretty = 0)
 # dev.off()
-knitr::include_graphics("figures/15_tree.png")
+knitr::include_graphics("images/15_tree.png")
 ```
 
 結果として得られる木は、3 つの内部ノードと 4 つの終端ノード (Figure \@ref(fig:tree)) で構成される。
@@ -561,10 +561,10 @@ pred = terra::predict(ep, model = autotuner_rf, fun = predict)
 #   tm_shape(study_area) +
 #   tm_borders() +
 #   tm_layout(legend.position = tm_pos_auto_out())
-# tmap_save(tm, "figures/15_rf_pred.png",
+# tmap_save(tm, "images/15_rf_pred.png",
 #           width = 10, height = 8, units = "cm")
 
-knitr::include_graphics("figures/15_rf_pred.png")
+knitr::include_graphics("images/15_rf_pred.png")
 ```
 
 `terra::predict()` がモデル・アルゴリズムに対応していない場合でも、手動で予測を行うことができる。

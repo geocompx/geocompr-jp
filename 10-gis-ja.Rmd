@@ -88,9 +88,9 @@ GIS ブリッジを通すことで、R はさまざまな作業を実行でき�
 
 この章では、Table \@ref(tab:gis-comp) にまとめた 3 つの成熟したオープンソース GIS 製品への「ブリッジ」に焦点を当てる。
 
-- QGIS\index{QGIS} (**qgisprocess**\index{qgisprocess (package)}; Section \@ref(rqgis))
-- SAGA\index{SAGA} (**Rsagacmd**\index{Rsagacmd (package)}; Section \@ref(saga))
-- GRASS GIS\index{GRASS GIS} (**rgrass**\index{rgrass (package)}; Section \@ref(grass))
+- QGIS\index{QGIS} **qgisprocess**\index{qgisprocess (package)}; [@R-qgisprocess; Section \@ref(rqgis)]
+- SAGA\index{SAGA} **Rsagacmd**\index{Rsagacmd (package)}; [@R-Rsagacmd; Section \@ref(saga)]
+- GRASS GIS\index{GRASS GIS} **rgrass**\index{rgrass (package)}; [@R-rgrass; Section \@ref(grass)]
 
 また、QGIS\index{QGIS} ([docs.qgis.org](https://docs.qgis.org/3.28/en/docs/training_manual/processing/r_intro.html) 参照) や GRASS GIS\index{GRASS GIS}  ([grasswiki.osgeo.org](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#R_within_GRASS) 参照) など GIS から R を実行する環境も開発されている。
 
@@ -136,7 +136,7 @@ Docker をインストールしており、十分な実行環境のある方は�
 
 ```
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 library(qgisprocess)
 #> Attempting to load the cache ... Success!
 #> QGIS version: 3.30.3-'s-Hertogenbosch
@@ -149,7 +149,7 @@ library(qgisprocess)
 詳細については、**qgisprocess** ['getting started' vignette](https://r-spatial.github.io/qgisprocess/articles/qgisprocess.html) を参照。
 次に、どのプラグイン (異なるソフトウェアを意味する) が自分のコンピュータで利用できるかを調べてみよう。
 
-```{r plugins, eval=has_qgis_plugins}
+```{r plugins, eval=FALSE}
 qgis_plugins()
 #> # A tibble: 4 × 2
 #>   name                    enabled
@@ -163,7 +163,7 @@ qgis_plugins()
 プラグイン GRASS GIS (`grassprovider`) と SAGA (`processing_saga_nextgen`) が存在しているが、有効になっていないことがわかる。
 この二つは本章の後半で使用するので、有効化しよう。
 
-```{r enable-providers, eval=has_qgis_plugins}
+```{r enable-providers, eval=FALSE}
 qgis_enable_plugins(c("grassprovider", "processing_saga_nextgen"), 
                     quiet = TRUE)
 ```
@@ -173,7 +173,7 @@ SAGA のほかにも、QGIS Python プラグイン Processing Saga NextGen を�
 
 `qgis_providers()` で、ソフトウェアの名称と対応するジオアルゴリズム数の一覧を表示する。
 
-```{r providers, eval=has_qgis_plugins}
+```{r providers, eval=FALSE}
 qgis_providers()
 #> # A tibble: 7 × 3
 #>   provider provider_title    algorithm_count
@@ -226,7 +226,7 @@ tm_shape(incongr_wgs) +
 `qgis_algorithms()` 関数は、利用可能なアルゴリズムをすべて表示する。
 この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。^[したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。]
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 # 出力は表示せず
 qgis_algo = qgis_algorithms()
 ```
@@ -234,7 +234,7 @@ qgis_algo = qgis_algorithms()
 `qgis_search_algorithms()` 関数は、アルゴリズムを探すために使うことができる。
 関数の短い説明文に "union"\index{けつごう@結合 (union)}という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 qgis_search_algorithms("union")
 #> # A tibble: 2 × 5
 #>   provider provider_title    group          algorithm         algorithm_title 
@@ -249,7 +249,7 @@ qgis_search_algorithms("union")
 これによって、出力が長くなる。
 以下のコマンドは、各行に `"native:union"` が必要とする引数を表すデータフレームを返し、各列は名前、説明、種類、デフォルト値、とりうる値を示す。
 
-```{r 09-gis-6, eval=has_qgis_plugins, linewidth=80}
+```{r 09-gis-6, eval=FALSE, linewidth=80}
 alg = "native:union"
 union_arguments = qgis_get_argument_specs(alg)
 union_arguments
@@ -295,7 +295,7 @@ union
 **qgisprocess** パッケージは、`qgis_run_algorithm()` の結果を、この場合は出力ファイルへのパスを含むリストとして保存する。
 このファイルを R に読み戻すには、`read_sf()` (例,  `union_sf = read_sf(union[[1]])` を使うか、`st_as_sf()` を使って直接読み込むことができる。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 union_sf = st_as_sf(union)
 ```
 
@@ -358,7 +358,7 @@ qgis_get_argument_specs("grass:v.clean") |>
 
 このアルゴリズムを実行し、その出力を新しい `sf` オブジェクト `clean_sf` に変換してみよう。
 
-```{r 09-gis-7c, eval=has_qgis_plugins, message=FALSE}
+```{r 09-gis-7c, eval=FALSE, message=FALSE}
 clean = qgis_run_algorithm("grass7:v.clean",
   input = union_sf,
   tool = "rmarea", threshold = 25000
@@ -369,7 +369,7 @@ clean_sf = st_as_sf(clean)
 その結果、\@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
 
 ```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。"}
-knitr::include_graphics("figures/10-sliver.png")
+knitr::include_graphics("images/10-sliver.png")
 ```
 
 ### ラスタデータ  {#qgis-raster}
@@ -382,7 +382,7 @@ DEM は、衛星航法、水流モデル、表面分析、可視化など、さ�
 このセクションでは、`dem.tif` を使用することにする。これは、Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、`?dem.tif` も参照)。
 解像度は約 30 m × 30 m で、投影型 CRS を使用している。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 library(qgisprocess)
 library(terra)
 dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
@@ -393,7 +393,7 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 例えば、地形湿潤指数 (Topologic Wetness Index, TWI)\index{ちけいしつじゅんしすう@地形湿潤指数} は、水文・生物学的プロセスの研究に有用であることがわかっている [@sorensen_calculation_2006]。
 このインデックスのアルゴリズムリストを、`"wetness"` というキーワードで検索してみよう。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 qgis_search_algorithms("wetness") |>
   dplyr::select(provider_title, algorithm) |>
   head(2)
@@ -422,7 +422,7 @@ QGIS から SAGA アルゴリズムを使う前に、デフォルトのラスタ
 これで、指定しなければ保存形式は `.sdat` となる。
 ソフトウェア (SAGA, GDAL) のバージョンによっては必要はないが、SAGA のラスタに関する問題を未然に防ぐことができる。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 options(qgisprocess.tmp_raster_ext = ".sdat")
 dem_wetness = qgis_run_algorithm("sagang:sagawetnessindex",
   DEM = dem
@@ -433,7 +433,7 @@ dem_wetness = qgis_run_algorithm("sagang:sagawetnessindex",
 選択された出力は、`qgis_as_terra()` 関数に出力名を与えることで読むことができる。
 QGIS から SAGA を使う作業は終わったので、デフォルト形式を `.tif` に戻す。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 dem_wetness_twi = qgis_as_terra(dem_wetness$TWI)
 # plot(dem_wetness_twi)
 options(qgisprocess.tmp_raster_ext = ".tif")
@@ -458,7 +458,7 @@ qgis_show_help("grass:r.geomorphon")
 フラグ `search` は視線距離を計算する長さ、および `-m` は検索値を (セル数ではなく) メートル単位で提供することを指定する。
 追加論点の詳細は、原著論文と [GRASS GIS documentation](https://grass.osgeo.org/grass78/manuals/r.geomorphon.html) に記載されている。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
   elevation = dem,
   `-m` = TRUE, search = 120
@@ -468,7 +468,7 @@ dem_geomorph = qgis_run_algorithm("grass7:r.geomorphon",
 出力される `dem_geomorph$forms` は、10 個のカテゴリからなるラスタファイルで、それぞれが地形形状を表している。
 これを `qgis_as_terra()` で R に読み込んで可視化したり (Figure \@ref(fig:qgis-raster-map) 右図)、その後の計算で使うことができる。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 dem_geomorph_terra = qgis_as_terra(dem_geomorph$forms)
 ```
 
@@ -476,7 +476,7 @@ dem_geomorph_terra = qgis_as_terra(dem_geomorph$forms)
 TWI 値が最も大きいのは谷や窪地であり、最も小さいのは予想通り尾根であった。
 
 ```{r qgis-raster-map, echo=FALSE, fig.cap="研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) とジオモルフォン (パネル右)。"}
-knitr::include_graphics("figures/10-qgis-raster-map.png")
+knitr::include_graphics("images/10-qgis-raster-map.png")
 ```
 
 ## SAGA  {#saga}
@@ -553,7 +553,7 @@ ndvi_segments = ndvi_srg$segments |>
 ```
 
 ```{r sagasegments, echo=FALSE, fig.cap="正規化差分植生指数 (NDVI、左図) と、Mongón調査地域のシード領域成長アルゴリズムを用いて得られた NDVI ベースのセグメント。"}
-knitr::include_graphics("figures/10-saga-segments.png")
+knitr::include_graphics("images/10-saga-segments.png")
 ```
 
 結果として得られるポリゴン (セグメント) は、類似した値を持つ領域を表す。
@@ -697,14 +697,14 @@ mapview::mapview(route) + points
 ```
 
 ```{r grass-mapview, fig.cap="ロンドンの OSM 道路網の24の自転車レンタル地点 (青点) とその最短ルート (青線) ", fig.scap="Shortest route between 24 cycle hire stations.", echo=FALSE, out.width="80%"}
-knitr::include_graphics("figures/10_shortest_route.png")
+knitr::include_graphics("images/10_shortest_route.png")
 ```
 
 ```{r 09-gis-35, eval=FALSE, echo=FALSE}
 library(mapview)
 m_1 = mapview(route) + points
 mapview::mapshot(m_1,
-  file = file.path(getwd(), "figures/09_shortest_route.png"),
+  file = file.path(getwd(), "images/09_shortest_route.png"),
   remove_controls = c(
     "homeButton", "layersControl",
     "zoomControl"

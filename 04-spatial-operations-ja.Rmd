@@ -197,11 +197,6 @@ polygon_sfc = st_sfc(st_polygon(list(polygon_matrix)))
 関数 `st_as_sf()` と引数 `coords` を使って、座標を表す列を含むデータフレームから、点を含む `sf` オブジェクトに効率的に変換していることに注目してみよう。
 
 ```{r}
-line_sfc = st_sfc(st_linestring(cbind(
-  x = c(0.4, 1),
-  y = c(0.2, 0.5)
-)))
-# create points
 point_df = data.frame(
   x = c(0.2, 0.7, 0.4),
   y = c(0.1, 0.2, 0.8)
@@ -212,7 +207,6 @@ point_sf = st_as_sf(point_df, coords = c("x", "y"))
 ```{r relation-objects, echo=FALSE, fig.cap="点、線、ポリゴンのオブジェクトを配置し、トポロジー関係を表現。", fig.asp=1, out.width="50%", fig.scap="Demonstration of topological relations."}
 par(pty = "s")
 plot(polygon_sfc, border = "red", col = "gray", axes = TRUE)
-plot(line_sfc, lwd = 5, add = TRUE)
 plot(point_sf, add = TRUE, lab = 1:4, cex = 2)
 text(point_df[, 1] + 0.02, point_df[, 2] + 0.04, 1:3, cex = 1.3)
 ```
@@ -686,7 +680,7 @@ sum(st_coordinates(cycle_hire)[, 1] %in% st_coordinates(cycle_hire_osm)[, 1])
 
 ```{r cycle-hire, fig.cap="公式データ (青) とOpenStreetMapのデータ (赤) に基づく、ロンドンにおける自転車レンタルポイントの空間分布。", echo=FALSE, warning=FALSE, fig.scap="The spatial distribution of cycle hire points in London."}
 if (knitr::is_latex_output()){
-  knitr::include_graphics("figures/cycle-hire-1.png")
+  knitr::include_graphics("images/cycle-hire-1.png")
 } else if (knitr::is_html_output()){
   # library(tmap)
   # osm_tiles = tmaptools::read_osm(tmaptools::bb(cycle_hire, ext = 1.3), type =   "https://korona.geog.uni-heidelberg.de/tiles/roadsg/x={x}&y={y}&z={z}")
@@ -862,7 +856,7 @@ elev[clip]
 これは、Figure \@ref(fig:raster-subset) に示すように、2 番目のラスタ (ここでは `clip`) の範囲内にある最初のラスタオブジェクト (この場合は `elev`) の値を取得することになる。
 
 ```{r raster-subset, echo = FALSE, fig.cap = "元のラスタ (左)。ラスタマスク (中)。ラスタをマスクした出力 (右)。", fig.scap="Subsetting raster values."}
-knitr::include_graphics("figures/04_raster_subset.png")
+knitr::include_graphics("images/04_raster_subset.png")
 ```
 
 上記の例では、特定のセルの値を返したが、多くの場合、ラスタデータセットの部分集合操作による空間出力が必要である。
@@ -956,7 +950,7 @@ elev > 5
 ```
 
 ```{r 04-local-operations, echo=FALSE, fig.cap="elev ラスタオブジェクトのさまざまなローカル操作の例: 2つのラスタの加算、二乗、対数変換の適用、論理演算の実行。"}
-knitr::include_graphics("figures/04-local-operations.png")
+knitr::include_graphics("images/04-local-operations.png")
 ```
 
 ローカル演算のもう一つの良い例は、デジタル標高モデルを低標高 (クラス 1)、中標高 (クラス 2)、高標高 (クラス 3) にグループ化するように、数値の間隔をグループに分類することである。
@@ -1067,7 +1061,7 @@ r_focal = focal(elev, w = matrix(1, nrow = 3, ncol = 3), fun = min)
 この関数は、例えば、プロセス中の NA を削除すべきか (`na.rm = TRUE`)、しないか (`na.rm = FALSE`) などの追加引数も受け付ける。
 
 ```{r focal-example, echo = FALSE, fig.cap = "焦点演算による入力ラスタ (左) と出力ラスタ (右) -3×3の移動窓で最小値を求める。", fig.scap="Illustration of a focal operation."}
-knitr::include_graphics("figures/04_focal_example.png")
+knitr::include_graphics("images/04_focal_example.png")
 ```
 
 期待通りの出力が得られるかどうか、すぐに確認することができる。

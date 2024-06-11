@@ -162,7 +162,7 @@ input_ras
 ```
 
 ```{r census-stack, echo=FALSE, fig.cap="グリッド化した2011年ドイツ国勢調査 (クラスの内容は Table 13.1)。", fig.scap="Gridded German census data."}
-knitr::include_graphics("figures/14_census_stack.png")
+knitr::include_graphics("images/14_census_stack.png")
 ```
 
 次に、`input_ras` に格納されているラスタの値を、Section \@ref(case-study) で述べた調査に従って、Section \@ref(local-operations) \index{map algebra!local operations}  で紹介した **raster** 関数 `reclassify()` を用いて再分類している。
@@ -243,7 +243,7 @@ metros = pop_agg |>
 ```
 
 ```{r metro-areas, echo=FALSE, out.width= "70%", fig.cap="人口ラスタ (分解能20km)、大都市圏 (金色のポリゴン) とその名称。", fig.scap="The aggregated population raster."}
-knitr::include_graphics("figures/14_metro_areas.png")
+knitr::include_graphics("images/14_metro_areas.png")
 ```
 
 自転車店に適した 8 つの都市圏 (Figure \@ref(fig:metro-areas); 図の作成については `code/14-location-jm.R` も参照) が得られたが、まだ名前が分からない。
@@ -407,7 +407,7 @@ result = sum(reclass)
 
 ```{r bikeshop-berlin, echo=FALSE, eval=TRUE, fig.cap="ベルリンにおける自転車店の仮想調査に従った適切なエリア (スコア> 9のラスタセル)。", fig.scap="Suitable areas for bike stores.", warning=FALSE}
 if (knitr::is_latex_output()) {
-    knitr::include_graphics("figures/bikeshop-berlin-1.png")
+    knitr::include_graphics("images/bikeshop-berlin-1.png")
 } else if (knitr::is_html_output()) {
     library(leaflet)
     # Berlin の自転車屋を眺める

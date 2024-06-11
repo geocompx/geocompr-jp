@@ -16,7 +16,7 @@ R のスクリプト、出力、その他ジオコンピュテーションに関
 また、学習をサポートするため、[ソースコード](https://github.com/geocompx/geocompr)を[ダウンロード](https://github.com/geocompx/geocompr/archive/refs/heads/main.zip) または[クローン](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository)しておくと良い。
 R コードを書く/実行する/テストする際には、 [RStudio](https://posit.co/download/rstudio-desktop/#download) (ほとんどの人に推奨)\index{RStudio} または [VS Code](https://github.com/REditorSupport/vscode-R)\index{VS Code} などの統合開発環境 (integrated development environment, IDE) をインストールすることを強く勧める。
 
-R を初めて使う方は、R のコードを使ったジオコンピュテーションに入る前に、Garrett Grolemund の [Hands on Programming with R](https://rstudio-education.github.io/hopr/starting.html) や Claudia Engel の [Introduction to R](https://cengel.github.io/R-intro/) などの R 入門リソースに従うことを勧める。
+R を初めて使う方は、R のコードを使ったジオコンピュテーションに入る前に、Garrett Grolemund の [Hands on Programming with R](https://rstudio-education.github.io/hopr/starting.html) や [Introduction to R](https://cengel.github.io/R-intro/) などの R 入門リソースに従うことを勧める。
 これらのリソースには R のインストール方法が詳細に書かれており、[Comprehensive R Archive Network (CRAN)](https://cran.r-project.org/) から最新バージョンをダウンロードすることも書かれている。
 下記の注記は、Mac と Linux について、ジオコンピュテーションするために R をインストールするための情報がある。
 作業内容を整理し (例: RStudio プロジェクト)、スクリプトに `chapter-02-notes.R` などのわかりやすい名前を付けて、学習しながらコードを記録するとよい。
@@ -126,13 +126,13 @@ source("https://github.com/geocompx/geocompr/raw/main/code/02-vectorplots.R") # 
 ```
 
 ```{r vectorplots, fig.cap="原点 (青丸) を基準にロンドン (赤 X) の位置を表したベクトル (点) データの図解。左図は、緯度経度 0° を原点とする地理的な CRS。右図は、South West Peninsula の西側の海を原点とする投影 CRS を表している。", out.width="49%", fig.show='hold', echo=FALSE, fig.scap="Illustration of vector (point) data."}
-knitr::include_graphics(c("figures/vector_lonlat.png", "figures/vector_projected.png"))
+knitr::include_graphics(c("images/vector_lonlat.png", "images/vector_projected.png"))
 ```
 
 **sf** パッケージは、地理ベクタデータ用のクラスと、以下に説明する地理計算のための重要な低レベルライブラリへのコマンドラインインターフェースを一貫した方法で提供する。
 
 - [GDAL](https://gdal.org/)\index{GDAL} は、Chapter \@ref(read-write) でカバーされる広範な地理データ形式の読み取り、書き込み、操作のためのものである。 
-- [PROJ](https://proj.org/) は、 Chapter \@ref(reproj-geo-data) で扱う内容の根幹をなす座標系変換のための強力なライブラリ。 
+- [PROJ](https://proj.org/) は、Chapter \@ref(reproj-geo-data) で扱う内容の根幹をなす座標系変換のための強力なライブラリ。 
 - [GEOS](https://libgeos.org/)\index{GEOS} は、投影型 CRS を持つデータに対してバッファや重心の計算などの操作を行う平面ジオメトリエンジン、Chapter \@ref(geometry-operations) でカバーする。
 - [S2](https://s2geometry.io/) は、Google が開発した C++ で書かれた球面幾何学エンジンである。[**s2**](https://r-spatial.github.io/s2/) パッケージ経由で、この章の Section \@ref(s2) と Chapter \@ref(reproj-geo-data) でカバーする。
 
@@ -158,7 +158,7 @@ OGC 標準の完全版には、「サーフェス (surface)」や「カーブ (c
 ]
 
 ```{r sf-ogc, fig.cap="sf が完全にサポートするシンプルフィーチャ型", out.width="60%", echo=FALSE}
-knitr::include_graphics("figures/sf-classes.png")
+knitr::include_graphics("images/sf-classes.png")
 ```
 
 **sf** は、点、線、ポリゴン、およびそれらの「複合」バージョン (同じ種類のフィーチャをまとめて 1 つのフィーチャとするもの) という一般的なベクタフィーチャのタイプをすべて表現できる (ラスタデータクラスは **sf** ではサポートされていない)。
@@ -473,7 +473,7 @@ Figure \@ref(fig:02-sfdiagram) は sf オブジェクトの作成方法を示し
 
 ```{r 02-sfdiagram, fig.cap="sf オブジェクトの構成。", echo=FALSE}
 # source("code/02-sfdiagram.R")
-knitr::include_graphics("figures/02-sfdiagram.png")
+knitr::include_graphics("images/02-sfdiagram.png")
 ```
 
 フィーチャ以外の属性は、フィーチャの名称や、測定値、グループなどの属性を表す。
@@ -811,7 +811,7 @@ S2 ジオメトリエンジンはデフォルトでオンになっている。�
 sf_use_s2()
 ```
 
-ジオメトリエンジンをオフにした結果の例を以下に示す。この章で作成した `india` オブジェクトの周りにバッファを作成する (S2 をオフにしたときに発せられる警告に注意) (Figure \ref(fig:s2example))。
+ジオメトリエンジンをオフにした結果の例を以下に示す。この章で作成した `india` オブジェクトの周りにバッファを作成する (S2 をオフにしたときに発せられる警告に注意) (Figure \@ref(fig:s2example))。
 
 ```{r}
 india_buffer_with_s2 = st_buffer(india, 1) # 1 メートル
@@ -1086,7 +1086,7 @@ Figure \@ref(fig:datum-fig) の二つの測地系は、ジオイド (地球平�
 (ref:datum-fig) ジオイドの上に表示された地心座標系およびローカル測地系データ (フォールスカラーと、スケールファクター1万による垂直方向の誇張)。ジオイドの画像は @essd-11-647-2019 の作品から流用したものである。
 
 ```{r datum-fig, echo=FALSE, message=FALSE, fig.cap="(ref:datum-fig)", fig.scap="Geocentric and local geodetic datums on a geoid."}
-knitr::include_graphics("figures/02_datum_fig.png")
+knitr::include_graphics("images/02_datum_fig.png")
 ```
 
 ### 投影座標参照系  {#projected-coordinate-reference-systems}
@@ -1122,7 +1122,7 @@ Chapter \@ref(reproj-geo-data) では、CRS について説明し、ある CRS �
 
 ```{r vector-crs, echo=FALSE, fig.cap="ベクタデータ型の地理座標系 (WGS 84、左) と投影座標系 (NAD83 / UTMゾーン12N、右) の例。", message=FALSE, fig.asp=0.56, fig.scap="Examples of geographic and projected CRSs (vector data)."}
 # source("https://github.com/geocompx/geocompr/raw/main/code/02-vector-crs.R")
-knitr::include_graphics("figures/02_vector_crs.png")
+knitr::include_graphics("images/02_vector_crs.png")
 ```
 
 ## 単位  {#units}

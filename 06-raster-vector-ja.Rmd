@@ -469,7 +469,7 @@ Figure \@ref(fig:contour-tmap) に示すように、等値線 (isoline) には�
 # plot(dem, col = terrain.colors(25), alpha = 0.5, legend = FALSE, add = TRUE)
 # # add contour lines
 # contour(dem, col = "white", add = TRUE)
-knitr::include_graphics("figures/06-contour-tmap.png")
+knitr::include_graphics("images/06-contour-tmap.png")
 ```
 
 \index{くうかんべくたか@空間ベクタ化!ぽりごん@ポリゴン}

@@ -100,7 +100,7 @@ WKT の CRS 定義が登場する以前は、proj-string が座標操作の指�
 \index{CRS!proj-string}
 最近 (ver 6 以降) の PROJ のバージョンでは、座標操作を定義するために proj-string を使用することができるが、いくつかの proj-string キー (`+nadgrids` , `+towgs84` , `+k` , `+init=epsg:`) はもうサポートされていないか、推奨されないものである。
 また、proj-string に直接設定できる測地基準系 (datum) は 3 つ (WGS84、NAD83、NAD27) だけである。
-CRS の定義の進化と PROJ ライブラリの長い説明は、@bivand_progress_2021、@pebesma_spatial_2022 の第 2 章、[Floris Vanderhaeghe によるブログ](https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/)に記載されている。
+CRS の定義の進化と PROJ ライブラリの長い説明は、@bivand_progress_2021、@pebesma_spatial_2022 の第 2 章、Floris Vanderhaeghe によるブログ ([https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/](https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/)) に記載されている。
 [PROJ documentation](https://proj.org/development/reference/cpp/cpp_general.html) にも概説されているように、WKT CRS 形式には WKT1 と 2 種類の WKT2 があり、後者 (WKT2, 2018 仕様) は ISO 19111:2019 に対応するものである [@opengeospatialconsortium_wellknown_2019]。
 
 ## 座標系の照会と設定  {#crs-setting}
@@ -238,20 +238,20 @@ Figure \@ref(fig:s2geos) で示すように、**sf** は、CRS 種別に応じ�
    }' -> s2geos
 # # exported manually; the code below returns a low res version of png
 # tmp = DiagrammeR::grViz(s2geos)
-# htmlwidgets::saveWidget(widget = tmp, file = "figures/07-s2geos.html")
+# htmlwidgets::saveWidget(widget = tmp, file = "images/07-s2geos.html")
 # # tmp
 # tmp = DiagrammeRsvg::export_svg(tmp)
 # library(htmltools)
 # html_print(HTML(tmp))
 # tmp = charToRaw(tmp)
-# # rsvg::rsvg_png(tmp, "figures/07-s2geos.png")
-# webshot::webshot(url = "figures/07-s2geos.html", file = "figures/07-s2geos.png", vwidth = 800, vheight = 600)
+# # rsvg::rsvg_png(tmp, "images/07-s2geos.png")
+# webshot::webshot(url = "images/07-s2geos.html", file = "images/07-s2geos.png", vwidth = 800, vheight = 600)
 # download.file(
 #   "https://user-images.githubusercontent.com/1825120/188572856-7946ae32-98de-444c-9f48-b1d7afcf9345.png", 
-#   destfile = "figures/07-s2geos.png"
+#   destfile = "images/07-s2geos.png"
 #   )
-# browseURL("figures/07-s2geos.png")
-knitr::include_graphics("figures/07-s2geos.png")
+# browseURL("images/07-s2geos.png")
+knitr::include_graphics("images/07-s2geos.png")
 ```
 
 CRS の重要性を示すために、このセクションでは、前セクションで作成した `london` オブジェクトの周りに 100 km のバッファを作成する。

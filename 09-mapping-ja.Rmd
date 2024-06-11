@@ -695,9 +695,9 @@ Figure \@ref(fig:urban-animated) は、地図アニメーションの簡単な�
 
 ```{r urban-animated, message=FALSE, fig.cap="1950年から2030年までの、国連による人口予測に基づく都市集積の上位30位を示した地図アニメーション。アニメーション版は、geocompr.robinlovelace.net で見ることができる。", fig.scap="Animated map showing the top 30 largest 'urban agglomerations'.", echo=FALSE, fig.height=3.3}
 if (knitr::is_latex_output()){
-    knitr::include_graphics("figures/urban-animated.png")
+    knitr::include_graphics("images/urban-animated.png")
 } else if (knitr::is_html_output()){
-    knitr::include_graphics("figures/urban-animated.gif")
+    knitr::include_graphics("images/urban-animated.gif")
 }
 ```
 
@@ -737,7 +737,7 @@ source("https://github.com/geocompx/geocompr/raw/main/code/09-usboundaries.R")
 
 ```{r animus, echo=FALSE, message=FALSE, fig.cap="米国における人口増加、州形成、境界線の変化を示す地図アニメーション (1790-2010年)。アニメーション版は r.geocompx.org でオンライン公開。", fig.scap="Animated map showing boundary changes in the United States."}
 u_animus_html = "https://user-images.githubusercontent.com/1825120/38543030-5794b6f0-3c9b-11e8-9da9-10ec1f3ea726.gif"
-u_animus_pdf = "figures/animus.png"
+u_animus_pdf = "images/animus.png"
 if (knitr::is_latex_output()){
     knitr::include_graphics(u_animus_pdf) 
 } else if (knitr::is_html_output()){
@@ -760,7 +760,8 @@ if (knitr::is_latex_output()){
 **tmap** (すでに学習済みの構文)、**mapview**\index{mapview (package)}、**mapdeck**\index{mapdeck (package)}そして最後に **leaflet** \index{leaflet (package)} (対話型地図の低レベル制御を提供) を使って、動く地図を作成する方法を探究する。
 
 Section \@ref(static-maps) で述べた **tmap** は、同じコードを使って静的な地図とインタラクティブな地図を作ることができる。
-`tmap_mode("view")` というコマンドでビューモードに切り替えることで、任意の時点でインタラクティブ表示に切り替えることができる。以下のコードは、`tmap` オブジェクト `map_nz` に基づいて New Zealand のインタラクティブ地図を作成し、Section \@ref(map-obj) で作成し、Figure \@ref(fig:tmview) で図示している。
+`tmap_mode("view")` というコマンドでビューモードに切り替えることで、任意の時点でインタラクティブ表示に切り替えることができる。
+以下のコードは、`tmap` オブジェクト `map_nz` に基づいて New Zealand のインタラクティブ地図を作成し、Section \@ref(map-obj) で作成し、Figure \@ref(fig:tmview) で図示している。
 
 ```{r 08-mapping-25, eval=FALSE}
 tmap_mode("view")
@@ -769,12 +770,12 @@ map_nz
 
 ```{r tmview, message=FALSE, fig.cap="**tmap** のビューモードで作成されたNew Zealand のインタラクティブ地図。インタラクティブ版は r.geocompx.org からオンラインで入手可能。", fig.scap="Interactive map of New Zealand.", echo=FALSE}
 if (knitr::is_latex_output()){
-    knitr::include_graphics("figures/tmview-1.png")
+    knitr::include_graphics("images/tmview-1.png")
 } else if (knitr::is_html_output()){
     # tmap_mode("view")
     # m_tmview = map_nz
     # tmap_save(m_tmview, "tmview-1.html")
-    # file.copy("tmview-1.html", "~/geocompr/geocompr.github.io/static/img/tmview-1.html")
+    # file.copy("tmview-1.html", "../geocompx.org/static/img/tmview-1.html")
     knitr::include_url("https://geocompx.org/static/img/tmview-1.html")
 }
 ```
@@ -797,7 +798,7 @@ tm_shape(world_coffee) + tm_polygons(facets) +
 ```
 
 ```{r sync, message=FALSE, fig.cap="2016年と2017年の世界のコーヒー生産量を同期させたファセット化されたインタラクティブ地図で、tmapのビューモードの動作を実演。", fig.scap="Faceted interactive maps of global coffee production.", echo=FALSE}
-knitr::include_graphics("figures/interactive-facets.png")
+knitr::include_graphics("images/interactive-facets.png")
 ```
 
 同じ機能で **tmap** をプロットモードに戻す。
@@ -814,7 +815,7 @@ mapview::mapview(nz)
 ```
 
 ```{r mapview, message=FALSE, fig.cap="**mapview** の動作イメージ図。", echo=FALSE}
-knitr::include_graphics("figures/mapview.png")
+knitr::include_graphics("images/mapview.png")
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/39979522-e8277398-573e-11e8-8c55-d72c6bcc58a4.png")
 # mv = mapview::mapview(nz)
 # mv@map
@@ -841,11 +842,11 @@ trails |>
 ```
 
 ```{r mapview2, message=FALSE, fig.cap="sf ベースのパイプ式の末尾で **mapview** を使用。", echo=FALSE, warning=FALSE}
-knitr::include_graphics("figures/mapview-example.png")
+knitr::include_graphics("images/mapview-example.png")
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/39979271-5f515256-573d-11e8-9ede-e472ca007d73.png")
 ```
 
-注意点としては、**mapview**のレイヤは `+` 演算子で追加する (**ggplot2** や **tmap** に似ている)。 
+注意点としては、**mapview** のレイヤは `+` 演算子で追加する (**ggplot2** や **tmap** に似ている)。 
 デフォルトでは、**mapview** はユーザーフレンドリーで機能の多い leaflet JavaScript ライブラリを使い、地図を出力する。
 しかし、他のレンダリングライブラリの方がパフォーマンスが良い (巨大なデータでもスムーズ)。
 **mapview** は、レンダリングライブラリ (`"leafgl"` と `"mapdeck"`) を、`mapviewOptions()` で設定することができる。^[巨大なラスタデータの可視化には、`mapviewOptions(georaster = TRUE)` も試してみると良いだろう。]
@@ -885,7 +886,7 @@ mapdeck(style = ms, pitch = 45, location = c(0, 52), zoom = 4) |>
 ```
 
 ```{r mapdeck, echo=FALSE, fig.cap="**mapdeck** によって生成された、イギリス全土の道路交通事故死傷者数を表す地図。1kmのセルの高さは事故件数を表す。", fig.scap="Map generated by mapdeck."}
-knitr::include_graphics("figures/mapdeck-mini.png")
+knitr::include_graphics("images/mapdeck-mini.png")
 ```
 
 ブラウザでは、ズームやドラッグのほか、`Cmd` / `Ctrl` を押すと、地図を回転させたり傾けたりすることができる。
@@ -920,7 +921,7 @@ leaflet(data = cycle_hire) |>
 
 ```{r leaflet, message=FALSE, fig.cap="ロンドン市内の自転車レンタルポイントを紹介した **leaflet** パッケージの実例。インタラクティブ版は[オンライン](https://geocompr.github.io/img/leaflet.html)を参照。", fig.scap="The leaflet package in action.", echo=FALSE}
 if (knitr::is_latex_output() || knitr::is_html_output()){
-  knitr::include_graphics("figures/leaflet-1.png")
+  knitr::include_graphics("images/leaflet-1.png")
 } else {
   # pre-generated for https://github.com/ropensci/stplanr/issues/385
   # pal = colorNumeric("RdYlBu", domain = cycle_hire$nbikes)
@@ -994,7 +995,7 @@ shinyApp(ui, server)
 
 ```{r lifeApp, echo=FALSE, message=FALSE, fig.cap="shiny で作成したWeb地図アプリケーションの最小限の例を示す画面。", fig.scap="Minimal example of a web mapping application."}
 # knitr::include_graphics("https://user-images.githubusercontent.com/1825120/39690606-8f9400c8-51d2-11e8-84d7-f4a66a477d2a.png")
-knitr::include_graphics("figures/shiny-app.png")
+knitr::include_graphics("images/shiny-app.png")
 ```
 
 lifeApp の**ユーザーインターフェース** (`ui`) は `fluidPage()` で作成されている。

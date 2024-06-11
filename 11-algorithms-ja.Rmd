@@ -85,7 +85,7 @@ R スクリプトで再現性を強制するのは難しいが、それを助け
 RStudio\index{RStudio} は、デフォルトで R スクリプトを「コードチェック」し、不具合のあるコードに赤い波線を引く (下図参照)。
 
 ```{r codecheck, echo=FALSE, fig.cap="RStudio でのコード確認の様子。この例は 11-centroid-alg.R スクリプトの 19 行目のカッコが閉じられていないことを示している。", fig.scap="Illustration of 'code checking' in RStudio."}
-knitr::include_graphics("figures/codecheck.png")
+knitr::include_graphics("images/codecheck.png")
 ```
 
 ```{block2 spellcheck, type='rmdnote'}
@@ -422,7 +422,7 @@ identical(poly_centroid_sfg(poly_mat), sf::st_centroid(poly_sfc))
 
 新しいアルゴリズム\index{あるごりずむ@アルゴリズム}を効率的に実装する際の課題は、実運用で使用することを意図していない単純な関数を作成するために費やした作業量を考慮すると、はるかに遠い。現在の状態では、`poly_centroid()` はほとんどの (非凸) ポリゴンで失敗する!
 ここから生じる疑問は、関数\index{かんすう@関数}をどのように一般化するかということである。
-(1) 非凸ポリゴンを三角測量する方法を探す (この章をサポートするオンライン記事 [algorithm](https://geocompx.github.io/geocompkg/articles/algorithm.html) で扱っている話題) と (2) 三角メッシュに依存しない他の重心のアルゴリズムを調べるという2つの選択肢がある。
+(1) 非凸ポリゴンを三角測量する方法を探す (geocompx.github.io/geocompkg/articles/ のオンライン記事 [Algorithms Extended](https://geocompx.github.io/geocompkg/articles/algorithm.html) で扱っている話題) と (2) 三角メッシュに依存しない他の重心のアルゴリズムを調べるという 2 つの選択肢がある。
 
 もっと大きな疑問は、高性能なアルゴリズムがすでに実装され、`st_centroid()` のような関数にパッケージされているのに、ソリューションをプログラミングする価値があるのだろうか、ということである。
 この具体的なケースにおける還元論的な答えは「価値はない」である。
