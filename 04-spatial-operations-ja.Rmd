@@ -1032,7 +1032,7 @@ ndvi_rast = lapp(multi_rast[[c(4, 3)]], fun = ndvi_fun)
 これにより、NDVI 値が最も大きいのは北部の密林地帯、最も低いのは北部の湖と雪山の尾根に関連していることがわかる。
 
 ```{r 04-ndvi, echo=FALSE, fig.cap="ザイオン国立公園の衛星ファイルの例で計算されたRGB画像 (左) とNDVI値 (右) "}
-knitr::include_graphics("figures/04-ndvi.png")
+knitr::include_graphics("images/04-ndvi.png")
 ```
 
 予測マッピングも、ローカルラスタ操作の興味深い応用例である。
