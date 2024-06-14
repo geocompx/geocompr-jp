@@ -283,7 +283,7 @@ union_arguments
 最初の `INPUT` は、主なベクタオブジェクト `incongr_wgs` であり、2 番目の `OVERLAY` は、`aggzone_wgs` である。
 最後の引数、`OUTPUT` は出力ファイル名だが、指定されていない場合、**qgisprocess** は自動的に `tempdir()` に一時ファイルを作成する。
 
-```{r 09-gis-7, eval=has_qgis_plugins}
+```{r 09-gis-7, eval=FALSE}
 union = qgis_run_algorithm(alg,
   INPUT = incongr_wgs, OVERLAY = aggzone_wgs
 )
