@@ -286,7 +286,7 @@ knitr::kable(top_dls[1:5, 1:2], digits = 0,
 # cranlogs::cran_top_downloads(when = "last-month") # most downloaded pkgs
 ```
 
-## R-spatial の歴史  {#the-history-of-r-spatial}
+## R-spatial の歴史  {#history-of-r-spatial}
 
 最新の空間パッケージである **sf** を使うメリットはたくさんあるが、R の空間機能の歴史を知っておくことも重要である。
 古いパッケージには機能、ユースケース、教材が多いため、今でも十分役に立つ。
