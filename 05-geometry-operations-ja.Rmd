@@ -154,11 +154,11 @@ seine_pos = st_point_on_surface(seine)
 ```
 
 ```{r centr, warning=FALSE, echo=FALSE, fig.cap="New Zealand の地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「サーフェス上の点」(赤い点)。", fig.scap="Centroid vs point on surface operations.", dev="ragg_png"}
-p_centr1 = tm_shape(nz) + tm_polygons(col = "grey80", fill = "grey90") +
+p_centr1 = tm_shape(nz) + tm_polygons(col = "gray80", fill = "gray90") +
   tm_shape(nz_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
   tm_shape(nz_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
   tm_layout(scale = 1.6)
-p_centr2 = tm_shape(seine) + tm_lines(col = "grey80") +
+p_centr2 = tm_shape(seine) + tm_lines(col = "gray80") +
   tm_shape(seine_centroid) + tm_symbols(shape = 1, col = "black", size = 0.5) +
   tm_shape(seine_pos) + tm_symbols(shape = 1, col = "red", size = 0.5) +
   tm_add_legend(type = "symbols", shape = 1, col = c("black", "red"), 
@@ -300,7 +300,7 @@ rotation = function(a){
 } 
 ```
 
-`rotation` 関数は、1 つの引数 `a` - 回転角度 (angle) を度単位で受け取る。
+`rotation` 関数は、1 つの引数 `a` (回転角度, angle) を度単位で受け取る。
 重心のような選択された点を中心に回転させることができる (Figure \@ref(fig:affine-trans) 右図)。
 その他の例については、`vignette("sf3")` を参照 (訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html))。
 
@@ -308,7 +308,7 @@ rotation = function(a){
 nz_rotate = (nz_sfc - nz_centroid_sfc) * rotation(30) + nz_centroid_sfc
 ```
 
-```{r affine-trans, echo=FALSE, fig.cap="アフィン変換 (平行移動、拡大縮小、回転) の図解。", warning=FALSE, eval=TRUE, fig.scap="Illustrations of affine transformations.", dev="ragg_png"}
+```{r affine-trans, echo=FALSE, fig.cap="アフィン変換 (平行移動、拡大縮小、回転)。", warning=FALSE, eval=TRUE, fig.scap="Affine transformations.", dev="ragg_png"}
 st_crs(nz_shift) = st_crs(nz_sfc)
 st_crs(nz_scale) = st_crs(nz_sfc)
 st_crs(nz_rotate) = st_crs(nz_sfc)
@@ -359,7 +359,7 @@ nz_scale_sf = st_set_geometry(nz, nz_scale)
 op = par(mar = rep(0, 4))
 b = st_sfc(st_point(c(0, 1)), st_point(c(1, 1))) # 点を二つ作成
 b = st_buffer(b, dist = 1) # 点を円に変換
-plot(b, border = "grey")
+plot(b, border = "gray")
 text(x = c(-0.5, 1.5), y = 1, labels = c("x", "y"), cex = 3) # テキストを追加
 ```
 
@@ -375,8 +375,8 @@ op = par(mar = rep(0, 4))
 x = b[1]
 y = b[2]
 x_and_y = st_intersection(x, y)
-plot(b, border = "grey")
-plot(x_and_y, col = "lightgrey", border = "grey", add = TRUE) # 範囲を intersect
+plot(b, border = "gray")
+plot(x_and_y, col = "lightgray", border = "gray", add = TRUE) # 範囲を intersect
 ```
 
 ```{r, echo=FALSE}
@@ -405,9 +405,9 @@ box = st_as_sfc(bb)
 set.seed(2024)
 p = st_sample(x = box, size = 10)
 p_xy1 = p[x_and_y]
-plot(box, border = "grey", lty = 2)
-plot(x, add = TRUE, border = "grey")
-plot(y, add = TRUE, border = "grey")
+plot(box, border = "gray", lty = 2)
+plot(x, add = TRUE, border = "gray")
+plot(y, add = TRUE, border = "gray")
 plot(p, add = TRUE, cex = 3.5)
 plot(p_xy1, cex = 5, col = "red", add = TRUE)
 text(x = c(-0.5, 1.5), y = 1, labels = c("x", "y"), cex = 3)
@@ -457,9 +457,9 @@ pmulti = st_multipoint(pmat)
 box = st_convex_hull(pmulti)
 ```
 
-上記の例は、応用というより教育的な目的で作成されたものであり、読者には、R で地理的なベクタオブジェクトを扱うための理解を深めるために結果を再現することを勧める。しかし、これは、どの実装を使うべきかという重要な問題を提起している。
-一般に、より簡潔な実装が好まれるはずで、上記の最初のアプローチを意味する。
-同じ技術やアルゴリズムの異なる実装を選択する問題については、Chapter \@ref(algorithms) に戻る。
+上記の例は、応用というより教育的な目的で作成されたものであり、R で地理的ベクタオブジェクトを扱うための理解を深めるために結果を再現することを勧める。しかし、これは、どの実装を使うべきかという重要な問題を提起している。
+一般に、上記の最初のアプローチのような簡潔な実装が好まれる。
+Chapter \@ref(algorithms) では、同じ技術やアルゴリズムの異なる実装を選択する問題に戻る。
 
 ### ジオメトリ結合  {#geometry-unions}
 
@@ -607,10 +607,10 @@ names(sfs_st_cast)[1] = ""
 knitr::kable(sfs_st_cast, 
              caption = paste("シンプルフィーチャジオメトリ", 
                              " (Section 2.1 参照) に対する", 
-                             "入力型は行、出力型は列で指定"),
+                             "入力型は行、出力型は列で指定。"),
              caption.short = "Geometry casting on simple feature geometries.",
              booktabs = TRUE) |> 
-  kableExtra::add_footnote("注: (1) という値はフィーチャ数を表し、NA は操作が不可能なことを表す。", notation = "none")
+  kableExtra::add_footnote("注: 括弧内の値はフィーチャ数を表し、NA は操作が不可能なことを表す。", notation = "none")
 ```
 
 例として、新しいオブジェクトである `multilinestring_sf` にジオメトリタイプの変換を適用してみよう (Figure \@ref(fig:line-cast) の左側)。
@@ -634,7 +634,7 @@ linestring_sf2 = st_cast(multilinestring_sf, "LINESTRING")
 linestring_sf2
 ```
 
-```{r line-cast, echo=FALSE, fig.cap="MULTILINESTRING (左) とLINESTRING (右) 間の型キャストの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE, dev="ragg_png"}
+```{r line-cast, echo=FALSE, fig.cap="複合線 (左) と線 (右) 間の型キャストの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE, dev="ragg_png"}
 p_lc1 = tm_shape(multilinestring_sf) + tm_lines(lwd = 3) +
   tm_title("複合線") + tm_layout(fontfamily = "HiraginoSans-W3")
 linestring_sf2$name = c("Riddle Rd", "Marshall Ave", "Foulke St")
@@ -799,10 +799,10 @@ Table \@ref(tab:aggdf) は、オリジナルと集計後の比較である。
 ```{r aggdf}
 #| echo: false
 agg_df = data.frame(
-  object = c("dem", "dem_agg"),
-  resolution = c("(30.85, 30.85)", "(154.25, 154.25)"),
-  dimensions = c("117 x 117", "24 x 24"),
-  extent = c("794599.1, 798208.6, 8931775, 8935384", "794599.1, 798301.1, 8931682, 8935384")
+  Object = c("dem", "dem_agg"),
+  Resolution = c("(30.85, 30.85)", "(154.25, 154.25)"),
+  Dimensions = c("117 * 117", "24 * 24"),
+  Extent = c("794599.1, 798208.6, 8931775, 8935384", "794599.1, 798301.1, 8931682, 8935384")
 )
 knitr::kable(agg_df, caption = "Properties of the original and aggregated raster.", booktabs = TRUE)
 ```
@@ -810,7 +810,7 @@ knitr::kable(agg_df, caption = "Properties of the original and aggregated raster
 \index{らすた@ラスタ!ぶんかい@分解}
 `disagg()` 関数は、ラスタオブジェクトの解像度を上げ、新しく作成されたセルに値を割り当てるための 2 つの方法を提供する。
 新たに生成されたセルの値を計算する方法は 2 つある。デフォルトの方法 (`method = "near"`) は、すべての出力セルに入力セルの値を与えるだけなので、値が重複し、「ブロック状の」出力となる。
-`bilinear` 法は、入力画像の 4 つの最近接画素中心 (Figure \@ref(fig:bilinear) のサーモン色の点) を用いて、距離で重み付けした平均値を計算する (Figure \@ref(fig:bilinear) の矢印)。
+`bilinear` 法は、入力画像の 4 つの最近接画素中心 (Figure \@ref(fig:bilinear) のオレンジ色の点) を用いて、距離で重み付けした平均値を計算する (Figure \@ref(fig:bilinear) の矢印)。
 出力セルの値は、左上の四角で表現される (Figure \@ref(fig:bilinear))。
 
 ```{r 05-geometry-operations-41}
@@ -873,11 +873,11 @@ tmap_arrange(tm1, tm2, tm3, nrow = 1)
 Figure \@ref(fig:resampl) に示すように、解像度/原点の異なるラスタの値を推定する方法はいくつかある。
 主なリサンプリング方法には、以下のようなものがある。
 
-- 最近傍 (Nearest neighbor): 元のラスタの最も近いセルの値を、ターゲットのセルに割り当てる。これは高速でシンプルな手法で、通常、カテゴリラスタのリサンプリングに適している
-- 双一次補間 (Bilinear interpolation): 元のラスタから 4 つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である
-- 三次補間 (Cubic interpolation): 3 次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる
-- 三次スプライン補間 (Cubic spline interpolation): 出力セルを決定するために元のラスタの 16 個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される
-- ランチョスリサンプリング (Lanczos windowed sinc resampling): 出力セルの値を決定するために、元のラスタの 36 個の最近接セルの値を使用する。連続的なラスタに使用される^[
+- 最近傍 (Nearest neighbor): 元のラスタの最も近いセルの値を、ターゲットのセルに割り当てる。これは高速でシンプルな手法で、通常、カテゴリラスタのリサンプリングに適している。
+- 双一次補間 (Bilinear interpolation): 元のラスタから 4 つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure \@ref(fig:bilinear))。これは、連続したラスタに適した最も高速な方法である。
+- 三次補間 (Cubic interpolation): 3 次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる。
+- 三次スプライン補間 (Cubic spline interpolation): 出力セルを決定するために元のラスタの 16 個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される。
+- ランチョスリサンプリング (Lanczos windowed sinc resampling): 出力セルの値を決定するために、元のラスタの 36 個の最近接セルの値を使用する。連続的なラスタに使用される。^[
 この方法の詳細な説明は、https://gis.stackexchange.com/a/14361/20955。
 ]
 
@@ -946,7 +946,7 @@ tmap_arrange(tm1, tm2, tm3, tm4, tm5, tm6)
 `sum` を使用した効果として、リサンプルされたラスタは元のラスタと同じサンプル総数を持つはずである。
 
 \index{らすた@ラスタ!りさんぷりんぐ@リサンプリング}
-ラスタの再投影はリサンプリングの特殊なケースで、対象ラスタが元のラスタと異なる CRS を持つ場合に行われる。
+Section \@ref(reproj-ras) で見るように、ラスタの再投影はリサンプリングの特殊なケースで、対象ラスタが元のラスタと異なる CRS を持つ場合に行われる。
 
 \index{GDAL}
 ```{block2 type='rmdnote'}
@@ -961,7 +961,7 @@ tmap_arrange(tm1, tm2, tm3, tm4, tm5, tm6)
 - `gdal_rasterize` - ベクタデータからラスタファイルへの変換
 - `gdalwarp` - ラスタのモザイク処理、リサンプリング、切り取り、再投影が可能
 
-上記のすべての関数は C++ で書かれているが、**gdalUtilities** パッケージを使用して R で呼び出すことができる。
+上記のすべての関数は C++ で書かれているが、**gdalUtilities** パッケージを使用して R で呼び出すことができる (Section \@ref(gdal) 参照)。
 GDAL の関数はすべてラスタファイルのパスを入力として受け取り、その出力をラスタファイルとして返す (例えば、 `gdalUtilities::gdal_translate("my_file.tif", "new_file.tif", t_srs = "EPSG:4326")`)。
 これは、入力として `SpatRaster` オブジェクトを想定している **terra** のアプローチとは大きく異なる。
 ```
