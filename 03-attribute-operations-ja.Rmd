@@ -29,7 +29,7 @@ library(spData) # Chapter 2 で紹介した空間データパッケージ
 \index{ぞくせい@属性}
 属性データとは、地理 (ジオメトリ) データに関連する空間以外の情報である。
 バス停を例にとると、その位置は通常、名称に加えて緯度・経度の座標 (ジオメトリデータ) で表現される。
-例えば、ロンドンの [Elephant & Castle / New Kent Road](https://www.openstreetmap.org/relation/6610626) の停留所の座標は、経度 -0.098 度、緯度 51.495 度で、Chapter \@ref(spatial-class) で説明した `sfc` の表現では `POINT (-0.098 51.495)` と表すことができる。
+例えば、London の [Elephant & Castle / New Kent Road](https://www.openstreetmap.org/relation/6610626) の停留所の座標は、経度 $-0.098$ 度、緯度 51.495 度で、Chapter \@ref(spatial-class) で説明した `sfc` の表現では `POINT (-0.098 51.495)` と表すことができる。
 この章のトピックは、POINT フィーチャの属性\index{ぞくせい@属性}のうち、*name* のような名称の属性 (シンプルフィーチャの用語を使用する) である。
 
 ```{r, eval=FALSE, echo=FALSE}
@@ -71,8 +71,7 @@ Chapter \@ref(spatial-operations) は、ここで紹介した方法を空間的�
 ## ベクタ属性操作  {#vector-attribute-manipulation}
 
 \index{ぞくせい@属性}
-`sf` クラスは、R の基本クラスの `data.frame` を拡張したものである。
-R はこれを利用して地理ベクタデータセットをサポートしている。
+地理ベクタデータセットは、R の基本クラスの `data.frame` を拡張した `sf` クラスにより対応されている。
 `sf` オブジェクトはデータフレームのように、属性変数 ('name'など) ごとに 1 列、観察または <u>フィーチャ</u> (たとえば、バス停ごと) ごとに 1 行を持つ。
 `sf` オブジェクトは基本的なデータフレームとは異なり、`sfc` クラス の `geometry` 列を持ち、1 行にさまざまな地理的実体 (「複合でない」および「複合」点、線、ポリゴン) を含むことができる。
 Chapter \@ref(spatial-class) では、`plot()` や `summary()` などの<u>ジェネリック関数</u>が `sf` オブジェクトでどのように動作するかを示した。
@@ -95,7 +94,7 @@ attributes(methods(class = "sf"))$info |>
 ```
 
 これらの多く (`aggregate()`、`cbind()`、`merge()`、`rbind()`、`[`) は、データフレームを操作するためのものである。
-例えば、`rbind()` は、2つのデータフレームの行を「上下に」結合する。
+例えば、`rbind()` は、2 つのデータフレームの行を「上下に」結合する。
 `$<-` は、新しい列を作成する。 
 `sf` オブジェクトの大きな特徴は、空間データと非空間データを同じように、`data.frame` の列として格納することである。
 
@@ -144,7 +143,7 @@ R の基本的な部分集合 (subset) の作成方法には、演算子 `[` と
 **dplyr** の関数では、行の部分集合作成には `filter()` と `slice()` があり、列の部分集合作成には `select()` がある。
 どちらのアプローチも `sf` オブジェクトの属性データの空間成分を保持する。一方、演算子 `$` や **dplyr** 関数 `pull()` を使って単一の属性列をベクトルとして返すと、これから説明するようにジオメトリデータが失われる。
 \index{ぞくせい@属性!ぶぶんしゅうごう@部分集合}
-このセクションでは、`sf` データフレームの部分集合作成に焦点を当てている。ベクトルや非地理データフレームの部分集合に関する詳細については、An Introduction to R [@rcoreteam_introduction_2021] の Chapter [2.7](https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Index-vectors) と Advanced R Programming [@wickham_advanced_2019]  の Chapter [4](https://adv-r.hadley.nz/subsetting.html) を勧める。
+このセクションでは、`sf` データフレームの部分集合作成に焦点を当てている。ベクトルや非地理データフレームの部分集合に関する詳細については、*An Introduction to R* [@rcoreteam_introduction_2021] の Section [2.7](https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Index-vectors) と *Advanced R Programming* [@wickham_advanced_2019]  の Chapter [4](https://adv-r.hadley.nz/subsetting.html) を勧める。
 
 \index{ぞくせい@属性!ぶぶんしゅうごう@部分集合}
 `[` 演算子は、行と列の両方から部分集合を作成 (抽出) することができる。 
@@ -198,7 +197,7 @@ Base R 関数は成熟し安定しており、また広く使用されている�
 データフレームの部分集合化する主要な関数 (`sf` データフレームを含む) を **dplyr** 関数で以下に示す。
 
 ```{r, echo=FALSE, eval=FALSE}
-# Aim: benchmark base vs dplyr subsetting
+# Aim: benchmark base vs. dplyr subsetting
 # Could move elsewhere? 
 i = sample(nrow(world), size = 10)
 benchmark_subset = bench::mark(
@@ -308,9 +307,8 @@ operators_exp = c("等号", "不等号", "より大きい・小さい",
                   "以上・以下", 
                   "論理学のかつ、または、ではない")
 knitr::kable(tibble(Symbol = operators, Name = operators_exp), 
-             caption = paste("論理値 (TRUE/FALSE)",
-                             "を返す比較演算。"),
-             caption.short = "Comparison operators that return Booleans.",
+             caption = "論理値 (true/false) を返す比較演算。",
+             caption.short = "Comparison operators.",
              booktabs = TRUE)
 ```
 
@@ -382,7 +380,8 @@ nrow(world_agg2)
 結果として `world_agg2` オブジェクトは、世界の大陸 (および外洋) を表す 8 つのフィーチャを含む空間オブジェクトとなる。
 
 \index{ぞくせい@属性!しゅうけい@集計}
-`group_by() |> summarize()` は `aggregate()` の **dplyr** 版で、 `group_by()` 関数で指定した変数名でグループ化変数を指定し、 `summarize()` 関数に要約する内容の情報を渡す。コード例は以下の通り。
+`group_by() |> summarize()` は `aggregate()` の **dplyr** 版である。
+グループ化する変数は `group_by()` 関数で指定し、集約式は `summarize()` 関数に渡す。コード例は以下の通り。
 
 ```{r 03-attribute-operations-28}
 world_agg3 = world |>
@@ -406,13 +405,13 @@ world_agg4  = world |>
 \index{ぞくせい@属性!ぶぶんしゅうごう@部分集合}
 \index{ぞくせい@属性!しゅうけい@集計}
 これまで学んだ **dplyr** 関数を組み合わせて、複数のコマンドを連結し、世界の国々の属性データを大陸別にまとめてみよう。
-次のコマンドは、人口密度を計算し (`mutate()`)、大陸を含む国の数で並べ (`arrange()`)、最も人口の多い3大陸だけを残し (`slice_max()`)、その結果を Table \@ref(tab:continents) に表示する。
+次のコマンドは、人口密度を計算し (`mutate()`)、大陸を含む国の数で並べ (`arrange()`)、最も人口の多い 3 大陸だけを残し (`slice_max()`)、その結果を Table \@ref(tab:continents) に表示する。
 
 ```{r 03-attribute-operations-30}
 world_agg5 = world |> 
   st_drop_geometry() |>                      # 速くするためジオメトリを削除
   select(pop, continent, area_km2) |> # 関心ある列のみの部分集合
-  group_by(continent) |>                     # 大陸でグループ化し要約
+  group_by(Continent = continent) |> # 大陸でグループ化し要約
   summarize(Pop = sum(pop, na.rm = TRUE), Area = sum(area_km2), N = n()) |>
   mutate(Density = round(Pop / Area)) |>     # 人口密度を計算
   slice_max(Pop, n = 3) |>                   # 上位３件のみ
@@ -424,7 +423,7 @@ options(scipen = 999)
 knitr::kable(
   world_agg5,
   caption = "人口の多い 3 大陸を国数で並べ替えて表示。",
-  caption.short = "Top 3 most populous continents.",
+  caption.short = "Top three most populous continents.",
   booktabs = TRUE
 )
 ```
@@ -641,7 +640,7 @@ class(world_data)
 ## ラスタオブジェクトを操作  {#manipulating-raster-objects}
 
 シンプルフィーチャであるベクタデータ (点、線、ポリゴンを空間上の離散的な実体として表現する) とは対照的に、ラスタデータは連続的な面を表現する。
-このセクションでは、ラスタオブジェクトの動作を、Section \@ref(an-introduction-to-terra) を基に<u>ゼロから</u>作成することによって説明する。
+このセクションでは、ラスタオブジェクトの動作を、Section \@ref(introduction-to-terra) を基に<u>ゼロから</u>作成することによって説明する。
 ラスタデータセットはユニークな構造のため、Section \@ref(raster-subsetting) で示すように、部分集合の作成やその他の操作は異なる。
 
 \index{らすた@ラスタ!そうさ@操作}
