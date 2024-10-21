@@ -34,7 +34,7 @@ library(spData)
 多くのアプリケーションに不可欠なマップ代数の概念は、Section \@ref(map-algebra) で紹介している。ローカル、フォーカル、ゾーンのマップ代数演算については、それぞれ Section \@ref(local-operations)、Section \@ref(focal-operations)、Section \@ref(zonal-operations) のセクションで解説している。
 ラスタデータセット全体を表す要約統計量を生成するグローバルマップ代数操作と、ラスタの距離計算については、Section \@ref(global-operations-and-distances) で説明する。
 次に、地図代数とベクタ操作を Section \@ref(map-algebra-counterparts-in-vector-processing) で議論する。
-演習の前の最後の章では、2 つのラスタデータセットを合成する方法について説明し、再現可能な例を挙げて実演している。
+Section \@ref(merging-rasters),1 では、2 つのラスタデータセットを合成する方法について説明し、再現可能な例を挙げて実演している。
 
 ```{block2 04-spatial-operations-2, type='rmdnote'}
 2つの空間オブジェクトを使用する空間操作は、両方のオブジェクトが同じ座標参照系を持つことに依存することに留意する。この点については、Section \@ref(crs-intro) で紹介し、Chapter \@ref(reproj-geo-data) でさらに詳しく解説する。
@@ -62,7 +62,7 @@ canterbury = nz |> filter(Name == "Canterbury")
 canterbury_height = nz_height[canterbury, ]
 ```
 
-```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="赤い三角形はNew Zealand の 101 の High Point を表し、中央のカンタベリー地域付近に集まっている (左)。カンタベリーのポイントは、`[` 部分集合演算子で作成された (グレーでハイライト、右)。", fig.scap="Illustration of spatial subsetting.", message=FALSE, dev="ragg_png"}
+```{r nz-subset, echo=FALSE, warning=FALSE, fig.cap="赤い三角形はNew Zealand の 101 の High Point を表し、中央のカンタベリー地域付近に集まっている (左)。カンタベリーのポイントは、`[` 部分集合演算子で作成された (グレーでハイライト、右)。", fig.scap="Spatial subsetting.", message=FALSE, dev="ragg_png"}
 library(tmap)
 p_hpnz1 = tm_shape(nz) + 
   tm_polygons(fill = "white") +
@@ -154,7 +154,7 @@ waldo::compare(canterbury_height2, canterbury_height4)
 
 位相関係\index{いそうかんけい@位相関係}は、オブジェクト間の空間的な関係を表す。
 「二項位相関係」 (binary topological relationships) とは、2 次元以上の点 (一般的には点、線、ポリゴン) の順序集合で定義される 2 つの物体間の空間関係について論理的に記述したもの (答えは `TRUE` か `FALSE` しかない) である [@egenhofer_mathematical_1990]。
-このように言うと、かなり抽象的に聞こえるだろうが、実際、位相関係の定義と分類は、1966年に初めて書籍として出版された数学的基礎に基づいている [@spanier_algebraic_1995]。 代数的位相幾何学の分野は21世紀まで続いている [@dieck_algebraic_2008]。
+このように言うと、かなり抽象的に聞こえるだろうが、実際、位相関係の定義と分類は、1966年に初めて書籍として出版された数学的基礎に基づいている [@spanier_algebraic_1995]。 代数的位相幾何学の分野は2000年以降も続いている [@dieck_algebraic_2008]。
 
 位相関係は数学的な起源を持つが、一般的な空間的関係をテストするためによく使われる関数を視覚化することで、直感的に理解することが可能である。
 Figure \@ref(fig:relations) は、様々なジオメトリペアとその関連性を示している。
@@ -340,7 +340,7 @@ st_distance(nz_height[1:3, ], co)
 ```
 
 `nz_height` の 2 番目と 3 番目のフィーチャーと `co` の 2 番目のフィーチャ間の距離はゼロであることに注意。
-これは、点と多角形の間の距離は、ポリゴンの<u>任意の部分</u> までの距離を指すという事実を示している: 
+これは、点と多角形の間の距離は、ポリゴンの<u>任意の部分</u> までの距離を指すという事実を示している。
 `nz_height` の 2 番目と 3 番目の点は Otago の<u>中</u>にあり、プロットすることで確認できる (結果は示していない)。
 
 ```{r 04-spatial-operations-33, eval=FALSE}
@@ -391,7 +391,7 @@ text(x = c(-0.5, 1.5), y = 1, labels = c("x", "y")) # add text
 DE-9IM 文字列がどのように機能するかを示すために、Figure \@ref(fig:relations) の最初のジオメトリペアの様々な関連性を見てみよう。
 Figure \@ref(fig:de9imgg) は、各オブジェクトの内部、境界、外部のあらゆる組み合わせの交点を示す 9 交差点モデル (9IM) を示している。最初のオブジェクト `x` の各コンポーネントを列とし、`y` の各コンポーネントを行として配置すると、各要素間の交点が強調されたファセット図形が作成される。
 
-```{r de9imgg, echo=FALSE, warning=FALSE, fig.cap="Dimensionally Extended 9 Intersection Model (DE-9IM) の仕組みを説明する図。凡例にない色は、異なる構成要素間の重なりを表している。太い線は2次元の交わりを強調する。例えば、オブジェクト x の境界とオブジェクト y の内部の交わりは、中央上部のファセットで示されている。", message=FALSE}
+```{r de9imgg, echo=FALSE, warning=FALSE, fig.cap="次元拡張 9 交差モデル (Dimensionally Extended 9 Intersection Model, DE-9IM) の仕組みを説明する図。凡例にない色は、異なる構成要素間の重なりを表している。太い線は2次元の交わりを強調する。例えば、オブジェクト x の境界とオブジェクト y の内部の交わりは、中央上部のファセットで示されている。", message=FALSE}
 p1_2 = st_as_sf(c(p1, p3))
 ii = st_as_sf(st_intersection(p1, p3))
 ii$Object = "Intersection"
@@ -504,16 +504,16 @@ matrix_de_9im = function(pattern) {
 m = matrix_de_9im(pattern)
 colnames(m) = c("Interior (x)", "Boundary (x)", "Exterior (x)")
 rownames(m) = c("Interior (y)", "Boundary (y)", "Exterior (y)")
-knitr::kable(m, caption = "ジオメトリ x、y の内部、境界、外部の関係を示す表。")
+knitr::kable(m, caption = "ジオメトリ x、y の内部、境界、外部の関係。")
 ```
 
 この行列を「行単位」で一列にすると (つまり、1 行目、2 行目、3 行目の順に連結する)、文字列 `212111212` が得られる。
 もうひとつの例で、このシステムを紹介する。
 Figure \@ref(fig:relations) に示す関係 (3 列目 1 行目のポリゴンペア) は、DE-9IM システムでは以下のように定義できる。
 
-- 大きなオブジェクト `x` の<u>内部</u>と `y` の内部、境界、外部との交点は、それぞれ 2、1、2 の寸法を持つ
+- 大きなオブジェクト `x` の<u>内部</u>と `y` の内部、境界、外部との交点は、それぞれ 2、1、2 の次元を持つ
 - 大きなオブジェクト `x` の<u>境界</u>と `y` の内部、境界、外部との交点はそれぞれ F、F、1 の次元を持ち、ここで 'F' は 'false' を意味し、オブジェクトは不連続である
-- `x` の<u>外部</u>と `y` の内部、境界、外部との交点はそれぞれ F、F、2 の寸法を持つ。大きなオブジェクトの外部は `y` の内部や境界に接触しないが、小さなオブジェクトと大きなオブジェクトの外部は同じ面積をカバーする
+- `x` の<u>外部</u>と `y` の内部、境界、外部との交点はそれぞれ F、F、2 の次元を持つ。大きなオブジェクトの外部は `y` の内部や境界に接触しないが、小さなオブジェクトと大きなオブジェクトの外部は同じ面積をカバーする
 
 これら 3 つの構成要素を連結すると、文字列 `212` , `FF1` , `FF2` が作成される。
 これは、関数 `st_relate()` で得られた結果と同じである ( Figure \@ref(fig:relations) の他の形状がどのように作成されたかは、この章のソースコードを参照されたい)。
@@ -526,8 +526,8 @@ st_relate(x, y)
 ```
 
 DE-9IM 文字列を理解することで、新しい二値空間述語を開発することができる。
-ヘルプページ `?st_relate` では、チェスの駒を利用して、ポリゴンが境界を共有する「クイーン」 (queen) と点のみを共有する「ルーク」 (rook、将棋でいう飛車と同じ動き) 関係に対する関数定義がそれぞれ記載されている。
-「クイーン」の関係は、「境界-境界」の関係 (Table \@ref(tab:de9emtable) の2列目と2行目のセル、または DE-9IM 文字列の5番目の要素) が空であってはならないという意味で、パターン `F***T****` に対応し、「ルーク」の関係では同じ要素が1でなければならない (線形交点を意味する) ことを意味している。
+ヘルプページ `?st_relate` では、チェスの駒を利用して、ポリゴンが境界を共有する「クイーン」 (queen) と点のみを共有する「ルーク」 (rook、将棋でいう飛車と同じ動き、ただし隣接するセルのみ) 関係に対する関数定義がそれぞれ記載されている。
+「クイーン」の関係は、「境界-境界」の関係 (Table \@ref(tab:de9emtable) の 2 列目と 2 行目のセル、または DE-9IM 文字列の 5 番目の要素) が空であってはならないという意味で、パターン `F***T****` に対応し、「ルーク」の関係では同じ要素が 1 でなければならない (線形交点を意味する) ことを意味している (Figure \@ref(fig:queens) 参照)。
 これらは以下のように実装されている。
 
 ```{r}
@@ -634,7 +634,7 @@ random_points = random_df |>
   st_as_sf(coords = c("x", "y"), crs = "EPSG:4326") # 座標と CRC を設定
 ```
 
-Figure \@ref(fig:spatial-join) で示したシナリオでは、`random_points` オブジェクト (左上) には属性データがないのに対し、`world`  (右上) には凡例で示した国名のサンプルを含む属性があることがわかる。
+Figure \@ref(fig:spatial-join) で示したシナリオでは、`random_points` オブジェクト (左上) には属性データがないのに対し、`world` (右上) には凡例で示した国名のサンプルを含む属性があることがわかる。
 空間結合は、以下のコードチャンクに示すように、`st_join()` で実装されている。
 出力は、`random_joined` のオブジェクトで、Figure \@ref(fig:spatial-join)  (左下) に図示されている。
 結合データセットを作成する前に、空間部分集合を用いて、ランダムな点を含む国だけを含む `world_random` を作成し、結合データセットで返される国名の数が4であることを検証している ( Figure \@ref(fig:spatial-join) 右上)。
@@ -795,7 +795,7 @@ plot(nz_agg2)
 これは、Figure \@ref(fig:areal-example) で説明されている空間集約 (およびその他の空間操作) において問題となる。各サブゾーンの重心を集約すると、正確な結果を得ることができない。
 面積補間は、単純な面積加重法や「ピクノフィラティック」 (pycnophylactic) 法などのより洗練されたアプローチを含む様々なアルゴリズムを使用して、1 セットの面積単位から別の単位に値を転送することによってこの問題を克服している [@tobler_smooth_1979]。
 
-```{r areal-example, echo=FALSE, fig.cap="大きな凝集帯 (半透明の青い枠) に対して、一致する面単位 (左) と不一致する面単位 (右) を示した図。", fig.asp=0.33, fig.scap="Illustration of congruent and incongruent areal units."}
+```{r areal-example, echo=FALSE, fig.cap="大きな凝集帯 (半透明の青い枠) に対して、一致する面単位 (左) と不一致する面単位 (右)。", fig.asp=0.33, fig.scap="Illustration of congruent and incongruent areal units."}
 source("code/04-areal-example.R", print.eval = TRUE)
 ```
 
@@ -855,7 +855,7 @@ elev[clip]
 
 これは、Figure \@ref(fig:raster-subset) に示すように、2 番目のラスタ (ここでは `clip`) の範囲内にある最初のラスタオブジェクト (この場合は `elev`) の値を取得することになる。
 
-```{r raster-subset, echo = FALSE, fig.cap = "元のラスタ (左)。ラスタマスク (中)。ラスタをマスクした出力 (右)。", fig.scap="Subsetting raster values."}
+```{r raster-subset, echo = FALSE, fig.cap = "元のラスタ (左)、ラスタマスク (中)、ラスタをマスクした出力 (右)。", fig.scap="Subsetting raster values."}
 knitr::include_graphics("images/04_raster_subset.png")
 ```
 
@@ -981,7 +981,7 @@ Chapter \@ref(location) では、いくつかの追加的な再分類を実施�
 正規化差分植生指数 (normalized difference vegetation index, NDVI) の算出は、よく知られたローカル (ピクセル単位) のラスタ処理である。
 正の値は生きた植物が存在することを示す(ほとんどが 0.2 以上)。
 NDVI は、Landsat や Sentinel などの衛星システムから得られるリモートセンシング画像の赤色および近赤外 (near-infrared、NIR) バンドから算出されるものである。
-植物は可視光線、特に赤色光を強く吸収し、近赤外光を反射する。以下は、NVDI の式である。
+植物は可視光線、特に赤色光を強く吸収し、近赤外光を反射する。以下は、NDVI の式である。
 
 $$
 \begin{split}
@@ -1004,8 +1004,9 @@ multi_rast = rast(multi_raster_file)
 multi_rast = (multi_rast * 0.0000275) - 0.2
 ```
 
-適切な値は 0 から 1 の範囲にあるはずである。
-ここから外れている原因は、おそらく雲やその他の大気の影響によるものだと思われる。
+適切な値は 0 から 1 の範囲になければならない。
+実際には範囲外のデータがあるが、その原因はおそらく雲やその他の大気の影響によるものだと思われる。
+以下の通り、負値を 0 に置き換える。
 
 ```{r}
 multi_rast[multi_rast < 0] = 0
@@ -1031,7 +1032,7 @@ ndvi_rast = lapp(multi_rast[[c(4, 3)]], fun = ndvi_fun)
 その結果を右図 (Figure \@ref(fig:04-ndvi) ) に示すように、同じ領域の RGB 画像 (同図の左図) と比較することができる。
 これにより、NDVI 値が最も大きいのは北部の密林地帯、最も低いのは北部の湖と雪山の尾根に関連していることがわかる。
 
-```{r 04-ndvi, echo=FALSE, fig.cap="ザイオン国立公園の衛星ファイルの例で計算されたRGB画像 (左) とNDVI値 (右) "}
+```{r 04-ndvi, echo=FALSE, fig.cap="Zion 国立公園の衛星ファイルの例で計算された RGB 画像 (左) と NDVI 値 (右) "}
 knitr::include_graphics("images/04-ndvi.png")
 ```
 
@@ -1058,7 +1059,7 @@ R では、`focal()` 関数で空間フィルタリングを行うことがで�
 r_focal = focal(elev, w = matrix(1, nrow = 3, ncol = 3), fun = min)
 ```
 
-この関数は、例えば、プロセス中の NA を削除すべきか (`na.rm = TRUE`)、しないか (`na.rm = FALSE`) などの追加引数も受け付ける。
+`main()` 関数は、プロセス中の NA を削除すべきか (`na.rm = TRUE`)、しないか (`na.rm = FALSE` こちらがデフォルト) などの追加引数も受け付ける。
 
 ```{r focal-example, echo = FALSE, fig.cap = "焦点演算による入力ラスタ (左) と出力ラスタ (右) -3×3の移動窓で最小値を求める。", fig.scap="Illustration of a focal operation."}
 knitr::include_graphics("images/04_focal_example.png")
@@ -1068,11 +1069,11 @@ knitr::include_graphics("images/04_focal_example.png")
 この例では、最小値は常に移動窓の左上隅でなければならない (入力ラスタは、左上隅から始まるセルの値を行単位で1つずつ増加させることによって作成したことを思い出してほしい)。
 この例では、重み付け行列は 1 だけで構成されており、各セルの出力に対する重みが同じであることを意味しているが、これは変更可能である。
 
-画像処理では、焦点関数やフィルターが重要な役割を担っている。
+画像処理では、焦点関数やフィルタが重要な役割を担っている。
 ローパスフィルタやスムージングフィルタは、平均関数を用いて極端な部分を除去する。
 カテゴリデータの場合、平均値を最頻値に置き換えることができる。
-それに対して、ハイパスフィルターはフィーチャを強調する。
-ここでは、ライン検出のラプラスフィルターやソーベルフィルターがその例として挙げられるだろう。
+それに対して、ハイパスフィルタはフィーチャを強調する。
+ここでは、ライン検出のラプラスフィルタやソーベルフィルタがその例として挙げられるだろう。
 R での使い方は、`focal()` のヘルプページで確認してみよう (この章の最後の演習でも使用する)。
 
 傾斜、アスペクト、流れ方向などの地形特性を計算する地形処理では、焦点関数に依存している。
@@ -1109,7 +1110,7 @@ z
 最初のケースでは、各セルから特定のターゲットセルまでの距離を計算することができる。
 例えば、最も近い海岸までの距離を計算したい場合がある (`terra::distance()` も参照)。
 また、地形も考慮したい。つまり、純粋な距離だけでなく、海岸に行くときに山脈を越えないようにしたいのである。
-そのためには、標高が 1 メートル増えるごとにユークリッド距離が「伸びる」ように、標高で距離に重みをつければよい (この章の演習 8 と 9 で実際に行う。)。
+そのためには、標高が 1 メートル増えるごとにユークリッド距離が「伸びる」ように、標高で距離に重みをつければよい (この章の演習 E8 と E9 で実際に行う。)。
 Visibility と viewshed の計算もグローバル操作に属する (Chapter \@ref(gis) の演習では、viewshed ラスタを計算する)。
 
 ### ベクタ処理における写像代数の対応  {#map-algebra-counterparts-in-vector-processing}
@@ -1134,7 +1135,7 @@ NDVI を計算し (Section \@ref(local-operations) 参照)、さらに、調査�
 そして、調査対象シーンをマージする必要がある。 
 一番簡単なのは、これらのシーンをマージする、つまり並べることである。
 これは例えば、デジタル標高データで可能である。
-以下のコードでは、まずオーストリアとスイスの SRTM 標高データをダウンロードする (国番号については、**geodata** 関数 `country_codes()` を参照)。
+以下のコードでは、まずオーストリアとスイスの Shuttle Radar Topography Mission (SRTM) 標高データをダウンロードする (国番号については、**geodata** 関数 `country_codes()` を参照)。
 第二段階では、2 つのラスタを 1 つに統合する。
 
 ```{r 04-spatial-operations-44, eval = FALSE}
