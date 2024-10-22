@@ -16,7 +16,7 @@ colorlinks: yes
 graphics: yes
 description: "Geocomputation with R は、オープンソースソフトウェアを使って地理データを分析、視覚化、モデル化するために書かれた。本書は、強力なデータ処理、可視化、地理空間機能を持つ統計プログラミング言語である R をベースにしている。本書は、科学的、社会的、環境的な意味合いを含む、地理データに現れるさまざまな問題に取り組むための知識とスキルを身につけることができる。地理情報システム (Geographic Information Systems, GIS) のユーザーで、データサイエンスのための強力なオープンソース言語での専門分野の知識の応用に興味がある人、R のユーザーで空間データを扱うスキルの拡張に興味がある人など、さまざまな立場の人が本書に興味を持つだろう。"
 github-repo: "geocompx/geocompr-ja"
-cover-image: "images/cover.png"
+cover-image: "images/cover2.png"
 url: http://124.219.182.167/geo/
 ---
 
@@ -179,6 +179,7 @@ if(!geocompkg_is_installed){
 \begin{center} \Large \emph{F{\"u}r meine Katharina und alle unsere Kinder  } \end{center}
 ```
 
+```{asis index-22c, echo=is_html}
 # 序文 (第 1 版)  {- #foreword-1st-edition}
 
 R で「空間的なこと」をすることは、常に幅が広い。興味がある人なら誰でも参加できるよう、地理学、ジオインフォマティクス、ジオコンピュテーション、空間統計学のツールを提供し統合することに努めてきた。
@@ -202,10 +203,21 @@ R の幅広い空間機能は、自分で作っているものや応用してい
 Roger Bivand
 
 ベルゲン、2018年9月
+```
 
 # 序文 (第 2 版) {- #forward-2nd-edition}
 
-TBC.
+Writing books about open source data science software that constantly changes in uncontrolled ways is a brave undertaking: it feels like running a race while someone else constantly moves the finish line. This second edition of _Geocomputation with R_ is timely: it not only catches up with many recent changes, but also embraces new R packages, and new topical developments in the computing landscape.  It now includes a chapter on raster-vector interactions, discussing the package **terra** which is replacing package **raster** for raster (and vector) data processing. It also keeps up with the **tmap** package for creating high quality maps, which is completing a full rewrite cycle.
+
+Besides updating the contents of this book, the authors have also been very active in helping to streamline and focus those changes in software by extensively testing it, helping improve it, writing issues and pull requests on GitHub, sharing benchmark results, and helping to improve software documentation.
+
+The first edition of this book has been a great success. It was the first book to popularize spatial analysis with the **sf** package and **tidyverse**. Its enthusiastic tone reached a wide audience, and helped people at various levels of experience solving new problems and moving to their next level.  Being available entirely freely online in addition to the printed volume gave it a large reach, and enabled users to try out the presented methodology on their own datasets. In addition to that, the authors have encouraged the readership to reach out by ways of GitHub issues, social media posts, and discussions in a discord channel. This has led to 75 people contributing to the book's source code in one way or the other, including several providing longer reviews or contributing full sections, including on Cloud-optimized GeoTIFFs, STAC and openEO; the **sfheaders** package; OGC APIs and metadata; and the `CycleHire` shiny app. on Discord, it has led to lively and spontaneous discussions in threads that include topics ranging from highly technical to "look what I built".
+
+Beyond this, the authors have initiated the companion volume _Geocomputation with Python_, stressing that geocomputation happens with data science languages, and is by no means restricted to one of them. Geocomputation is on the rise, and as part of fostering a growing geocomputation community, writing books like this one is indispensable.
+
+Edzer Pebesma
+
+Münster, Germany, May 2024
 
 # 序文  {- #preface}
 
@@ -230,11 +242,13 @@ R も地理データも初めてという方は、Chapter \@ref(spatial-class) �
 
 本書は 3 つのパートに分かれている。
 
-1. 第I部: 基本機能では、R で地理データを扱うための知識を身につけることを目的としている。
-2. 第II部: 拡張機能では、高度なテクニックを網羅する。
-3. 第III部: 応用では、実際の問題への対応。
+1. 第 I 部: 基本機能では、R で地理データを扱うための知識を身につけることを目的としている。
+2. 第 II 部: 拡張機能では、高度なテクニックを網羅する。具体的には、空間データの可視化、GIS へのブリッジ、空間データのプログラミング、統計学習。
+3. 第 III 部: 応用では、実際の問題への対応。具体例として、交通解析、商圏分析、生態学。
 
-章ごとにだんだん難しくなっていくので、順番に読むことを勧める。
+章ごとにだんだん難しくなっていく。
+このため、第 I 部はすべて読んでいただき、第 II 部、第 III 部に取り組んでいただきたい。
+第 II 部、第 III 部は、順に読んでいただくとよいが、興味のある章だけを読むこともできる。
 R で地理解析を行う際の大きな障壁は、その学習曲線が急であることである。
 第I部の各章では、簡単なデータセットで再現可能なコードを提供することで、この問題に対処することを目的としている。
 
@@ -284,7 +298,7 @@ contributors = readr::read_csv("extdata/contributors.csv")
 c_txt = contributors$name
 c_url = contributors$link
 c_rmd = paste0("[", c_txt, "](", c_url, ")")
-contributors_text = paste0(c_txt, collapse = ", ")
+contributors_text = paste0(paste0(c_txt[-length(c_txt)], collapse = ", "), ", and ", c_txt[length(c_txt)])
 ```
 
 プルリクエストで直接貢献してくださった以下の方々をはじめ、コードのホスティングとコラボレーションサイトである GitHub を通じて直接、間接的に貢献してくださった以下の皆様に感謝する: `r contributors_text`。
@@ -295,7 +309,7 @@ contributors_text = paste0(c_txt, collapse = ", ")
 CRC プレス社の John Kimmel 氏には、2 年以上にわたって私たちのアイデアを初期の書籍企画から 4 回の査読を経て製品化するまでに協力していただいたことに感謝する。
 本書の構成と内容を大幅に改善するために、詳細なフィードバックと専門知識を提供してくださった査読者の方々は、特筆に値する。
 
-また、この章では、イエナ大学の Patrick Schratz 氏と Alexander Brenning 氏との有意義な議論とご意見に感謝する。
+また、この章では、Jena 大学の Patrick Schratz 氏と Alexander Brenning 氏との有意義な議論とご意見に感謝する。
 ウェブサービスに関するセクションで専門的なご意見をいただいた国際連合食糧農業機関の Emmanuel Blondel 氏に感謝する。
 Michael Sumnerv 氏には、本書の多くの部分、特に第 10 章のアルゴリズムに関する議論に重要な示唆をいただいた。
 Tim Appelhans 氏と David Cooley 氏は、可視化の章 (第 8 章) で重要な貢献をした。
