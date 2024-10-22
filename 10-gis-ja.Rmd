@@ -308,7 +308,7 @@ QGIS\index{QGIS} の和集合 (union\index{べくた@ベクタ!けつごう@結�
 スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25,000 m^2^ を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。
 
-```{r, eval=has_qgis_plugins}
+```{r, eval=FALSE}
 qgis_search_algorithms("clean")
 #> # A tibble: 1 × 5
 #>   provider provider_title group        algorithm      algorithm_title
