@@ -9,7 +9,7 @@ source("code/before_script.R")
 第 1 章と同様、結論にはコードチャンクはほとんどない。
 ここでの目的は、繰り返されるテーマ/概念に言及しながら、本書の内容を総括し、今後の応用や開発の方向性を鼓舞することにある。
 この章には前提条件はない。
-しかし、第I部 (基礎編) の練習問題を読んで挑戦し、第II部のより高度な問題に挑戦し、第III部 (応用編) の章を参考に、ジオコンピュテーションが仕事、研究、その他の問題の解決にどのように役立つかを考えていたならば、より多くのものを得ることができるであろう。
+しかし、第I部 (基礎編) の練習問題を読んで挑戦し、第II部 (拡張機能) のより高度な問題に挑戦し、第III部 (応用編) の章を参考に、ジオコンピュテーションが仕事、研究、その他の問題の解決にどのように役立つかを考えていたならば、より多くのものを得ることができるであろう。
 
 本章は、以下のように構成されている。
 Section \@ref(package-choice) は、R で地理データを扱うための幅広いオプションについて説明する。
@@ -77,7 +77,7 @@ R で地理データを扱うためのパッケージは他にも何百とあり
 # how? see:
 # vignette("selectorgadget")
 stv_pkgs = xml2::read_html("https://cran.r-project.org/web/views/Spatial.html")
-pkgs = rvest::html_nodes(stv_pkgs, "#reading-and-writing-spatial-data---gis-software-connectors+ ul li , #geographic-metadata+ ul li , #raster-data+ ul li , #specific-geospatial-data-sources-of-interest+ ul li , #data-processing---general+ ul li , #data-cleaning+ ul li , #data-processing---specific+ ul li , #spatial-sampling+ ul li , #base-visualization-packages+ ul li , #thematic-cartography-packages+ ul li , #packages-based-on-web-mapping-frameworks+ ul li , #building-cartograms+ ul li , p+ ul li , #spatial-data---general+ ul li")
+pkgs = rvest::html_nodes(stv_pkgs, "#reading-and-writing-spatial-data---gis-software-connectors+ ul li , #geographic-metadata+ ul li , #raster-data+ ul li , #specific-geospatial-data-sources-of-interest+ ul li , #data-processing---general+ ul li , #data-cleaning+ ul li , #data-processing---specific+ ul li , #spatial-sampling+ ul li , #base-visualization-packages+ ul li , #thematic-cartography-packages+ ul li , #packages-based-on-web mapping-frameworks+ ul li , #building-cartograms+ ul li , p+ ul li , #spatial-data---general+ ul li")
 pkgs_char = rvest::html_text(pkgs)
 length(pkgs_char)
 ```
@@ -160,7 +160,7 @@ Chapter \@ref(gis) で紹介した空間データベースは、メモリで処�
 1. 第一原理から始めて、何を達成しようとしているのかを正確に定義する (多くの場合、以下のようなスケッチも必要)。
 2. コードの個々の行や個々のコンポーネントの出力を実行し、調べることによって、コードのどこで予期せぬ結果が発生したかを正確に診断する (例えば、RStudio でカーソルで選択し、Ctrl + Enter を押すことによって、複雑なコマンドの個々の部分を実行することができる)。
 3. 前のステップで「問題のポイント」と診断された関数のドキュメントを読んでみよう。関数に必要な入力を理解し、ヘルプページの下部によく掲載されている例を実行するだけで、驚くほど大きな割合の問題を解決できる (コマンド `?terra::rast` を実行し、その関数を使い始めるときに再現する価値のある例までスクロールダウンする。例)
-4. 前のステップで説明したように R の付属ドキュメントを読んでも問題が解決しない場合は、あなたが見ている問題について他の人が書いていないかどうか、オンラインで広く検索してみるのもよいだろう。検索する場所については、以下のヘルプ検索場所のリストを参照。
+4. 前のステップで説明したように R の付属ドキュメントを読んでも問題が解決しない場合は、あなたが見ている問題について他の人が書いていないかどうか、オンラインで広く検索してみるのもよいだろう。検索する場所については、以下のヘルプリストを参照。
 5. 上記のすべてのステップが失敗し、オンライン検索で解決策が見つからない場合、再現性のある例で質問を作成し、適切な場所に投稿することができる。
 
 上記のステップ 1 から 3 は自明なことであるが、インターネットは広大であり、検索オプションも多数あるため、質問を作成する前に効果的な検索方法を検討する価値がある。
