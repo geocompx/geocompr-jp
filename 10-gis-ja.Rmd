@@ -41,7 +41,7 @@ has_qgis_plugins =
 マウスで画面上のさまざまな場所をクリックする代わりに、コマンドを入力し、`Enter` を押すことで、コマンドを実行する。
 RStudio や VS Code などの対話型開発環境を使った作業では、通常ソースエディタでソースファイルに書き込み、`Ctrl+Enter` などのショートカットキーでコードの対話的実行を制御する。
 
-CLI は R だけのものではない。初期のコンピュータ環境は、おおむねコマンドライン「シェル」に依存しており、GUI\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} が一般的になったのは、コンピューターのマウスが普及した1990年代以降のことである。
+Command Line Interface (CLI) は R だけのものではない。初期のコンピュータ環境は、おおむねコマンドライン「シェル」に依存しており、GUI\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} が一般的になったのは、コンピューターのマウスが普及した1990年代以降のことである。
 例えば、最も長い歴史を持つ GIS\index{GIS} プログラムの一つである GRASS GIS は、洗練された GUI [@landa_new_2008]  を獲得するまでは、主にコマンドラインでの対話に依存していた。
 ほとんどの GIS\index{GIS} パッケージは、グラフィカルユーザーインターフェース (Grafical User Interface, GUI)\index{ぐらふぃかるゆーざーいんたーふぇーす@グラフィカルユーザーインターフェース} を採用している。
 QGIS\index{QGIS}、SAGA\index{SAGA}、GRASS GIS\index{GRASS GIS}、gvSIG を、システムターミナルや組み込み CLI\index{こまんどらいんいんたーふぇーす@コマンドラインインターフェース} から操作することも<u>可能</u>であるが、「マウス操作」が一般的である。
@@ -98,16 +98,16 @@ GIS ブリッジを通すことで、R はさまざまな作業を実行でき�
 library(dplyr)
 d = tibble(
   "GIS" = c("QGIS", "SAGA", "GRASS GIS"),
-  "First release" = c("2002", "2004", "1982"),
-  "No. functions" = c(">1000", ">600", ">500"),
+  "最初のリリース" = c("2002", "2004", "1982"),
+  "機能数" = c(">1000", ">600", ">500"),
   "Support" = c("hybrid", "hybrid", "hybrid")
 )
 knitr::kable(
   x = d,
   caption = paste(
-    "Comparison between three open-source GIS.",
-    "Hybrid refers to the support of vector and",
-    "raster operations."
+    "3 つのオープンソース GIS の比較。",
+    "Hybrid とは、ベクタと",
+    "ラスタに対応していることを示す。"
   ),
   caption.short = "Comparison between three open-source GIS.",
   booktabs = TRUE
@@ -115,7 +115,7 @@ knitr::kable(
 # kableExtra::add_footnote(label = "Comparing downloads of different providers is rather difficult (see http://spatialgalaxy.net/2011/12/19/qgis-users-around-the-world), and here also useless since every Windows QGIS download automatically also downloads SAGA and GRASS GIS.", notation = "alphabet")
 ```
 
-また、R-GIS ブリッジを補完するために、３つのブリッジの後で空間ライブラリへのインタフェース (Section \@ref(gdal))、空間データベース\index{くうかんでーたべーす@空間データベース} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。 
+また、R-GIS ブリッジを補完するために、3 つのブリッジの後で空間ライブラリへのインタフェース (Section \@ref(gdal))、空間データベース\index{くうかんでーたべーす@空間データベース} (Section \@ref(postgis))、地球観測データのクラウド処理 (Section \@ref(cloud)) について簡単に紹介する。 
 
 ## **qgisprocess**: QGIS へのブリッジなど  {#rqgis}
 
@@ -207,16 +207,16 @@ incongr_wgs = st_transform(incongruent, "EPSG:4326")
 aggzone_wgs = st_transform(aggregating_zones, "EPSG:4326")
 ```
 
-```{r uniondata, echo=FALSE, fig.cap="二つの単位の図: 不一致 (黒い線) と集合ゾーン (赤い境界)。", fig.width=8}
+```{r uniondata, echo=FALSE, fig.cap="二つの単位: 不一致 (黒い線) と集合ゾーン (赤い境界)。", fig.width=8}
 #| message: FALSE
 #| results: hide
 library(tmap)
 tm_shape(incongr_wgs) +
-  tm_polygons(col = "grey5") +
+  tm_polygons(col = "gray5") +
   tm_shape(aggzone_wgs) +
   tm_borders(col_alpha = 0.5, col = "red") +
   tm_add_legend(type = "lines", labels = c("incongr_wgs", "aggzone_wgs"),
-                col = c("grey5", "red"), lwd = 3, position = tm_pos_in("right", "top")) +
+                col = c("gray5", "red"), lwd = 3, position = tm_pos_in("right", "top")) +
   tm_scalebar(position = c("left", "bottom"), breaks = c(0, 0.5, 1)) +
   tm_layout(frame = FALSE, legend.text.size = 1,
             inner.margins = c(0.02, 0.02, 0.03, 0.02))
@@ -333,7 +333,7 @@ qgis_show_help("grass:v.clean")
 
 ここでは出力を省略した。実際のヘルプテキストはかなり長く、多くの引数を含んでいる。^[また、QGIS の引数とは異なり、小文字になる。] 
 これは、`v.clean` がマルチツールであり、さまざまな種類のジオメトリをクリーニングし、さまざまな種類のトポロジー問題を解決することができることがある。
-この例では、いくつかの引数に絞って説明するが、`v.clean` の機能については、 [このアルゴリズムのドキュメント](https://grass.osgeo.org/grass-stable/manuals/v.clean.html)を勧める。
+この例では、いくつかの引数に絞って説明するが、`v.clean` の機能については、 [アルゴリズムのドキュメント](https://grass.osgeo.org/grass-stable/manuals/v.clean.html)を勧める。
 
 ```{r, eval=FALSE}
 qgis_get_argument_specs("grass:v.clean") |>
@@ -366,7 +366,7 @@ clean = qgis_run_algorithm("grass7:v.clean",
 clean_sf = st_as_sf(clean)
 ```
 
-その結果、\@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
+その結果、Figure \@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
 
 ```{r sliver, echo=FALSE, fig.cap="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。"}
 knitr::include_graphics("images/10-sliver.png")
@@ -485,7 +485,7 @@ System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:g
 また、Python インターフェース (SAGA Python API\index{API}) も用意されている。
 **Rsagacmd**\index{Rsagacmd (package)} は、前者を使って R 内で SAGA\index{SAGA} を実行している。
 
-この Section では、**Rsagacmd** を使用して、SAGA\index{だんぺん@断片} の seeded region growing アルゴリズムを使って、2000年9月22日の Peru の Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure \@ref(fig:sagasegments) 左図)。^[リモートセンシング画像から NDVI を算出する方法については、Section \@ref(local-operations) を参照。]
+この Section では、**Rsagacmd** を使用して、SAGA\index{だんぺん@断片} の seeded region growing アルゴリズムを使って、2000年9月の Peru の Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure \@ref(fig:sagasegments) 左図)。^[リモートセンシング画像から NDVI を算出する方法については、Section \@ref(local-operations) を参照。]
 
 ```{r, eval=FALSE}
 ndvi = rast(system.file("raster/ndvi.tif", package = "spDataLarge"))
@@ -588,7 +588,7 @@ GRASS GIS 空間データベース\index{くうかんでーたべーす@空間�
 
 ここでは、GIScience における最も興味深い問題の一つである巡回セールスマン問題\index{じゅんかんせーるすまんもんだい@巡回セールスマン問題}  を用いた **rgrass** \index{rgrass (package)} を紹介する。
 ある巡回セールスマンが 24 件の顧客を訪問したいとする。
-さらに、自宅を起点とし、最短距離で 25 カ所を回りたいということであった。
+さらに自宅を起点かつ終点とするので、結果的に 25 カ所を、最短距離で回りたい。
 この問題に対する最適解は一つであるが、考えられる解をすべてチェックすることは、現代のコンピュータでは (ほとんど) 不可能である [@longley_geographic_2015]。
 この場合、可能な解の数は `(25 - 1)! / 2`、すなわち 24 の階乗を 2 で割った数に相当する (2 で割るのは、順方向と逆方向を区別しないため)。
 1 回の繰り返しがナノ秒でも、`r format(factorial(25 - 1) / (2 * 10^9 * 3600 * 24 * 365))` 年間に相当する。
@@ -602,7 +602,7 @@ points = cycle_hire[1:25, ]
 ```
 
 レンタルサイクルのステーションのデータの他に、この地域の道路網が必要である。
-OpenStreetMap\index{OpenStreetMap} から **osmdata**\index{osmdata (package)} パッケージの助けを借りてダウンロードすることができる (Section \@ref(retrieving-data) も参照)。
+**osmdata**\index{osmdata (package)} パッケージで OpenStreetMap\index{OpenStreetMap} から ダウンロードすることができる (Section \@ref(retrieving-data) も参照)。
 そのために、道路網のクエリ (OSM 言語では "highway" とラベル付けされている) を `points` のバウンディングボックス\index{ばうんでぃんぐぼっくす@バウンディングボックス} に制限し、対応するデータを `sf`\index{sf} オブジェクトとして読み込む。
 `osmdata_sf()` は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連 ID のみを保持する。^[読者のために、 `london_streets` は、`data("london_streets", package = "spDataLarge")` で使用できるようにしてある。]
 
@@ -995,7 +995,7 @@ items = s |>
 領域が大きい時、要求された画像を扱うのはまだ比較的困難である。それらは異なる地図投影を使用することがあり、空間的に重なることがあり、空間解像度はしばしばスペクトルバンドに依存する。
 **gdalcubes** パッケージ\index{gdalcubes (package)} [@appel_gdalcubes_2019] は、個々の画像から抽象化し、画像コレクションを 4 次元データキューブ\index{でーたきゅーぶ@データキューブ}として作成し処理するために使用することができる。
 
-以下のコードは、前回の STAC-API 検索で返された Sentinel-2 画像から、低解像度 (250m) の最大 NDVI コンポジットを作成する最小限の例を示している。
+以下のコードは、前回の STAC-API 検索で返された Sentinel-2 画像から、低解像度 (250 m) の最大 NDVI コンポジットを作成する最小限の例を示している。
 
 ```{r 09-gdalcubes-example, eval=FALSE}
 library(gdalcubes)

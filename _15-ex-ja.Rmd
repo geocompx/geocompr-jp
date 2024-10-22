@@ -130,7 +130,7 @@ E3. 空間交差検証\index{くろすばりでーしょん@クロスバリデ�
 ランダムフォレストのモデリングには、最適なハイパーパラメータ\index{はいぱーぱらめーた@ハイパーパラメータ}の組み合わせの推定 (50 回の反復によるランダム探索) を内部チューニングループに含めなさい。
 チューニングレベルを並列化しなさい。
 平均 RMSE\index{RMSE} を報告し、箱ひげ図を使用して、検索されたすべての RMSE を可視化しなさい。
-この課題は、mlr3の関数 `benchmark_grid()` と `benchmark()` (詳細は https://mlr3book.mlr-org.com/perf-eval-cmp.html#benchmarking を参照) を用いて解くのが最適。
+この課題は、mlr3 の関数 `benchmark_grid()` と `benchmark()` (詳細は https://mlr3book.mlr-org.com/perf-eval-cmp.html#benchmarking を参照) を用いて解くのが最適。
 
 ```{r 15-ex-e3, message=FALSE, eval=FALSE}
 library(dplyr)

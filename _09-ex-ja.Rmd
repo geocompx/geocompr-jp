@@ -35,8 +35,8 @@ E1. **graphics** (ヒント: `plot()`) と **tmap** パッケージ (ヒント: 
 ```{r}
 # graphics
 plot(africa["HDI"])
-# tmap
-remotes::install_github("r-tmap/tmap")
+# # tmap
+# remotes::install_github("r-tmap/tmap")
 library(tmap)
 tm_shape(africa) + 
   tm_polygons("HDI")
@@ -55,7 +55,6 @@ mf_map(x = africa, var = "HDI", type = "choro")
 ```
 
 E2. 前の演習で作成した **tmap** を拡張して、凡例に 3 つのビンを設定しなさい: "High" (0.7 を超える `HDI`)、"Medium" (0.55 と 0.7 の間の `HDI`)、"Low" (0.55 を下回る `HDI`)。
-
 - ボーナス: 例えば、凡例のタイトル、クラスラベル、色パレットを変更することで、マップの美観を改善しなさい。
 
 ```{r}
@@ -90,7 +89,7 @@ E4. Zion 国立公園の土地被覆マップを作成しなさい。
 
 - 土地被覆カテゴリの認識に合わせてデフォルトの色を変更
 - 縮尺バーと北矢印を追加し、両方の位置を変更して地図の美観を向上
-- ボーナス: ザイオン国立公園のユタ州との位置関係を示す挿入地図を追加 (ヒント: ユタを表すオブジェクトは `us_states` データセットから抽出できる)。
+- ボーナス: Zion 国立公園の Utah 州との位置関係を示す挿入地図を追加 (ヒント: ユタを表すオブジェクトは `us_states` データセットから抽出できる)。
 
 ```{r}
 tm_shape(nlcd) +
@@ -179,9 +178,9 @@ tmap_animation(tma1, filename = "tma2.gif", width = 1000, height = 1000)
 browseURL("tma1.gif")
 
 tma2 = tm_shape(africa) +
-  tm_polygons(fill = "lightgrey") +
+  tm_polygons(fill = "lightgray") +
   tm_shape(ea) +
-  tm_polygons(fill = "darkgrey") +
+  tm_polygons(fill = "darkgray") +
   tm_shape(ea) +
   tm_polygons(fill = "HDI") +
   tm_facets(by = "name", nrow = 1, ncol = 1)
