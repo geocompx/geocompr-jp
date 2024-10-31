@@ -40,14 +40,11 @@ install.packages("spData")
 install.packages("spDataLarge", repos = "https://nowosad.r-universe.dev")
 ```
 
-```{r}
-#| echo: FALSE
-#| message: FALSE
-#| eval: FALSE
+```{r, eval=FALSE, echo=FALSE, message=FALSE, results='hide'}
 remotes::install_github("r-tmap/tmap")
 ```
 
-本書の第 1 部を再現するために必要なパッケージは、コマンド `remotes::install_github("geocompx/geocompkg")` でインストールできる。
+本書の第 I 部を再現するために必要なパッケージは、コマンド `remotes::install_github("geocompx/geocompkg")` でインストールできる。
 このコマンドは、**remotes** パッケージの関数 `install_packages()` を使用して、GitHub コードホスティング、バージョン、およびコラボレーション プラットフォームでホストされているソース コードをインストールする。
 以下のコマンドを実行すると、本書全体を再現するために必要な**すべて**の依存関係がインストールされる (警告: 数分かかる場合がある)。 `remotes::install_github("geocompx/geocompkg", dependencies = TRUE)` 
 
@@ -89,7 +86,7 @@ library(spDataLarge)  # 大きい地理データをロード
 - 社会科学では、人間の居住地が不連続な境界線を持つ傾向があるため、ベクタデータが主流となる傾向がある
 - 環境科学において、リモートセンシングデータを使うことも多いため、ラスタが主流となっている
 
-分野によっては重複する部分も多く、ラスタデータセットとベクタデータセットを併用することも可能である。
+ラスタデータセットとベクタデータセットは、どちらも多く使われており、併用することも可能である。
 例えば、生態学者や人口統計学者などは、ベクタデータとラスタデータの両方を使うのが一般的である。
 さらに、この 2 つの形式を相互に変換することも可能である (Section \@ref(raster-vector) 参照)。
 ベクタデータとラスタデータのどちらを使用するかは、次の章で説明するように、使用する前に基本的なデータモデルを理解することが重要である。
@@ -108,24 +105,25 @@ vector という単語は、次の二つの意味があるため注意が必要�
 点は、バス停の位置のような独立したフィーチャ (地物) を表すことも、線やポリゴンのような複雑な幾何学的形状を形成するために連結されることもある。
 点ジオメトリ (geometry、訳註: ISO 19125 では「形状」や「幾何形状」と訳されているが、本書ではジオメトリとする。) はほとんどの場合 2 次元のみで構成される (3 次元のジオメトリは $z$ の値が追加され、多くの場合、海抜高度を表す)。
 
-このシステムにおいて、例えばロンドンは、座標 `c(-0.1, 51.5)` で表すことができる。
-つまり、その位置は原点から東に -0.1 度、北に 51.5 度である。
+このシステムにおいて、例えば London は、座標 `c(-0.1, 51.5)` で表すことができる。
+つまり、その位置は原点から東に $-0.1$ 度、北に $51.5$ 度である。
 この場合の原点は、地理的 (緯度経度) CRS の経度 (longitude) 0 度 (本初子午線) と緯度 (latitude) 0 度 (赤道) にある (Figure \@ref(fig:vectorplots)、左図)。
 また、同じ点を投影した CRS では、 [British National Grid](https://en.wikipedia.org/wiki/Ordnance_Survey_National_Grid) の「東経/北緯」の値はおよそ`c(530000, 180000)` で、ロンドンが CRS の<u>原点</u>から 530 km <u>東</u>、180 km <u>北</u>に位置することを意味している。
 これは視覚的にも確認することができ、幅 100 km の灰色の格子線に囲まれた正方形の領域である「ボックス」が 5 個強、ロンドンを表す点と原点を分けている (Figure \@ref(fig:vectorplots)、右のパネル)。
 
-National Grid\index{National Grid} の起点が South West Peninsular の先の海上にあるため、英国内のすべての場所で正の東経と北緯の値を持つことになる。^[
+National Grid\index{National Grid} の起点が South West 半島の先の海上にあるため、英国内のすべての場所で正の東経と北緯の値を持つことになる。^[
 Figure \@ref(fig:vectorplots) で青く描かれているのは、実は「偽の」原点である。
 歪みが最小となる「真の」原点は、西経 2 度、北緯 49 度に位置する。
 これは、Ordnance Survey が、イギリス国土の縦方向のほぼ中央に位置するように選んだものである。
 ] 
-CRS については、Section \@ref(crs-intro) と Chapter \@ref(reproj-geo-data) で説明するが、この章では、座標が原点からの距離を表す 2 つの数値からなり、通常は $x$ と $y$ の次元であることを知っていれば十分である。
+CRS については、Section \@ref(crs-intro) と Chapter \@ref(reproj-geo-data) で説明する。
+この章では、座標が原点からの距離を表す 2 つの数値からなり、通常は $x$ と $y$ の次元であることを知っていれば十分である。
 
 ```{r vectorplots-source, include=FALSE, eval=FALSE}
 source("https://github.com/geocompx/geocompr/raw/main/code/02-vectorplots.R") # generate subsequent figure
 ```
 
-```{r vectorplots, fig.cap="原点 (青丸) を基準にロンドン (赤 X) の位置を表したベクトル (点) データの図解。左図は、緯度経度 0° を原点とする地理的な CRS。右図は、South West Peninsula の西側の海を原点とする投影 CRS を表している。", out.width="49%", fig.show='hold', echo=FALSE, fig.scap="Illustration of vector (point) data."}
+```{r vectorplots, fig.cap="原点 (青丸) を基準にロンドン (赤 X) の位置を表したベクトル (点) データ。左図は、緯度経度 0° を原点とする地理的な CRS。右図は、South West Peninsula の西側の海を原点とする投影 CRS を表している。", out.width="49%", fig.show='hold', echo=FALSE, fig.scap="Vector (point) data."}
 knitr::include_graphics(c("images/vector_lonlat.png", "images/vector_projected.png"))
 ```
 
@@ -137,15 +135,15 @@ knitr::include_graphics(c("images/vector_lonlat.png", "images/vector_projected.p
 - [S2](https://s2geometry.io/) は、Google が開発した C++ で書かれた球面幾何学エンジンである。[**s2**](https://r-spatial.github.io/s2/) パッケージ経由で、この章の Section \@ref(s2) と Chapter \@ref(reproj-geo-data) でカバーする。
 
 これらのインターフェースに関する情報は、パッケージが最初にロードされたときに **sf** によって表示される。この章の最初にある `library(sf)` コマンドの下に表示されるメッセージ `r print(capture.output(sf:::.onAttach(), type = "message"))` は、リンクされている GEOS\index{GEOS}、GDAL、PROJ ライブラリのバージョン (コンピュータや時期によって変わる) と S2\index{S2} インターフェースがオンになっているかどうかという情報を教えてくれる。
-今では当たり前のことであるが、そもそも再現性のあるジオコンピュテーションを可能にするのは、様々な地理ライブラリとの緊密な連携に他ならない。
+低レベルライブラリを当前のことと思っているが、様々な地理ライブラリとの緊密な連携がなえれば、再現性のあるジオコンピュテーションは不可能だったであろう。
 
 **sf** の特徴として、投影法未指定のデータで使用するデフォルトのジオメトリエンジンを変更することができる S2\index{S2} のスイッチを切るには、`sf::sf_use_s2(FALSE)` というコマンドを使う。つまり、平面ジオメトリエンジン GEOS が、投影されていないデータに対するジオメトリ操作を含む、すべてのジオメトリ操作にデフォルトで使用されることになる。
-Section \@ref(s2) で見るように、平面幾何学は2次元の空間に基づいている。
+Section \@ref(s2) で見るように、平面幾何学は二次元の空間に基づいている。
 GEOS などの平面ジオメトリエンジンは「平面」 (投影) 座標を、S2 などの球面ジオメトリエンジンは非投影 (緯度経度) 座標を想定している。
 
 この章では、後続の章に備え、**sf** クラスを紹介する (GEOS インターフェースは Chapter \@ref(geometry-operations) 章で、GDAL インターフェースは Chapter \@ref(read-write) で説明する)。
 
-### シンプルフィーチャの紹介  {#intro-sf}
+### シンプルフィーチャの概要 {#intro-sf}
 
 シンプルフィーチャ (simple feature、ISO 19125 では、feature は「地物」、simple feature は「単純地物」と訳されこともあるが、本書ではシンプルフィーチャで統一する。) は、Open Geospatial Consortium (OGC) が開発・推奨する[オープンスタンダード](http://portal.opengeospatial.org/files/?artifact_id=25355)であり、その活動は後の章で再確認することになる (Section \@ref(file-formats))。
 \index{シンプルフィーチャ|see {sf}}
@@ -167,7 +165,7 @@ knitr::include_graphics("images/sf-classes.png")
 また、**sf** はジオメトリコレクションをサポートしており、1 つのオブジェクトに複数のジオメトリ型を格納することができる。
 **sf** は、データクラスの **sp**\index{sp (package)} [@R-sp]、GDAL と PROJ を通したデータ読み書きの **rgdal** [@R-rgdal]、GEOS を通した空間演算の **rgeos** [@R-rgeos] という 3 パッケージで提供されていたものと同じ機能 (およびそれ以上) を提供する。
 
-Chapter 1 の繰り返しになるが、R の地理パッケージは低レベルのライブラリとのインターフェースとの長い歴史がある。**sf** はこの伝統を受け継ぎ、最新バージョンの幾何演算 GEOS、地理データファイルの読み書きのための GDAL、投影座標参照系の表現と変換のための PROJ ライブラリと統一されたインターフェースを提供する。
+Chapter 1 の繰り返しになるが、R の地理パッケージは低レベルのライブラリとのインターフェースとの長い歴史がある。**sf** はこの伝統を受け継ぎ、最新バージョンの幾何演算 GEOS、地理データファイルの読み書きのための GDAL、CRS の表現と変換のための PROJ ライブラリと統一されたインターフェースを提供する。
 **s2**、すなわち「Google の球面幾何学ライブラリ [`s2`](https://s2geometry.io/) への R インタフェース」を通して、**sf** は高速で正確な「非平面形状の測定と操作」 [@bivand_progress_2021] にアクセスすることができる。
 [2021年6月](https://cran.r-project.org/src/contrib/Archive/sf/)に公開された **sf** バージョン 1.0.0 からは、地理 (経度・緯度) 座標系を持つジオメトリに対して[デフォルト](https://r-spatial.org/r/2020/06/17/s2.html)で **s2**\index{S2} 機能が使われるようになった。これは、**sf** 独自の特徴であり、Python パッケージ [GeoPandas](geopandas/geopandas/issues/2098) など、ジオメトリ演算に GEOS にしか対応していない空間ライブラリとは異なる。
 **s2** については、以降の章で説明する。
@@ -207,7 +205,7 @@ names(world)
 `plot()` は、R のデフォルト (Base R) の一部であり、他のパッケージが拡張することのできる<u>[ジェネリック関数](https://adv-r.hadley.nz/s3.html#s3-methods)</u>というものである。
 **sf** は、エクスポートされていない (ユーザからはほとんどの場合隠されている) `plot.sf()` 関数を含んでおり、以下のコマンドでは裏でこの関数が呼ばれ、Figure \@ref(fig:world-all) を作成する。
 
-```{r world-all, fig.cap="sf パッケージを用いた世界の空間プロットで、各属性ごとのファセットを表示。", warning=FALSE, fig.scap="A spatial plot of the world using the sf package."}
+```{r world-all, fig.cap="sf パッケージを用いた世界の地図で、各属性ごとのファセットを表示。", warning=FALSE, fig.scap="Map of the world using the sf package."}
 plot(world)
 ```
 
@@ -269,8 +267,8 @@ Section \@ref(sf) は、シンプルフィーチャオブジェクトが、特�
 データモデルを使用することで、例えば空間データベースからのインポートや空間データベースへのエクスポートなど、他のセットアップとの相互移行が可能になることが大きなメリットである。
 \index{sf!なぜしんぷるふぃーちゃ@なぜシンプルフィーチャ}
 
-R の観点からすると、「なぜ **sf** パッケージを使うのか」という質問になる。
-理由はいろいろある (シンプルフィーチャモデルの利点と連動している)。
+具体的には、「なぜ **sf** パッケージを使うのか ?」という質問になる。
+答えはたくさんある (シンプルフィーチャモデルの利点と連動している)。
 
 - 高速なデータの読み書きが可能
 - プロット性能の向上
@@ -293,12 +291,12 @@ Chapter \@ref(attr) で **tidyverse** 関数を使って `sf` オブジェクト
 **spatstat** と **terra** は、空間統計のための多くの関数を提供するパッケージ・エコシステムであり、どちらもベクトル地理データクラスを持っているが、ベクタを扱う点においては **sf** と同じレベルの取り込みはしていない。
 多くの人気パッケージが **sf** をベースに構築されており、前章の Section \@ref(r-ecosystem) にあるように、1日あたりのダウンロード数でその人気が上昇していることが示されている。
 
-### 基本的な地図の作り方  {#basic-map}
+### 基本的な地図  {#basic-map}
 
 基本的な地図は **sf** の `plot()` で作成する。
 デフォルトでは、Figure \@ref(fig:sfplot) の左側のパネルに示されているように、オブジェクトの各変数に対して1つのサブプロット、複数パネルのプロットが作成される。
 プロットされるオブジェクトが単一の変数である場合、連続した色を持つ凡例または「キー」が生成される (右側のパネルを参照)。
-色は `col = ` でも設定できるが、この場合、連続したパレットや凡例は作成されていない。 
+`plot()` では、 引数 `col` と `border` で色を指定することができる。
 \index{map making!basic}
 
 ```{r sfplot, fig.cap="sf を使ったプロット。複数変数 (左) と単一変数 (右)。", out.width="49%", fig.show='hold', warning=FALSE, fig.scap="Plotting with sf."}
@@ -328,7 +326,7 @@ plot(asia, add = TRUE, col = "red")
 
 ```{block2 plottingpacks, type='rmdnote'}
 このようにレイヤを追加していくことで、レイヤ間の地理的な対応関係を検証することができる。 
-`plot()` 関数は、実行速度が速く、必要なコード行数も少ないのであるが、幅広いオプションを持つインタラクティブなマップを作成することはできない。
+`plot()` 関数は、実行速度が速く、必要なコード行数も少ないのであるが、機能は限定的である。
 より高度な地図作成には、**tmap** [@tmap2018] などの可視化専用パッケージの利用を勧める (Chapter \@ref(adv-map) 参照)。
 ```
 
@@ -389,19 +387,18 @@ waldo::compare(st_geometry(world), world[0])
 
 ジオメトリは、シンプルフィーチャを構成する基本的な要素である。
 R のシンプルフィーチャは、**sf** パッケージがサポートする 18 種類のジオメトリ型のいずれかを取ることができる。
-\index{じおめとりがた@ジオメトリ型|{sf!ジオメトリ型 を参照}}
-\index{sf!じおめとりがた@ジオメトリ型}
 この章では、最もよく使われる以下の 7 つの型に焦点を当てる: `POINT`、`LINESTRING`、`POLYGON`、`MULTIPOINT`、`MULTILINESTRING`、`MULTIPOLYGON`、`GEOMETRYCOLLECTION`。
+\index{じおめとりがた@ジオメトリ型|{sf!ジオメトリ型 を参照}} \index{sf!じおめとりがた@ジオメトリ型}
 
 一般に、シンプルフィーチャの符号化方式としては、WKB (well-known binary) や WKT (well-known text) が標準的である。
-\index{well-known text}
-\index{WKT|see{well-known text}}
-\index{well-known binary}
-\index{WKB|see{well-known binary}}
 WKB の表現は通常、コンピュータで読みやすい16進数の文字列である。
 このため、GIS や空間データベースでは、ジオメトリオブジェクトの転送や保存に WKB を使用している。
 一方、WKT は、シンプルフィーチャを人間が読みやすいテキストマークアップで記述したものである。 
 どちらの形式も交換可能であり、ここでは当然 WKT で表す。
+\index{well-known text}
+\index{WKT|see{well-known text}}
+\index{well-known binary}
+\index{WKB|see{well-known binary}}
 
 各ジオメトリ型の基本は点である。 
 点 (point) とは、2 次元、3 次元、4 次元空間 (詳しくは `vignette("sf1")` を参照、訳注: [日本語版](https://www.uclmail.net/users/babayoshihiko/R/index.html#sf)) の座標で、次のようなものである (Figure \@ref(fig:sfcs) 左図)。
@@ -423,7 +420,7 @@ WKB の表現は通常、コンピュータで読みやすい16進数の文字�
 
 - 穴のないポリゴン `POLYGON ((1 5, 2 2, 4 1, 4 4, 1 5))` 
 
-```{r sfcs, echo=FALSE, fig.cap="点、線、ポリゴンのジオメトリ説明図。", fig.asp=0.4}
+```{r sfcs, echo=FALSE, fig.cap="点、線、ポリゴンのジオメトリ。", fig.asp=0.4}
 old_par = par(mfrow = c(1, 3), pty = "s", mar = c(0, 3, 1, 0))
 plot(st_as_sfc(c("POINT(5 2)")), axes = TRUE, main = "POINT")
 plot(st_as_sfc("LINESTRING(1 5, 4 4, 4 1, 2 2, 3 2)"), axes = TRUE, main = "LINESTRING")
@@ -478,12 +475,12 @@ knitr::include_graphics("images/02-sfdiagram.png")
 
 フィーチャ以外の属性は、フィーチャの名称や、測定値、グループなどの属性を表す。
 \index{sf!class}
-属性を説明するために、2023年6月21日のロンドンの気温が 25℃ であることを表してみたい。
+属性を説明するために、2023年6月21日の London の気温が 25℃ であることを表してみたい。
 この例では、ジオメトリ (座標) と、3 つの異なるクラスを持つ属性 (地名、気温、日付) が含まれている。^[
 その他の属性としては、市町村の区分や、自動観測局で測定された場合の備考などがある。
 ] 
 クラス `sf` のオブジェクトは、属性 (`data.frame`) とシンプルフィーチャ列 (`sfc`) を組み合わせて、そのようなデータを表現するものである。
-これらは、下図のように `st_sf()` で、ロンドンの例を作成する。
+これらは、下図のように `st_sf()` で、London の例を作成する。
 
 ```{r 02-spatial-data-33}
 lnd_point = st_point(c(0.1, 51.5))                # sfg object
@@ -623,7 +620,7 @@ st_geometrycollection(geometrycollection_list)
 ### シンプルフィーチャ列 (sfc) {#sfc}
 
 1 つの `sfg` オブジェクトには、1 つのシンプルフィーチャだけが含まれている。 
-シンプルフィーチャ列 (simple feature column, `sfc`) は、`sfg` オブジェクトのリストであり、さらに、使用中の座標参照系に関する情報を含めることができる。
+シンプルフィーチャ列 (simple feature column, `sfc`) は、`sfg` オブジェクトのリストであり、さらに、使用中の CRS に関する情報を含めることができる。
 例えば、単純な2つのフィーチャを2つのフィーチャを持つ1つの物体に結合するには、`st_sfc()` 関数を使用することができる。 
 \index{sf!しんぷるふぃーちゃれつ@シンプルフィーチャ列 (sfc)}
 `sfc` は **sf** データフレームのジオメトリ列を表すので、これは重要である。
@@ -670,7 +667,7 @@ point_multilinestring_sfc = st_sfc(point1, multilinestring1)
 st_geometry_type(point_multilinestring_sfc)
 ```
 
-前述したように、`sfc` のオブジェクトは、さらに座標参照系 (CRS) の情報を格納することができる。
+前述したように、`sfc` のオブジェクトは、さらに CRS の情報を格納することができる。
 デフォルト値は、`NA` (*Not Available*) である。`st_crs()` で確認できる。
 
 ```{r 02-spatial-data-29}
@@ -782,7 +779,7 @@ sfheaders::sf_linestring(obj = m)
 sfheaders::sf_polygon(obj = df)
 ```
 
-いずれの例も CRS (座標参照系) は定義されていない。
+いずれの例も CRS は定義されていない。
 もし、**sf** 関数を使った計算や幾何演算をする予定があるのなら、CRS を設定することを勧める (詳しくは、Chapter \@ref(reproj-geo-data) 参照)。
 
 ```{r sfheaders-crs}
@@ -824,14 +821,14 @@ library(tmap)
 tm1 = tm_shape(india_buffer_with_s2) +
   tm_fill(fill = hcl.colors(4, palette = "purple green")[2], lwd = 0.01) +
   tm_shape(india) +
-  tm_fill(fill = "grey95") +
+  tm_fill(fill = "gray95") +
   tm_title("st_buffer() with dist = 1") +
   tm_title("s2 switched on (default)", position = tm_pos_in("right", "bottom"), size = 1)
 
 tm2 = tm_shape(india_buffer_without_s2) +
   tm_fill(fill = hcl.colors(4, palette = "purple green")[3], lwd = 0.01) +
   tm_shape(india) +
-  tm_fill(fill = "grey95") +
+  tm_fill(fill = "gray95") +
   tm_title(" ") +
   tm_title("s2 switched off", position = tm_pos_in("right", "bottom"), size = 1)
 
@@ -859,13 +856,13 @@ sf_use_s2(TRUE)
 
 空間ラスタデータモデルは、連続した格子状のセル (ピクセルとも呼ばれる; Figure \@ref(fig:raster-intro-plot) :A) で世界を表現する\index{ラスタデータモデル}。
 このデータモデルでは、各セルが同じ一定の大きさを持つ、いわゆる正方形のグリッドを指すことが多く、本書では正方形のグリッドにのみ焦点を当てることにする。
-しかし、他にも回転格子、せん断格子、直線格子、曲線格子など、いくつかの種類の格子が存在する (@pebesma_spatial_2022 の第 1 章、または @tennekes_elegant_2022 の第 2 章を参照のこと)。
+しかし、他にも回転格子、せん断格子、直線格子、曲線格子など、いくつかの種類の格子が存在する (@pebesma_spatial_2023 の第 1 章、または @tennekes_elegant_2022 の第 2 章を参照のこと)。
 
 
 ラスタデータモデルは通常、ラスタヘッダ\index{らすた@ラスタ!へっだ@ヘッダ}と、等間隔に並んだセル (ピクセルとも呼ばれる; Figure \@ref(fig:raster-intro-plot) :A) を表す行列 (行と列を持つ) から構成される。^[
 ファイル形式によって、ヘッダは GeoTIFF などの実際の画像データファイルの一部であるか、ASCII グリッド形式などの追加のヘッダファイルまたはワールドファイルに格納される。 
 また、ヘッダレス (フラット) 二値ラスタフォーマットもあり、様々なソフトウェアへのインポートが容易になるはずである] 
-ラスタヘッダ\index{らすた@ラスタ!へっだ@ヘッダ}は、座標参照系、範囲、原点を定義する。
+ラスタヘッダ\index{らすた@ラスタ!へっだ@ヘッダ}は、CRS、範囲、原点を定義する。
 \index{らすた@ラスタ}
 \index{らすたでーたもでる@ラスタデータモデル}
 原点は、多くの場合、行列の左下隅の座標である (ただし、**terra** パッケージでは、デフォルトで左上隅が使用される (Figure  \@ref(fig:raster-intro-plot):B))。
@@ -884,7 +881,7 @@ $$
 ベクタデータとは異なり、ラスタレイヤの1つのセルには1つの値しか入れることができない。^[同じ場所に複数の値を設定したい場合、複数のラスタレイヤが必要となる。]
 値は、数値またはカテゴリ (Figure \@ref(fig:raster-intro-plot):C) である。
 
-```{r raster-intro-plot, echo = FALSE, fig.cap = "ラスタデータの種類: (A) セルID、(B) セル値、(C) 色付きラスタマップ。", fig.scap="Raster data types.", fig.asp=0.5, message=FALSE}
+```{r raster-intro-plot, echo = FALSE, fig.cap = "ラスタデータの種類", fig.scap="Raster data types.", fig.asp=0.5, message=FALSE}
 source("code/02-raster-intro-plot.R", print.eval = TRUE)
 ```
 
@@ -902,7 +899,7 @@ source("code/02-raster-intro-plot2.R", print.eval = TRUE)
 
 過去 20 年の間に、ラスタデータセットを読み込んで処理するためのパッケージがいくつか開発された。
 \index{raster (package)}\index{terra (package)}\index{stars (package)}
-Section \@ref(the-history-of-r-spatial) にあるように、その中でも特に **raster** は 2010 年にリリースされ、R のラスタ機能を一変させ、**terra** や **stars** が開発されるまでこの分野の最高峰のパッケージとなった。
+Section \@ref(history-of-r-spatial) にあるように、その中でも特に **raster** は 2010 年にリリースされ、R のラスタ機能を一変させ、**terra** や **stars** が開発されるまでこの分野の最高峰のパッケージとなった。
 最近開発されたこの 2 つのパッケージは、ラスタデータを扱うための強力で高性能な機能を備えており、両者の使用例にはかなりの重複がある。
 この本では、古くて (多くの場合) 遅い **raster** に代わる **terra** に焦点を当てる。
 **terra** のクラスシステムについて学ぶ前に、このセクションでは **terra** と **stars** の類似点と相違点について説明する。この知識は、様々な状況下でどちらが最も適切かを判断するのに役立つ。
@@ -920,9 +917,9 @@ Section \@ref(the-history-of-r-spatial) にあるように、その中でも特�
 一方、**stars** はいくつかの組み込み関数 (通常 `st_` で始まる名前) を使用し、また既存の **dplyr** 関数 (例えば `filter()` や `slice()`) に対するメソッドも持ち、既存の R 関数 (例えば `split()` や `aggregate()`) に対する独自のメソッドを持つ。
 
 オブジェクトを **terra** から **stars** に変換する (`st_as_stars()` を使用)、またはその逆 (`rast()` を使用) が簡単である点が重要である。
-また、**stars** パッケージの最も包括的な紹介として、@pebesma_spatial_2022 を読むことを勧める。
+また、**stars** パッケージの最も包括的な紹介として、@pebesma_spatial_2023 を読むことを勧める。
 
-### terra 入門  {#an-introduction-to-terra}
+### terra の概要  {#an-introduction-to-terra}
 
 \index{terra (package)}
 **terra** パッケージ は、R のラスタオブジェクトをサポートする。
@@ -953,7 +950,7 @@ class(my_rast)
 my_rast
 ```
 
-`dim()` は行、列、レイヤの数、`ncell()` はセル (ピクセル) の数、`res()` は空間解像度、`ext()` は空間範囲、`crs()` は座標参照系 (ラスタ再投影は Section \@ref(reproj-ras) で扱う) をそれぞれ報告する専用の関数である。
+`dim()` は行、列、レイヤの数、`ncell()` はセル (ピクセル) の数、`res()` は空間解像度、`ext()` は空間範囲、`crs()` は CRS (ラスタ再投影は Section \@ref(reproj-ras) で扱う) をそれぞれ報告する専用の関数である。
 `inMemory()` は、ラスタデータがメモリに格納されているか、ディスクに格納されているかを報告する。`sources` がファイルの位置を示す。
 
 ```{block2 terrahelp, type='rmdnote'}
@@ -963,6 +960,7 @@ my_rast
 ### 基本的な地図の作り方  {#basic-map-raster}
 
 **sf** パッケージと同様に、**terra** も独自のクラスに対して `plot()` メソッドを提供する。
+次のコマンドでは、`plot()` 関数を用いて Figure \@ref(fig:basic-new-raster-plot) を作成する。
 \index{ちずさくせい@地図作成!らすた@ラスタ}
 
 ```{r basic-new-raster-plot, fig.cap="異本的なラスタのプロット。"}
@@ -1058,13 +1056,13 @@ CRSには、本章の冒頭で紹介したように、地理的なものと投�
 ### 地理座標参照系  {#geographic-coordinate-reference-systems}
 
 \index{CRS!ちり@地理}
-地理座標参照系 (Geographic Coordinate Reference System) は、地球上の任意の位置を経度と緯度という 2 つの値で特定する (Figure \@ref(fig:vector-crs) 左図)。 
+CRS は、地球上の任意の位置を経度と緯度という 2 つの値で特定する (Figure \@ref(fig:vector-crs) 左図)。 
 <u>経度</u> (longitude) は、本初子午線面からの角距離で東西方向の位置である。
 <u>緯度</u> (latitude) は赤道面の北または南の角度距離である。
 そのため、地理的な CRS の距離はメートル単位ではない。
 このことは、Section \@ref(reproj-geo-data) で示されているように、重要な結果をもたらす。
 
-地理座標参照系における地球の表面は、球面または楕円体面で表現される。
+CRS における地球の表面は、球面または楕円体面で表現される。
 球体モデルは、地球がある半径の完全な球体であると仮定したもので、単純であるという利点があるが、実際は完全な球体ではないため不正確である。
 楕円体型モデルは、赤道半径と極半径の 2 つのパラメータで定義され、球体よりは正確になる。
 地球は圧縮されているので、これが適している。すなわち、赤道半径は極半径より約 11.5 km 長い [@maling_coordinate_1992]。^[
@@ -1081,7 +1079,7 @@ $f$ はかなり小さな値なので、デジタル楕円体モデルでは、�
 紫色の破線で示される<u>ローカル測地系</u>は、楕円面を特定の位置の地表に合わせるようにずらしたものである。
 これにより、例えば大きな山脈による地表の局所的な変動を、ローカル CRS で説明することができる。
 これは Figure \@ref(fig:datum-fig) に見られるように、フィリピンの地域にはローカル測地系が適合しているが、地球表面の他の大部分とはずれているのである。 
-Figure \@ref(fig:datum-fig) の二つの測地系は、ジオイド (地球平均海面のモデル) の上に載せられている。^[なお、図中のジオイドは、惑星の不規則な形状を強調するために、表面の凹凸を1万倍に誇張して表示している。]
+Figure \@ref(fig:datum-fig) の二つの測地系は、ジオイド (地球平均海面のモデル) の上に載せられている。^[なお、図中のジオイドは、地球の不規則な形状を強調するために、表面を1万倍に誇張して表示している。]
 
 (ref:datum-fig) ジオイドの上に表示された地心座標系およびローカル測地系データ (フォールスカラーと、スケールファクター1万による垂直方向の誇張)。ジオイドの画像は @essd-11-647-2019 の作品から流用したものである。
 
@@ -1117,7 +1115,7 @@ Chapter \@ref(reproj-geo-data) では、CRS について説明し、ある CRS �
 今は、以下を知っておけば十分である。
 
 - 座標系は地理的なオブジェクトの重要な構成要素であること
-- データがどの CRS であるか、また、地理的 (緯度経度) か投影 (通常はメートル) かを知ることは重要であり、R による空間およびジオメトリ操作の処理方法に影響を及ぼす。
+- データがどの CRS であるか、また、地理的 (緯度経度) か投影 (通常はメートル) かは重要であり、R による空間およびジオメトリ操作の処理方法に影響を及ぼす。
 - `sf` オブジェクトの CRS は関数 `st_crs()` で問い合わせることができ、`terra` オブジェクトの CRS は関数 `crs()` を用いて問い合わせることができる。 
 
 ```{r vector-crs, echo=FALSE, fig.cap="ベクタデータ型の地理座標系 (WGS 84、左) と投影座標系 (NAD83 / UTMゾーン12N、右) の例。", message=FALSE, fig.asp=0.56, fig.scap="Examples of geographic and projected CRSs (vector data)."}
@@ -1173,7 +1171,7 @@ units::set_units(st_area(luxembourg), km^2)
 res(my_rast)
 ```
 
-UTM 投影を使うと、単位が変わってしまう。
+ユニバーサル横メルカトル (Universal Transverse Mercator, UTM) 投影を使うと、単位が変わる。
 
 ```{r 02-spatial-data-62, warning=FALSE, message=FALSE}
 repr = project(my_rast, "EPSG:26912")

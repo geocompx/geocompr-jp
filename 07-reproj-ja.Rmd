@@ -34,7 +34,7 @@ Section \@ref(crs-intro) では、座標参照系 (CRS) を紹介し、<u>地理
 次のセクションでは R における CRS を紹介し、続いて Section \@ref(crs-setting) で空間オブジェクトに関連する CRS の取得と設定方法を示す。 
 Section \@ref(geom-proj) は、バッファを作成する作業例を参照しながら、データがどの CRS にあるのかを知ることの重要性を示している。
 Section \@ref(whenproject) と Section \@ref(which-crs) において、それぞれ、いつ再投影するべきか、どの CRS を使うかという問題に取り組んでいる。
-最後に、ベクタとラスタの再投影については、\@ref(reproj-vec-geom) と \@ref(reproj-ras) で、地図投影の修正については Section \@ref(mapproj) で説明する。
+最後に、ベクタとラスタの再投影については、Section \@ref(reproj-vec-geom) と Section \@ref(reproj-ras) で、地図投影の修正については Section \@ref(mapproj) で説明する。
 
 ## 座標参照系  {#crs-in-r}
 
@@ -145,12 +145,12 @@ new_vector_crs = st_crs(new_vector)
 また、`st_crs` 関数には、使用中の CRS に関する追加情報を取得することができる、という便利な特徴もある。 
 例えば、以下を実行してみよう。
 
-- `st_crs(new_vector)$IsGeographic`、CRS が地理的かどうかを確認する
-- `st_crs(new_vector)$units_gdal`、CRS 単位を調べることができる
-- `st_crs(new_vector)$srid` その「SRID」識別子を抽出する (存在する場合)
-- `st_crs(new_vector)$proj4string` proj-string 表現を抽出する
+- `st_crs(new_vector)$IsGeographic`: CRS が地理的かどうかを確認
+- `st_crs(new_vector)$units_gdal`: CRS 単位を調べる
+- `st_crs(new_vector)$srid`: その「SRID」識別子を抽出 (存在する場合)
+- `st_crs(new_vector)$proj4string`: proj-string 表現を抽出
 
-座標参照系 (CRS) がない場合や間違った CRS が設定されている場合は、`st_set_crs()` 関数を使用することができる (この場合、ファイル読み込み時にすでに CRS が正しく設定されているので、WKT 文字列は変更されずに残る)。
+CRS がない場合や間違った CRS が設定されている場合は、`st_set_crs()` 関数を使用することができる (この場合、ファイル読み込み時にすでに CRS が正しく設定されているので、WKT 文字列は変更されずに残る)。
 
 ```{r 02-spatial-data-54}
 new_vector = st_set_crs(new_vector, "EPSG:4326") # CRS を設定
@@ -463,7 +463,7 @@ lonlat2UTM(st_coordinates(london))
 ```
 
 UTM CRS で使用されている横メルカトル図法は等角 (conformal) であるが、UTM ゾーンの中心から離れるにつれて面積や距離の歪みがひどくなる。
-そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から 6 度までに制限することを提案している (出典: [manifold.net](https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
+そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から 6 度までに制限することを提案している ([manifold.net](https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm))。
 そのため、UTM は比較的狭い範囲での角度保存を重視する場合にのみ使用することを勧める。
 
 現在、適切な CRS を選択するためのツールも用意されており、これには **crssuggest** パッケージ<!--add ref or docs--> が含まれている。
@@ -494,7 +494,7 @@ CRS は、等面積、等距離、等角 (形状はそのまま)、またはそ�
 - 数千 km に及ぶ地域のランベルト正角円錐図法 (Lambert conformal conic, [LCC](https://en.wikipedia.org/wiki/Lambert_conformal_conic_projection) [日本語版](https://ja.wikipedia.org/w/index.php?curid=536310)) 投影。円錐は、距離と面積の特性がセカント線間で妥当となるように設定されている。
 - 極域のステレオ投影 (Stereographic, [STERE](https://en.wikipedia.org/wiki/Stereographic_projection) [日本語版](https://ja.wikipedia.org/w/index.php?curid=1463335)) 投影。ただし、中心から数千キロメートル離れた面積や距離の計算に頼らないように注意すること。
 
-地域のデータセットに特化した投影 CRS を自動的に選択する方法として、調査地域の中心点に対して正距方位図法 ([AEQD](https://en.wikipedia.org/wiki/Azimuthal_equidistant_projection) [日本語版](https://ja.wikipedia.org/w/index.php?curid=40783)) 投影を作成することが考えられる。
+地域のデータセットに特化した投影 CRS を自動的に選択する方法として、調査地域の中心点に対して正距方位図法投影を作成することが考えられる。
 これは、データセットの中心点に基づくメートル単位でカスタム CRS (EPSG コードなし) を作成するものである。
 他のデータセットが作成したカスタム CRS と互換性がなく、数百キロメートルに及ぶ広範なデータセットに使用すると、結果が正確でなくなる可能性がある。
 
@@ -518,7 +518,7 @@ london2 = st_transform(london_geo, "EPSG:27700")
 
 `london` の変換版ができたので、**sf** 関数 `st_transform()` を使って、2 つのロンドン表現間の距離を求めることができる。^[
 `st_transform()` に代わるものとして、**lwgeom** の `st_transform_proj()` がある。これは、GDAL を使用しない変換を可能にし、GDAL がサポートしていない投影をサポートすることができる。
-しかし、本稿執筆時点 (2022年) では、`st_transform_proj()` でサポートされているが、`st_transform()` でサポートされていない投影法を見つけることはできなかった。
+しかし、本稿執筆時点 (2024年) では、`st_transform_proj()` でサポートされているが、`st_transform()` でサポートされていない投影法を見つけることはできなかった。
 ]
 `london` と `london2` が 2 km 以上も離れているのは意外かもしれない。^[
 この 2 点の位置の違いは、変換操作の不完全さ (実際は非常に正確) ではなく、`london` と `london_proj` を作成した手動で作成した座標の精度の低さによるものである。
@@ -673,8 +673,8 @@ tibble(
                                              na.rm = TRUE)),
   unique_categories = c(length(unique(values(cat_raster))),
                         length(unique(values(cat_raster_wgs84))))) |>
-  knitr::kable(caption = paste("オリジナル ('cat_raster') と", 
-                               "投影 ('cat_raster_wgs84') のカテゴリラスタ", 
+  knitr::kable(caption = paste("オリジナル (cat\\_raster\\_wgs84) と", 
+                               "投影 (cat\\_raster\\_wgs84) のカテゴリラスタ", 
                                "データセットの主要な属性。"),
                caption.short = paste("Key attributes in the original and", 
                                      "projected raster datasets"),
@@ -720,7 +720,7 @@ tibble(
                                              na.rm = TRUE)),
   mean = c(mean(values(con_raster)), mean(values(con_raster_ea), 
                                           na.rm = TRUE))) |>
-  knitr::kable(caption = paste("オリジナル ('con_raster') と投影 ('con_raster_ea')", 
+  knitr::kable(caption = paste("オリジナル ('con\\_raster') と投影 ('con\\_raster\\_ea')", 
                                "連続ラスタデータセット", 
                                "の主要な属性。"),
                caption.short = paste("Key attributes in the original and", 
@@ -759,7 +759,7 @@ zion_centr_wgs84 = st_transform(zion_centr, "EPSG:4326")
 st_as_text(st_geometry(zion_centr_wgs84))
 ```
 
-次に、新たに得られた値を用いて、以下に示す正距方位図法 (AEQD) CRS の WKT 定義を更新することができる。
+次に、新たに得られた値を用いて、以下に示す正距方位図法 CRS の WKT 定義を更新することができる。
 `"Central_Meridian"` は重心の経度、`"Latitude_Of_Origin"` は緯度であることに注意しておこう。
 
 ```{r}
