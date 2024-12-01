@@ -1,2 +1,0 @@
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)([^/])$        /$1$2/ [L,R=301]
