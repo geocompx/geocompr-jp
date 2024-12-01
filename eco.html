@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 15 生態学 | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="必須パッケージ この章では、Chapter 2 ～ Chapter 5 で説明した地理データ解析と処理について十分に理解していることを前提に説明する。 また、Chapters 10 と Chapter 12 で解説した GIS へのブリッジと空間交差検証 (cross-validation, CV) も活用していこう。 この章では、以下のパッケージを使用する。 library(sf)...">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="Chapter 15 生態学 | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/eco.html">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="必須パッケージ この章では、Chapter 2 ～ Chapter 5 で説明した地理データ解析と処理について十分に理解していることを前提に説明する。 また、Chapters 10 と Chapter 12 で解説した GIS へのブリッジと空間交差検証 (cross-validation, CV) も活用していこう。 この章では、以下のパッケージを使用する。 library(sf)...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 15 生態学 | Geocomputation with R">
+<meta name="twitter:description" content="必須パッケージ この章では、Chapter 2 ～ Chapter 5 で説明した地理データ解析と処理について十分に理解していることを前提に説明する。 また、Chapters 10 と Chapter 12 で解説した GIS へのブリッジと空間交差検証 (cross-validation, CV) も活用していこう。 この章では、以下のパッケージを使用する。 library(sf)...">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 15 生態学 | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="active" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="eco" class="section level1" number="15">
+<h1>
+<span class="header-section-number">15</span> 生態学<a class="anchor" aria-label="anchor" href="#eco"><i class="fas fa-link"></i></a>
+</h1>
+<div id="prerequisites-15" class="section level2 unnumbered">
+<h2>必須パッケージ<a class="anchor" aria-label="anchor" href="#prerequisites-15"><i class="fas fa-link"></i></a>
+</h2>
+<p>この章では、Chapter <a href="spatial-class.html#spatial-class">2</a> ～ Chapter <a href="geometry-operations.html#geometry-operations">5</a> で説明した地理データ解析と処理について十分に理解していることを前提に説明する。
+また、Chapters <a href="gis.html#gis">10</a> と Chapter <a href="spatial-cv.html#spatial-cv">12</a> で解説した GIS へのブリッジと空間交差検証 (cross-validation, CV) も活用していこう。</p>
+<p>この章では、以下のパッケージを使用する。</p>
+<div class="sourceCode" id="cb491"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com">data.table</a></span><span class="op">)</span>        <span class="co"># 高速な data_frame 操作 (mlr3 が使用)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mlr3.mlr-org.com">mlr3</a></span><span class="op">)</span>              <span class="co"># 機械学習 (Chapter 12 参照)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mlr3spatiotempcv.mlr-org.com/">mlr3spatiotempcv</a></span><span class="op">)</span>  <span class="co"># 時空間リサンプリング</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mlr3tuning.mlr-org.com">mlr3tuning</a></span><span class="op">)</span>        <span class="co"># ハイパーパラメータのチューニング</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mlr3learners.mlr-org.com">mlr3learners</a></span><span class="op">)</span>      <span class="co"># 最重要の機械学習へのインターフェース</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paradox.mlr-org.com">paradox</a></span><span class="op">)</span>           <span class="co"># ハイパーパラメータ空間を定義</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://imbs-hl.github.io/ranger/">ranger</a></span><span class="op">)</span>            <span class="co"># ランダムフォレスト</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/qgisprocess/">qgisprocess</a></span><span class="op">)</span>       <span class="co"># QGIS へのブリッジ (Chapter 10)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">tree</span><span class="op">)</span>              <span class="co"># 決定木</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/vegandevs/vegan">vegan</a></span><span class="op">)</span>             <span class="co"># 生態学</span></span></code></pre></div>
+</div>
+<div id="introduction-15" class="section level2" number="15.1">
+<h2>
+<span class="header-section-number">15.1</span> イントロダクション<a class="anchor" aria-label="anchor" href="#introduction-15"><i class="fas fa-link"></i></a>
+</h2>
+<p>本章では、霧のオアシスの植生勾配をモデル化し、水の利用可能性に明らかに支配されている特徴的な植生帯を明らかにする。
+ケーススタディでは、R におけるジオコンピュテーションスキルを磨くため、これまでの章で紹介した概念をまとめ、さらに拡張していく。</p>
+<p>霧のオアシスは、地元では<strong>ロマ植生</strong>と呼ばれ、Peru や Chile の海岸砂漠に沿った山々に発達している。
+同様の植生形態は、Namibia や Yemen、Oman の海岸沿いなど他の地域でも見られる <span class="citation">(<a href="references.html#ref-galletti_land_2016">Galletti, Turner, and Myint 2016</a>)</span>。
+年間の降水量平均は 30〜50 mm 程度であり乾燥した条件にもかかわらず、霧の発生により、南半球の冬の間に植物が利用できる水量が増加する。
+その結果、Peru の海岸線に沿った南向きの山の斜面が緑色になる (Figure <a href="eco.html#fig:study-area-mongon">15.1</a>)。
+数年に一度、エルニーニョ現象によって、この太陽の降り注ぐ環境に集中豪雨がもたらされ、苗木はその後の乾燥した環境を生き抜くための根を長く張るチャンスを得ることができる <span class="citation">(<a href="references.html#ref-dillon_lomas_2003">Dillon, Nakazawa, and Leiva 2003</a>)</span>。</p>
+<p>残念ながら、霧のオアシスは、主に人間の活動により、大きく危機に瀕している。
+残されたユニークな植生生態系を効果的に保護するためには、原生植物相の構成と空間分布に関するエビデンスが必要である <span class="citation">(<a href="references.html#ref-muenchow_predictive_2013">Muenchow, Bräuning, et al. 2013</a>; <a href="references.html#ref-muenchow_soil_2013">Muenchow, Hauenstein, et al. 2013</a>)</span>。</p>
+<p>この章では、Peru の中央北岸に位置する Casma 近郊の<strong>ロマ植生</strong>山である Mongón 山の南斜面における維管束植物 (ここでは主に顕花植物) の組成と空間分布を分析する (Figure <a href="eco.html#fig:study-area-mongon">15.1</a>)。
+Mongón 山での野外調査において、2011年の冬に無作為にサンプリングした 4 x 4 m<sup>2</sup> の 100 区画に生息する維管束植物をすべて記録した <span class="citation">(<a href="references.html#ref-muenchow_predictive_2013">Muenchow, Bräuning, et al. 2013</a>)</span>。
+このサンプリングは、米国海洋大気庁 (<a href="https://origin.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php">NOAA</a>) が発表したデータに示されているように、その年の強いラニーニャ現象が発生した時期と重なった。
+このため、沿岸部の砂漠では例年よりもさらに高いレベルの乾燥が発生し、Peru の<strong>ロマ植生</strong>山脈の南斜面では霧の活動が活発化した。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:study-area-mongon"></span>
+<img src="images/15_study_area_mongon.png" alt="Mongón 山調査地。Muenchow, Schratz, and Brenning (2017) の図。" width="60%"><p class="caption">
+FIGURE 15.1: Mongón 山調査地。Muenchow, Schratz, and Brenning (2017) の図。
+</p>
+</div>
+<p>また本章では、前章で扱ったテクニックを、重要な応用分野である生態学に応用する方法を示す。
+具体的には、</p>
+<ul>
+<li>必要なデータを読み込み、環境予測因子を計算する (Section <a href="eco.html#data-and-data-preparation">15.2</a>)</li>
+<li>次元削減技術 (座標付け; Section <a href="eco.html#nmds">15.3</a>) を用いて、種組成行列から主な植物学的勾配を抽出する</li>
+<li>最初の順序軸、すなわち植物相勾配を、標高、傾斜、集水域、NDVI などの環境予測変数の関数としてモデル化する (Section <a href="eco.html#modeling-the-floristic-gradient">15.4</a>)
+そのために、ランダムフォレストモデルを利用する。機械学習アルゴリズム <span class="citation">(<a href="references.html#ref-breiman_random_2001">Breiman 2001</a>)</span>の 1 つである。最適な予測を行うために、空間交差検証を用いて、ハイパーパラメータを事前に調整することが望ましい (see Section <a href="spatial-cv.html#svm">12.5.2</a>)</li>
+<li>調査地内の任意の場所の植物組成の空間分布図を作成する (Section <a href="eco.html#predictive-mapping">15.4.2</a>)</li>
+</ul>
+</div>
+<div id="data-and-data-preparation" class="section level2" number="15.2">
+<h2>
+<span class="header-section-number">15.2</span> データとデータ準備<a class="anchor" aria-label="anchor" href="#data-and-data-preparation"><i class="fas fa-link"></i></a>
+</h2>
+<p>以降の解析に必要なデータは、<strong>spDataLarge</strong> パッケージから入手可能である。</p>
+<div class="sourceCode" id="cb492"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"study_area"</span>, <span class="st">"random_points"</span>, <span class="st">"comm"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span>
+<span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/dem.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ndvi</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/ndvi.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><code>study_area</code> は調査地域の外形を表すポリゴン、<code>random_points</code> はランダムに選ばれた 100 地点を含む <code>sf</code> オブジェクトである。
+<code>comm</code> はワイドデータ形式の群集行列で、行はフィールドで訪問した場所、列は観察された種を表している。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;統計学では、分割表やクロス表とも呼ばれる。&lt;/p&gt;"><sup>100</sup></a></p>
+<div class="sourceCode" id="cb493"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># サイト 35 から 40 と、それに対応する群集マトリックスの</span></span>
+<span><span class="co"># 最初の 5 種の発生状況</span></span>
+<span><span class="va">comm</span><span class="op">[</span><span class="fl">35</span><span class="op">:</span><span class="fl">40</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span>
+<span><span class="co">#&gt;    Alon_meri Alst_line Alte_hali Alte_porr Anth_eccr</span></span>
+<span><span class="co">#&gt; 35         0         0         0       0.0     1.000</span></span>
+<span><span class="co">#&gt; 36         0         0         1       0.0     0.500</span></span>
+<span><span class="co">#&gt; 37         0         0         0       0.0     0.125</span></span>
+<span><span class="co">#&gt; 38         0         0         0       0.0     3.000</span></span>
+<span><span class="co">#&gt; 39         0         0         0       0.0     2.000</span></span>
+<span><span class="co">#&gt; 40         0         0         0       0.2     0.125</span></span></code></pre></div>
+<p>数値はサイトごとの種の被度を表し、サイト面積に対する種の被度の割合 (%; ひとつのサイトでは、個々の植物間の被度の重複により 100% を超える場合があることに注意) で記録された。
+<code>comm</code> の列名は <code>random_points</code> の <code>id</code> 列に対応する。
+<code>dem</code> は調査地域の数値標高モデル (digital elevation model, DEM) で、<code>ndvi</code> は Landsat シーンの赤色および近赤外チャネルから算出した正規化植生指標 (Normalized Difference Vegetation Index, NDVI) である (Section <a href="spatial-operations.html#local-operations">4.3.3</a> および <code><a href="https://rdrr.io/pkg/spDataLarge/man/ndvi.tif.html">?spDataLarge::ndvi.tif</a></code> を参照)。
+Figure <a href="eco.html#fig:sa-mongon">15.2</a> に示すように、<code>dem</code> に <code>random_points</code> と <code>study_area</code> を重ねて表示すことで、データをより身近なものにすることができる。</p>
+<p></p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:sa-mongon"></span>
+<img src="images/15_sa_mongon_sampling.png" alt="スタディマスク (ポリゴン)、サンプリング地点 (黒点)、背景の DEM。" width="100%"><p class="caption">
+FIGURE 15.2: スタディマスク (ポリゴン)、サンプリング地点 (黒点)、背景の DEM。
+</p>
+</div>
+<p>次のステップは、モデリングと予測地図作成に必要な変数 (Section <a href="eco.html#predictive-mapping">15.4.2</a> 参照) だけでなく、非計量多次元尺度構成法 (Non-Metric Multidimensional Scaling, NMDS) 軸を調査地域の主要勾配、高度と湿度にそれぞれ整合させるための変数も計算することである (Section <a href="eco.html#nmds">15.3</a> 参照)。</p>
+<p>具体的には、R-GIS ブリッジを用いて、デジタル標高モデルから集水勾配と集水面積を計算する (Chapter <a href="gis.html#gis">10</a> 参照)。
+曲率も重要な予測因子である可能性があり、「演習」セクションで、それらがモデリング結果にどのような影響を与えるかを確認することができる。</p>
+<p>集水域と集水勾配を計算するには、<code>sagang:sagawetnessindex</code> 関数を利用することができる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;残念ながら、&lt;code&gt;sagawetnessindex&lt;/code&gt; で望ましい地形属性を計算するには SAGA に詳しくなければならない。&lt;/p&gt;"><sup>101</sup></a>
+<code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help()</a></code> 特定のジオアルゴリズムのすべての関数パラメータとデフォルト値を返す。
+ここでは、その一部のみを紹介する。</p>
+<div class="sourceCode" id="cb494"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># saga next generation プラグインを有効化していない場合に有効化</span></span>
+<span><span class="fu">qgisprocess</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_enable_plugins.html">qgis_enable_plugins</a></span><span class="op">(</span><span class="st">"processing_saga_nextgen"</span><span class="op">)</span></span>
+<span><span class="co"># ヘルプを表示</span></span>
+<span><span class="fu">qgisprocess</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help</a></span><span class="op">(</span><span class="st">"sagang:sagawetnessindex"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Saga wetness index (saga:sagawetnessindex)</span></span>
+<span><span class="co">#&gt; ...</span></span>
+<span><span class="co">#&gt; ----------------</span></span>
+<span><span class="co">#&gt; Arguments</span></span>
+<span><span class="co">#&gt; ----------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; DEM: Elevation</span></span>
+<span><span class="co">#&gt;  Argument type:  raster</span></span>
+<span><span class="co">#&gt;  Acceptable values:</span></span>
+<span><span class="co">#&gt;      - Path to a raster layer</span></span>
+<span><span class="co">#&gt; ...</span></span>
+<span><span class="co">#&gt; SLOPE_TYPE: Type of Slope</span></span>
+<span><span class="co">#&gt;  Argument type:  enum</span></span>
+<span><span class="co">#&gt;  Available values:</span></span>
+<span><span class="co">#&gt;      - 0: [0] local slope</span></span>
+<span><span class="co">#&gt;      - 1: [1] catchment slope</span></span>
+<span><span class="co">#&gt; ...</span></span>
+<span><span class="co">#&gt; AREA: Catchment area</span></span>
+<span><span class="co">#&gt;  Argument type:  rasterDestination</span></span>
+<span><span class="co">#&gt;  Acceptable values:</span></span>
+<span><span class="co">#&gt;      - Path for new raster layer</span></span>
+<span><span class="co">#&gt;... </span></span>
+<span><span class="co">#&gt; ----------------</span></span>
+<span><span class="co">#&gt; Outputs</span></span>
+<span><span class="co">#&gt; ----------------</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; AREA: &lt;outputRaster&gt;</span></span>
+<span><span class="co">#&gt;  Catchment area</span></span>
+<span><span class="co">#&gt; SLOPE: &lt;outputRaster&gt;</span></span>
+<span><span class="co">#&gt;  Catchment slope</span></span>
+<span><span class="co">#&gt; ...</span></span></code></pre></div>
+<p>次に、R の名前付き引数を使って、必要なパラメータを指定する (Section <a href="gis.html#rqgis">10.2</a> を参照)。
+ディスク上のファイルへのパス、あるいは R のグローバル環境にある <code>SpatRaster</code> を使って、入力ラスタ <code>DEM</code> を指定できることを思い出そう (Section <a href="gis.html#rqgis">10.2</a> 参照)。
+<code>SLOPE_TYPE</code> に 1 を指定することで、アルゴリズムが集水勾配を返すようになる。
+生成されたラスタは、SAGA のラスタ形式である <code>.sdat</code> という拡張子で一時ファイルに保存される。</p>
+<div class="sourceCode" id="cb495"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 環境予測因子: 集水勾配と集水面積</span></span>
+<span><span class="va">ep</span> <span class="op">=</span> <span class="fu">qgisprocess</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm</a></span><span class="op">(</span></span>
+<span>  alg <span class="op">=</span> <span class="st">"sagang:sagawetnessindex"</span>,</span>
+<span>  DEM <span class="op">=</span> <span class="va">dem</span>,</span>
+<span>  SLOPE_TYPE <span class="op">=</span> <span class="fl">1</span>, </span>
+<span>  SLOPE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".sdat"</span><span class="op">)</span>,</span>
+<span>  AREA <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".sdat"</span><span class="op">)</span>,</span>
+<span>  .quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>これは、計算された出力ラスタへのパスを含む <code>ep</code> という名前のリストを返す。
+集水域と集水勾配を多層構造 <code>SpatRaster</code> オブジェクトに読み込んでみよう (Section <a href="spatial-class.html#raster-classes">2.3.4</a> 参照)。
+さらに、これに 2 つのラスタオブジェクト <code>dem</code> と <code>ndvi</code> を追加する。</p>
+<div class="sourceCode" id="cb496"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 集水域と集水勾配を読み取る</span></span>
+<span><span class="va">ep</span> <span class="op">=</span> <span class="va">ep</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"AREA"</span>, <span class="st">"SLOPE"</span><span class="op">)</span><span class="op">]</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">ep</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"carea"</span>, <span class="st">"cslope"</span><span class="op">)</span> <span class="co"># 名前をわかりやすく変更</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/origin.html">origin</a></span><span class="op">(</span><span class="va">ep</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/origin.html">origin</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span> <span class="co"># ラスタが同じ原点を持つことを確認</span></span>
+<span><span class="va">ep</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">dem</span>, <span class="va">ndvi</span>, <span class="va">ep</span><span class="op">)</span> <span class="co"># 多層 SpatRaster オブジェクトに dem と ndvi を追加する。</span></span></code></pre></div>
+<p>さらに、集水域 の値は右側に大きく偏っている (<code>hist(ep$carea)</code>)。
+常用対数変換をすると、より正規分布に近くなる。</p>
+<div class="sourceCode" id="cb497"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ep</span><span class="op">$</span><span class="va">carea</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html">log10</a></span><span class="op">(</span><span class="va">ep</span><span class="op">$</span><span class="va">carea</span><span class="op">)</span></span></code></pre></div>
+<p>読者の便宜を図るため、<strong>spDataLarge</strong> に <code>ep</code> を追加した。</p>
+<div class="sourceCode" id="cb498"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ep</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/ep.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>最後に、現地観測に地形属性を抽出することができる (Section <a href="raster-vector.html#raster-extraction">6.3</a> も参照)。</p>
+<div class="sourceCode" id="cb499"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ep_rp</span> <span class="op">=</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html">extract</a></span><span class="op">(</span><span class="va">ep</span>, <span class="va">random_points</span>, ID <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="va">random_points</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">random_points</span>, <span class="va">ep_rp</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="nmds" class="section level2" number="15.3">
+<h2>
+<span class="header-section-number">15.3</span> 次元性を低減<a class="anchor" aria-label="anchor" href="#nmds"><i class="fas fa-link"></i></a>
+</h2>
+<p>座標付け (Ordination) は、植生学において、0 で埋め尽くされた大規模な種間プロット行列から主要情報 (生態的勾配に相当することが多い) を抽出するための一般的なツールである。
+しかし、リモートセンシング、土壌学、ジオマーケティング などの分野でも利用されている。
+座標付けテクニックに馴染みがない場合、または復習が必要な場合は、生態学で人気の座標付けテクニックを簡単に紹介した <a href="https://ordination.okstate.edu/overview.htm">Michael W. Palmer のウェブページ</a> と R でこれらのテクニックを適用する方法について深く調べた <span class="citation">Borcard, Gillet, and Legendre (<a href="references.html#ref-borcard_numerical_2011">2011</a>)</span> に目を通してみよう。
+<strong>vegan</strong> のパッケージのドキュメントも非常に有用なリソースである (<code>vignette(package = "vegan")</code>)。</p>
+<p>主成分分析 (principal component analysis, PCA) は、おそらく最も有名な座標付け の手法である。
+変数間の線形関係が期待でき、2 つのプロット (観測) における変数の共同不在が類似性とみなせる場合、次元を削減するためのすばらしいツールである。
+これは植生データではほとんどない。</p>
+<p>ひとつは、植物の存在は通常、勾配 (湿度、温度、塩分など) に沿って、最も好ましい条件でピークを迎え、好ましくない条件に向かって減少していくという単峰性の関係にある。</p>
+<p>第二に、ある種が 2 つの区画で同時に存在しないことは、類似性を示す指標とはなりにくい。
+ある植物種が、サンプルの中で最も乾燥した場所 (例: 極度の砂漠) と最も湿った場所 (例: 木のサバンナ) から姿を消したとする。
+というのも、この 2 つの全く異なる環境設定に共通するのは、 (稀少なユビキタス種を除いて) 種が存在しないという点だけである可能性が非常に高いからである。</p>
+<p>NMDS は、生態学でよく使われる次元削減手法の一つである <span class="citation">(<a href="references.html#ref-vonwehrden_pluralism_2009">von Wehrden et al. 2009</a>)</span>。
+NMDS は、元の行列のオブジェクト間の距離と、座標付けられたオブジェクト間の距離の間のランクベースの差異を低減する。
+その差をストレスとして表現している。
+ストレス値が低いほど、座標付け、すなわち元の行列の低次元表現が良好であることを示す。
+ストレス値が 10 より小さいと適合性が高く、15 程度でも良好、20 より大きいと適合性が低いことを表している <span class="citation">(<a href="references.html#ref-mccune_analysis_2002">McCune, Grace, and Urban 2002</a>)</span>。
+R では、<strong>vegan</strong> パッケージの <code><a href="https://rdrr.io/pkg/vegan/man/metaMDS.html">metaMDS()</a></code> で NMDS を実行することができる。
+入力として、サイトを行、種を列とする群集行列を期待する。
+しばしば、有-無データを用いた座標付け は、 (説明される分散の点で) より良い結果をもたらするが、その代償として、もちろん、入力行列の情報量は少なくなる (演習も参照)。
+<code><a href="https://rdrr.io/pkg/vegan/man/decostand.html">decostand()</a></code> は、数値の観測結果を、1 が種の発生、0 が種の不在を示す有無に変換する。
+NMDS のようなオーダリング技術では、部位ごとに少なくとも 1 回の観測が必要である。
+したがって、種が発見されなかったサイトはすべて除外する必要がある。</p>
+<div class="sourceCode" id="cb500"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 存在-不在 行列</span></span>
+<span><span class="va">pa</span> <span class="op">=</span> <span class="fu">vegan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vegan/man/decostand.html">decostand</a></span><span class="op">(</span><span class="va">comm</span>, <span class="st">"pa"</span><span class="op">)</span> <span class="co"># 100 行 (箇所) , 69 列 (種) </span></span>
+<span><span class="co"># 1種以上発見されたサイトのみを残す</span></span>
+<span><span class="va">pa</span> <span class="op">=</span> <span class="va">pa</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="va">pa</span><span class="op">)</span> <span class="op">!=</span> <span class="fl">0</span>, <span class="op">]</span>  <span class="co"># 84 行, 69 列 (種) </span></span></code></pre></div>
+<p>得られた行列は、NMDS の入力として機能する。
+<code>k</code> は出力軸数を指定し、ここでは 4 とする。 <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+&lt;code&gt;k&lt;/code&gt; を選択する一つの方法として、1 から 6 の間で &lt;code&gt;k&lt;/code&gt; を試し、最も良いストレス値が得られる結果を使用する方法がある &lt;span class="citation"&gt;(&lt;a href="references.html#ref-mccune_analysis_2002"&gt;McCune, Grace, and Urban 2002&lt;/a&gt;)&lt;/span&gt;。&lt;/p&gt;'><sup>102</sup></a>
+NMDS は、各ステップで座標付けされた空間をより入力行列に近づけようとする反復的な手順である。
+アルゴリズムの収束を確認するために、<code>try</code> パラメータを使ってステップ数を 500 に設定した。</p>
+<div class="sourceCode" id="cb501"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">25072018</span><span class="op">)</span></span>
+<span><span class="va">nmds</span> <span class="op">=</span> <span class="fu">vegan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vegan/man/metaMDS.html">metaMDS</a></span><span class="op">(</span>comm <span class="op">=</span> <span class="va">pa</span>, k <span class="op">=</span> <span class="fl">4</span>, try <span class="op">=</span> <span class="fl">500</span><span class="op">)</span></span>
+<span><span class="va">nmds</span><span class="op">$</span><span class="va">stress</span></span>
+<span><span class="co">#&gt; ...</span></span>
+<span><span class="co">#&gt; Run 498 stress 0.08834745 </span></span>
+<span><span class="co">#&gt; ... Procrustes: rmse 0.004100446  max resid 0.03041186 </span></span>
+<span><span class="co">#&gt; Run 499 stress 0.08874805 </span></span>
+<span><span class="co">#&gt; ... Procrustes: rmse 0.01822361  max resid 0.08054538 </span></span>
+<span><span class="co">#&gt; Run 500 stress 0.08863627 </span></span>
+<span><span class="co">#&gt; ... Procrustes: rmse 0.01421176  max resid 0.04985418 </span></span>
+<span><span class="co">#&gt; *** Solution reached</span></span>
+<span><span class="co">#&gt; 0.08831395</span></span></code></pre></div>
+<p>ストレス値 9 は非常に良い結果を表し、縮小された座標付け空間が入力行列の分散の大部分を表していることを意味する。
+全体として、NMDS は、座標付け空間において、(種の構成という点で) より類似したオブジェクトがより近くに配置される。
+しかし、他の多くの座標付け の手法とは対照的に、軸は任意であり、必ずしも重要度 <span class="citation">(<a href="references.html#ref-borcard_numerical_2011">Borcard, Gillet, and Legendre 2011</a>)</span> によって座標付けされるわけではない。
+しかし、調査地では湿度が主な勾配を表していることが既に分かっている <span class="citation">(<a href="references.html#ref-muenchow_predictive_2013">Muenchow, Bräuning, et al. 2013</a>; <a href="references.html#ref-muenchow_rqgis:_2017">Muenchow, Schratz, and Brenning 2017</a>)</span>。
+湿度は標高と高い相関があるため、標高に応じて NMDS 軸を回転させる (NMDS 軸の回転の詳細については <code><a href="https://rdrr.io/pkg/vegan/man/MDSrotate.html">?MDSrotate</a></code> も参照)。
+結果をプロットしてみると、意図したとおり、第 1 軸は明らかに高度 (Figure <a href="eco.html#fig:xy-nmds">15.3</a>) と関連していることがわかる。</p>
+<div class="sourceCode" id="cb502"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">random_points</span>, <span class="va">id</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">pa</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span></span>
+<span><span class="co"># 高度 (湿度の代理) に応じて NMDS を回転</span></span>
+<span><span class="va">rotnmds</span> <span class="op">=</span> <span class="fu">vegan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vegan/man/MDSrotate.html">MDSrotate</a></span><span class="op">(</span><span class="va">nmds</span>, <span class="va">elev</span><span class="op">)</span></span>
+<span><span class="co"># 最初の2軸の抽出</span></span>
+<span><span class="va">sc</span> <span class="op">=</span> <span class="fu">vegan</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/vegan/man/scores.html">scores</a></span><span class="op">(</span><span class="va">rotnmds</span>, choices <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, display <span class="op">=</span> <span class="st">"sites"</span><span class="op">)</span></span>
+<span><span class="co"># 第1軸を高度にプロット</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">sc</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, x <span class="op">=</span> <span class="va">elev</span>, xlab <span class="op">=</span> <span class="st">"elevation in m"</span>, </span>
+<span>     ylab <span class="op">=</span> <span class="st">"First NMDS axis"</span>, cex.lab <span class="op">=</span> <span class="fl">0.8</span>, cex.axis <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:xy-nmds"></span>
+<img src="images/15_xy_nmds.png" alt="NMDS の第1軸を高度に対してプロット。" width="60%"><p class="caption">
+FIGURE 15.3: NMDS の第1軸を高度に対してプロット。
+</p>
+</div>
+<p>最初の NMDS 軸のスコアは、Mongón 山の斜面に沿って現れる異なる植生形態、すなわち植物学的勾配を表している。
+それらを空間的に可視化するために、NMDS のスコアを先に作成した予測因子 (Section <a href="eco.html#data-and-data-preparation">15.2</a>) でモデル化し、得られたモデルを予測地図に利用する (Section <a href="eco.html#modeling-the-floristic-gradient">15.4</a> 参照) ことができる。</p>
+</div>
+<div id="modeling-the-floristic-gradient" class="section level2" number="15.4">
+<h2>
+<span class="header-section-number">15.4</span> 植物相の勾配をモデル化<a class="anchor" aria-label="anchor" href="#modeling-the-floristic-gradient"><i class="fas fa-link"></i></a>
+</h2>
+<p>植物相の勾配を空間的に予測するために、ランダムフォレストモデルを使用する。
+ランダムフォレストモデルは、環境・生態系のモデリングに頻繁に適用され、予測性能の面で最良の結果をもたらすことが多い <span class="citation">(<a href="references.html#ref-hengl_random_2018">Hengl et al. 2018</a>; <a href="references.html#ref-schratz_hyperparameter_2019">Schratz et al. 2019</a>)</span>。
+ここで、これらはランダムフォレストの基礎を形成するものであるため、決定木とバギングについて簡単に紹介する。
+ランダムフォレストと関連する技術についてのより詳細な説明は <span class="citation">James et al. (<a href="references.html#ref-james_introduction_2013">2013</a>)</span> を参照。</p>
+<p>決定木を例として紹介すると、まず、回転した NMDS スコアと現場観測値 (<code>random_points</code>) を結合して、応答予測行列を構築する。
+また、得られたデータフレームは、後で <strong>mlr3</strong> のモデリングに使用する予定である。</p>
+<div class="sourceCode" id="cb503"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># response-predictor 行列を作成</span></span>
+<span><span class="co"># id- と response 変数</span></span>
+<span><span class="va">rp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>id <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html">rownames</a></span><span class="op">(</span><span class="va">sc</span><span class="op">)</span><span class="op">)</span>, sc <span class="op">=</span> <span class="va">sc</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co"># 予測因子 (dem、ndvi、terrain 属性) を結合 </span></span>
+<span><span class="va">rp</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">random_points</span>, <span class="va">rp</span>, by <span class="op">=</span> <span class="st">"id"</span><span class="op">)</span></span></code></pre></div>
+<p>決定木は、予測変数空間をいくつかの領域に分割する。
+これを説明するために、最初の NMDS の軸のスコアを応答 (<code>sc</code>)、高度 (<code>dem</code>) を唯一の予測因子として、このデータに決定木を適用してみる。</p>
+<div class="sourceCode" id="cb504"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">tree_mo</span> <span class="op">=</span> <span class="fu">tree</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tree/man/tree.html">tree</a></span><span class="op">(</span><span class="va">sc</span> <span class="op">~</span> <span class="va">dem</span>, data <span class="op">=</span> <span class="va">rp</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">tree_mo</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/text.html">text</a></span><span class="op">(</span><span class="va">tree_mo</span>, pretty <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:tree"></span>
+<img src="images/15_tree.png" alt="3つの内部ノードと4つの終端ノードを持つ決定木の単純な例。" width="60%"><p class="caption">
+FIGURE 15.4: 3つの内部ノードと4つの終端ノードを持つ決定木の単純な例。
+</p>
+</div>
+<p>結果として得られる木は、3 つの内部ノードと 4 つの終端ノード (Figure <a href="eco.html#fig:tree">15.4</a>) で構成される。
+木の一番上にある最初の内部ノードは、328.5 m 以下のすべての観測を左に、それ以外のすべての観測を右の枝に割り当てる。
+左の枝に入る観測は、平均 NMDS スコアが -1.198 である。
+全体として、標高が高いほどNMDS のスコアが高くなる、というように解釈できる。
+つまり、単純な決定木によって、すでに 4 つの異なる植物群像が明らかにされているのである。
+詳しく学びたい方は Section <a href="eco.html#predictive-mapping">15.4.2</a> を参照。
+決定木は、過剰に適合する傾向がある。つまり、ノイズを含む入力データを忠実に反映しすぎるため、予測性能が低下するのである <span class="citation">(Section <a href="spatial-cv.html#intro-cv">12.4</a>, <a href="references.html#ref-james_introduction_2013">James et al. 2013</a>)</span>。
+ブートストラップ集計 (<strong>b</strong>ootstrap <strong>agg</strong>regat<strong>ing</strong>, bagging, バギング) は、この問題を克服するためのアンサンブル手法である。
+アンサンブル技術は、複数のモデルの予測値を単純に結合するものである。
+このように、バギングでは同じ入力データから繰り返しサンプルを取り、その予測値を平均化する。
+これにより、分散と過適合を減らし、決定木と比較してはるかに優れた予測精度を実現する。
+最後に、ランダムフォレストは、相関の高い木の予測を平均化すると、相関の低い木の予測を平均化するよりも分散が大きく、信頼性が低くなるので、バギングを拡張して改良することが望ましい <span class="citation">(<a href="references.html#ref-james_introduction_2013">James et al. 2013</a>)</span>。
+これを実現するために、ランダムフォレストはバギングを使用するが、従来のバギングでは各木が利用可能なすべての予測子を使用できるのとは対照的に、ランダムフォレストは利用可能なすべての予測子のランダムサンプルだけを使用する。</p>
+<!--
+バギングとは、単にm=pのランダムフォレストの特殊な場合であることを思い出してみよう。したがって、randomForest() 関数は、ランダムフォレストとバギングの両方を実行するために使用することが可能である。 
+引数 mtry=13 は、13 個の予測変数すべてを考慮することを示す。
+をツリーの各分割に対して行うこと、つまりバギングを行うことである。
+ジェームス・イントロダクション 2013
+-->
+<div id="mlr3-building-blocks" class="section level3" number="15.4.1">
+<h3>
+<span class="header-section-number">15.4.1</span> <strong>mlr3</strong> のビルドブロック<a class="anchor" aria-label="anchor" href="#mlr3-building-blocks"><i class="fas fa-link"></i></a>
+</h3>
+<p>このセクションのコードは、Section <a href="spatial-cv.html#svm">12.5.2</a> で紹介したステップをほぼ踏襲している。
+違いは以下の通りである。</p>
+<ol style="list-style-type: decimal">
+<li>応答変数は数値なので、回帰タスクは、Section <a href="spatial-cv.html#svm">12.5.2</a> の分類タスクに取って代わる。</li>
+<li>応答変数がカテゴリであるときにしか使えない AUROC の代わりに、性能指標として平均二乗誤差 (root mean squared error, RMSE) を使うことにする。</li>
+<li>サポートベクタマシン の代わりに、ランダムフォレストモデルを使用している。これは当然ながら、異なるハイパーパラメータを伴う。</li>
+<li>バイアスを低減した性能指標の評価は、読者の皆様への課題として残している (演習問題参照)。
+その代わりに、 (空間) 予測のためのハイパーパラメータを調整する方法を示す。</li>
+</ol>
+<p>Section <a href="spatial-cv.html#svm">12.5.2</a> で、100 回繰り返しの 5 回空間交差検証と 50 回のランダムサーチを使用した場合、バイアス低減された性能推定値を得るために 125,500 個のモデルが必要だったことを思い出してみよう。
+ハイパーパラメータのチューニングレベルでは、最適なハイパーパラメータの組み合わせを見つけ、それを特定の空間分割のテストデータを予測するための外部パフォーマンスレベルで使用した (Figure <a href="spatial-cv.html#fig:inner-outer">12.6</a> も参照)。
+これを 5 つの空間分割に対して行い、100 回繰り返した結果、合計 500 の最適なハイパーパラメータの組み合わせが得られた。
+空間分布図作成に使うべきはどちらか？
+答えは簡単で、全くない。
+このチューニングは、バイアスを低減した性能推定値を得るために行われたものであり、最良の空間予測を行うために行われたものではないことに留意してみよう。
+後者については、完全なデータセットから最適なハイパーパラメータの組み合わせを推定する。
+これは、内部のハイパーパラメータのチューニング・レベルがもはや必要ないことを意味する。なぜなら、真のアウトカムが不明の新しいデータ (未訪問のフィールド観測) にこのモデルを適用するので、テストはいかなる場合でも不可能なのである。
+そこで、5 回繰り返しの空間 CV によって、完全なデータセットで良好な空間予測を行うためにハイパーパラメータを調整することにした。
+<!-- If we used more than one repetition (say 2) we would retrieve multiple optimal tuned hyperparameter combinations (say 2) --></p>
+<p>既に入力変数 (<code>rp</code>) を構築しているので、<strong>mlr3</strong> の構成要素 (タスク、学習器、リサンプリング) を指定するための準備は全て整っている。
+空間タスクの指定には、再び <strong>mlr3spatiotempcv</strong> パッケージを使用する <span class="citation">(<a href="references.html#ref-schratz_mlr3spatiotempcv_2021">Schratz et al. 2021</a> Section <a href="spatial-cv.html#spatial-cv-with-mlr3">12.5</a>)</span>。そして、応答 (<code>sc</code>) は数値なので、回帰タスクを使用する。</p>
+<div class="sourceCode" id="cb505"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># task を作成</span></span>
+<span><span class="va">task</span> <span class="op">=</span> <span class="fu">mlr3spatiotempcv</span><span class="fu">::</span><span class="fu"><a href="https://mlr3spatiotempcv.mlr-org.com/reference/as_task_regr_st.html">as_task_regr_st</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">rp</span>, <span class="op">-</span><span class="va">id</span>, <span class="op">-</span><span class="va">spri</span><span class="op">)</span>,</span>
+<span>  target <span class="op">=</span> <span class="st">"sc"</span>,</span>
+<span>  id <span class="op">=</span> <span class="st">"mongon"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>バックエンドとして <code>sf</code> オブジェクトを使用すると、後の空間分割に必要なジオメトリ情報が自動的に提供される。
+さらに、<code>id</code> と <code>spri</code> の列は、これらの変数をモデリングにおける予測因子として使用すべきではないため、削除した。
+次に、<strong>ranger</strong> パッケージのランダムフォレスト学習器を構築する <span class="citation">(<a href="references.html#ref-wright_ranger_2017">Wright and Ziegler 2017</a>)</span>。</p>
+<div class="sourceCode" id="cb506"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lrn_rf</span> <span class="op">=</span> <span class="fu"><a href="https://mlr3.mlr-org.com/reference/mlr_sugar.html">lrn</a></span><span class="op">(</span><span class="st">"regr.ranger"</span>, predict_type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span></code></pre></div>
+<p>例えばサポートベクタマシン (Section <a href="spatial-cv.html#svm">12.5.2</a> 参照) とは対照的に、ランダムフォレストはハイパーパラメータのデフォルト値で使用した場合、既に良い性能を示すことが多い (これが人気の理由の一つだろう)。
+それでも、チューニングによってモデル結果が適度に改善されることが多いので、努力する価値はある <span class="citation">(<a href="references.html#ref-probst_hyperparameters_2018">Probst, Wright, and Boulesteix 2018</a>)</span>。
+ランダムフォレストでは、ハイパーパラメータ <code>mtry</code>、<code>min.node.size</code>、<code>sample.fraction</code> がランダム性の度合いを決定するので、これらを調整する必要がある <span class="citation">(<a href="references.html#ref-probst_hyperparameters_2018">Probst, Wright, and Boulesteix 2018</a>)</span>。
+<code>mtry</code> は、各ツリーでいくつの予測変数を使用すべきかを示す。
+すべての予測変数が使用される場合、これは事実上バギングに相当する (Section <a href="eco.html#modeling-the-floristic-gradient">15.4</a> の冒頭を参照)。
+<code>sample.fraction</code> パラメータは、各ツリーで使用される観測の割合を指定する。
+分画が小さいと多様性が増すので、相関のある樹木が少なくなり、望ましいことが多い (上記参照)。
+<code>min.node.size</code> パラメータは、端末ノードが少なくとも持つべき観測値の数を示す (Figure <a href="eco.html#fig:tree">15.4</a> も参照)。
+当然ながら、木や演算時間が大きくなればなるほど、<code>min.node.size</code> は小さくなる。</p>
+<p>ハイパーパラメータの組み合わせはランダムに選択されるが、特定のチューニング限界 (<code><a href="https://paradox.mlr-org.com/reference/ps.html">paradox::ps()</a></code> で作成) の範囲内に収まる必要がある。
+<code>mtry</code> は 1 から予測変数の数 4) までの範囲でなければならない。<code>sample.fraction</code> は 0.2 から 0.9 の間、<code>min.node.size</code> は 1 から 10 の間でなければならない <span class="citation">(<a href="references.html#ref-probst_hyperparameters_2018">Probst, Wright, and Boulesteix 2018</a>)</span>。</p>
+<div class="sourceCode" id="cb507"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 探索空間を指定</span></span>
+<span><span class="va">search_space</span> <span class="op">=</span> <span class="fu">paradox</span><span class="fu">::</span><span class="fu"><a href="https://paradox.mlr-org.com/reference/ps.html">ps</a></span><span class="op">(</span></span>
+<span>  mtry <span class="op">=</span> <span class="fu">paradox</span><span class="fu">::</span><span class="fu"><a href="https://paradox.mlr-org.com/reference/Domain.html">p_int</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">1</span>, upper <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">ncol</a></span><span class="op">(</span><span class="va">task</span><span class="op">$</span><span class="fu">data</span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">-</span> <span class="fl">1</span><span class="op">)</span>,</span>
+<span>  sample.fraction <span class="op">=</span> <span class="fu">paradox</span><span class="fu">::</span><span class="fu"><a href="https://paradox.mlr-org.com/reference/Domain.html">p_dbl</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">0.2</span>, upper <span class="op">=</span> <span class="fl">0.9</span><span class="op">)</span>,</span>
+<span>  min.node.size <span class="op">=</span> <span class="fu">paradox</span><span class="fu">::</span><span class="fu"><a href="https://paradox.mlr-org.com/reference/Domain.html">p_int</a></span><span class="op">(</span>lower <span class="op">=</span> <span class="fl">1</span>, upper <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>探索空間を定義したことで、<code><a href="https://mlr3tuning.mlr-org.com/reference/AutoTuner.html">AutoTuner()</a></code> 関数でチューニングを指定する準備が整った。
+地理的なデータを扱うので、今回も空間交差検証を用いてハイパーパラメータを調整する (Section <a href="spatial-cv.html#intro-cv">12.4</a> と Section <a href="spatial-cv.html#spatial-cv-with-mlr3">12.5</a> を参照)。
+具体的には、1 回だけ繰り返す 5 分割の空間分割 (<code><a href="https://mlr3.mlr-org.com/reference/mlr_sugar.html">rsmp()</a></code>) を使用することにする。
+これらの空間分割のそれぞれにおいて、あらかじめ定義された限界値 (<code>seach_space</code>) の範囲内でランダムに選択されたハイパーパラメータ構成 (<code><a href="https://mlr3tuning.mlr-org.com/reference/tnr.html">tnr()</a></code>) を用いながら 50 個のモデル(<code><a href="https://bbotk.mlr-org.com/reference/trm.html">trm()</a></code>)を実行し、最適なハイパーパラメータの組合せを見出す <span class="citation">(Section <a href="spatial-cv.html#svm">12.5.2</a> と <a href="https://mlr3book.mlr-org.com/chapters/chapter4/hyperparameter_optimization.html#sec-autotuner" class="uri">https://mlr3book.mlr-org.com/chapters/chapter4/hyperparameter_optimization.html#sec-autotuner</a>, <a href="references.html#ref-bischl_applied_2024">Bischl et al. 2024</a> を参照)</span>。
+性能指標は二乗平均平方根誤差 (root mean squared error, RMSE) である。</p>
+<div class="sourceCode" id="cb508"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">autotuner_rf</span> <span class="op">=</span> <span class="fu">mlr3tuning</span><span class="fu">::</span><span class="fu"><a href="https://mlr3tuning.mlr-org.com/reference/auto_tuner.html">auto_tuner</a></span><span class="op">(</span></span>
+<span>  learner <span class="op">=</span> <span class="va">lrn_rf</span>,</span>
+<span>  resampling <span class="op">=</span> <span class="fu">mlr3</span><span class="fu">::</span><span class="fu"><a href="https://mlr3.mlr-org.com/reference/mlr_sugar.html">rsmp</a></span><span class="op">(</span><span class="st">"spcv_coords"</span>, folds <span class="op">=</span> <span class="fl">5</span><span class="op">)</span>, <span class="co"># 空間分割</span></span>
+<span>  measure <span class="op">=</span> <span class="fu">mlr3</span><span class="fu">::</span><span class="fu"><a href="https://mlr3.mlr-org.com/reference/mlr_sugar.html">msr</a></span><span class="op">(</span><span class="st">"regr.rmse"</span><span class="op">)</span>, <span class="co"># パフォーマンス測定</span></span>
+<span>  terminator <span class="op">=</span> <span class="fu">mlr3tuning</span><span class="fu">::</span><span class="fu"><a href="https://bbotk.mlr-org.com/reference/trm.html">trm</a></span><span class="op">(</span><span class="st">"evals"</span>, n_evals <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>, <span class="co"># 繰り返しを 50 回に指定</span></span>
+<span>  search_space <span class="op">=</span> <span class="va">search_space</span>, <span class="co"># 指定済みハイパーパラメータの探索</span></span>
+<span>  tuner <span class="op">=</span> <span class="fu">mlr3tuning</span><span class="fu">::</span><span class="fu"><a href="https://mlr3tuning.mlr-org.com/reference/tnr.html">tnr</a></span><span class="op">(</span><span class="st">"random_search"</span><span class="op">)</span> <span class="co"># ランダム探索の指定</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><code>AutoTuner</code> -オブジェクトの <code>train()</code> メソッドを呼び出すと、最終的にハイパーパラメータのチューニングが実行され、指定したパラメータに対して最適なハイパーパラメータの組み合わせが見つかる。</p>
+<div class="sourceCode" id="cb509"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># ハイパーパラメータのチューニング</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">24092024</span><span class="op">)</span></span>
+<span><span class="va">autotuner_rf</span><span class="op">$</span><span class="fu">train</span><span class="op">(</span><span class="va">task</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb510"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">autotuner_rf</span><span class="op">$</span><span class="va">tuning_result</span></span>
+<span><span class="co">#&gt;     mtry sample.fraction min.node.size learner_param_vals  x_domain regr.rmse</span></span>
+<span><span class="co">#&gt;    &lt;int&gt;           &lt;num&gt;         &lt;int&gt;             &lt;list&gt;    &lt;list&gt;     &lt;num&gt;</span></span>
+<span><span class="co">#&gt; 1:     4           0.784            10          &lt;list[4]&gt; &lt;list[3]&gt;     0.382</span></span></code></pre></div>
+</div>
+<div id="predictive-mapping" class="section level3" number="15.4.2">
+<h3>
+<span class="header-section-number">15.4.2</span> 予測地図<a class="anchor" aria-label="anchor" href="#predictive-mapping"><i class="fas fa-link"></i></a>
+</h3>
+<p>調整されたハイパーパラメータは、これで予測に使用することができる。
+そのためには、適合した <code>AutoTuner</code> オブジェクトの <code>predict</code> メソッドを実行するだけでよい。</p>
+<div class="sourceCode" id="cb511"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 最適なハイパーパラメータの組み合わせで予測</span></span>
+<span><span class="va">autotuner_rf</span><span class="op">$</span><span class="fu">predict</span><span class="op">(</span><span class="va">task</span><span class="op">)</span></span>
+<span><span class="co">#&gt; &lt;PredictionRegr&gt; for 84 observations:</span></span>
+<span><span class="co">#&gt;  row_ids  truth response</span></span>
+<span><span class="co">#&gt;        1 -1.084   -1.176</span></span>
+<span><span class="co">#&gt;        2 -0.975   -1.176</span></span>
+<span><span class="co">#&gt;        3 -0.912   -1.168</span></span>
+<span><span class="co">#&gt;      ---    ---      ---</span></span>
+<span><span class="co">#&gt;       82  0.814    0.594</span></span>
+<span><span class="co">#&gt;       83  0.814    0.746</span></span>
+<span><span class="co">#&gt;       84  0.808    0.807</span></span></code></pre></div>
+<p><code>predict</code> メソッドは、モデリングに使用されるすべての観測にモデルを適用する。
+モデリングで使用された予測因子として名付けられたラスタを含む多層 <code>SpatRaster</code>、<code><a href="https://rspatial.github.io/terra/reference/predict.html">terra::predict()</a></code> は空間分布図作成、すなわち新しいデータに対する予測も行う。</p>
+<div class="sourceCode" id="cb512"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">pred</span> <span class="op">=</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/predict.html">predict</a></span><span class="op">(</span><span class="va">ep</span>, model <span class="op">=</span> <span class="va">autotuner_rf</span>, fun <span class="op">=</span> <span class="va">predict</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:rf-pred"></span>
+<img src="images/15_rf_pred.png" alt="植物相の勾配を予測するマッピングにより、はっきりとした植生帯が明らかになった。" width="100%"><p class="caption">
+FIGURE 15.5: 植物相の勾配を予測するマッピングにより、はっきりとした植生帯が明らかになった。
+</p>
+</div>
+<p><code><a href="https://rspatial.github.io/terra/reference/predict.html">terra::predict()</a></code> がモデル・アルゴリズムに対応していない場合でも、手動で予測を行うことができる。</p>
+<div class="sourceCode" id="cb513"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">newdata</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/coerce.html">as.matrix</a></span><span class="op">(</span><span class="va">ep</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/colSums.html">colSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">newdata</span><span class="op">)</span><span class="op">)</span>  <span class="co"># 0 NAs</span></span>
+<span><span class="co"># 0 があると仮定すると、より一般的なアプローチになる</span></span>
+<span><span class="va">ind</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colSums.html">rowSums</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">newdata</span><span class="op">)</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span></span>
+<span><span class="va">tmp</span> <span class="op">=</span> <span class="va">autotuner_rf</span><span class="op">$</span><span class="fu">predict_newdata</span><span class="op">(</span>newdata <span class="op">=</span> <span class="va">newdata</span><span class="op">[</span><span class="va">ind</span>, <span class="op">]</span>, task <span class="op">=</span> <span class="va">task</span><span class="op">)</span></span>
+<span><span class="va">newdata</span><span class="op">[</span><span class="va">ind</span>, <span class="st">"pred"</span><span class="op">]</span> <span class="op">=</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/data.table/man/as.data.table.html">as.data.table</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">[[</span><span class="st">"response"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="va">pred_2</span> <span class="op">=</span> <span class="va">ep</span><span class="op">$</span><span class="va">dem</span></span>
+<span><span class="co"># ここで、ラスタを予測値で埋める</span></span>
+<span><span class="va">pred_2</span><span class="op">[</span><span class="op">]</span> <span class="op">=</span> <span class="va">newdata</span><span class="op">$</span><span class="va">pred</span></span>
+<span><span class="co"># terra と我々の手動予測が同じかどうかをチェックする。</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html">values</a></span><span class="op">(</span><span class="va">pred</span> <span class="op">-</span> <span class="va">pred_2</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div>
+<p>予測地図には、はっきりとした植生帯 (Figure <a href="eco.html#fig:rf-pred">15.5</a>) が描かれている。
+<strong>ロマ植生</strong>山の植生帯の詳細については、<span class="citation">Muenchow, Hauenstein, et al. (<a href="references.html#ref-muenchow_soil_2013">2013</a>)</span> を参照。
+青い色調は、いわゆる <strong>ハナアナナス</strong>帯を表している。
+<strong>ハナアナナス</strong>は、特に<strong>ロマ植生</strong>山脈の砂地やかなり砂漠的な麓で大量に見られる、高度に適応した属植物である。
+黄色は草本植生帯で、<strong>ハナアナナス</strong>植生帯に比べ植物被度が高いことを表している。
+オレンジ色はブロメリア帯を表し、種の豊富さと植物被覆率が最も高いことを特徴としている。
+霧による湿度が最も高い気温逆転地帯 (標高約 750 - 850 m) の真下で見られる。
+逆転温度以上になると当然水分は減少し、再び砂漠化し、数種の多肉植物が見られるようになる (多肉植物帯; 赤色)。
+興味深いのは、空間予測によってブロメリア帯が途切れていることが明らかになったことである。これは、予測地図なしでは発見できなかった非常に興味深い発見であった。</p>
+</div>
+</div>
+<div id="結論" class="section level2" number="15.5">
+<h2>
+<span class="header-section-number">15.5</span> 結論<a class="anchor" aria-label="anchor" href="#%E7%B5%90%E8%AB%96"><i class="fas fa-link"></i></a>
+</h2>
+<p>本章では、NMDS (Section <a href="eco.html#nmds">15.3</a>) を用いて、<strong>ロマ植生</strong>の Mongón 山の群集行列を座標付けした。
+最初の軸は、調査地域の主な植物相の勾配を表し、部分的に R-GIS ブリッジ (Section <a href="eco.html#data-and-data-preparation">15.2</a>) を使って導き出した環境予測因子の関数としてモデル化された。
+<strong>mlr3</strong> パッケージは、ハイパーパラメータ <code>mtry</code>、<code>sample.fraction</code> および <code>min.node.size</code> (Section <a href="eco.html#mlr3-building-blocks">15.4.1</a> ) を空間的に調整するためのビルディングブロックを提供している。
+調整されたハイパーパラメータは最終モデルの入力となり、このモデルを環境予測変数に適用して植物相の勾配を空間的に表現した (Section <a href="eco.html#predictive-mapping">15.4.2</a>)。
+その結果、砂漠の真ん中にある驚異的な生物多様性を空間的に示すことができたのである。
+<strong>ロマ植生</strong>山は絶滅の危機に瀕しているため、予測地図は保護区域を定める際の判断材料となり、地域住民に身近にあるユニークな存在であることを認識させることができるのである。</p>
+<p>方法論の面では、いくつかの追加的な指摘ができる。</p>
+<ul>
+<li>2 つ目の軸もモデル化し、2 つの軸のモデル化されたスコアを 1 つの予測地図に統合して可視化する革新的な方法を見つけるのは興味深いことである</li>
+<li>もし、生態学的に意味のある方法でモデルを解釈することに興味があれば、おそらく (セミ) パラメトリックモデルを使うべきだろう <span class="citation">(<a href="references.html#ref-muenchow_predictive_2013">Muenchow, Bräuning, et al. 2013</a>; <a href="references.html#ref-zuur_mixed_2009">A. Zuur et al. 2009</a>; <a href="references.html#ref-zuur_beginners_2017">A. F. Zuur et al. 2017</a>)</span>。
+しかし、少なくともランダムフォレストのような機械学習モデルの解釈を助けるアプローチは存在する (例えば、<a href="https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/">https://mlr-org.com/posts/2018-04-30-interpretable-machine-learning-iml-and-mlr/</a> を参照)</li>
+<li>本章で使用したハイパーパラメータのランダム化最適化よりも、逐次モデルベース最適化 (sequential model-based optimization, SMBO) の方が望ましいかもしれない <span class="citation">(<a href="references.html#ref-probst_hyperparameters_2018">Probst, Wright, and Boulesteix 2018</a>)</span>
+</li>
+</ul>
+<p>最後に、ランダムフォレストと他の機械学習モデルは、多くの観測と多くの予測因子、この章で使われるよりもはるかに多く、どの変数と変数の相互作用が応答を説明するのに寄与するかが不明である設定で頻繁に使用されることに注意しておこう。
+さらに、その関係は高度に非線形である可能性もある。
+このユースケースでは、レスポンスと予測変数の関係はかなり明確で、非線型はわずかであり、観測と予測変数の数は少ない。
+したがって、線形モデルを試してみる価値はあるかもしれない。
+線形モデルは、ランダムフォレストモデルよりも説明や理解がしやすいので好まれ (思考節約の原理)、さらに計算負荷が少ない (演習を参照)。
+線形モデルがデータに存在する非線形性の程度に対処できない場合、一般化加法モデル (generalized additive model, GAM) を試してみることもできる。
+ここで重要なのは、データサイエンティストのツールボックスは複数のツールで構成されており、目の前のタスクや目的に最適なツールを選択するのはあなたの責任であるということである。
+ここでは、ランダムフォレストのモデリングと、それに対応した空間予測図への利用方法を紹介したいと思われる。
+この目的のためには、反応と予測因子の関係が既知の、よく研究されたデータセットが適切である。
+しかし、これはランダムフォレストモデルが予測性能の面で最良の結果を返したことを意味するものではない。</p>
+</div>
+<div id="演習-11" class="section level2" number="15.6">
+<h2>
+<span class="header-section-number">15.6</span> 演習<a class="anchor" aria-label="anchor" href="#%E6%BC%94%E7%BF%92-11"><i class="fas fa-link"></i></a>
+</h2>
+<p>回答するには、以下のパッケージをアタッチすることとする (他のパッケージも必要に応じてアタッチする)。</p>
+<p>E1. コミュニティ行列のパーセンテージデータを使用して、NMDS を実行する。
+ストレス値を報告し、存在-不在データを使用して NMDS から取得したストレス値と比較します。
+この違いを説明するものは何か?</p>
+<p>E2. この章で使用したすべての予測ラスタ (集水勾配、集水面積) を計算し、<code>SpatRaster</code>オブジェクトに格納しなさい。
+そこに <code>dem</code> と <code>ndvi</code> を追加しなさい。
+次に、プロファイルと接線曲率を計算し、追加の予測ラスタとして追加しなさい (ヒント: <code>grass7:r.slope.aspect</code>)。
+最後に、応答予測行列を構築しなさい。
+最初の NMDS 軸のスコア (存在-不在コミュニティ行列を使用したときの結果) を標高に従って回転させたものが応答変数を表し、<code>random_points</code>に結合とする (内側結合を使用する)。
+応答予測行列を完成させるために、環境予測ラスタ・オブジェクトの値を <code>random_points</code> に抽出しなさい。</p>
+<p>E3. 空間交差検証を使用して、ランダムフォレストと線形モデルのバイアス削減 RMSE を取得しなさい。
+ランダムフォレストのモデリングには、最適なハイパーパラメータの組み合わせの推定 (50 回の反復によるランダム探索) を内部チューニングループに含めなさい。
+チューニングレベルを並列化しなさい。
+平均 RMSE を報告し、箱ひげ図を使用して、検索されたすべての RMSE を可視化しなさい。
+この課題は、mlr3 の関数 <code><a href="https://mlr3.mlr-org.com/reference/benchmark_grid.html">benchmark_grid()</a></code> と <code><a href="https://mlr3.mlr-org.com/reference/benchmark.html">benchmark()</a></code> (詳細は <a href="https://mlr3book.mlr-org.com/perf-eval-cmp.html#benchmarking" class="uri">https://mlr3book.mlr-org.com/perf-eval-cmp.html#benchmarking</a> を参照) を用いて解くのが最適。</p>
+
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="location.html"><span class="header-section-number">14</span> 商圏分析</a></div>
+<div class="next"><a href="conclusion.html"><span class="header-section-number">16</span> 結論</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#eco"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="nav-link" href="#prerequisites-15">必須パッケージ</a></li>
+<li><a class="nav-link" href="#introduction-15"><span class="header-section-number">15.1</span> イントロダクション</a></li>
+<li><a class="nav-link" href="#data-and-data-preparation"><span class="header-section-number">15.2</span> データとデータ準備</a></li>
+<li><a class="nav-link" href="#nmds"><span class="header-section-number">15.3</span> 次元性を低減</a></li>
+<li>
+<a class="nav-link" href="#modeling-the-floristic-gradient"><span class="header-section-number">15.4</span> 植物相の勾配をモデル化</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#mlr3-building-blocks"><span class="header-section-number">15.4.1</span> mlr3 のビルドブロック</a></li>
+<li><a class="nav-link" href="#predictive-mapping"><span class="header-section-number">15.4.2</span> 予測地図</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E7%B5%90%E8%AB%96"><span class="header-section-number">15.5</span> 結論</a></li>
+<li><a class="nav-link" href="#%E6%BC%94%E7%BF%92-11"><span class="header-section-number">15.6</span> 演習</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/15-eco-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/15-eco-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

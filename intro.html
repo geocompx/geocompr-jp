@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 1 はじめに | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="本書は、コンピュータの力を使って地理データで何かを行う方法について書かれている。 地理データの読み書きと何らかの処理、静的およびインタラクティブな地図の作成、実世界の問題を解決するためのジオコンピュテーション の適用、地理現象のモデリングなど、交通や環境系など多様な空間スキルを教える。...">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="Chapter 1 はじめに | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/intro.html">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="本書は、コンピュータの力を使って地理データで何かを行う方法について書かれている。 地理データの読み書きと何らかの処理、静的およびインタラクティブな地図の作成、実世界の問題を解決するためのジオコンピュテーション の適用、地理現象のモデリングなど、交通や環境系など多様な空間スキルを教える。...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 1 はじめに | Geocomputation with R">
+<meta name="twitter:description" content="本書は、コンピュータの力を使って地理データで何かを行う方法について書かれている。 地理データの読み書きと何らかの処理、静的およびインタラクティブな地図の作成、実世界の問題を解決するためのジオコンピュテーション の適用、地理現象のモデリングなど、交通や環境系など多様な空間スキルを教える。...">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 1 はじめに | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="active" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="intro" class="section level1" number="1">
+<h1>
+<span class="header-section-number">1</span> はじめに<a class="anchor" aria-label="anchor" href="#intro"><i class="fas fa-link"></i></a>
+</h1>
+<p>本書は、コンピュータの力を使って地理データで<u>何かを行う</u>方法について書かれている。
+地理データの読み書きと何らかの処理、静的およびインタラクティブな地図の作成、実世界の問題を解決するためのジオコンピュテーション の適用、地理現象のモデリングなど、交通や環境系など多様な空間スキルを教える。
+本書は、様々な地理的操作をどのようにリンクさせることができるかを、文章に挟まれた再現可能な「コードチャンク」で示す。このことにより、透明性のある、したがって科学的なワークフローも教えてくれる。</p>
+<p>本書は、ジオコンコンピュテーションのために<u>既存のツール</u>の利点を活用することだけにとどまらない。地理データ構造、および地理データ処理によってソフトウェアを理解し、<u>新しいツール</u>を開発する際に必要なソフトウェアを理解する。
+本書全体で解説するコマンドライン駆動のアプローチと、Chapter <a href="algorithms.html#algorithms">11</a> で解説するプログラミングにより、ソフトウェアによって課された創造性の制約を取り除くことができる。
+本書を読み、演習問題を解いた後は、読者が現実の課題に取り組むためにスキルを応用し、地図とコードで作業をこなし、再現可能かつフリーソフトウェア活動に参加する準備ができることを期待している。</p>
+<p>地理空間用のフリー＆オープンソースソフトウェア (FOSS4G) はここ数十年の間に驚くほどのスピードで進歩している。
+OSGeo のような組織のおかげで、応用地理技術はもはや高価なハードウェアやソフトウェアを持つ人だけのものではなくなり、誰でも高性能なジオコンピュテーション向けソフトウェアをダウンロードして実行することができるようになったのである。
+<a href="https://qgis.org/ja/site/">QGIS</a> などのオープンソースの地理情報システム (geographical information system, GIS) により、世界中で地理分析にアクセスできるようになった。
+GIS プログラムは強力であるが、本書で解説するコマンドライン・インターフェース (CLI) よりも、グラフィカル・ユーザー・インターフェース (graphical user interface, GUI) を重視する傾向がある。
+多くの GIS にみられる GUI 偏重は、完全な再現性のある作業を難しくするという、意図しない副作用がある。Chapter <a href="gis.html#gis">10</a> で見るように、この問題は「ジオアルゴリズム」を呼び出すことで解決することができる。
+大きく異なる二つのアプローチを単純に比較すると、Table <a href="intro.html#tab:gdsl">1.1</a> に示すようになる。</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:gdsl">TABLE 1.1: </span>ソフトウェアパッケージによる重点の違い (地理情報システム (GIS) の GUI と R の GUI)。</caption>
+<thead><tr class="header">
+<th align="left">属性</th>
+<th align="left">デスクトップ GIS (GUI)</th>
+<th align="left">R</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">主要分野</td>
+<td align="left">地理学</td>
+<td align="left">計算機学、統計学</td>
+</tr>
+<tr class="even">
+<td align="left">焦点</td>
+<td align="left">グラフィカル</td>
+<td align="left">コマンド</td>
+</tr>
+<tr class="odd">
+<td align="left">再現性</td>
+<td align="left">低い</td>
+<td align="left">高い</td>
+</tr>
+</tbody>
+</table></div>
+<p>R だけがジオコンピュテーションのための CLI を提供する言語ではない。
+Python (<a href="https://py.geocompx.org/">Geocomputation with Python</a> で解説)、Julia、JavaScript など、強力なジオコンピュテーション機能を持つコマンド環境は他にも存在する。
+しかし、R にはジオコンピュテーションを学ぶこと、さらに応用することに適した利点がある。Section <a href="intro.html#why-open-source">1.2</a> で説明するように、特に、統計学、モデル化、可視化の用途である。</p>
+<p>本書を執筆する動機は、科学研究における再現性の重要性 (下記注参照) である。
+再現性のある地理データ解析ワークフローをより身近なものにし、コマンドラインから利用できるオープンな地理空間ソフトウェアの力を実証することを目的としている。
+R は、他の言語へのインターフェースを提供し <span class="citation">(<a href="references.html#ref-eddelbuettel_extending_2018">Eddelbuettel and Balamuta 2018</a>)</span>、多くの空間ソフトウェアライブラリにアクセスすることができる。これについては、Section <a href="intro.html#why-use-r-for-geocomputation">1.3</a> で簡単に説明し、Chapter <a href="gis.html#gis">10</a> で実行してみたい。
+しかし、ソフトウェアの詳細に触れる前に、一歩下がってジオコンピュテーションとは何かを考えてみる価値がある。</p>
+
+<div class="rmdnote">
+再現性はコマンドラインインターフェースの大きな利点だが、実際にはどのような意味があるのだろうか。
+ここでは、次のように定義している。「一般にアクセス可能なコードを用いて、他の人が同じ結果を生成できるプロセス」
+これは単純で簡単に思えるかもしれないが (Rのコードをスクリプトファイルで注意深く管理すれば) 、教育や科学的プロセスにとって深い意味を持つ <span class="citation">(<a href="references.html#ref-pebesma_r_2012">Pebesma, Nüst, and Bivand 2012</a>)</span>。
+</div>
+<p></p>
+<div id="what-is-geocomputation" class="section level2" number="1.1">
+<h2>
+<span class="header-section-number">1.1</span> ジオコンピュテーションとは？<a class="anchor" aria-label="anchor" href="#what-is-geocomputation"><i class="fas fa-link"></i></a>
+</h2>
+<p>ここでは、ジオコンピューテーションを以下のように定義する。</p>
+<blockquote>
+<p>再現性、柔軟性、ツール開発に重点を置き、地理データを使って問題を解決する研究、ソフトウェア開発、実用化の分野。</p>
+</blockquote>
+<p>ジオコンピューテーションという用語は比較的新しく、1996年の第 1 回学術会議で用いられた。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+最初の「GeoComputation」会議は、著者の一人 (Robin Lovelace) が現在在籍している Leeds 大学で開催された。
+2017年、GeoComputation カンファレンスはリーズ大学に戻り、私たちがこの本に取り組み、発表する機会を与えてくれた (カンファレンスシリーズや20年以上にわたる論文／発表については、www.geocomputation.org を参照)。&lt;/p&gt;"><sup>1</sup></a>
+ジオコンピュテーションを (当時) 一般的に使われていた「計量地理学」と区別したのは、その初期の提唱者が提唱した、「創造的・実験的」応用 <span class="citation">(<a href="references.html#ref-longley_geocomputation_1998">Longley et al. 1998</a>)</span> と新しいツールや手法の開発に重点を置いたことである <span class="citation">(<a href="references.html#ref-openshaw_geocomputation_2000">Openshaw and Abrahart 2000</a>)</span>。
+この用語を提唱 (かつ、おそらく定義も) した Stan Openshaw によると、「ジオコンピュテーションは、様々な異なるタイプのジオデータを使用し、「科学的」アプローチという全体的な文脈の中で、関連するジオツールを開発することである」<span class="citation">(<a href="references.html#ref-openshaw_geocomputation_2000">Openshaw and Abrahart 2000</a>)</span>。
+この初期の定義に基づき、<u><em>R</em> によるジオコンピューテーション</u>は、データ分析やモデリングにとどまらず、学術的に興味深いだけでなく、有益な仕事のための新しいツールや手法の開発を含む。</p>
+<p>しかし、私たちのアプローチは当初の定義とは一点異なり、再現性とコラボレーションに重点を置いている。
+21世紀初頭は、まだ必要なハードウェア、ソフトウェア、データの入手が困難で、読者がコード例を再現することは非現実的だった。
+それから今日まで、解析環境は急速に進展している。
+RAM を十分に (少なくとも 8 GB 以上) 搭載したノートパソコンがあれば、一般に公開されているデータセットにジオコンピュテーション用のソフトウェアをインストール・実行し、また本書を再現することができるはずである。
+1990年代から2000年代初頭にかけて、高性能なコンピュータが一般の人々にとって手の届かないものであったために存在したジオコンピュテーションに対する金銭的・ハード的な障害は、現在では取り除かれている。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+この条件に適合するノートパソコンは、多くの国では &lt;a href="https://www.ebay.com/sch/i.html?_from=R40&amp;amp;_nkw=laptop&amp;amp;_sacat=0&amp;amp;_oaa=1&amp;amp;_udhi=100&amp;amp;rt=nc&amp;amp;RAM%2520Size=4%2520GB%7C16%2520GB%7C8%2520GB&amp;amp;_dcat=177"&gt;Ebay&lt;/a&gt; などのサイトで $100 以下で購入することができる。
+R とコードエディタのインストール方法は、Chapter &lt;a href="spatial-class.html#spatial-class"&gt;2&lt;/a&gt; で簡単に述べる。&lt;/p&gt;'><sup>2</sup></a>
+また、公的に入手できるデータセットが広く普及してきたことも、ジオコンピュテーションはより身近になってきた理由の一つである。この点については、Chapter <a href="read-write.html#read-write">8</a> で扱う。
+この分野の初期の作品とは異なり、本書で紹介するすべての研究は、本書と一緒に提供されるコードと <strong>spData</strong> のサンプルデータを使って再現可能である。<strong>spData</strong> などの R パッケージのインストールは Chapter <a href="spatial-class.html#spatial-class">2</a> で解説する。</p>
+<p>ジオコンピュテーションは、地理情報科学 (GIScience) 、ジオマティクス、ジオインフォマティクス、空間情報科学、地理情報工学 <span class="citation">(<a href="references.html#ref-longley_geographic_2015">Longley 2015</a>)</span>、空間データサイエンス (Spatial Data Science, SDS) といった他の用語と密接に関連している。
+それぞれの用語は、起源や主な適用分野は異なるものの、GIS の影響を受けた「科学的」 (再現性と反証可能性を意味する) アプローチに重点を置いている点で共通している。
+例えば、SDS は「データサイエンス」のスキルと大規模なデータセットを重視し、ジオインフォマティクスはデータ構造に焦点を当てる傾向がある。
+しかし、用語間の違いよりも重複の方が大きいため、すべてを包含する大まかな同義語としてジオコンピュテーションを使用している。
+これらはすべて、地理データを応用科学的な作業に利用することを目的としている。
+しかし、この用語の初期の使用者とは異なり、私たちは「ジオコンピュテーション (Geocomputation) 」 (または Stan Openshaw が呼んだ「ジオコンピュテーション (GeoComputation、C が大文字になっている) 」) というまとまった学術分野があることを示そうとするものではない。</p>
+<p>ジオコンピュテーションは最近の言葉であるが、古い考えに影響を受けている。
+2000年以上の歴史を持つ地理学 の一部と見ることができる <span class="citation">(<a href="references.html#ref-talbert_ancient_2014">Talbert 2014</a>)</span>。
+また、1960年代に登場した GIS <span class="citation">(<a href="references.html#ref-neteler_open_2008">Neteler and Mitasova 2008</a>)</span> の延長線上にあるものでもある <span class="citation">(<a href="references.html#ref-coppock_history_1991">Coppock and Rhind 1991</a>)</span>。</p>
+<p>地理学は、コンピュータが発明されるずっと以前から、人類と自然界との関係を説明し、影響を与える上で重要な役割を担ってきた。
+著名な探検家・地理学者であり博識であった Alexander von Humboldt (彼の名前を冠した種、地物、大学などがある) が、この役割を以下のように説明している。
+1800年代初めに南米を旅行した際に自然地理学や植物地理学の伝統の基礎を築いただけでなく、自然界を保護するための政策への道も開いたのである <span class="citation">(<a href="references.html#ref-wulf_invention_2015">Wulf 2015</a>)</span>。
+本書は、現代のコンピュータとオープンソースソフトウェアの力を活用し、進化し続ける「地理学の伝統」 <span class="citation">(<a href="references.html#ref-livingstone_geographical_1992">Livingstone 1992</a>)</span> に貢献することを目的としている。</p>
+<p>本のタイトル案には <em>Geography with R</em> と <em>R for GIS</em> があったが、これらは古い学問分野とリンクしていることが分かる。
+それぞれに利点がある。
+前者は、単なる空間データ以上のもので構成されているというメッセージを伝えている。
+後者は、この本が GIS として R を使い、<u>地理データ</u>の空間演算を行うための本であることを伝えている <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span>。
+しかし、GIS という言葉には、R の最大の強みを伝えきれない意味を含んでいる (Table <a href="intro.html#tab:gdsl">1.1</a> 参照)。
+すなわち、地理データと地理以外のデータの処理、モデル化、可視化をシームレスに行うことができ、かつ再現性は GIS の能力を超えている。
+ジオコンピュテーションは、再現可能なコード主導の環境で地理データを扱い、結果・方法・ツールをプログラムすることを示している。これが本書の狙いである。</p>
+</div>
+<div id="why-open-source" class="section level2" number="1.2">
+<h2>
+<span class="header-section-number">1.2</span> なぜオープンソースをジオコンピュテーションに使うのか？<a class="anchor" aria-label="anchor" href="#why-open-source"><i class="fas fa-link"></i></a>
+</h2>
+<p>初期の地理学者は、気圧計、コンパス、<a href="https://en.wikipedia.org/wiki/Sextant">六分儀</a> などのさまざまな道具を使って、世界に関する知識を深めてきた <span class="citation">(<a href="references.html#ref-wulf_invention_2015">Wulf 2015</a>)</span>。
+海上での経度計算が可能になったのは、1761年に発明された<a href="https://en.wikipedia.org/wiki/Marine_chronometer">マリン・クロノメーター</a>からで、これにより船はより直進的な航路をとることができるようになった。
+今世紀に入る前、地理分析のためのデータやツールは不十分であった。</p>
+<p>現在では、研究や実務に際して、地理データの不足ではなく、逆に多すぎるデータと多すぎるツールに悩まされている。
+ほとんどのスマートフォンに全地球測位 (GPS) 受信機が搭載されている。
+人工衛星や半自動運転車、市民科学者に至るまで、数多くのセンサーが世界のあらゆる場所を絶え間なく測定している。
+データの生成速度が圧倒的に速く、自律走行車のような新技術は、毎日数百から数千ギガバイトのデータを生成する。
+人工衛星からのリモートセンシングデータが膨大になり、対応するデータを 1 台のコンピュータで解析することが難しくなったため、Chapter <a href="gis.html#gis">10</a> で扱うように一台のコンピュータでは処理しきれない。
+この「ジオデータ革命」によって、高性能なコンピュータ・ハードウェアと、ノイズから信号を処理・抽出するための効率的でスケーラブルなソフトウェアに対する需要が高まっている。
+オープンソースツールの進化により、膨大な地理データストアから直接またはアプリケーションプログラミングインターフェイス (Application Programming Interface, API) を介して地理データをインポートし処理することができる。</p>
+<p>急速に変化するハードウェア、ソフトウェア、およびデータ環境では、将来性のあるツールを選択することが重要である。
+オープンソースソフトウェアの大きな利点は、何千人もの潜在的な貢献者がいることによる<strong>開発速度と寿命</strong>である。
+毎日何百人もの人々がオープンソースプロジェクトにバグレポートを提出し、新機能やドキュメントの改善を提案している。</p>
+<p>このことと関係して、<strong>相互運用性</strong>が利点となる。
+プロプライエタリな製品は、保守が難しいモノリシックな「帝国」になりがちだが (先に述べた利点と関連している)、オープンソース・ソフトウェアは、組み合わせることができるため、モジュール化されたツール「連合」と言えるだろう。
+このため、R のようなオープンソースのデータサイエンス言語は、高性能な可視化ライブラリやファイル形式へのインターフェースといった新しい開発を迅速に取り入れることができる。一方、プロプライエタリなソリューションは遅れを取らないように苦労している。</p>
+<p>もうひとつの大きな利点は、<strong>再現性</strong>である。
+発見を再現できることは科学研究にとって不可欠であり、オープンソースソフトウェアは、他の人が同じツールを使ってあなたの発見をチェックしたり、新しい文脈であなたの方法を適用したりすることを可能にするため、再現性という重要な障壁がない。
+誰でも無料でアクセスできるツールを使い、コードやデータを共有すると、研究結果を他の人がチェックし、それを基に構築できるようになる。これは、自分の作品を使ってもらったり、引用されたいと思うのであれば、大きなアドバンテージとなる。</p>
+<p>多くの人にとって、再現可能なコードの共有と組み合わされたオープンソースソフトウェアの最大の利点は、<strong>コミュニティ</strong>である。
+プロプライエタリ・ソフトウェアのサポートは非常に使いづらいことが多い。一方、コミュニティでは質の高いサポートをすぐに得ることもある。
+コミュニティはフィードバックやアイデアを提供してくれ、Chapter <a href="conclusion.html#conclusion">16</a> でも取り上げるように、独自のツールや手法を開発する手助けをしてくれる。</p>
+<p>R はオープンソースソフトウェアプロジェクトで、強力な言語であり、統計学者や開発者のコミュニティは常に進化し続けている <span class="citation">(<a href="references.html#ref-wickham_advanced_2019">Wickham 2019</a>)</span>。
+R はオープンソースソフトウェアで再現可能なジオコンピュテーショ ンを可能にする唯一の言語ではない。
+R を使う理由の多くは、Python や Julia など、再現可能なデータサイエンスのための他のオープンソース言語にも当てはまる。
+しかし、R 独自の重要な利点がいくつかある。</p>
+</div>
+<div id="why-use-r-for-geocomputation" class="section level2" number="1.3">
+<h2>
+<span class="header-section-number">1.3</span> なぜ R をジオコンピュテーションに使うのか？<a class="anchor" aria-label="anchor" href="#why-use-r-for-geocomputation"><i class="fas fa-link"></i></a>
+</h2>
+<p>R は、統計計算とグラフィックスのための、マルチプラットフォームなオープンソース言語・環境である (<a href="https://www.r-project.org/">r-project.org/</a>)。
+R は、幅広いパッケージによって高度な地理空間統計学 、モデリング、可視化もサポートしている。
+RStudio のような新しい統合開発環境 (integrated development environment、IDE) のおかげで、より多くの人が R を使えるようになった。特に、インタラクティブな視覚化専用のパネルがあることで地図の作成が容易になった。</p>
+<p>R の核は、オブジェクト指向の<a href="https://adv-r.hadley.nz/fp.html">関数型プログラミング言語</a> <span class="citation">(<a href="references.html#ref-wickham_advanced_2019">Wickham 2019</a>)</span>である。これに加えて、他のソフトウェアとの対話型インタフェースも設計されている <span class="citation">(<a href="references.html#ref-chambers_extending_2016">Chambers 2016</a>)</span>。
+後者には、GIS ソフトウェア、「ジオライブラリ」、関数の宝庫への「ブリッジ」も多く含まれている (Chapter <a href="gis.html#gis">10</a> を参照)。
+そのため、C 言語、FORTRAN、Java などの (R と比較して) 低レベルな言語を習得する必要がなく、「ジオツール」を素早く作成するのに理想的である (Section <a href="intro.html#software-for-geocomputation">1.4</a> を参照)。
+これは、GUI ベースの地理情報システムやプロプライエタリな地理情報システムが課す比喩的な「見えない壁」からの脱却のように感じられるだろう (GUI の定義については Table <a href="intro.html#tab:gdsl">1.1</a> を参照)。
+さらに、R は他の言語へのアクセスを容易にしている。
+例えば、パッケージの <strong>Rcpp</strong> は C++ の、<strong>reticulate</strong> は Python のコードを実行できるようにする。
+つまり、R はさまざまな地理空間プログラムへの「橋渡し役」として使用できるのである (Section <a href="intro.html#software-for-geocomputation">1.4</a> 参照)。</p>
+<p>R の柔軟性と進化する地理的機能を示すもう一つの例は、インタラクティブな地図作成である。
+Chapter <a href="adv-map.html#adv-map">9</a> で見るように、R には「限られた対話型 (プロット) 機能しかない」 <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span> というのは、もはや真実ではない。
+これは、Figure <a href="intro.html#fig:interactive">1.1</a> を作成する以下のコードチャンクで実証されている (プロットを生成する関数は、Section <a href="adv-map.html#interactive-maps">9.4</a> でカバーされている)。</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span></span>
+<span><span class="va">popup</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Robin"</span>, <span class="st">"Jakub"</span>, <span class="st">"Jannes"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/leaflet.html">leaflet</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/leaflet/reference/addProviderTiles.html">addProviderTiles</a></span><span class="op">(</span><span class="st">"NASAGIBS.ViirsEarthAtNight2012"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rstudio.github.io/leaflet/reference/map-layers.html">addMarkers</a></span><span class="op">(</span>lng <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">23</span>, <span class="fl">11</span><span class="op">)</span>,</span>
+<span>             lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">52</span>, <span class="fl">53</span>, <span class="fl">49</span><span class="op">)</span>, </span>
+<span>             popup <span class="op">=</span> <span class="va">popup</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:interactive"></span>
+<iframe src="https://geocompr.github.io/img/interactive.html" width="100%" height="400px" data-external="1">
+</iframe>
+<p class="caption">
+FIGURE 1.1: 青いマーカーは著者の出身地を示している。ベースマップは、NASAが提供する夜の地球のタイル画像。オンライン版 (geocompr.robinlovelace.net) では、ズームインしたりポップアップをクリックするなどして、インタラクティブに楽しむことができる。
+</p>
+</div>
+<p></p>
+<p>インタラクティブな地図としてならともかく、数年前に R (あるいは他のどのプログラミング言語でも) を使って Figure <a href="intro.html#fig:interactive">1.1</a> を作成するのは困難だっただろう。
+これは R の柔軟性と、<strong>knitr</strong> や <strong>leaflet</strong> などの開発のおかげで、他のソフトウェアへのインターフェースとして使用できることを示すもので、本書を通じて繰り返し出てくるテーマである。
+そのため、R コードを使用することで、抽象的な概念だけでなく、現実の現象を表す再現性の高い事例を参考にしながらジオコンピュテーションの教育を行うことができる。</p>
+<p>R-spatial stack はインストールが簡単で、包括的でメンテナンスが行き届き、相互運用性の高いパッケージを備えている。
+R には、基本インストールに含まれる統計関数と、多くの最先端手法を実装した何百ものよくメンテナンスされたパッケージがある。
+R を使えば、驚くほど少ないコード行数で作業を開始することができ、デバッグやパッケージの依存関係の管理よりも、地理メソッドやデータに集中することができる。
+R の特に優れた点は、優れた地図作成パッケージのおかげで、出版物のような品質のインタラクティブマップを簡単に作成できることである。</p>
+</div>
+<div id="software-for-geocomputation" class="section level2" number="1.4">
+<h2>
+<span class="header-section-number">1.4</span> ジオコンピュテーションのためのソフトウェア<a class="anchor" aria-label="anchor" href="#software-for-geocomputation"><i class="fas fa-link"></i></a>
+</h2>
+<p>R は地理計算のための強力な言語であるが、地理データ解析のための他の多くの選択肢があり、何千もの地理関数を提供している。
+地理計算のための他の言語を理解することは、特定のタスクに別のツールがより適切である場合を決定し、より広い地理空間エコシステムに R を配置するのに役立つだろう。
+本節では、Chapter <a href="gis.html#gis">10</a> に向けて、ジオコンピュテーションのための言語 <a href="https://isocpp.org/">C++</a>、 <a href="https://www.oracle.com/java/">Java</a>、 <a href="https://www.python.org/">Python</a> を簡単に紹介する。</p>
+<p>R (と Python) の重要な特徴として、インタプリタ型言語であることが挙げられる。
+REPL (Read-Eval-Print Loop) で対話的にプログラミングできるのがメリットである。
+コンソールに入力されたコードは、コンパイルという中間段階を待たずに、即座に実行され、結果が表示される。
+一方、C++ や Java などのコンパイルされた言語は、 (一度コンパイルされると) 動作が速くなる傾向がある。</p>
+<p>C++ は、<a href="https://www.qgis.org/">QGIS</a>、<a href="https://grass.osgeo.org/">GRASS GIS</a>、<a href="https://saga-gis.sourceforge.io/">SAGA</a> などの多くの GIS パッケージの基礎を提供しているので、賢明な出発点であると言えるだろう。
+よく書かれた C++ は非常に高速で、大規模な地理データセットを処理するようなパフォーマンスが重要なアプリケーションに適しているが、Python や R に比べて習得が困難である。
+C++ は、<strong>Rcpp</strong> パッケージによってよりアクセスしやすくなり、R ユーザーのために C プログラミングへの良い「入り方」を提供している。
+このような低レベルの言語を使いこなすことで、新しい高性能な「ジオアルゴリズム」を生み出す可能性や、GIS ソフトウェアの仕組みをより深く理解することができる (Chapter <a href="algorithms.html#algorithms">11</a> を参照)。
+しかし、R を使用してジオコンピュテーションを行う際には、必ずしも C++ を学ぶ必要はない。</p>
+<p>Python は、特に GRASS GIS、SAGA、QGIS などの多くのデスクトップ GIS が Python API を提供しているので、ジオコンピュテーションには重要な言語である (Chapter <a href="gis.html#gis">10</a> を参照)。
+Python は、R と同様、データサイエンスでよく使われているプログラミング言語である。
+両言語はオブジェクト指向であり、重複する部分が多いため、R から Python へのアクセスを容易にする <strong>reticulate</strong> パッケージや、オープンソースデータサイエンスエコシステム全体の利益のためにポータブルライブラリをサポートする <a href="https://ursalabs.org/">Ursa Labs</a> イニシアチブなどの取り組みに繋がっている。</p>
+<p>実際には、R と Python のどちらにも強みがある。
+どちらを使うかは、ある程度、応用や結果の伝達の領域よりは重要ではない。
+どちらかを習得することで、もう一方を習得するためのスタートラインに立つことができるのである。
+しかし、ジオコンピュテーションにおいては、Python よりも R の方が大きな利点がある。
+R 言語自体の地理ラスタデータモデルのサポートが大幅に向上したこと (Chapter <a href="spatial-class.html#spatial-class">2</a>)、それに対応する可視化の可能性 (Chapter <a href="spatial-class.html#spatial-class">2</a> と Chapter <a href="adv-map.html#adv-map">9</a> 参照) が含まれる。
+同様に重要なこととして、R は空間統計 を含む統計のための比類ないサポートを持っており、何百ものパッケージ (Python の比ではない) が何千もの統計手法をサポートしている。</p>
+<p>Python の大きな利点は、<u>汎用</u>プログラミング言語であることである。
+デスクトップソフトウェア、コンピュータゲーム、Web サイト、データサイエンスなど、多くの領域で使用されている。
+Python は、異なる (ジオコンピュテーション) コミュニティ間で唯一共有される言語であることが多く、多くの GIS プログラムをまとめる「接着剤」と見なすことができる。
+QGIS や ArcMap を含む多くのジオアルゴリズムは、Python のコマンドラインからアクセスできるため、コマンドライン GIS のスターター言語として適している<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+ジオアルゴリズムへのアクセスを提供する Python モジュールには、GRASS GIS 用の &lt;code&gt;grass.script&lt;/code&gt;、
+SAGA-GIS 用の &lt;code&gt;saga-python&lt;/code&gt;、
+QGIS 用 &lt;code&gt;processing&lt;/code&gt;、
+ArcGIS 用の &lt;code&gt;arcpy&lt;/code&gt; がある。&lt;/p&gt;"><sup>3</sup></a></p>
+<p>しかし、空間統計と予測モデリングでは、R は他の追随を許さない。
+これは、R と Python のどちらかを選ばなければならないということではない。Python は、ほとんどの一般的な統計手法をサポートしており (ただし、空間統計の新しい開発は R の方が早くサポートする傾向がある) 、Python で学んだ多くの概念は R の世界にも適用することができる。
+R と同様に、Python も地理データの解析と操作をサポートしており、<strong>shapely</strong>、<strong>geopandas</strong>、<strong>rasterio</strong>、<strong>xarray</strong> などのパッケージがある。</p>
+</div>
+<div id="r-ecosystem" class="section level2" number="1.5">
+<h2>
+<span class="header-section-number">1.5</span> Rの空間エコシステム<a class="anchor" aria-label="anchor" href="#r-ecosystem"><i class="fas fa-link"></i></a>
+</h2>
+<p>R で地理データを扱う方法はたくさんあり、この分野では何十ものパッケージがある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+R の空間エコシステムの概要は、CRAN Task View on Analysis of Spatial Data に掲載されている。
+(参照: &lt;a href="https://cran.r-project.org/view=Spatial" class="uri"&gt;https://cran.r-project.org/view=Spatial&lt;/a&gt;)。&lt;/p&gt;'><sup>4</sup></a>
+本書では、この分野の最先端を学ぶと同時に、将来的にも通用する手法を確保するよう努めることとした。
+ソフトウェア開発の多くの分野と同様に、R の空間エコシステムは急速に進化している (Figure <a href="intro.html#fig:cranlogs">1.2</a>)。
+R はオープンソースであるため、Isaac Newton が <a href="http2://digitallibrary.hsp.org/index.php/Detail/objects/9792">1675</a> で述べたように、「巨人の肩の上に立つ」ことによって、これらの開発は容易に過去の研究の上に構築することができるのである。
+この方法は、コラボレーションを促進し、「車輪の再発明」を避けることができるという利点がある。
+例えば、<strong>sf</strong> (Chapter <a href="spatial-class.html#spatial-class">2</a> で取り上げている) というパッケージは、前身の <strong>sp</strong> の上に構築されたものである。</p>
+<p>R-spatial の開発時間が急増し、R コンソーシアムから、ベクタ形状の保存とアクセスのためのオープンソースの標準とモデルである<u>シンプルフィーチャ</u>のサポートの開発に対する助成金が授与された。
+その結果、<strong>sf</strong> パッケージ (Section <a href="spatial-class.html#intro-sf">2.2.1</a>) が誕生したのである。
+複数の場所で <strong>sf</strong> への絶大な関心を反映している。
+特に、長年にわたって蓄積された R-spatial の知恵を多く含むオープンアクセスのメールリストである <a href="https://stat.ethz.ch/pipermail/r-sig-geo/">R-sig-Geo Archives</a> がそうである。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:cranlogs"></span>
+<img src="images/01-cranlogs.png" alt="2013年初頭から現在までの、地理データを扱うための R パッケージのダウンロード数。y軸は、よく使われる cloud.r-project.org CRAN ミラーからの日次ダウンロードの平均数を91日間ローリングウィンドウ法で示している (対数スケール)。" width="100%"><p class="caption">
+FIGURE 1.2: 2013年初頭から現在までの、地理データを扱うための R パッケージのダウンロード数。y軸は、よく使われる cloud.r-project.org CRAN ミラーからの日次ダウンロードの平均数を91日間ローリングウィンドウ法で示している (対数スケール)。
+</p>
+</div>
+<p>データ処理パッケージ <strong>dplyr</strong> (<a href="https://cran.r-project.org/src/contrib/Archive/dplyr/">2014年</a>にリリース) に代表されるように、より広い R コミュニティのシフトが R の空間エコシステムのシフトに影響を与えたことは注目に値する。
+<strong>dplyr</strong> は <a href="https://cran.r-project.org/src/contrib/Archive/tidyverse/">2016年</a> の後半に <strong>tidyverse</strong> という「メタパッケージ」に配置され、スタイルを共有する他のパッケージ (例えば、<strong>ggplot2</strong> など) と並び、「整えられた (tidy) データ」に重点を置いている。
+ロング型データと直感的な名前の関数に焦点を当てた <strong>tidyverse</strong> アプローチは、絶大な人気を誇っている。
+そのため、「整えられた地理的データ」が求められ、その一部を <strong>sf</strong> が担ってきている。
+<strong>tidyverse</strong> の明らかな特徴として、パッケージが調和して動作する傾向がある。
+同等の <strong>geoverse</strong> はないが、R-spatial エコシステムは、<strong>sf</strong> と <strong>terra</strong> を中心に集約されており、本書では両者を解説する。<strong>sf</strong> に依存するパッケージ は Table <a href="intro.html#tab:revdep">1.2</a> の通りである。
+Chapter <a href="gis.html#gis">10</a> で解説する通り、パッケージ間でも他の言語との間でも相互運用性が高い。</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:revdep">TABLE 1.2: </span>sf に依存するパッケージで、前月の 1 日あたりの平均ダウンロード数が多い上位 5 位。 2023-11-14 時点で、 526 件のパッケージが sf をインポートしている。</caption>
+<thead><tr class="header">
+<th align="left">パッケージ</th>
+<th align="right">ダウンロード数</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">r5r</td>
+<td align="right">4774</td>
+</tr>
+<tr class="even">
+<td align="left">stars</td>
+<td align="right">1354</td>
+</tr>
+<tr class="odd">
+<td align="left">leafem</td>
+<td align="right">1013</td>
+</tr>
+<tr class="even">
+<td align="left">spdep</td>
+<td align="right">881</td>
+</tr>
+<tr class="odd">
+<td align="left">tmap</td>
+<td align="right">873</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="history-of-r-spatial" class="section level2" number="1.6">
+<h2>
+<span class="header-section-number">1.6</span> R-spatial の歴史<a class="anchor" aria-label="anchor" href="#history-of-r-spatial"><i class="fas fa-link"></i></a>
+</h2>
+<p>最新の空間パッケージである <strong>sf</strong> を使うメリットはたくさんあるが、R の空間機能の歴史を知っておくことも重要である。
+古いパッケージには機能、ユースケース、教材が多いため、今でも十分役に立つ。
+</p>
+<p>R の空間機能は、S 言語の初期の空間パッケージが起源である <span class="citation">(<a href="references.html#ref-bivand_implementing_2000">Bivand and Gebhardt 2000</a>)</span>。
+1990年代には、数多くの S スクリプトが開発され、空間統計のためのパッケージも数多く開発された。
+2000 年までに、「点パターン解析、地球統計学、探索的空間データ解析、空間経済学」という様々な空間手法のための R パッケージが誕生した <span class="citation">(<a href="references.html#ref-bivand_open_2000">Bivand and Neteler 2000</a>)</span>。
+これらのうち、特に <strong>spatial</strong>、<strong>sgeostat</strong>、<strong>splancs</strong> は CRAN でまだ利用可能である <span class="citation">(<a href="references.html#ref-rowlingson_splancs_1993">B. S. Rowlingson and Diggle 1993</a>; <a href="references.html#ref-rowlingson_splancs_2017">B. Rowlingson and Diggle 2017</a>; <a href="references.html#ref-venables_modern_2002">Venables and Ripley 2002</a>; <a href="references.html#ref-majure_sgeostat_2016">Majure and Gebhardt 2016</a>)</span>。
+主要な空間パッケージは <span class="citation">Ripley (<a href="references.html#ref-ripley_spatial_2001">2001</a>)</span> で説明されており、空間平滑化と補間と点パターン分析の R パッケージの概要が述べられている。
+そのうちの一つ（<strong>spatstat</strong>）は、最初のリリースから 20 年以上経った今でも活発にメンテナンスされている。</p>
+<p>続く解説では、空間統計の将来の展望を概説し <span class="citation">(<a href="references.html#ref-bivand_more_2001">Bivand 2001</a>)</span>、人気のある <strong>spdep</strong> パッケージ <span class="citation">(<a href="references.html#ref-bivand_spdep_2017">Bivand 2017</a>)</span> の開発の舞台を設定した。
+特筆すべきは、空間インターフェースの標準化、GIS とのデータ交換の効率的なメカニズム、座標参照系 (CRS) などの空間メタデータの取り扱いの必要性に言及したことである。
+これらの目的はほぼ達成されている。</p>
+<p><strong>maptools</strong> <span class="citation">(<a href="references.html#ref-bivand_maptools_2017">Bivand and Lewin-Koh 2017</a>)</span> もこの時期の重要なパッケージで、 Shapefile を読むための <a href="http://shapelib.maptools.org/">shapelib</a> ライブラリへのインタフェースを提供し、<strong>sp</strong> に供給していた。
+空間パッケージの拡張レビューでは、基本的な点、線、多角形、ラスタ型と外部ライブラリへのインタフェースを含む「GDALが提供するデータオブジェクト」をサポートするクラスシステムが提案された <span class="citation">(<a href="references.html#ref-hornik_approaches_2003">Bivand 2003</a>)</span>。
+これらのアイデアは <strong>rgdal</strong> パッケージと <strong>sp</strong> パッケージで実現され、2008 年に初版が出版された <strong>Applied Spatial Data Analysis with R</strong> (ASDAR) <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span> の基礎となった。
+R の空間機能はそれ以来大幅に進化しているが、初期のパイオニアたちのアイデアの上に成り立っている。
+例えば、GDAL と PROJ へのインターフェースは、R の高性能な地理データ I/O と CRS の変換機能を可能にしている。それぞれ Chaptger <a href="reproj-geo-data.html#reproj-geo-data">7</a> と Chapter <a href="read-write.html#read-write">8</a> で解説する。</p>
+<p>2003 年にリリースされた <strong>rgdal</strong> は、R 用の GDAL バインディングを提供し、以前は利用できなかった地理データ形式からインポートする機能を大幅に強化した。
+最初のリリースではラスタドライバのみをサポートしたが、その後の機能強化により、CRS (PROJ ライブラリ経由)、再投影、ベクタのインポートをサポートした。
+これらの追加機能の多くは Barry Rowlingson によって開発され、2006 年に <strong>rgdal</strong> コードベースでリリースされた。</p>
+<p>2005 年にリリースされた <strong>sp</strong> は、R の空間対応を大きく進展させた。
+<strong>sp</strong> は、クラスとジェネリック関数を採用し、属性データだけでなく地理座標、点、線、ポリゴンやメッシュ (grid) を扱えるようになった。
+<strong>sp</strong> は S4 クラスであり、バウンディングボックス、座標参照系 (CRS) 、属性などの情報を <code>Spatial</code> オブジェクトのスロットに格納する。
+これにより、データ操作で地理データを扱えるようになった。
+さらに、<strong>sp</strong> では、地理データのための <code><a href="https://rdrr.io/r/base/summary.html">summary()</a></code> や <code><a href="https://rdrr.io/r/graphics/plot.default.html">plot()</a></code> などのジェネリックメソッドが用意されている。</p>
+<p>その後の 10 年間で <strong>sp</strong> クラスは R の地理データ用として急速に普及し、これに依存するパッケージの数は2008年の約 20 から 2013 年には 100 以上に増加した <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span>。
+2019年までに <strong>sp</strong> に依存するパッケージは 500 を超えた
+<strong>sf</strong> やその他のパッケージに移行するためその数は減少しているが、<strong>sp</strong> を使用する主な R パッケージには、空間・時空間地球統計学の <strong>gstat</strong> 、球面三角法の <strong>geosphere</strong> などの著名なパッケージもある <span class="citation">(<a href="references.html#ref-R-gstat">Pebesma and Graeler 2023</a>; <a href="references.html#ref-calenge_package_2006">Calenge 2006</a>; <a href="references.html#ref-hijmans_geosphere_2016">Hijmans 2016</a>)</span>。</p>
+<p><strong>rgdal</strong> と <strong>sp</strong> は空間に関する多くの問題を解決したが、2010年の Google Summer of Code プロジェクト (<span class="citation">(<a href="references.html#ref-R-rgeos">Bivand and Rundel 2023</a>)</span>) で <strong>rgeos</strong> が開発されるまで、<strong>sp</strong> オブジェクトでジオメトリ操作を行うことができなかった。
+<code>gIntersection()</code> などの機能により、地理的なオブジェクト間の空間的な関係を見つけたり、その形状を変更したりすることが可能になった (<strong>sf</strong>による幾何学的な操作の詳細については、Chapter <a href="geometry-operations.html#geometry-operations">5</a> を参照)。</p>
+<p>
+<strong>sp</strong> エコシステムの限界は、ラスタデータのサポートが限定的であることであった。
+これを克服したのが、2010年に初めてリリースされた <strong>raster</strong> である <span class="citation">(<a href="references.html#ref-R-raster">Hijmans 2023b</a>)</span>。
+Section <a href="spatial-class.html#raster-data">2.3</a> にあるように、<strong>raster</strong> クラスシステムと関数によって、さまざまなラスタ操作が可能になり、現在では <strong>terra</strong> パッケージに実装されている。
+<strong>raster</strong> と <strong>terra</strong> の重要な機能は、RAM に収まらないほど大きなデータセットを扱うことができることであり、ディスク外操作でサポートしている。
+<strong>raster</strong> および <strong>terra</strong> は、Section <a href="spatial-operations.html#map-algebra">4.3.2</a> で説明されているように、マップ代数もサポートしている。</p>
+<p>このようなクラスシステムや手法の開発と並行して、専用の GIS ソフトのインターフェースとして R がサポートされるようになった。
+<strong>GRASS</strong> <span class="citation">(<a href="references.html#ref-bivand_using_2000">Bivand 2000</a>)</span> とそれに続くパッケージ <strong>spgrass6</strong> と <strong>rgrass7</strong> と <strong>rgrass</strong> は、この方向性の顕著な例であった <span class="citation">(<a href="references.html#ref-bivand_rgrass7_2016">Bivand 2016a</a>, <a href="references.html#ref-bivand_spgrass6_2016">2016b</a>, <a href="references.html#ref-R-rgrass">2023</a>)</span>。
+R と GIS の橋渡しの例としては、他に QGIS には <strong>qgisprocess</strong> <span class="citation">(<a href="references.html#ref-R-qgisprocess">Dunnington et al. 2024</a>)</span>、SAGA には <strong>Rsagacmd</strong> <span class="citation">(<a href="references.html#ref-R-Rsagacmd">Pawley 2023</a>)</span> や <strong>RSAGA</strong> <span class="citation">(<a href="references.html#ref-R-RSAGA">Brenning, Bangs, and Becker 2022</a>)</span>、ArcGIS には <strong>RPyGeo</strong> <span class="citation">(<a href="references.html#ref-brenning_arcgis_2012">Brenning 2012a</a>, first published in 2008)</span> がある (Chapter <a href="gis.html#gis">10</a> 参照)。</p>
+<p>R-spatial の開発の大部分は解析と地理的な操作に集中しており、当初は可視化には焦点が当てられていなかった。
+base と lattice の両方のプロット方式で地図を作る方法を提供していた <strong>sp</strong> であるが、高度な地図作成機能への要望が高まっていた。
+2009 年にリリースされた <strong>RgoogleMaps</strong> は、Google Maps や OpenStreetMap <span class="citation">(<a href="references.html#ref-loecher_rgooglemaps_2015">Loecher and Ropkins 2015</a>)</span> などのオンラインサービスの「ベースマップ」タイルの上に R 空間データを重ね合わせることができる。
+その後、<strong>ggplot2</strong> <span class="citation">(<a href="references.html#ref-kahle_ggmap_2013">Kahle and Wickham 2013</a>)</span> に同様の「ベースマップ」タイル機能を追加した <strong>ggmap</strong> パッケージがリリースされた。
+<strong>gpmap</strong> は <strong>ggplot2</strong> で地図を作ることを容易にしたが、<code>fortify</code> 空間オブジェクトをロング形式のデータフレームに変換する必要があるため、その実用性は限られていた。
+これは点に対してはうまくいくが、線やポリゴンに対しては計算効率が悪く、各座標 (頂点) が行に変換されるため、複雑な形状を表現するためには巨大なデータフレームが必要となるのである。
+地理的な可視化はベクタデータを中心に行われる傾向があるが、ラスタの可視化は <strong>raster</strong> でサポートされ、<strong>rasterVis</strong> のリリースでさらに盛り上がった <span class="citation">(<a href="references.html#ref-lamigueiro_displaying_2018">Lamigueiro 2018</a>)</span>。
+それ以来、R での地図作成は話題となり、Chapter <a href="adv-map.html#adv-map">9</a> で強調されているように、<strong>tmap</strong>、<strong>leaflet</strong>、<strong>mapview</strong> などの専用パッケージがよく使われている。</p>
+<p>Geocomputation with R 第 1 版が出版された 2018 年以降、地理系 R パッケージの開発が加速している。
+<strong>raster</strong> パッケージの後継である <strong>terra</strong> は、2020 年に初めてリリースされ、ラスタデータセットを扱う R ユーザーにいくつかの利点をもたらしている [@-terra]。Section <a href="spatial-class.html#raster-data">2.3</a> で説明されているように、前任者よりも高速でより分かりやすいユーザーインターフェースを持っている。</p>
+<p>Section <a href="spatial-class.html#s2">2.2.9</a> で説明する通り、<strong>sf</strong> パッケージは、2021 年半ばより非投影データに対しては S2 球面幾何学計算を取り入れた。
+また、2018年以降の R で地理データを表現し作業する方法として、<strong>stars</strong> と <strong>lidR</strong> パッケージが追加されている。
+</p>
+<p>この展開は、R 環境外の新技術、新標準、ソフトウェアによるものである <span class="citation">(<a href="references.html#ref-bivand_progress_2021">Bivand 2021</a>)</span>。
+2018 年に始まった PROJ ライブラリ の変更により、CRS の proj-string 表現を、Section <a href="spatial-class.html#crs-intro">2.4</a> と Chapter <a href="reproj-geo-data.html#reproj-geo-data">7</a> で説明するように、Well Known Text に置き換えられなければならなくなった。</p>
+<p>
+2018 年に Geocomputation with R の第 1 版が出版されて以来、空間データ可視化のためのいくつかのパッケージが開発・改良されてきた。
+例えば、<strong>rayshader</strong> パッケージは、レイトレーシングと複数のヒルシェーディング <span class="citation">(<a href="references.html#ref-morganwall_rayshader_2021">Morgan-Wall 2021</a>)</span> を介して、印象的でアニメーションしやすい 3D ビジュアライゼーションの開発を可能にする。
+非常に人気のある <strong>ggplot2</strong> パッケージは、<strong>ggspatial</strong> パッケージで、スケールバーと北矢印という新しい空間機能を得た <span class="citation">(<a href="references.html#ref-dunnington_ggspatial_2021">Dunnington 2021</a>)</span>。
+<strong>gganimate</strong> はスムーズでカスタマイズ可能な空間アニメーションを可能にする <span class="citation">(<a href="references.html#ref-pedersen_gganimate_2020">Pedersen and Robinson 2020</a>)</span>。</p>
+<p>既存の可視化パッケージも改良されたり書き直されたりしている。
+大きなラスタオブジェクトは　<strong>tmap</strong>　で自動的に縮小され、<strong>leafgl</strong> や <strong>mapdeck</strong> を含むパッケージのおかげで、高性能なインタラクティブマップが可能になっている。
+<!-- TODO: tmap 4.0のリリース日を追加 -->。
+<strong>mapsf</strong> パッケージ (<strong>cartography</strong> の後継) は依存関係を減らし、パフォーマンスを向上させるために書き直された <span class="citation">(<a href="references.html#ref-giraud_mapsf_2021">Giraud 2021</a>)</span>。また、<strong>tmap</strong> はバージョン 4 で大きなアップデートが行われ、内部コードのほとんどが改訂された。</p>
+<p>2021 年後半に、<strong>rgdal</strong>、<strong>rgeos</strong>、<strong>maptools</strong> の引退計画が<a href="https://stat.ethz.ch/pipermail/r-sig-geo/2021-September/028760.html">発表され</a>、2023 年 10 月に CRAN にアーカイブされた。
+この 2023 年末の引退は、これらのパッケージを適用する既存のワークフローに大きな影響を与えただけでなく、<a href="https://geocompx.org/post/2023/rgdal-retirement/">それらに依存するパッケージにも影響を与えた</a>。
+Chapter <a href="spatial-class.html#spatial-class">2</a> で説明する <strong>sf</strong> や <strong>terra</strong> のような最新の R パッケージは、本書で紹介するジオコンピュテーションのための強力で将来性のある基礎である。</p>
+</div>
+<div id="演習" class="section level2" number="1.7">
+<h2>
+<span class="header-section-number">1.7</span> 演習<a class="anchor" aria-label="anchor" href="#%E6%BC%94%E7%BF%92"><i class="fas fa-link"></i></a>
+</h2>
+<p>E1. GIS、GDS、ジオコンピュテーションという用語について考察しなさい。あなたが行おうとしている内容は、どれが最も当てはまるか、理由とともに説明しなさい。</p>
+<p>E2. QGIS のようなグラフィカルユーザーインターフェース (GUI) ではなく、R のようにスクリプトでジオコンピュテーションを行う理由を 3 つ答えなさい。</p>
+<p>E3. 2000年に、Stan Openshaw が、ジオコンピュテーションは「便利で有益な実務」な面があると述べた。現実の課題と、地理データの解析、可視化、モデル化から得られるエビデンスから得られる解決策の例を考えなさい。紙と鉛筆 (またはコンピュータ) で、入力と出力を描き、ジオコンピュテーションがどのように役に立つかを示しなさい。</p>
+<!--toDo: rl -->
+<!--add solutions!-->
+
+</div>
+</div>
+
+
+
+
+  <div class="chapter-nav">
+<div class="prev"><a href="preface.html">序文</a></div>
+<div class="next"><a href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#intro"><span class="header-section-number">1</span> はじめに</a></li>
+<li><a class="nav-link" href="#what-is-geocomputation"><span class="header-section-number">1.1</span> ジオコンピュテーションとは？</a></li>
+<li><a class="nav-link" href="#why-open-source"><span class="header-section-number">1.2</span> なぜオープンソースをジオコンピュテーションに使うのか？</a></li>
+<li><a class="nav-link" href="#why-use-r-for-geocomputation"><span class="header-section-number">1.3</span> なぜ R をジオコンピュテーションに使うのか？</a></li>
+<li><a class="nav-link" href="#software-for-geocomputation"><span class="header-section-number">1.4</span> ジオコンピュテーションのためのソフトウェア</a></li>
+<li><a class="nav-link" href="#r-ecosystem"><span class="header-section-number">1.5</span> Rの空間エコシステム</a></li>
+<li><a class="nav-link" href="#history-of-r-spatial"><span class="header-section-number">1.6</span> R-spatial の歴史</a></li>
+<li><a class="nav-link" href="#%E6%BC%94%E7%BF%92"><span class="header-section-number">1.7</span> 演習</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/01-introduction-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/01-introduction-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

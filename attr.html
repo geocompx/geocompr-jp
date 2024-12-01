@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 3 属性データ操作 | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="必須パッケージ この章では、以下のパッケージがインストールされ、ロードされている必要がある。 library(sf)   # Chapter 2 で紹介したベクタデータパッケージ library(terra) # Chapter 2 で紹介したラスタデータパッケージ library(dplyr) # データフレーム操作用 tidyverseパッケージ この章は spData...">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="Chapter 3 属性データ操作 | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/attr.html">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="必須パッケージ この章では、以下のパッケージがインストールされ、ロードされている必要がある。 library(sf)   # Chapter 2 で紹介したベクタデータパッケージ library(terra) # Chapter 2 で紹介したラスタデータパッケージ library(dplyr) # データフレーム操作用 tidyverseパッケージ この章は spData...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 3 属性データ操作 | Geocomputation with R">
+<meta name="twitter:description" content="必須パッケージ この章では、以下のパッケージがインストールされ、ロードされている必要がある。 library(sf)   # Chapter 2 で紹介したベクタデータパッケージ library(terra) # Chapter 2 で紹介したラスタデータパッケージ library(dplyr) # データフレーム操作用 tidyverseパッケージ この章は spData...">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 3 属性データ操作 | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="active" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="attr" class="section level1" number="3">
+<h1>
+<span class="header-section-number">3</span> 属性データ操作<a class="anchor" aria-label="anchor" href="#attr"><i class="fas fa-link"></i></a>
+</h1>
+<div id="prerequisites-03" class="section level2 unnumbered">
+<h2>必須パッケージ<a class="anchor" aria-label="anchor" href="#prerequisites-03"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>この章では、以下のパッケージがインストールされ、ロードされている必要がある。</li>
+</ul>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span>     <span class="co"># Chapter 2 で紹介したベクタデータパッケージ</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span>  <span class="co"># Chapter 2 で紹介したラスタデータパッケージ</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>  <span class="co"># データフレーム操作用 tidyverseパッケージ</span></span></code></pre></div>
+<ul>
+<li>この章は <strong>spData</strong> に依存している。コード例で使用されるデータセットをロードする。</li>
+</ul>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span> <span class="co"># Chapter 2 で紹介した空間データパッケージ</span></span></code></pre></div>
+<ul>
+<li>また、Section <a href="attr.html#vec-attr-creation">3.2.5</a> でデータの「整頓 (tidy)」操作を実行したい場合は、<strong>tidyr</strong> パッケージ、またはその一部である <strong>tidyverse</strong> がインストールされていることを確認しておこう。</li>
+</ul>
+</div>
+<div id="introduction-03" class="section level2" number="3.1">
+<h2>
+<span class="header-section-number">3.1</span> イントロダクション<a class="anchor" aria-label="anchor" href="#introduction-03"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+属性データとは、地理 (ジオメトリ) データに関連する空間以外の情報である。
+バス停を例にとると、その位置は通常、名称に加えて緯度・経度の座標 (ジオメトリデータ) で表現される。
+例えば、London の <a href="https://www.openstreetmap.org/relation/6610626">Elephant &amp; Castle / New Kent Road</a> の停留所の座標は、経度 <span class="math inline">\(-0.098\)</span> 度、緯度 51.495 度で、Chapter <a href="spatial-class.html#spatial-class">2</a> で説明した <code>sfc</code> の表現では <code>POINT (-0.098 51.495)</code> と表すことができる。
+この章のトピックは、POINT フィーチャの属性のうち、<em>name</em> のような名称の属性 (シンプルフィーチャの用語を使用する) である。</p>
+<p>
+また、ラスタデータにおける特定のグリッドセルの標高値 (属性) もその一例である。
+ラスタデータモデルは、ベクタデータモデルと異なり、グリッドセルの座標を間接的に格納するため、属性情報と空間情報の区別が明確ではない。
+ラスタ行列の 3 行 4 列目の画素を考えてみよう。
+その空間的な位置は、行列内のインデックスで定義される。原点から x 方向に 4 セル (地図上では通常東と右)、y 方向に 3 セル (通常南と下) 移動させる。
+ラスタの<u>解像度</u>は、<u>ヘッダ</u>で指定された各 x ステップと y ステップの距離を定義する。
+ヘッダはラスタデータセットの重要な構成要素で、ピクセルと空間座標の関係を指定する (Chapter <a href="spatial-operations.html#spatial-operations">4</a> も参照)。</p>
+<p>本章は、ベクタデータセットではバス停の名前、ラスタデータセットではピクセルの標高といった属性に基づいて地理的なオブジェクトを操作する方法を解説する。
+ベクタデータの場合は、部分集合 (subset) や属性集計 (aggregate) といった手法になる (Section <a href="attr.html#vector-attribute-subsetting">3.2.1</a> から Section <a href="attr.html#vector-attribute-aggregation">3.2.3</a> を参照)。
+また、Section <a href="attr.html#vector-attribute-joining">3.2.4</a> では、共有 ID を用いてデータをシンプルフィーチャに結合する方法、Section <a href="attr.html#vec-attr-creation">3.2.5</a> では、新しい変数の作成方法を説明している。
+これらの操作には、それぞれ空間的な等価性がある。
+例えば、R の <code>[</code> 演算子は、属性に基づくオブジェクトの部分集合と空間オブジェクトの部分集合に同じように機能する。また、空間結合を使用して 2 つの地理データセットの属性を結合することもできる。
+この章で学ぶスキルは他にも応用可能である。</p>
+<p>次のセクションでは、さまざまな<u>ベクタ</u>属性操作を深く掘り下げた後、<u>ラスタ</u>属性データ操作を Section <a href="attr.html#manipulating-raster-objects">3.3</a> でカバーする。
+ラスタについては、連続およびカテゴリ属性を含むラスタレイヤの作成方法と、1 つまたは複数のレイヤからセル値を抽出する (ラスタ部分集合化) 方法を示す (Section <a href="attr.html#raster-subsetting">3.3.1</a>)。
+Section <a href="attr.html#summarizing-raster-objects">3.3.2</a> は、ラスタデータセット全体を要約するために使用できる「グローバル」ラスタ操作の概要を提供する。
+Chapter <a href="spatial-operations.html#spatial-operations">4</a> は、ここで紹介した方法を空間的な世界に拡張するものである。</p>
+</div>
+<div id="vector-attribute-manipulation" class="section level2" number="3.2">
+<h2>
+<span class="header-section-number">3.2</span> ベクタ属性操作<a class="anchor" aria-label="anchor" href="#vector-attribute-manipulation"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+地理ベクタデータセットは、R の基本クラスの <code>data.frame</code> を拡張した <code>sf</code> クラスにより対応されている。
+<code>sf</code> オブジェクトはデータフレームのように、属性変数 (’name’など) ごとに 1 列、観察または <u>フィーチャ</u> (たとえば、バス停ごと) ごとに 1 行を持つ。
+<code>sf</code> オブジェクトは基本的なデータフレームとは異なり、<code>sfc</code> クラス の <code>geometry</code> 列を持ち、1 行にさまざまな地理的実体 (「複合でない」および「複合」点、線、ポリゴン) を含むことができる。
+Chapter <a href="spatial-class.html#spatial-class">2</a> では、<code><a href="https://rspatial.github.io/terra/reference/plot.html">plot()</a></code> や <code><a href="https://rspatial.github.io/terra/reference/summary.html">summary()</a></code> などの<u>ジェネリック関数</u>が <code>sf</code> オブジェクトでどのように動作するかを示した。
+<strong>sf</strong> はまた、<code>sf</code> オブジェクトが通常のデータフレームのように動作することを可能にするジェネリック関数を提供する。<code>sf</code> に対応するジェネリック関数は、以下で確認できる。</p>
+<div class="sourceCode" id="cb61"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/methods.html">methods</a></span><span class="op">(</span>class <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span> <span class="co"># sf オブジェクトのメソッド、最初の 12</span></span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#&gt; [1] [             [[&lt;-          $&lt;-           aggregate    </span></span>
+<span><span class="co">#&gt; [5] as.data.frame cbind         coerce        filter       </span></span>
+<span><span class="co">#&gt; [9] identify      initialize    merge         plot        </span></span></code></pre></div>
+<p>これらの多く (<code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code>、<code><a href="https://rdrr.io/r/base/cbind.html">cbind()</a></code>、<code><a href="https://rspatial.github.io/terra/reference/merge.html">merge()</a></code>、<code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code>、<code>[</code>) は、データフレームを操作するためのものである。
+例えば、<code><a href="https://rdrr.io/r/base/cbind.html">rbind()</a></code> は、2 つのデータフレームの行を「上下に」結合する。
+<code>$&lt;-</code> は、新しい列を作成する。
+<code>sf</code> オブジェクトの大きな特徴は、空間データと非空間データを同じように、<code>data.frame</code> の列として格納することである。</p>
+
+<div class="rmdnote">
+<p><code>sf</code> オブジェクトのジオメトリ列は、通常 <code>geometry</code> または <code>geom</code> と呼ばれるが、任意の名前を使用することができる。
+例えば、次のコマンドは g という名前のジオメトリ列を作成する。</p>
+<p><code>st_sf(data.frame(n = world$name_long), g = world$geom)</code></p>
+これにより、空間データベースからインポートしたジオメトリに、<code>wkb_geometry</code> や <code>the_geom</code> などのさまざまな名前を付けることができるようになる。
+</div>
+<p><code>sf</code> オブジェクトは、データフレーム用の <code>tidyverse</code> クラスである <code>tbl_df</code> と <code>tbl</code> を拡張することもできる。
+このように <strong>sf</strong> は、データ解析に基本的な R や tidyverse 関数を使用するなど、R のデータ解析能力の全力を地理データに対して発揮することを可能にする。
+高性能データ処理パッケージ <strong>data.table</strong> も <strong>sf</strong> オブジェクトを処理できるが、issue <a href="https://github.com/Rdatatable/data.table/issues/2273"><code>Rdatatable/data.table#2273</code></a> で説明されているように、完全に<a href="https://github.com/Rdatatable/data.table/issues/5352">互換</a>ではない。
+これらの機能を使用する前に、ベクタデータオブジェクトの基本的なプロパティを発見する方法をもう一度おさらいしておくとよいだろう。
+まずは R の基本関数を使って、<strong>spData</strong> パッケージの <code>world</code> データセットについて学習してみよう。</p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span> <span class="co"># sf オブジェクトであり、(tidy) データフレームである</span></span>
+<span><span class="co">#&gt; [1] "sf"         "tbl_df"     "tbl"        "data.frame"</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span>  <span class="co"># ２次元オブジェクトで、 177 行 11 列</span></span>
+<span><span class="co">#&gt; [1] 177  11</span></span></code></pre></div>
+<p>
+<code>world</code> は、10 個の地理とは関係ない列 (および 1 個のジオメトリリスト列) と、世界の国々を表す約 200 個の行を含んでいる。
+関数 <code><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_drop_geometry()</a></code> は、<code>sf</code> オブジェクトの属性データのみを保持し、ジオメトリを削除する。</p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_df</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_drop_geometry</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "tbl_df"     "tbl"        "data.frame"</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">ncol</a></span><span class="op">(</span><span class="va">world_df</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 10</span></span></code></pre></div>
+<p>属性データを扱う前にジオメトリ列を削除すると便利である。属性データのみを扱いジオメトリ列は必ずしも必要ではない場合、データ操作のプロセスが速く実行できるからである。
+しかし、ほとんどの場合、ジオメトリ列を残すことは理にかなっている。ジオメトリ列が「スティッキー」 (意図的に削除しない限り、ほとんどの属性操作後も残っている) である理由となる。
+<code>sf</code> オブジェクトに対する非空間データ操作は、適切な場合にのみオブジェクトのジオメトリを変更する (例: 集計後に隣接するポリゴン間の境界をディゾルブする)。
+地理的属性データの操作に習熟するということは、データフレームの操作に習熟するということである。</p>
+<p>多くのアプリケーションにおいて、tidyverse のパッケージ <strong>dplyr</strong> <span class="citation">(<a href="references.html#ref-R-dplyr">Wickham et al. 2023</a>)</span> は、データフレームを扱うための効果的なアプローチを提供する。
+tidyverse との互換性は、前身の <strong>sp</strong> になかった <strong>sf</strong> の利点であるが、落とし穴もあるのでハマることもある (詳しくは <a href="https://geocompx.github.io/geocompkg/articles/tidyverse-pitfalls.html">geocompx.org</a> の補足 <code>tidyverse-pitfalls</code> vignetteを参照)。</p>
+<div id="vector-attribute-subsetting" class="section level3" number="3.2.1">
+<h3>
+<span class="header-section-number">3.2.1</span> ベクタ属性の部分集合<a class="anchor" aria-label="anchor" href="#vector-attribute-subsetting"><i class="fas fa-link"></i></a>
+</h3>
+<p>R の基本的な部分集合 (subset) の作成方法には、演算子 <code>[</code> と関数 <code><a href="https://rspatial.github.io/terra/reference/subset.html">subset()</a></code> がある。
+<strong>dplyr</strong> の関数では、行の部分集合作成には <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> と <code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice()</a></code> があり、列の部分集合作成には <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> がある。
+どちらのアプローチも <code>sf</code> オブジェクトの属性データの空間成分を保持する。一方、演算子 <code>$</code> や <strong>dplyr</strong> 関数 <code><a href="https://dplyr.tidyverse.org/reference/pull.html">pull()</a></code> を使って単一の属性列をベクトルとして返すと、これから説明するようにジオメトリデータが失われる。
+このセクションでは、<code>sf</code> データフレームの部分集合作成に焦点を当てている。ベクトルや非地理データフレームの部分集合に関する詳細については、<em>An Introduction to R</em> <span class="citation">(<a href="references.html#ref-rcoreteam_introduction_2021">R Core Team 2021</a>)</span> の Section <a href="https://cran.r-project.org/doc/manuals/r-release/R-intro.html#Index-vectors">2.7</a> と <em>Advanced R Programming</em> <span class="citation">(<a href="references.html#ref-wickham_advanced_2019">Wickham 2019</a>)</span> の Chapter <a href="https://adv-r.hadley.nz/subsetting.html">4</a> を勧める。</p>
+<p>
+<code>[</code> 演算子は、行と列の両方から部分集合を作成 (抽出) することができる。
+データフレームオブジェクト名の直後の角括弧内に置かれたインデックスは、保持する要素を指定する。
+コマンド <code>object[i, j]</code> は、「<code>i</code> で表される行と、<code>j</code> で表される列を返す」という意味である。<code>i</code> と <code>j</code> は通常、整数か <code>TRUE</code> と <code>FALSE</code> を含む (インデックスは、行や列名を示す文字列でもかまいない)。
+例えば、<code>object[5, 1:3]</code> は、「5 行目と 1 列目から 3 列目を含むデータを返す: 結果は 1 行目と 3 列目だけのデータフレームで、<code>sf</code> オブジェクトの場合は 4 番目のジオメトリ列も含めなさい」という意味である。
+<code>i</code> または <code>j</code> を空白にすると、すべての行または列が返される。 <code>world[1:5, ]</code> は最初の 5 行と 11 列すべてを返す。
+以下の例は、Base R による部分集合の作成を示している。
+各コマンドが返す <code>sf</code> データフレームの行と列の数を推測し、自分のコンピュータで結果を確認してみよう (他の演習課題はこの章の最後を参照)。</p>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="op">]</span>    <span class="co"># 位置で行を抽出</span></span>
+<span><span class="va">world</span><span class="op">[</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span>    <span class="co"># 位置で列を抽出</span></span>
+<span><span class="va">world</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">3</span><span class="op">]</span> <span class="co"># 位置で行と列を抽出</span></span>
+<span><span class="va">world</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"name_long"</span>, <span class="st">"pop"</span><span class="op">)</span><span class="op">]</span> <span class="co"># 名称で列を抽出</span></span>
+<span><span class="va">world</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">T</span>, <span class="cn">T</span>, <span class="cn">F</span>, <span class="cn">F</span>, <span class="cn">F</span>, <span class="cn">F</span>, <span class="cn">F</span>, <span class="cn">T</span>, <span class="cn">T</span>, <span class="cn">F</span>, <span class="cn">F</span><span class="op">)</span><span class="op">]</span> <span class="co"># 論理値で抽出</span></span>
+<span><span class="va">world</span><span class="op">[</span>, <span class="fl">888</span><span class="op">]</span> <span class="co"># 存在しない列番号</span></span></code></pre></div>
+<p>以下のコードチャンクでは、部分集合に <code>logical</code> ベクトルを使用することの有用性を示す。
+これにより、表面積が 10,000 km<sup>2</sup> より小さい国を含む新しいオブジェクト <code>small_countries</code> が作成される。</p>
+<div class="sourceCode" id="cb66"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">i_small</span> <span class="op">=</span> <span class="va">world</span><span class="op">$</span><span class="va">area_km2</span> <span class="op">&lt;</span> <span class="fl">10000</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">i_small</span><span class="op">)</span> <span class="co"># 論理ベクトル</span></span>
+<span><span class="co">#&gt;    Mode   FALSE    TRUE </span></span>
+<span><span class="co">#&gt; logical     170       7</span></span>
+<span><span class="va">small_countries</span> <span class="op">=</span> <span class="va">world</span><span class="op">[</span><span class="va">i_small</span>, <span class="op">]</span></span></code></pre></div>
+<p>中間値 <code>i_small</code> (小国を表すインデックスの略) は、<code>world</code> の面積の小さい 7 カ国の部分集合を作成するのに使う論理ベクトルである。
+中間オブジェクトを省略したより簡潔なコマンドでも、同じ結果が得られる。</p>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">small_countries</span> <span class="op">=</span> <span class="va">world</span><span class="op">[</span><span class="va">world</span><span class="op">$</span><span class="va">area_km2</span> <span class="op">&lt;</span> <span class="fl">10000</span>, <span class="op">]</span></span></code></pre></div>
+<p>Base R 関数 <code><a href="https://rspatial.github.io/terra/reference/subset.html">subset()</a></code> でも、同じ結果を得ることができる。</p>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">small_countries</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html">subset</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">area_km2</span> <span class="op">&lt;</span> <span class="fl">10000</span><span class="op">)</span></span></code></pre></div>
+<p>
+Base R 関数は成熟し安定しており、また広く使用されているため、特に再現性と信頼性が重要視される文脈では確実な選択肢となる。
+一方、<strong>dplyr</strong> の関数は、特に RStudio のような列名の<a href="https://support.posit.co/hc/en-us/articles/205273297-Code-Completion-in-the-RStudio-IDE">自動補完</a> を可能にするコードエディタと組み合わせたとき「tidy な」ワークフローを可能にする。一部の人々 (本書の著者も含む) は、こちらの方が対話式データ分析であり、直観的で生産的だと感じる。
+データフレームの部分集合化する主要な関数 (<code>sf</code> データフレームを含む) を <strong>dplyr</strong> 関数で以下に示す。</p>
+<p><code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> は、名前または位置によって列を選択する。
+例えば、次のコマンドで、<code>name_long</code> と <code>pop</code> の 2 つの列だけを選択することができる。</p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world1</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">name_long</span>, <span class="va">pop</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">world1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "name_long" "pop"       "geom"</span></span></code></pre></div>
+<p>注: Base R 関数での同等のコマンド (<code>world [, c("name_long", "pop")]</code>) と同様に、スティッキーな <code>geom</code> 列が残る。
+<code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> は、<code>:</code> 演算子の助けを借りて、列の範囲を選択することもできる。</p>
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># name_long から pop までの全ての列</span></span>
+<span><span class="va">world2</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">name_long</span><span class="op">:</span><span class="va">pop</span><span class="op">)</span></span></code></pre></div>
+<p><code>-</code> 演算子で特定の列を削除することができる。</p>
+<div class="sourceCode" id="cb71"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># subregion と area_km2 以外全ての列</span></span>
+<span><span class="va">world3</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">world</span>, <span class="op">-</span><span class="va">subregion</span>, <span class="op">-</span><span class="va">area_km2</span><span class="op">)</span></span></code></pre></div>
+<p><code>new_name = old_name</code> 構文で、列の部分集合と名前の変更を同時に行うことができる。</p>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world4</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">name_long</span>, population <span class="op">=</span> <span class="va">pop</span><span class="op">)</span></span></code></pre></div>
+<p>上記のコマンドは、2 行のコードを必要とする Base R 関数のコードよりも簡潔であることは注目に値する。</p>
+<div class="sourceCode" id="cb73"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world5</span> <span class="op">=</span> <span class="va">world</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"name_long"</span>, <span class="st">"pop"</span><span class="op">)</span><span class="op">]</span> <span class="co"># 名称で列を抽出</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">world5</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">world5</span><span class="op">)</span> <span class="op">==</span> <span class="st">"pop"</span><span class="op">]</span> <span class="op">=</span> <span class="st">"population"</span> <span class="co"># 列めいを変更</span></span></code></pre></div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> は、<code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">contains()</a></code>、<code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">starts_with()</a></code>、<code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">num_range()</a></code> など、より高度な部分集合操作のための「ヘルパー関数」とも連動する (詳しくは <code><a href="https://dplyr.tidyverse.org/reference/select.html">?select</a></code> のヘルプページを参照)。</p>
+<p>ほとんどの <strong>dplyr</strong> 動詞はデータフレームを返すが、<code><a href="https://dplyr.tidyverse.org/reference/pull.html">pull()</a></code> で単一の列をベクトルとして抽出することができる。
+Base R でリスト部分集合演算子 <code>$</code> と <code>[[</code> を使っても同じ結果が得られる。以下の 3 つのコマンドは、同じ数値ベクトルを返す。</p>
+<div class="sourceCode" id="cb74"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/pull.html">pull</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">pop</span><span class="op">)</span></span>
+<span><span class="va">world</span><span class="op">$</span><span class="va">pop</span></span>
+<span><span class="va">world</span><span class="op">[[</span><span class="st">"pop"</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice()</a></code> は、行に対して <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> と同様のことを行う。
+例えば、次のコードチャンクは、1 行目から 6 行目までを選択する。</p>
+<div class="sourceCode" id="cb75"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">world</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> は、Base R の <code><a href="https://rspatial.github.io/terra/reference/subset.html">subset()</a></code> 関数に相当する <strong>dplyr</strong> の関数である。
+例えば、面積がある閾値以下の国、平均寿命が高い国など、与えられた基準に合致する行のみを保持する。</p>
+<div class="sourceCode" id="cb76"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world7</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">area_km2</span> <span class="op">&lt;</span> <span class="fl">10000</span><span class="op">)</span> <span class="co"># 面積の小さい国</span></span>
+<span><span class="va">world7</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">lifeExp</span> <span class="op">&gt;</span> <span class="fl">82</span><span class="op">)</span>     <span class="co"># 平均寿命が高い</span></span></code></pre></div>
+<p>Table <a href="attr.html#tab:operators">3.1</a> に示すように、標準的な比較演算子のセットは、<code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> 関数で使用することができる。</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:operators">TABLE 3.1: </span>論理値 (true/false) を返す比較演算。</caption>
+<thead><tr class="header">
+<th align="left">Symbol</th>
+<th align="left">Name</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left"><code>==</code></td>
+<td align="left">等号</td>
+</tr>
+<tr class="even">
+<td align="left"><code>!=</code></td>
+<td align="left">不等号</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code>&gt;</code>, <code>&lt;</code>
+</td>
+<td align="left">より大きい・小さい</td>
+</tr>
+<tr class="even">
+<td align="left">
+<code>&gt;=</code>, <code>&lt;=</code>
+</td>
+<td align="left">以上・以下</td>
+</tr>
+<tr class="odd">
+<td align="left">
+<code>&amp;</code>, <code>|</code>, <code>!</code>
+</td>
+<td align="left">論理学のかつ、または、ではない</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div id="chaining-commands-with-pipes" class="section level3" number="3.2.2">
+<h3>
+<span class="header-section-number">3.2.2</span> パイプを使ったコマンドの連鎖<a class="anchor" aria-label="anchor" href="#chaining-commands-with-pipes"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+<strong>dplyr</strong> 関数を使用するワークフローの鍵は、<a href="https://r4ds.had.co.nz/pipes.html">パイプ</a> 演算子 <code>%&gt;%</code> (R <code>4.1.0</code> 以降では ネイティブパイプ <code>|&gt;</code>) で、これは Unix パイプ <code>|</code> <span class="citation">(<a href="references.html#ref-grolemund_r_2016">Grolemund and Wickham 2016</a>)</span> から名前を取ったものである。
+パイプは、直前の関数の出力が次の関数の第 1 引数になるため、表現力豊かなコードを実現する。
+これは、<code>world</code> データセットからアジアの国だけがフィルタされ、次にオブジェクトが列 (<code>name_long</code> と <code>continent</code>) と最初の 5 行の部分集合にされる様子を示している (結果は示していない)。</p>
+<div class="sourceCode" id="cb77"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world7</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">==</span> <span class="st">"Asia"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name_long</span>, <span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<p>上のチャンクは、パイプ演算子によって、コマンドを明確な順序で記述できることを示している。
+上記を上から下へ (一行ずつ)、左から右へ実行する。
+パイプによる操作の代わりに、ネストされた関数呼び出しがあるが、これは読みにくい。</p>
+<div class="sourceCode" id="cb78"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world8</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">continent</span> <span class="op">==</span> <span class="st">"Asia"</span><span class="op">)</span>,</span>
+<span>    <span class="va">name_long</span>, <span class="va">continent</span><span class="op">)</span>,</span>
+<span>  <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<p>別の方法として、操作を複数の行に分割する方法もある。この方法は、中間結果を明確な名前で保存し、後でデバッグのために検査することができるという利点がある (この方法は、冗長になり、対話型解析を行う際にグローバル環境が煩雑になるという欠点もある)。</p>
+<div class="sourceCode" id="cb79"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world9_filtered</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">continent</span> <span class="op">==</span> <span class="st">"Asia"</span><span class="op">)</span></span>
+<span><span class="va">world9_selected</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">world9_filtered</span>, <span class="va">continent</span><span class="op">)</span></span>
+<span><span class="va">world9</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice</a></span><span class="op">(</span><span class="va">world9_selected</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<p>それぞれのアプローチには利点と欠点があり、プログラミングスタイルやアプリケーションによってその重要性は異なる。
+本章の焦点である対話的なデータ解析では、特に<a href="https://support.posit.co/hc/en-us/articles/200711853-Keyboard-Shortcuts-in-the-RStudio-IDE">RStudio</a>/<a href="https://github.com/REditorSupport/vscode-R/wiki/Keyboard-shortcuts">VSCode</a>のパイプを作成するためのショートカットや変数名<a href="https://support.posit.co/hc/en-us/articles/205273297-Code-Completion-in-the-RStudio-IDE">自動補完</a>と組み合わせた場合に、パイプによる操作が高速で直感的であることがわかる。</p>
+</div>
+<div id="vector-attribute-aggregation" class="section level3" number="3.2.3">
+<h3>
+<span class="header-section-number">3.2.3</span> ベクタ属性集計<a class="anchor" aria-label="anchor" href="#vector-attribute-aggregation"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+集計では、1 つ以上の「グループ化変数」、通常は集計対象のデータフレームの列からデータを要約する (地理的集計は次の章で扱う)。
+属性集約の例として、国レベルのデータから大陸ごとの人口を計算する (1 国につき 1 行)。
+<code>world</code> データセットには、必要な要素が含まれている: <code>pop</code> 列と <code>continent</code> 列、それぞれ人口とグループ化変数である。
+目的は、各大陸の国別人口の <code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code> を見つけ、より小さなデータフレームにすることである (集約はデータ削減の一形態であり、大規模データセットを扱う際の初期段階として有効)。
+これは、R の基本関数 <code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code>で、次のように行うことができる。</p>
+<div class="sourceCode" id="cb80"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_agg1</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">pop</span> <span class="op">~</span> <span class="va">continent</span>, FUN <span class="op">=</span> <span class="va">sum</span>, data <span class="op">=</span> <span class="va">world</span>,</span>
+<span>                       na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world_agg1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "data.frame"</span></span></code></pre></div>
+<p>結果は、各大陸につき 1 行の計 6 行と、各大陸の名前と人口を示す 2 列の非空間データフレームになる (人口の多い上位 3 大陸の結果は Table <a href="attr.html#tab:continents">3.2</a> を参照)。</p>
+<p><code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> は、<a href="https://adv-r.hadley.nz/s3.html#s3-methods">ジェネリック関数</a>である。ジェネリック関数とは、入力によって異なる動作をすることを意味している。
+<strong>sf</strong> は、<code>aggregate.sf()</code> というメソッドを提供している。これによって、<code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> 関数の引数<code>x</code> に <code>sf</code> オブジェクトを与え、さらに <code>by</code> の引数が与えられたとき、自動的に <code>aggregate.sf()</code> が呼ばれる。</p>
+<div class="sourceCode" id="cb81"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_agg2</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">world</span><span class="op">[</span><span class="st">"pop"</span><span class="op">]</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">world</span><span class="op">$</span><span class="va">continent</span><span class="op">)</span>, FUN <span class="op">=</span> <span class="va">sum</span>, </span>
+<span>                       na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world_agg2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "sf"         "data.frame"</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">world_agg2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 8</span></span></code></pre></div>
+<p>結果として <code>world_agg2</code> オブジェクトは、世界の大陸 (および外洋) を表す 8 つのフィーチャを含む空間オブジェクトとなる。</p>
+<p>
+<code>group_by() |&gt; summarize()</code> は <code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> の <strong>dplyr</strong> 版である。
+グループ化する変数は <code><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by()</a></code> 関数で指定し、集約式は <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize()</a></code> 関数に渡す。コード例は以下の通り。</p>
+<div class="sourceCode" id="cb82"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_agg3</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>この方法はより複雑に見えるだろうが、柔軟性、読みやすさ、新しい列名の制御という利点がある。
+この柔軟性を示すのが、人口だけでなく、各大陸の面積や国数を計算する以下のコマンドである。</p>
+<div class="sourceCode" id="cb83"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_agg4</span>  <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>Pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, Area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">area_km2</span><span class="op">)</span>, N <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>上のコードチャンクで、<code>pop</code>、<code>area_sqkm</code>、<code>n</code> は結果の列名で、<code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code>、<code><a href="https://dplyr.tidyverse.org/reference/context.html">n()</a></code> は集計関数である。
+これらの集約関数は、大陸を表す行と、各大陸と関連する島を表す複数のポリゴンを含むジオメトリを持つ <code>sf</code> オブジェクトを返す (これは、Section <a href="geometry-operations.html#geometry-unions">5.2.7</a> で説明するように、ジオメトリ操作 ‘union’ によって機能する)。</p>
+<p>
+これまで学んだ <strong>dplyr</strong> 関数を組み合わせて、複数のコマンドを連結し、世界の国々の属性データを大陸別にまとめてみよう。
+次のコマンドは、人口密度を計算し (<code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code>)、大陸を含む国の数で並べ (<code><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange()</a></code>)、最も人口の多い 3 大陸だけを残し (<code><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max()</a></code>)、その結果を Table <a href="attr.html#tab:continents">3.2</a> に表示する。</p>
+<div class="sourceCode" id="cb84"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_agg5</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span>                      <span class="co"># 速くするためジオメトリを削除</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">pop</span>, <span class="va">continent</span>, <span class="va">area_km2</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># 関心ある列のみの部分集合</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>Continent <span class="op">=</span> <span class="va">continent</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="co"># 大陸でグループ化し要約</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>Pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">pop</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, Area <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">area_km2</span><span class="op">)</span>, N <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>Density <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html">round</a></span><span class="op">(</span><span class="va">Pop</span> <span class="op">/</span> <span class="va">Area</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span>     <span class="co"># 人口密度を計算</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">Pop</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span>                   <span class="co"># 上位３件のみ</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html">desc</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span><span class="op">)</span>                          <span class="co"># 国数で並べ替え</span></span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:continents">TABLE 3.2: </span>人口の多い 3 大陸を国数で並べ替えて表示。</caption>
+<thead><tr class="header">
+<th align="left">Continent</th>
+<th align="right">Pop</th>
+<th align="right">Area</th>
+<th align="right">N</th>
+<th align="right">Density</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">Africa</td>
+<td align="right">1154946633</td>
+<td align="right">29946198</td>
+<td align="right">51</td>
+<td align="right">39</td>
+</tr>
+<tr class="even">
+<td align="left">Asia</td>
+<td align="right">4311408059</td>
+<td align="right">31252459</td>
+<td align="right">47</td>
+<td align="right">138</td>
+</tr>
+<tr class="odd">
+<td align="left">Europe</td>
+<td align="right">669036256</td>
+<td align="right">23065219</td>
+<td align="right">39</td>
+<td align="right">29</td>
+</tr>
+</tbody>
+</table></div>
+<div class="rmdnote">
+詳細は、ヘルプページ (<code><a href="https://rspatial.github.io/terra/reference/summary.html">?summary</a></code>と<code>vignette(package = "dplyr")</code>からアクセス)、および <a href="https://r4ds.had.co.nz/transform.html#grouped-summaries-with-summarize">R for Data Science</a> Chapter 5。
+</div>
+</div>
+<div id="vector-attribute-joining" class="section level3" number="3.2.4">
+<h3>
+<span class="header-section-number">3.2.4</span> ベクタ属性の結合<a class="anchor" aria-label="anchor" href="#vector-attribute-joining"><i class="fas fa-link"></i></a>
+</h3>
+<p>異なるソースからのデータを組み合わせることは、データ作成において一般的な作業である。
+結合は、共有された「キー」変数に基づいてテーブルを結合することによって行われる。
+<strong>dplyr</strong> には、<code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code> や <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join()</a></code> など、複数の結合関数がある。完全なリストは、<code><a href="https://dplyr.tidyverse.org/articles/two-table.html">vignette("two-table")</a></code>を参照 (訳注: <a href="https://www.uclmail.net/users/babayoshihiko/R/index.html">日本語版</a>)。
+これらの関数名は、データベース言語 <a href="https://r4ds.had.co.nz/relational-data.html">SQL</a> <span class="citation">(<a href="references.html#ref-grolemund_r_2016">Grolemund and Wickham 2016, chap. 13</a>)</span> で使われている慣例に従っている。これらを使って、非空間データセットと <code>sf</code> オブジェクトを結合することが、このセクションの焦点である。
+<strong>dplyr</strong> の join 関数は、データフレームと <code>sf</code> オブジェクトで同じように動作する。唯一の重要な違いは、<code>geometry</code> リスト列である。
+データ結合の結果は、<code>sf</code> または <code>data.frame</code> オブジェクトのいずれかになる。
+空間データに対する最も一般的な属性結合は、第1引数として <code>sf</code> オブジェクトを取り、第 2 引数として指定された <code>data.frame</code> から列を追加するものである。
+</p>
+<p>結合を実証するために、コーヒー生産に関するデータを <code>world</code> のデータセットと結合する。
+コーヒーのデータは <strong>spData</strong> パッケージの <code>coffee_data</code> というデータフレームに入っている (詳しくは <code><a href="https://jakubnowosad.com/spData/reference/coffee_data.html">?coffee_data</a></code> を参照)。
+以下のように、3 列になっている。
+<code>name_long</code> は主要なコーヒー生産国の名前、<code>coffee_production_2016</code> と <code>coffee_production_2017</code> は各年の 60 kg 袋単位のコーヒー生産量の推定値である。
+最初のデータセットを保持する「左結合」で、<code>world</code> と <code>coffee_data</code> を結合する。</p>
+<div class="sourceCode" id="cb85"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_coffee</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">coffee_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(name_long)`</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world_coffee</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "sf"         "tbl_df"     "tbl"        "data.frame"</span></span></code></pre></div>
+<p>入力データセットが「キー変数」(<code>name_long</code>) を共有しているため、<code>by</code> 引数を使わなくても結合ができた (詳細は <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">?left_join</a></code> を参照)。
+その結果、<code>sf</code> オブジェクトは、元の <code>world</code> オブジェクトと同じであるが、コーヒー生産に関する 2 つの新しい変数 (列インデックス 11 と 12 を持つ) が追加される。
+これは、以下の <code><a href="https://rspatial.github.io/terra/reference/plot.html">plot()</a></code> 関数で生成される Figure <a href="attr.html#fig:coffeemap">3.1</a> のように、地図としてプロットすることができる。</p>
+<div class="sourceCode" id="cb86"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">world_coffee</span><span class="op">)</span></span>
+<span><span class="co">#&gt;  [1] "iso_a2"                 "name_long"              "continent"             </span></span>
+<span><span class="co">#&gt;  [4] "region_un"              "subregion"              "type"                  </span></span>
+<span><span class="co">#&gt;  [7] "area_km2"               "pop"                    "lifeExp"               </span></span>
+<span><span class="co">#&gt; [10] "gdpPercap"              "geom"                   "coffee_production_2016"</span></span>
+<span><span class="co">#&gt; [13] "coffee_production_2017"</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">world_coffee</span><span class="op">[</span><span class="st">"coffee_production_2017"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:coffeemap"></span>
+<img src="figures/coffeemap-1.png" alt="世界の国別コーヒー生産量 (60 kg 袋千個)、2017年。出典: 国際コーヒー機関 国際コーヒー機関。" width="100%"><p class="caption">
+FIGURE 3.1: 世界の国別コーヒー生産量 (60 kg 袋千個)、2017年。出典: 国際コーヒー機関 国際コーヒー機関。
+</p>
+</div>
+<p>結合を行うには、両方のデータセットで「キー変数」が供給される必要がある。
+デフォルトでは、<strong>dplyr</strong> は一致する名前のすべての変数を使用する。
+この場合、<code>coffee_data</code> と <code>world</code> の両方のオブジェクトに <code>name_long</code> という変数が含まれており、<code>Joining with 'by = join_by(name_long)'</code> というメッセージを説明している。
+変数名が同じでない場合、おおむね 2 つのオプションがある。</p>
+<ol style="list-style-type: decimal">
+<li>どちらかのオブジェクトのキー変数の名前を変更し、一致するようにする。</li>
+<li>
+<code>by</code> 引数で結合変数を指定する。</li>
+</ol>
+<p>後者の方法は、<code>coffee_data</code> の名前を変更したバージョンで以下に示す。</p>
+<div class="sourceCode" id="cb87"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">coffee_renamed</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span><span class="va">coffee_data</span>, nm <span class="op">=</span> <span class="va">name_long</span><span class="op">)</span></span>
+<span><span class="va">world_coffee2</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">coffee_renamed</span>, by <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html">join_by</a></span><span class="op">(</span><span class="va">name_long</span> <span class="op">==</span> <span class="va">nm</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>なお、元のオブジェクトの名前は保持され、<code>world_coffee</code> と新しいオブジェクト <code>world_coffee2</code> は同一であることを意味する。
+結果について、元のデータセットと同じ行数となる。
+<code>coffee_data</code> には 47 行のデータしかないが、<code>world_coffee</code> と <code>world_coffee2</code> には 177 の国別レコードがすべてそのまま保存されている。
+これは、行が一致しない場合、新たなコーヒー生産量変数として <code>NA</code> の値を割り当てるためである。
+キー変数が一致する国だけを残したい場合はどうすればいいのだろうか？
+その場合、内部結合を使用することができる。</p>
+<div class="sourceCode" id="cb88"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_coffee_inner</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">coffee_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(name_long)`</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">world_coffee_inner</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 45</span></span></code></pre></div>
+<p><code>coffee_data</code> の結果が 47 行であるのに対し、<code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join()</a></code> の結果は 45 行しかないことに注意しておこう。
+残りの列はどうなったのだろうか？
+一致しなかった行は、<code><a href="https://generics.r-lib.org/reference/setops.html">setdiff()</a></code> 関数を用いて、以下のように特定することができる。</p>
+<div class="sourceCode" id="cb89"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://generics.r-lib.org/reference/setops.html">setdiff</a></span><span class="op">(</span><span class="va">coffee_data</span><span class="op">$</span><span class="va">name_long</span>, <span class="va">world</span><span class="op">$</span><span class="va">name_long</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "Congo, Dem. Rep. of" "Others"</span></span></code></pre></div>
+<p>その結果、<code>Others</code> が <code>world</code> のデータセットに存在しない 1 行を占め、<code>Democratic Republic of the Congo</code> の名前がもう 1 行を占めることがわかった。
+が省略され、結合が見落とされている。
+次のコマンドは、<strong>stringr</strong> パッケージの文字列照合 (<em>regex</em>) 関数を使用して、<code>Congo, Dem. Rep. of</code> がどうあるべきかを確認するものである。</p>
+<div class="sourceCode" id="cb90"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">drc</span> <span class="op">=</span> <span class="fu">stringr</span><span class="fu">::</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_subset.html">str_subset</a></span><span class="op">(</span><span class="va">world</span><span class="op">$</span><span class="va">name_long</span>, <span class="st">"Dem*.+Congo"</span><span class="op">)</span></span>
+<span><span class="va">drc</span></span>
+<span><span class="co">#&gt; [1] "Democratic Republic of the Congo"</span></span></code></pre></div>
+<p>この問題を解決するために、<code>coffee_data</code> の新バージョンを作成し、名前を更新する。
+<code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join()</a></code> を更新すると、コーヒー生産国全 46 カ国を含む結果が返される。</p>
+<div class="sourceCode" id="cb91"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">coffee_data</span><span class="op">$</span><span class="va">name_long</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"Congo,"</span>, <span class="va">coffee_data</span><span class="op">$</span><span class="va">name_long</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="va">drc</span></span>
+<span><span class="va">world_coffee_match</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">coffee_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(name_long)`</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">world_coffee_match</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 46</span></span></code></pre></div>
+<p>また、非空間データセットから始めて、シンプルフィーチャオブジェクトから変数を追加するという、逆方向の結合も可能である。
+これは、<code>coffee_data</code> オブジェクトから始まり、オリジナルの <code>world</code> データセットから変数を追加するもので、以下のように示される。
+前の結合とは対照的に、結果はシンプルフィーチャオブジェクトではなく、<strong>tidyverse</strong> の tibble という形のデータフレームになる。
+join の出力はその最初の引数に一致する傾向がある。</p>
+<div class="sourceCode" id="cb92"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">coffee_world</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">coffee_data</span>, <span class="va">world</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(name_long)`</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">coffee_world</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "tbl_df"     "tbl"        "data.frame"</span></span></code></pre></div>
+
+<div class="rmdnote">
+ほとんどの場合、ジオメトリ列は <code>sf</code> オブジェクトにのみ有効である。
+ジオメトリ列は、R が空間オブジェクトであることを認識し、 <strong>sf</strong> などの空間パッケージで定義されている場合にのみ、マップや空間処理を作成するために使用することができる。
+幸いなことに、ジオメトリ列を持つ非空間データフレーム (<code>coffee_world</code> など) は、以下のように <code>sf</code> オブジェクトに強制的に格納することができる。<code>st_as_sf(coffee_world)</code>
+</div>
+<p>ここでは、属性結合のほとんどのケースをカバーした。
+より詳しくは、<span class="citation">Grolemund and Wickham (<a href="references.html#ref-grolemund_r_2016">2016</a>)</span> の <a href="https://r4ds.had.co.nz/relational-data.html?q=join#relational-data">Relational data</a> の章、本書に付属する <strong>geocompkg</strong> パッケージの <a href="https://geocompx.github.io/geocompkg/articles/join.html">join vignette</a> 、および <strong>data.table</strong> などのパッケージによる結合を説明した<a href="https://asardaes.github.io/table.express/articles/joins.html">ドキュメント</a>を読むことを勧める。
+さらに、空間結合については次の章で説明する (Section <a href="spatial-operations.html#spatial-joining">4.2.5</a>)。</p>
+</div>
+<div id="vec-attr-creation" class="section level3" number="3.2.5">
+<h3>
+<span class="header-section-number">3.2.5</span> 属性の作成と空間情報の削除<a class="anchor" aria-label="anchor" href="#vec-attr-creation"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+既にある列を元に新しい列を作りたい場合はよくある。
+例えば、各国の人口密度を計算したい。
+そのためには、人口列 (ここでは <code>pop</code>) を面積列 (ここでは <code>area_km2</code>) (単位面積は平方キロメートル) で割る必要がある。
+Base R を使って、以下のように書いてみよう。</p>
+<div class="sourceCode" id="cb93"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_new</span> <span class="op">=</span> <span class="va">world</span> <span class="co"># 元データを上書きしない</span></span>
+<span><span class="va">world_new</span><span class="op">$</span><span class="va">pop_dens</span> <span class="op">=</span> <span class="va">world_new</span><span class="op">$</span><span class="va">pop</span> <span class="op">/</span> <span class="va">world_new</span><span class="op">$</span><span class="va">area_km2</span></span></code></pre></div>
+<p>
+あるいは、<strong>dplyr</strong> の関数である <code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> または <code><a href="https://dplyr.tidyverse.org/reference/transmute.html">transmute()</a></code> を使うこともできる。
+<code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> は、<code>sf</code> オブジェクトの最後から 2 番目の位置に新しい列を追加する (最後の列はジオメトリ用に予約されている)。</p>
+<div class="sourceCode" id="cb94"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_new2</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>pop_dens <span class="op">=</span> <span class="va">pop</span> <span class="op">/</span> <span class="va">area_km2</span><span class="op">)</span></span></code></pre></div>
+<p><code><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate()</a></code> と <code><a href="https://dplyr.tidyverse.org/reference/transmute.html">transmute()</a></code> の違いは、後者が他の既存の列をすべて削除することである (スティッキーなジオメトリ列を除く)。</p>
+<p>
+<strong>tidyr</strong> パッケージ (<code>pivot_longer()</code> を始め、データセットを再形成するための多くの便利な関数を提供する) の <code>unite()</code> は、既存の列を貼り合わせる。
+例えば、<code>continent</code> と <code>region_un</code> の列を結合して、<code>con_reg</code> という新しい列を作成したい。
+さらに、入力列の値をどのように結合するかを定義するセパレータ (ここでは、コロン <code>:</code>)、および元の列を削除するかどうか (ここでは、<code>TRUE</code>) を定義することができる。</p>
+<div class="sourceCode" id="cb95"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_unite</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/unite.html">unite</a></span><span class="op">(</span><span class="st">"con_reg"</span>, <span class="va">continent</span><span class="op">:</span><span class="va">region_un</span>, sep <span class="op">=</span> <span class="st">":"</span>, remove <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>ここでできた <code>sf</code> オブジェクトは、各国の大陸と地域を表す <code>con_reg</code> という新しい列を持ち、例えば、アルゼンチンやその他の南米諸国は <code>South America:Americas</code> となる。
+<strong>tidyr</strong> の <code>separate()</code> 関数は <code>unite()</code> の逆を行う: 正規表現か文字位置のどちらかを使って 1 つの列を複数の列に分割する。</p>
+<div class="sourceCode" id="cb96"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_separate</span> <span class="op">=</span> <span class="va">world_unite</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tidyr</span><span class="fu">::</span><span class="fu"><a href="https://tidyr.tidyverse.org/reference/separate.html">separate</a></span><span class="op">(</span><span class="va">con_reg</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"continent"</span>, <span class="st">"region_un"</span><span class="op">)</span>, sep <span class="op">=</span> <span class="st">":"</span><span class="op">)</span></span></code></pre></div>
+<p>
+列の名前を変更するには、<strong>dplyr</strong> 関数 <code><a href="https://dplyr.tidyverse.org/reference/rename.html">rename()</a></code> と基本関数 <code><a href="https://rdrr.io/r/stats/setNames.html">setNames()</a></code> が便利である。
+1 つ目は、古い名前を新しい名前に置き換えるものである。
+例えば、次のコマンドは、長い <code>name_long</code> 列の名前を、単に <code>name</code> に変更する。</p>
+<div class="sourceCode" id="cb97"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>name <span class="op">=</span> <span class="va">name_long</span><span class="op">)</span></span></code></pre></div>
+<p>
+<code><a href="https://rdrr.io/r/stats/setNames.html">setNames()</a></code> はすべての列の名前を一度に変更し、各列にマッチする名前を持つ文字ベクタを必要とする。
+これは下図に示すように、同じ <code>world</code> オブジェクトを出力しているが、非常に短い名前になっている。</p>
+<div class="sourceCode" id="cb98"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">new_names</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"i"</span>, <span class="st">"n"</span>, <span class="st">"c"</span>, <span class="st">"r"</span>, <span class="st">"s"</span>, <span class="st">"t"</span>, <span class="st">"a"</span>, <span class="st">"p"</span>, <span class="st">"l"</span>, <span class="st">"gP"</span>, <span class="st">"geom"</span><span class="op">)</span></span>
+<span><span class="va">world_new_names</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/stats/setNames.html">setNames</a></span><span class="op">(</span><span class="va">new_names</span><span class="op">)</span></span></code></pre></div>
+<p>
+これらの属性データ操作は、いずれもシンプルフィーチャの形状を保持するものである。
+集計を高速化するためなど、ジオメトリを削除することが理にかなっている場合もある。
+<code>select(world, -geom)</code> などのコマンドで手動で行うのではなく、<code><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_drop_geometry()</a></code> で行ってみよう。
+<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;code&gt;st_geometry(world_st) = NULL&lt;/code&gt; は、&lt;code&gt;world&lt;/code&gt; からジオメトリを削除することもできるが、元のオブジェクトを上書きしてしまう。&lt;/p&gt;"><sup>20</sup></a></p>
+<div class="sourceCode" id="cb99"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_data</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_drop_geometry</a></span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "tbl_df"     "tbl"        "data.frame"</span></span></code></pre></div>
+</div>
+</div>
+<div id="manipulating-raster-objects" class="section level2" number="3.3">
+<h2>
+<span class="header-section-number">3.3</span> ラスタオブジェクトを操作<a class="anchor" aria-label="anchor" href="#manipulating-raster-objects"><i class="fas fa-link"></i></a>
+</h2>
+<p>シンプルフィーチャであるベクタデータ (点、線、ポリゴンを空間上の離散的な実体として表現する) とは対照的に、ラスタデータは連続的な面を表現する。
+このセクションでは、ラスタオブジェクトの動作を、Section <a href="#introduction-to-terra"><strong>??</strong></a> を基に<u>ゼロから</u>作成することによって説明する。
+ラスタデータセットはユニークな構造のため、Section <a href="attr.html#raster-subsetting">3.3.1</a> で示すように、部分集合の作成やその他の操作は異なる。</p>
+<p>
+次のコードは、Section <a href="spatial-class.html#raster-classes">2.3.4</a> で使用したラスタデータセットを再作成し、その結果を Figure <a href="attr.html#fig:cont-raster">3.2</a> に示している。
+これは、<code>elev</code> (標高を表す) という名前のラスタの例を作成するために、<code><a href="https://rspatial.github.io/terra/reference/rast.html">rast()</a></code> 関数がどのように動作するかを示している。</p>
+<div class="sourceCode" id="cb100"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="fl">6</span>, ncols <span class="op">=</span> <span class="fl">6</span>, resolution <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>            xmin <span class="op">=</span> <span class="op">-</span><span class="fl">1.5</span>, xmax <span class="op">=</span> <span class="fl">1.5</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="fl">1.5</span>, ymax <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>            vals <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">36</span><span class="op">)</span></span></code></pre></div>
+<p>結果は、6 行 6 列 (引数 <code>nrow</code> と <code>ncol</code> で指定）のラスタオブジェクトと、XとY方向の最小と最大の空間範囲 (<code>xmin</code>、<code>xmax</code>、<code>ymin</code>、<code>ymax</code>) となる。
+<code>vals</code> 引数は、各セルが含む値を設定する。この場合、1 から 36 までの数値データである。</p>
+<p>
+ラスタオブジェクトは、R のクラス <code>logical</code> または <code>factor</code> 変数のカテゴリ値も含むことができる。
+次のコードでは、Figure <a href="attr.html#fig:cont-raster">3.2</a> に示すラスタデータセットを作成する。</p>
+<div class="sourceCode" id="cb101"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">grain_order</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"clay"</span>, <span class="st">"silt"</span>, <span class="st">"sand"</span><span class="op">)</span></span>
+<span><span class="va">grain_char</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="va">grain_order</span>, <span class="fl">36</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">grain_fact</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html">factor</a></span><span class="op">(</span><span class="va">grain_char</span>, levels <span class="op">=</span> <span class="va">grain_order</span><span class="op">)</span></span>
+<span><span class="va">grain</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span>nrows <span class="op">=</span> <span class="fl">6</span>, ncols <span class="op">=</span> <span class="fl">6</span>, resolution <span class="op">=</span> <span class="fl">0.5</span>, </span>
+<span>             xmin <span class="op">=</span> <span class="op">-</span><span class="fl">1.5</span>, xmax <span class="op">=</span> <span class="fl">1.5</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="fl">1.5</span>, ymax <span class="op">=</span> <span class="fl">1.5</span>,</span>
+<span>             vals <span class="op">=</span> <span class="va">grain_fact</span><span class="op">)</span></span></code></pre></div>
+<p>
+ラスタオブジェクトは、対応するルックアップテーブルまたは「ラスタ属性テーブル」(Raster Attribute Table, RAT) をデータフレームのリストとして格納し、<code>cats(grain)</code> (詳しくは <code>?cats()</code>) を使って表示することができる。
+このリストの各要素は、ラスタのレイヤである。
+また、関数 <code><a href="https://rspatial.github.io/terra/reference/factors.html">levels()</a></code> を使って、新しい因子レベルの取得や追加、既存の因子の置き換えを行うことも可能である。</p>
+<div class="sourceCode" id="cb102"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">grain2</span> <span class="op">=</span> <span class="va">grain</span> <span class="co"># 元データを書き換えない</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/factors.html">levels</a></span><span class="op">(</span><span class="va">grain2</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, wetness <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"wet"</span>, <span class="st">"moist"</span>, <span class="st">"dry"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/factors.html">levels</a></span><span class="op">(</span><span class="va">grain2</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:cont-raster"></span>
+<img src="figures/cont-raster-1.png" alt="数値 (左) とカテゴリ値 (右) を持つラスタデータセット。" width="100%"><p class="caption">
+FIGURE 3.2: 数値 (左) とカテゴリ値 (右) を持つラスタデータセット。
+</p>
+</div>
+
+<div class="rmdnote">
+カテゴリラスタのオブジェクトは、色テーブルを使用して各値に関連する色に関する情報を保存することもできる。
+色テーブルは 3 列 (赤、緑、青) または 4 列 (アルファ) のデータフレームで、各行が 1 つの値に関連している。
+<strong>terra</strong> の色テーブルは、<code><a href="https://rspatial.github.io/terra/reference/colors.html">coltab()</a></code> 関数で確認または設定できる (<code><a href="https://rspatial.github.io/terra/reference/colors.html">?coltab</a></code> 参照)。
+重要なこととして、色テーブル付きでラスタオブジェクトをファイル (GeoTIFF など) に保存すると、色情報も保存される。
+</div>
+<div id="raster-subsetting" class="section level3" number="3.3.1">
+<h3>
+<span class="header-section-number">3.3.1</span> ラスタ部分集合<a class="anchor" aria-label="anchor" href="#raster-subsetting"><i class="fas fa-link"></i></a>
+</h3>
+<p>ラスタの部分集合は、R の基本演算子である <code>[</code> で行われ、さまざまな入力を受け入れることができる。
+</p>
+<ul>
+<li>行・列のインデックス作成</li>
+<li>セル ID</li>
+<li>座標</li>
+<li>別の空間オブジェクト</li>
+</ul>
+<p>ここでは、非空間的な操作である最初の 2 つのオプションのみを示す。
+空間オブジェクトをサブセットする必要がある場合、あるいは出力が空間オブジェクトである場合、これを空間サブセットと呼ぶことにする。
+後者の 2 つのオプションについては、次章で紹介する (Section <a href="spatial-operations.html#spatial-raster-subsetting">4.3.1</a>)。</p>
+<p>
+まず、二つの部分集合作成方法を以下のコマンドで示す。
+両者は、いずれもラスタオブジェクト <code>elev</code> の左上のピクセルの値を返す (結果は示していない)。</p>
+<div class="sourceCode" id="cb103"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 行 1, 列 1</span></span>
+<span><span class="va">elev</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="co"># cell ID 1</span></span>
+<span><span class="va">elev</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span></code></pre></div>
+<p>複数レイヤのラスタオブジェクトを部分集合作成すると、各レイヤのセル値が返される。
+例えば <code>two_layers = c(grain, elev); two_layers [1]</code> は 1 行 2 列のデータフレームを返す。
+すべての値を抽出するには、<code><a href="https://rspatial.github.io/terra/reference/values.html">values()</a></code> を使用することもできる。</p>
+<p>部分集合作成操作と連動して、既存の値を上書きすることでセルの値を変更することができる。
+例えば、次のコードチャンクは、<code>elev</code> の左上のセルに 0 を設定する (結果は表示していない)。</p>
+<div class="sourceCode" id="cb104"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="va">elev</span><span class="op">[</span><span class="op">]</span></span></code></pre></div>
+<p>角括弧を空にすると、ラスタのすべての値を取得する <code><a href="https://rspatial.github.io/terra/reference/values.html">values()</a></code> のショートカット版である。
+また、複数のセルをこの方法で修正することも可能である。</p>
+<div class="sourceCode" id="cb105"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev</span><span class="op">[</span><span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">]</span> <span class="op">=</span> <span class="fl">0</span></span></code></pre></div>
+<p>レイヤが複数あるラスタの値の置き換えは、列がレイヤと同じ数、行が置き換え可能なセルと同じ数の行列で行うことができる (結果は示していない)。</p>
+<div class="sourceCode" id="cb106"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">two_layers</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">grain</span>, <span class="va">elev</span><span class="op">)</span> </span>
+<span><span class="va">two_layers</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">two_layers</span><span class="op">[</span><span class="op">]</span></span></code></pre></div>
+</div>
+<div id="summarizing-raster-objects" class="section level3" number="3.3.2">
+<h3>
+<span class="header-section-number">3.3.2</span> ラスタオブジェクトのまとめ<a class="anchor" aria-label="anchor" href="#summarizing-raster-objects"><i class="fas fa-link"></i></a>
+</h3>
+<p><strong>terra</strong> は、ラスタ全体の記述統計量を抽出するための関数を含んでいる。
+ラスタオブジェクトの名前を入力してコンソールに印刷すると、ラスタの最小値と最大値が返される。
+<code><a href="https://rspatial.github.io/terra/reference/summary.html">summary()</a></code> は、一般的な記述統計量を提供する。 すなわち、連続ラスタでは最小値、最大値、四分位値、<code>NA</code> の件数、カテゴリラスタでは各クラスのセルの数である。
+標準偏差 (下記参照) やカスタム要約統計などのさらなる要約操作は、<code><a href="https://rspatial.github.io/terra/reference/global.html">global()</a></code> で計算することができる。</p>
+<div class="sourceCode" id="cb107"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/global.html">global</a></span><span class="op">(</span><span class="va">elev</span>, <span class="va">sd</span><span class="op">)</span></span></code></pre></div>
+
+<div class="rmdnote">
+<code><a href="https://rspatial.github.io/terra/reference/summary.html">summary()</a></code> と <code><a href="https://rspatial.github.io/terra/reference/global.html">global()</a></code> にマルチレイヤのラスタオブジェクトを与えると、描くレイヤを個別に要約する。以下を実行して確認できる。<code>summary(c(elev, grain))</code>.
+<code><a href="https://rspatial.github.io/terra/reference/summary.html">summary()</a></code> and <code><a href="https://rspatial.github.io/terra/reference/global.html">global()</a></code>
+</div>
+<p>
+さらに、<code><a href="https://rspatial.github.io/terra/reference/freq.html">freq()</a></code> 関数を使用すると、カテゴリ値の頻度表を取得することができる。</p>
+<div class="sourceCode" id="cb108"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/freq.html">freq</a></span><span class="op">(</span><span class="va">grain</span><span class="op">)</span></span>
+<span><span class="co">#&gt;   layer value count</span></span>
+<span><span class="co">#&gt; 1     1  clay    10</span></span>
+<span><span class="co">#&gt; 2     1  silt    13</span></span>
+<span><span class="co">#&gt; 3     1  sand    13</span></span></code></pre></div>
+<p>ラスタ値の統計は、様々な方法で可視化することができる。
+<code><a href="https://rspatial.github.io/terra/reference/boxplot.html">boxplot()</a></code>、<code><a href="https://rspatial.github.io/terra/reference/density.html">density()</a></code>、<code><a href="https://rspatial.github.io/terra/reference/hist.html">hist()</a></code>、<code><a href="https://rspatial.github.io/terra/reference/pairs.html">pairs()</a></code> などの特定の関数は、以下のコマンドで作成されたヒストグラムで示されるように、ラスタオブジェクトでも動作する (図示していない)。</p>
+<div class="sourceCode" id="cb109"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/hist.html">hist</a></span><span class="op">(</span><span class="va">elev</span><span class="op">)</span></span></code></pre></div>
+<p>
+目的の可視化機能がラスタオブジェクトで動作しない場合、<code><a href="https://rspatial.github.io/terra/reference/values.html">values()</a></code> (Section <a href="attr.html#raster-subsetting">3.3.1</a>) の助けを借りて、プロットするラスタデータを抽出することができる。</p>
+<p>記述的ラスタ統計は、いわゆるグローバルなラスタ演算に属する。
+これらの操作やその他の典型的なラスタ処理操作は、マップ代数スキームの一部であり、次の章 (Section <a href="spatial-operations.html#map-algebra">4.3.2</a>) で説明する。</p>
+<div class="rmdnote">
+<p>
+パッケージ間で関数名が衝突することがある(例えば、<code><a href="https://rspatial.github.io/terra/reference/extract.html">extract()</a></code>
+という名前の関数が <strong>terra</strong> と <strong>tidyr</strong>
+の両方のパッケージに存在する場合など)。
+パッケージをロードする順番を変えると、予想しない結果が発生することがある。
+関数名の衝突を防ぐには、パッケージをロードせずに名前空間を明示する方法
+(例: <code><a href="https://tidyr.tidyverse.org/reference/extract.html">tidyr::extract()</a></code>) や、<code><a href="https://rdrr.io/r/base/detach.html">detach()</a></code>
+で問題となるパッケージをアンロードする方法がある。
+例えば、以下のコマンドは <strong>terra</strong>
+パッケージをアンロードする (これは RStudio
+の右下ペインにデフォルトで存在する <em>Packages</em>
+タブでも行うことができる):
+<code>detach(“package:terra”, unload = TRUE, force = TRUE)</code>。
+<code>force</code>
+引数は、他のパッケージがそのパッケージに依存している場合でも、そのパッケージを切り離すことを保証する。
+しかし、これは切り離されたパッケージに依存しているパッケージの使い勝手を悪くする可能性があるため、推奨されない。
+</p>
+</div>
+</div>
+</div>
+<div id="演習-1" class="section level2" number="3.4">
+<h2>
+<span class="header-section-number">3.4</span> 演習<a class="anchor" aria-label="anchor" href="#%E6%BC%94%E7%BF%92-1"><i class="fas fa-link"></i></a>
+</h2>
+<p>演習では、<strong>spData</strong> パッケージの <code>us_states</code> と <code>us_states_df</code> というデータセットを使用する。
+このデータと、属性を操作するためのパッケージを読み込むため、 <code><a href="https://jakubnowosad.com/spData/">library(spData)</a></code> などのコマンドを実行しておく必要がある。</p>
+<div class="sourceCode" id="cb110"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">us_states</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">us_states_df</span><span class="op">)</span></span></code></pre></div>
+<p><code>us_states</code> は、(<code>sf</code> クラスの) 特別なオブジェクトで、アメリカ合衆国の州のジオメトリと複数の属性 (name、region、area、 population など) がある。
+<code>us_states_df</code> は、(<code>data.frame</code> の) データフレームであり、アメリカ合衆国各州の name とその他の変数 (2010年と2015年の年収中央値や貧困度合など) で、Alaska、Hawaii、Puerto Rico も含んでいる。
+このデータは、米国国勢調査局のもので、ドキュメントは <code><a href="https://jakubnowosad.com/spData/reference/us_states.html">?us_states</a></code> と <code><a href="https://jakubnowosad.com/spData/reference/us_states_df.html">?us_states_df</a></code> とすることで読むことができる。</p>
+<p>E1. <code>us_states</code> オブジェクトから <code>NAME</code> 列のみを含む <code>us_states_name</code> という新しいオブジェクトを、Base R (<code>[</code>) または tidyverse (<code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code>) 構文を使用して作成しなさい。
+新しいオブジェクトのクラスは何か？</p>
+<p>E2. <code>us_states</code>オブジェクトから、人口データを含む列を選択しなさい。
+別のコマンドを使用して同じことをしなさい（ボーナス: 3 つの方法を見つけなさい）。
+ヒント: <strong>dplyr</strong> の <code>contains</code> や <code>matches</code> などのヘルパー関数を使用してみる (<code><a href="https://tidyselect.r-lib.org/reference/starts_with.html">?contains</a></code> を参照)。</p>
+<p>E3. 以下の特徴を持つ状態をすべて見つけなさい (ボーナス、見つけた後でプロットしなさい)。</p>
+<ul>
+<li>中西部 (Midwest) 地域に属する。</li>
+<li>西 (West) 地域に属し、面積が250,000km<sup>2</sup>未満で<strong>かつ</strong>、2015年の人口が 5,000,000 人を超える (ヒント: 関数 <code><a href="https://r-quantities.github.io/units/reference/units.html">units::set_units()</a></code> または <code><a href="https://rdrr.io/r/base/numeric.html">as.numeric()</a></code> を使用する必要があるかもしれない)。</li>
+<li>南 (South) 地域に属し、面積が 150,000 km<sup>2</sup> を超え、2015年の総人口が 7,000,000 人を超える。</li>
+</ul>
+<p>E4. <code>us_states</code> データセットにおける2015年の総人口は?
+2015年の総人口の最小値と最大値は?</p>
+<p>E5. 各地域にはいくつの州があるのか?</p>
+<p>E6. 2015年の各地域の総人口の最小値と最大値は？
+各地域の2015年の総人口は？</p>
+<p>E7. <code>us_states_df</code> の変数を <code>us_states</code> に追加し、<code>us_states_stats</code> という新しいオブジェクトを作成しなさい。
+どの関数を使用したか?
+両方のデータセットでどの変数がキーであったか?
+新しいオブジェクトのクラスは何か?</p>
+<p>E8. <code>us_states_df</code> は <code>us_states</code> より2行多い。
+多い部分をどのように発見するか (ヒント: <code><a href="https://dplyr.tidyverse.org/reference/filter-joins.html">dplyr::anti_join()</a></code> 関数を使ってよい。)?</p>
+<p>E9. 各州の2015年の人口密度は？
+各州の2010年の人口密度は？</p>
+<p>E10. 各州の人口密度は2010年から2015年の間にどれだけ変化したか？
+その変化をパーセンテージで計算し、地図に表しなさい。</p>
+<p>E11. <code>us_states</code> の列の名称を小文字にしなさい (ヒント: 関数 <code><a href="https://rdrr.io/r/base/chartr.html">tolower()</a></code> と <code><a href="https://rdrr.io/r/base/colnames.html">colnames()</a></code> を使うと良い)。</p>
+<p>E12. <code>us_states</code> と <code>us_states_df</code> を使って <code>us_states_sel</code> という新しいオブジェクトを作成しなさい。
+この新しいオブジェクトには、<code>median_income_15</code> と <code>geometry</code> の 2 つの変数だけにしなさい。
+<code>median_income_15</code> 列の名前を <code>Income</code> に変更しなさい。</p>
+<p>E13. 各州の2010年から2015年の間の貧困ボーダー以下の住民数の変化を計算しなさい。(ヒント: 貧困レベルの列に関するドキュメントは ?us_states_df を参照)。
+ボーナス: 各州の貧困レベル以下で暮らす住民の<strong>パーセンテージ</strong>の変化を計算しなさい。</p>
+<p>E14. 2015年、各地域の貧困ボーダー以下で暮らす人々の州の最小数、平均数、最大数は?
+ボーナス: 貧困ボーダー以下で暮らす人の増加が最も大きかった地域は?</p>
+<p>E15. 9 行 9 列、解像度 0.5 度 (WGS84) のラスタをゼロから作成しなさい。
+それを乱数で埋めなさい。
+4 つのコーナーセルの値を抽出しなさい。</p>
+<p>E16. 例にあるラスタ <code>grain</code> の最も一般的なクラスは何か?</p>
+<p>E17. <strong>spDataLarge</strong> パッケージの <code>dem.tif</code> ファイルのヒストグラムと箱ひげ図をプロットしなさい。 (<code>system.file("raster/dem.tif", package = "spDataLarge")</code>).</p>
+
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></div>
+<div class="next"><a href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#attr"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="nav-link" href="#prerequisites-03">必須パッケージ</a></li>
+<li><a class="nav-link" href="#introduction-03"><span class="header-section-number">3.1</span> イントロダクション</a></li>
+<li>
+<a class="nav-link" href="#vector-attribute-manipulation"><span class="header-section-number">3.2</span> ベクタ属性操作</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#vector-attribute-subsetting"><span class="header-section-number">3.2.1</span> ベクタ属性の部分集合</a></li>
+<li><a class="nav-link" href="#chaining-commands-with-pipes"><span class="header-section-number">3.2.2</span> パイプを使ったコマンドの連鎖</a></li>
+<li><a class="nav-link" href="#vector-attribute-aggregation"><span class="header-section-number">3.2.3</span> ベクタ属性集計</a></li>
+<li><a class="nav-link" href="#vector-attribute-joining"><span class="header-section-number">3.2.4</span> ベクタ属性の結合</a></li>
+<li><a class="nav-link" href="#vec-attr-creation"><span class="header-section-number">3.2.5</span> 属性の作成と空間情報の削除</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#manipulating-raster-objects"><span class="header-section-number">3.3</span> ラスタオブジェクトを操作</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#raster-subsetting"><span class="header-section-number">3.3.1</span> ラスタ部分集合</a></li>
+<li><a class="nav-link" href="#summarizing-raster-objects"><span class="header-section-number">3.3.2</span> ラスタオブジェクトのまとめ</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E6%BC%94%E7%BF%92-1"><span class="header-section-number">3.4</span> 演習</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/03-attribute-operations-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/03-attribute-operations-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

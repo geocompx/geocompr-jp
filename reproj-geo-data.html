@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 7 地理データの再投影 | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="必須パッケージ この章では、以下のパッケージが必要である。 library(sf) library(terra) library(dplyr) library(spData) library(spDataLarge)  7.1 イントロダクション Section 2.4 では、座標参照系 (CRS) を紹介し、地理座標系 (‘lon/lat’、単位は経度と緯度) と投影座標系...">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="Chapter 7 地理データの再投影 | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/reproj-geo-data.html">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="必須パッケージ この章では、以下のパッケージが必要である。 library(sf) library(terra) library(dplyr) library(spData) library(spDataLarge)  7.1 イントロダクション Section 2.4 では、座標参照系 (CRS) を紹介し、地理座標系 (‘lon/lat’、単位は経度と緯度) と投影座標系...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 7 地理データの再投影 | Geocomputation with R">
+<meta name="twitter:description" content="必須パッケージ この章では、以下のパッケージが必要である。 library(sf) library(terra) library(dplyr) library(spData) library(spDataLarge)  7.1 イントロダクション Section 2.4 では、座標参照系 (CRS) を紹介し、地理座標系 (‘lon/lat’、単位は経度と緯度) と投影座標系...">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 7 地理データの再投影 | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="active" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="reproj-geo-data" class="section level1" number="7">
+<h1>
+<span class="header-section-number">7</span> 地理データの再投影<a class="anchor" aria-label="anchor" href="#reproj-geo-data"><i class="fas fa-link"></i></a>
+</h1>
+<div id="prerequisites-07" class="section level2 unnumbered">
+<h2>必須パッケージ<a class="anchor" aria-label="anchor" href="#prerequisites-07"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>この章では、以下のパッケージが必要である。</li>
+</ul>
+<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Nowosad/spData">spDataLarge</a></span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="reproj-intro" class="section level2" number="7.1">
+<h2>
+<span class="header-section-number">7.1</span> イントロダクション<a class="anchor" aria-label="anchor" href="#reproj-intro"><i class="fas fa-link"></i></a>
+</h2>
+<p>Section <a href="spatial-class.html#crs-intro">2.4</a> では、座標参照系 (CRS) を紹介し、<u>地理座標系</u> (‘lon/lat’、単位は経度と緯度) と<u>投影座標系</u> (通常は基準点からのメートル) という 2 つの主要なタイプに焦点を当てた。
+この章では、その知識をもとに、さらに踏み込んだ内容になっている。
+具体的には、ある CRS から別の CRS に地理データを設定し、<u>変換</u>する方法を説明する。特にデータが緯度経度座標の場合、CRS を無視することによって発生し得る問題があるので、これを明らかにして注意を促したい。
+</p>
+<p>多くのプロジェクトでは、CRS について心配する必要はないし、変換について考える必要もない。
+しかし、データが投影座標参照系なのか地理座標参照系なのか、そしてそれがジオメトリ操作に与える影響を知ることは重要である。
+この情報を知っていれば、CRS は裏で<u>ただ</u>うまく機能してくれる。しかし、うまくいかないことがあったとき、CRS に原因があるかもしれず、突然 CRS について学ぶ必要が出てくるのである。
+すべての投影データが入る CRS を明確に定義し、異なる CRS をどのように、そしてなぜ使うのかを理解することで、物事がうまくいくことを確実にすることができる。
+さらに、座標系について学ぶことで、地理データセットとその効果的な使用方法についての知識を深めることができる。</p>
+<p>この章では、CRS の基本を学び、異なる CRS を使用した場合の結果 (何が問題になるかを含む) を示し、ある座標系から別の座標系にデータセットを「再投影」する方法について説明する。
+次のセクションでは R における CRS を紹介し、続いて Section <a href="reproj-geo-data.html#crs-setting">7.3</a> で空間オブジェクトに関連する CRS の取得と設定方法を示す。
+Section <a href="reproj-geo-data.html#geom-proj">7.4</a> は、バッファを作成する作業例を参照しながら、データがどの CRS にあるのかを知ることの重要性を示している。
+Section <a href="reproj-geo-data.html#whenproject">7.5</a> と Section <a href="reproj-geo-data.html#which-crs">7.6</a> において、それぞれ、いつ再投影するべきか、どの CRS を使うかという問題に取り組んでいる。
+最後に、ベクタとラスタの再投影については、Section <a href="reproj-geo-data.html#reproj-vec-geom">7.7</a> と Section <a href="reproj-geo-data.html#reproj-ras">7.8</a> で、地図投影の修正については Section <a href="reproj-geo-data.html#mapproj">7.9</a> で説明する。</p>
+</div>
+<div id="crs-in-r" class="section level2" number="7.2">
+<h2>
+<span class="header-section-number">7.2</span> 座標参照系<a class="anchor" aria-label="anchor" href="#crs-in-r"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+R-spatial のコアパッケージや QGIS などのデスクトップ GIS ソフトウェアなど、CRS 変換を必要とする最新の地理ツールのほとんどは、「ある座標参照系 (CRS) から別の座標に変換する」オープンソース C++ ライブラリ <a href="https://proj.org">PROJ</a> とつながっている。
+CRS には、以下のような様々な表現方法がある。</p>
+<ol style="list-style-type: decimal">
+<li>単純だが曖昧になる可能性のある記述、例えば「lon/lat座標で表示される」</li>
+<li>
+<code>+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs</code> のような、形式化された、しかし今では時代遅れの「proj4 文字列」(または proj-string)</li>
+<li>
+<code>EPSG:4326</code> のような識別用の ‘authority:code’ テキスト文字列</li>
+</ol>
+<p>上の例はそれぞれ、全地球測位システム (Global Positioning System, GPS) 座標やその他多くのデータセットの基礎となる「WGS84」座標系という同じものを指している。(訳注: WGS84 は、世界で一般的に用いられている緯度経度座標系だが、日本の場合は、JGD2011 が用いられることが多い。そのコードは <code>EPSG:6668</code> である。なお、JGD2011 は東日本大震災の影響を考慮しており、震災以前は <code>JGD2000</code> が用いられていた。そのコードは <code>EPSG:4612</code> である。データが作成された年によって両者を使い分けるとよい。詳細については、<a href="https://club.informatix.co.jp/?p=998">空間情報クラブ</a>などを参照。)
+しかし、どれが正しいのだろうか？</p>
+<p>
+一言でいうと、第三の CRS 識別方法が正しい。<code>EPSG:4326</code> は、本書で取り上げる <strong>sf</strong> と <strong>terra</strong> (さらに <strong>stars</strong>) パッケージ、及び <a href="https://docs.qgis.org/3.16/en/docs/user_manual/working_with_projections/working_with_projections.html">QGIS</a> や <a href="https://proj.org/development/quickstart.html">PROJ</a> など地理データを扱う多くのソフトウェアプロジェクトが理解できる。
+<code>EPSG:4326</code> は将来を見据えたものである。
+さらに、「EPSG:4326」は、機械可読でありながら、短く覚えやすく、オンラインで非常に「見つけやすい」 (例えば、EPSG:4326 を検索すると、ウェブサイト <a href="https://epsg.io/4326">epsg.io</a> の専用ページが表示される)。
+より簡潔に <code>4326</code> だけでも <strong>sf</strong> によって理解されるが、 <strong>曖昧さを防ぎ、文脈を提供するために、より明示的な <code>AUTHORITY:CODE</code> という形式を推奨する</strong>。</p>
+<p>
+より長く答えると、3 つの記述のどれも十分ではなく、CRS の処理と変換を明確にするためには、より詳細な情報が必要になる。
+このため、Open Geospatial Consortium (OGC、<strong>sf</strong> パッケージが実装するシンプルフィーチャの仕様も整備している団体) が、WKT (Well-Known Text) と呼ばれる CRS 記述形式をオープンスタンダードで開発した。
+これは、「ISO 19111:2019 に記述された座標参照系の抽象モデルのテキスト文字列実装の構造と内容を定義する」<a href="https://portal.opengeospatial.org/files/18-010r7">100ページを超えるドキュメント</a>に詳細が記述されている。 <span class="citation">(<a href="references.html#ref-opengeospatialconsortium_wellknown_2019">Open Geospatial Consortium 2019</a>)</span>。
+WGS84 CRS、<strong>識別子</strong> <code>EPSG:4326</code> の WKT 表現は以下の通りである。</p>
+<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="st">"EPSG:4326"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate Reference System:</span></span>
+<span><span class="co">#&gt;   User input: EPSG:4326 </span></span>
+<span><span class="co">#&gt;   wkt:</span></span>
+<span><span class="co">#&gt; GEOGCRS["WGS 84",</span></span>
+<span><span class="co">#&gt;     ENSEMBLE["World Geodetic System 1984 ensemble",</span></span>
+<span><span class="co">#&gt;         MEMBER["World Geodetic System 1984 (Transit)"],</span></span>
+<span><span class="co">#&gt;         MEMBER["World Geodetic System 1984 (G730)"],</span></span>
+<span><span class="co">#&gt;         MEMBER["World Geodetic System 1984 (G873)"],</span></span>
+<span><span class="co">#&gt;         MEMBER["World Geodetic System 1984 (G1150)"],</span></span>
+<span><span class="co">#&gt;         MEMBER["World Geodetic System 1984 (G1674)"],</span></span>
+<span><span class="co">#&gt;         MEMBER["World Geodetic System 1984 (G1762)"],</span></span>
+<span><span class="co">#&gt;         MEMBER["World Geodetic System 1984 (G2139)"],</span></span>
+<span><span class="co">#&gt;         ELLIPSOID["WGS 84",6378137,298.257223563,</span></span>
+<span><span class="co">#&gt;             LENGTHUNIT["metre",1]],</span></span>
+<span><span class="co">#&gt;         ENSEMBLEACCURACY[2.0]],</span></span>
+<span><span class="co">#&gt;     PRIMEM["Greenwich",0,</span></span>
+<span><span class="co">#&gt;         ANGLEUNIT["degree",0.0174532925199433]],</span></span>
+<span><span class="co">#&gt;     CS[ellipsoidal,2],</span></span>
+<span><span class="co">#&gt;         AXIS["geodetic latitude (Lat)",north,</span></span>
+<span><span class="co">#&gt;             ORDER[1],</span></span>
+<span><span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433]],</span></span>
+<span><span class="co">#&gt;         AXIS["geodetic longitude (Lon)",east,</span></span>
+<span><span class="co">#&gt;             ORDER[2],</span></span>
+<span><span class="co">#&gt;             ANGLEUNIT["degree",0.0174532925199433]],</span></span>
+<span><span class="co">#&gt;     USAGE[</span></span>
+<span><span class="co">#&gt;         SCOPE["Horizontal component of 3D system."],</span></span>
+<span><span class="co">#&gt;         AREA["World."],</span></span>
+<span><span class="co">#&gt;         BBOX[-90,-180,90,180]],</span></span>
+<span><span class="co">#&gt;     ID["EPSG",4326]]</span></span></code></pre></div>
+<p>
+コマンドの出力は、CRS 識別子 (空間参照識別子または Spatial Reference Identifier <a href="https://postgis.net/workshops/postgis-intro/projection.html">SRID</a> とも呼ばれる) がどのように機能するかを示している。これは単にルックアップであり、CRS のより完全な WKT 表現に関連する一意の識別子を提供するものである。
+このことは、識別子と CRS の長い WKT 表現との間にミスマッチがある場合はどうなるのか、という問題を提起している。
+この点、<span class="citation">Open Geospatial Consortium (<a href="references.html#ref-opengeospatialconsortium_wellknown_2019">2019</a>)</span> は明確で、冗長な WKT 表現が<a href="https://docs.ogc.org/is/18-010r7/18-010r7.html#37">識別子</a>より優先される。</p>
+<blockquote>
+<p>引用された識別子の属性や値が、WKT 記述で明示的に与えられた属性や値と矛盾する場合、 WKT の値が優先されるものとする。</p>
+</blockquote>
+<p>
+CRS の識別子を <code>AUTHORITY:CODE</code> という形式で参照する慣習は、他の<a href="https://jorisvandenbossche.github.io/blog/2020/02/11/geopandas-pyproj-crs/">言語</a>で書かれた地理ソフトウェアでも使われており、正式に定義された広範囲の座標系を参照することができる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+&lt;a href="https://docs.qgis.org/3.16/en/docs/pyqgis_developer_cookbook/crs.html?highlight=srid"&gt;QGIS&lt;/a&gt; は、5つの識別子タイプ (EPSGコード、PostGIS SRID、INTERNAL SRID、PROJ 文字列、WKT 文字列) や、&lt;code&gt;EPSG:4326&lt;/code&gt; 識別子のより長い表現である &lt;code&gt;urn:ogc:def:crs:EPSG::4326&lt;/code&gt; も受け入れ可能で、固有の CRS を参照する &lt;span class="citation"&gt;(&lt;a href="references.html#ref-opengeospatialconsortium_wellknown_2019"&gt;Open Geospatial Consortium 2019&lt;/a&gt;)&lt;/span&gt;。&lt;/p&gt;'><sup>28</sup></a>
+CRS の識別子で最もよく使われる機関は、CRS の標準化リストを発表した欧州石油調査グループ (European Petroleum Survey Group) の頭文字をとった <em>EPSG</em> である (EPSG は2005年に石油・ガス団体の <a href="https://epsg.org/home.html">Geomatics Committee of the International Association of Oil &amp; Gas Producers</a> により<a href="http://wiki.gis.com/wiki/index.php/European_Petroleum_Survey_Group">引き継ぎ</a>された)。
+CRS の識別子には、他の機関を使用することもできる。
+例えば、<code>ESRI:54030</code> は、ESRI の Robinson 投影の実装で、以下の WKT 文字列 (最初の8行のみ表示) を持っていることを指している。</p>
+<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="st">"ESRI:54030"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate Reference System:</span></span>
+<span><span class="co">#&gt;   User input: ESRI:54030 </span></span>
+<span><span class="co">#&gt;   wkt:</span></span>
+<span><span class="co">#&gt; PROJCRS["World_Robinson",</span></span>
+<span><span class="co">#&gt;     BASEGEOGCRS["WGS 84",</span></span>
+<span><span class="co">#&gt;         DATUM["World Geodetic System 1984",</span></span>
+<span><span class="co">#&gt;             ELLIPSOID["WGS 84",6378137,298.257223563,</span></span>
+<span><span class="co">#&gt;                 LENGTHUNIT["metre",1]]],</span></span>
+<span><span class="va">....</span></span></code></pre></div>
+<p>
+WKT 文字列は網羅的で詳細かつ正確であるため、CRS の格納や変換を曖昧にすることなく行うことができる。
+測地系 (datum)、楕円体 (ellipsoid)、本初子午線、投影法 (projection)、単位 (unit) など、任意の CRS に関するすべての関連情報が含まれている。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+WKT の CRS 定義が登場する以前は、proj-string が座標操作の指定と CRS の保存の標準的な方法であった。
+この文字列表現は、key=value の形式 (例えば、&lt;code&gt;+proj=longlat +datum=WGS84 +no_defs&lt;/code&gt;) で構築されている。すでに WKT 表現に取って代わられたか、将来的に代えられることが多いはずである。&lt;/p&gt;"><sup>29</sup></a></p>
+<p>
+最近 (ver 6 以降) の PROJ のバージョンでは、座標操作を定義するために proj-string を使用することができるが、いくつかの proj-string キー (<code>+nadgrids</code> , <code>+towgs84</code> , <code>+k</code> , <code>+init=epsg:</code>) はもうサポートされていないか、推奨されないものである。
+また、proj-string に直接設定できる測地基準系 (datum) は 3 つ (WGS84、NAD83、NAD27) だけである。
+CRS の定義の進化と PROJ ライブラリの長い説明は、<span class="citation">Bivand (<a href="references.html#ref-bivand_progress_2021">2021</a>)</span>、<span class="citation">Pebesma and Bivand (<a href="references.html#ref-pebesma_spatial_2022">2023b</a>)</span> の第 2 章、Floris Vanderhaeghe によるブログ (<a href="https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/">https://inbo.github.io/tutorials/tutorials/spatial_crs_coding/</a>) に記載されている。
+<a href="https://proj.org/development/reference/cpp/cpp_general.html">PROJ documentation</a> にも概説されているように、WKT CRS 形式には WKT1 と 2 種類の WKT2 があり、後者 (WKT2, 2018 仕様) は ISO 19111:2019 に対応するものである <span class="citation">(<a href="references.html#ref-opengeospatialconsortium_wellknown_2019">Open Geospatial Consortium 2019</a>)</span>。</p>
+</div>
+<div id="crs-setting" class="section level2" number="7.3">
+<h2>
+<span class="header-section-number">7.3</span> 座標系の照会と設定<a class="anchor" aria-label="anchor" href="#crs-setting"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+R の空間オブジェクトに CRS がどのように格納され、どのようにクエリや設定ができるのかを見ていこう。
+まず、<strong>ベクタ</strong>の地理データオブジェクトの CRS の取得と設定について、次の例から見ていく。</p>
+<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">vector_filepath</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.gpkg"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span></span>
+<span><span class="va">new_vector</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">vector_filepath</span><span class="op">)</span></span></code></pre></div>
+<p>新しいオブジェクトである <code>new_vector</code> は、世界の国々を表すクラス <code>sf</code> のデータフレームである (詳しくはヘルプページ <code><a href="https://jakubnowosad.com/spData/reference/world.html">?spData::world</a></code> を参照)。
+CRS は <strong>sf</strong> 関数 <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> で取得することができる。</p>
+<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">new_vector</span><span class="op">)</span> <span class="co"># get CRS</span></span>
+<span><span class="co">#&gt; Coordinate Reference System:</span></span>
+<span><span class="co">#&gt;   User input: WGS 84 </span></span>
+<span><span class="co">#&gt;   wkt:</span></span>
+<span><span class="co">#&gt;   ...</span></span></code></pre></div>
+<p>
+出力は主に2つの要素を含むリストである。</p>
+<ol style="list-style-type: decimal">
+<li>
+<code>User input</code> (この場合、<code>WGS 84</code>、入力ファイルから取得した <code>EPSG:4326</code> の同義語)、前述の CRS 識別子に対応する。</li>
+<li>
+<code>wkt</code> CRS に関するすべての関連情報を含む完全な WKT 文字列を含む。</li>
+</ol>
+<p><code>input</code> 要素は柔軟性があり、入力ファイルやユーザー入力に応じて、<code>AUTHORITY:CODE</code> 表現 (例: <code>EPSG:4326</code>)、CRS の名前 (例: <code>WGS 84</code>)、あるいは proj-string 定義を含めることができる。
+<code>wkt</code> 要素には WKT 表現が格納され、オブジェクトをファイルに保存したり、座標演算を行う際に使用される。
+上記で、<code>new_vector</code> のオブジェクトは、WGS84 楕円体を持ち、グリニッジ本初子午線を使用し、緯度・経度軸の順番になっていることがわかる。
+この場合、この CRS の使用に適したエリアを説明する <code>USAGE</code> や、CRS の識別子を示す <code>ID</code> (<code>EPSG:4326</code>) などの追加要素もある。</p>
+<p>
+また、<code>st_crs</code> 関数には、使用中の CRS に関する追加情報を取得することができる、という便利な特徴もある。
+例えば、以下を実行してみよう。</p>
+<ul>
+<li>
+<code>st_crs(new_vector)$IsGeographic</code>: CRS が地理的かどうかを確認</li>
+<li>
+<code>st_crs(new_vector)$units_gdal</code>: CRS 単位を調べる</li>
+<li>
+<code>st_crs(new_vector)$srid</code>: その「SRID」識別子を抽出 (存在する場合)</li>
+<li>
+<code>st_crs(new_vector)$proj4string</code>: proj-string 表現を抽出</li>
+</ul>
+<p>CRS がない場合や間違った CRS が設定されている場合は、<code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_set_crs()</a></code> 関数を使用することができる (この場合、ファイル読み込み時にすでに CRS が正しく設定されているので、WKT 文字列は変更されずに残る)。</p>
+<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">new_vector</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_set_crs</a></span><span class="op">(</span><span class="va">new_vector</span>, <span class="st">"EPSG:4326"</span><span class="op">)</span> <span class="co"># CRS を設定</span></span></code></pre></div>
+<p>
+ラスタ地理データオブジェクトの CRS の取得と設定は、同様の方法で行われる。
+<code>terra</code> パッケージの <code><a href="https://rspatial.github.io/terra/reference/crs.html">crs()</a></code> 関数は <code>SpatRaster</code> オブジェクトから CRS 情報にアクセスする (読みやすく表示するために <code><a href="https://rdrr.io/r/base/cat.html">cat()</a></code> 関数を使用していることに注意)。</p>
+<div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">raster_filepath</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/srtm.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span>
+<span><span class="va">my_rast</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">raster_filepath</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html">crs</a></span><span class="op">(</span><span class="va">my_rast</span><span class="op">)</span><span class="op">)</span> <span class="co"># CRS を取得</span></span>
+<span><span class="co">#&gt; GEOGCRS["WGS 84",</span></span>
+<span><span class="co">#&gt;     DATUM["World Geodetic System 1984",</span></span>
+<span><span class="co">#&gt;         ELLIPSOID["WGS 84",6378137,298.257223563,</span></span>
+<span><span class="co">#&gt;             LENGTHUNIT["metre",1]]],</span></span>
+<span><span class="co">#&gt;     PRIMEM["Greenwich",0,</span></span>
+<span><span class="co">#&gt;         ANGLEUNIT["degree",0.0174532925199433]],</span></span>
+<span><span class="va">....</span></span></code></pre></div>
+<p>出力は CRS の WKT 表現である。
+同じ関数、<code><a href="https://rspatial.github.io/terra/reference/crs.html">crs()</a></code> を使って、ラスタオブジェクトに CRS を設定することもできる。</p>
+<div class="sourceCode" id="cb229"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html">crs</a></span><span class="op">(</span><span class="va">my_rast</span><span class="op">)</span> <span class="op">=</span> <span class="st">"EPSG:26912"</span> <span class="co"># CRS を設定</span></span></code></pre></div>
+<p>ここでは、識別子 (ほとんどの場合こちらを推奨) または完全な WKT 表現のいずれかを使用することができる。
+<code>crs</code> を設定する代替方法としては、proj-string 文字列または <code><a href="https://rspatial.github.io/terra/reference/crs.html">crs()</a></code> を持つ他の既存のオブジェクトから抽出された CRS があるが、これらのアプローチは将来対応されない可能性がある。</p>
+<p>重要な点として、<code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> と <code><a href="https://rspatial.github.io/terra/reference/crs.html">crs()</a></code> 関数は、座標の値や形状を変更しない。
+その役割は、オブジェクト CRS のメタデータ情報を設定することのみである。</p>
+<p>Section <a href="spatial-class.html#vector-data">2.2</a> で紹介したロンドンの例を基に、以下のコードで作成した <code>london</code> データセットのように、地理的オブジェクトの CRS が不明な場合がある。</p>
+<div class="sourceCode" id="cb230"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">london</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="op">-</span><span class="fl">0.1</span>, lat <span class="op">=</span> <span class="fl">51.5</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"lon"</span>, <span class="st">"lat"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_is_longlat.html">st_is_longlat</a></span><span class="op">(</span><span class="va">london</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] NA</span></span></code></pre></div>
+<p>この出力 <code>NA</code> は、<strong>sf</strong> が CRS が何であるかを知らず、推測するつもりがないことを示している (<code>NA</code> は、“Not Applicable/Available” の略語で、文字通り「利用できない」という意味)。
+CRS を手動で指定するか、CRS メタデータを持つソースから読み込まれない限り、<strong>sf</strong> は座標系について「わからない」と言う以外の明示的な仮定をしない。
+この動作は、利用可能な CRS の多様性を考えると理にかなっているが、GeoJSON ファイル形式仕様のような、すべての座標が lon/lat CRS (<code>EPSG:4326</code>) を持つという単純化した仮定をするいくつかのアプローチとは異なる。
+すべての地理座標には座標参照系があり、ソフトウェアがプロットやジオメトリの操作を正しく判断できるのは、扱う CRS の種類がわかっている場合のみである。
+したがって、データセットの CRS を常に確認し、不足している場合は設定することが重要である。</p>
+<div class="sourceCode" id="cb231"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">london_geo</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_set_crs</a></span><span class="op">(</span><span class="va">london</span>, <span class="st">"EPSG:4326"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_is_longlat.html">st_is_longlat</a></span><span class="op">(</span><span class="va">london_geo</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+</div>
+<div id="geom-proj" class="section level2" number="7.4">
+<h2>
+<span class="header-section-number">7.4</span> 投影データおよび非投影データに対する幾何学操作<a class="anchor" aria-label="anchor" href="#geom-proj"><i class="fas fa-link"></i></a>
+</h2>
+<p><strong>sf</strong> version 1.0.0 より、R は緯度経度 CRS を持って入るベクタデータセットに対する機能が大幅に強化された。この機能強化は、Section <a href="spatial-class.html#s2">2.2.9</a> で取り上げた S2 <u>球面ジオメトリエンジン</u>によるものである。
+Figure <a href="reproj-geo-data.html#fig:s2geos">7.1</a> で示すように、<strong>sf</strong> は、CRS 種別に応じて GEOS または S2 を使い分ける (デフォルトは S2)。
+座標投影系のデータと CRS がないデータの場合、常に GEOS が使われる。地理データではデフォルトで S2 が使われるが、無効化したい場合は <code>sf::sf_use_s2(FALSE)</code> とする。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:s2geos"></span>
+<img src="images/07-s2geos.png" alt="入力データの CRS に依存する sf パッケージのジオメトリ操作の動作。" width="100%"><p class="caption">
+FIGURE 7.1: 入力データの CRS に依存する sf パッケージのジオメトリ操作の動作。
+</p>
+</div>
+<p>CRS の重要性を示すために、このセクションでは、前セクションで作成した <code>london</code> オブジェクトの周りに 100 km のバッファを作成する。
+また、100 km にほぼ相当する 1 度 (赤道では 1 度は約 111 km) の「距離」を持つ意図的に欠陥のあるバッファを作成する。
+コードに入る前に、Figure <a href="reproj-geo-data.html#fig:crs-buf">7.2</a> を見て、これからコードチャンクで再現するはずの出力を視覚的に把握するのもよいだろう。</p>
+<p>最初の段階として、上記で作成した <code>london</code> と <code>london_geo</code> のオブジェクトの周りに、ロンドン中心部から1度と 100 km (または 10万 m、科学的表記法では <code>1e5</code> と表現できる) の境界距離の3つのバッファを作成する。</p>
+<div class="sourceCode" id="cb232"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">london_buff_no_crs</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">london</span>, dist <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>  <span class="co"># 正しくない: CRS がない</span></span>
+<span><span class="va">london_buff_s2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">london_geo</span>, dist <span class="op">=</span> <span class="fl">100000</span><span class="op">)</span> <span class="co"># 暗黙で s2 を使用</span></span>
+<span><span class="va">london_buff_s2_100_cells</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">london_geo</span>, dist <span class="op">=</span> <span class="fl">100000</span>, max_cells <span class="op">=</span> <span class="fl">100</span><span class="op">)</span> </span></code></pre></div>
+<p>上の1行目では、<strong>sf</strong> は入力が投影されていると仮定して、度数単位のバッファを持つ結果を生成しているが、後述するようにこれは問題である。
+2 行目の <strong>sf</strong> では、Chapter <a href="spatial-class.html#spatial-class">2</a> で導入された球面幾何エンジン S2 明示せずに使用し、<code>max_cells = 1000</code> のデフォルト値 (3 行目で <code>100</code> に設定) を使用してバッファの範囲を計算しているが、その結果はすぐに明らかになるだろう。
+非投影 (地理) 座標系に対する <strong>sf</strong> の S2 幾何エンジン使用の影響を強調するために、以下のコードチャンクで、コマンド <code><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2()</a></code> (デフォルトではオン、<code>TRUE</code>) で一時的にそれを無効にしてみよう。
+<code>london_buff_no_crs</code> と同様、新しい <code>london_geo</code> オブジェクトは、単位が度でほとんどの場合意味を持たない。</p>
+<div class="sourceCode" id="cb233"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Spherical geometry (s2) switched off</span></span>
+<span><span class="va">london_buff_lonlat</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">london_geo</span>, dist <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># 正しくない結果</span></span>
+<span><span class="co">#&gt; Warning in st_buffer.sfc(st_geometry(x), dist, nQuadSegs, endCapStyle =</span></span>
+<span><span class="co">#&gt; endCapStyle, : st_buffer does not correctly buffer longitude/latitude data</span></span>
+<span><span class="co">#&gt; dist is assumed to be in decimal degrees (arc_degrees).</span></span>
+<span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2</a></span><span class="op">(</span><span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Spherical geometry (s2) switched on</span></span></code></pre></div>
+<p>上記の警告メッセージは、lon/lat データに対して平面ジオメトリ演算を実行する際の問題を示唆している。
+球形幾何演算をコマンド (<code>sf::sf_use_s2(FALSE)</code>) でオフにすると、バッファ (およびその他のジオメトリ演算) は緯度と経度の単位を使用するため、メートルなどの適切な距離単位の代わりにならないため、価値のない出力となる場合がある。</p>
+
+<div class="rmdnote">
+子午線と呼ばれる 2 本の経線間の距離は、赤道では約 111 km である (正確な距離は <code>geosphere::distGeo(c(0, 0), c(1, 0))</code> を実行して調べられる)。
+これは極点でゼロに縮まる。
+例えば、ロンドンの緯度では、子午線の距離は 70 km 以下である (課題: これを検証するコードを実行しなさい)。
+<!-- `geosphere::distGeo(c(0, 51.5), c(1, 51.5))` -->
+一方、緯度線は緯度に関係なく等距離にあり、赤道や極付近を含めて常に 111 km 程度の間隔がある (Figure <a href="reproj-geo-data.html#fig:crs-buf">7.2</a> から Figure <a href="reproj-geo-data.html#fig:wintriproj">7.4</a>参照)。
+</div>
+<p>地理的 (緯度経度) CRS に関する警告は「CRS を設定してはいけない」という解釈をするべきではない。むしろ、ほとんど常に設定すべきである。
+これは、投影された CRS にデータを<u>再投影</u>することを提案したと理解するのがよいだろう。
+ただし、この提案に常に耳を傾ける必要もない。空間演算と幾何演算を実行しても、ほとんど違いがない場合もある (例えば、空間的な部分集合作成など)。
+しかし、バッファ作成など距離を伴う操作では、(球面幾何エンジンを使わずに) 良い結果を得るには、データの投影コピーを作成し、それに対して操作を実行するしかない。
+これは、以下のコードチャンクで行われる。</p>
+<div class="sourceCode" id="cb234"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">london_proj</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fl">530000</span>, y <span class="op">=</span> <span class="fl">180000</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span>coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"EPSG:27700"</span><span class="op">)</span></span></code></pre></div>
+<p>結果は、<code>london</code> と同じであるが、適切な CRS (この場合、EPSG コードが 27700 の British National Grid) で、単位がメートルである新しいオブジェクトが作成される。
+CRS が変化したことは、<code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> を使って次のように確認できる (出力の一部は <code>...</code> で置き換えている)。</p>
+<div class="sourceCode" id="cb235"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">london_proj</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate Reference System:</span></span>
+<span><span class="co">#&gt;   User input: EPSG:27700 </span></span>
+<span><span class="co">#&gt;   wkt:</span></span>
+<span><span class="co">#&gt; PROJCRS["OSGB36 / British National Grid",</span></span>
+<span><span class="co">#&gt;     BASEGEOGCRS["OSGB36",</span></span>
+<span><span class="co">#&gt;         DATUM["Ordnance Survey of Great Britain 1936",</span></span>
+<span><span class="co">#&gt;             ELLIPSOID["Airy 1830",6377563.396,299.3249646,</span></span>
+<span><span class="co">#&gt;                 LENGTHUNIT["metre",1]]],</span></span>
+<span><span class="va">....</span></span></code></pre></div>
+<p>この CRS の記述で注目すべきは、EPSG コード (<code>EPSG: 27700</code>) と詳細な <code>wkt</code> の文字列 (最初の5行のみ表示) であろう。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+最も関連性の高い投影パラメータと関連する概念の簡単な説明については、Jochen Albrecht による第4回講演を参照。
+&lt;a href="http://www.geography.hunter.cuny.edu/~jochen/GTECH361/lectures/" class="uri"&gt;http://www.geography.hunter.cuny.edu/~jochen/GTECH361/lectures/&lt;/a&gt; および &lt;a href="https://proj.org/usage/projections.html" class="uri"&gt;https://proj.org/usage/projections.html&lt;/a&gt; に情報がある。&lt;/p&gt;'><sup>30</sup></a>
+LENGTHUNIT フィールドに記述された CRS の単位が (度ではなく) メートルであることから、これが投影型 CRS であることがわかる。 <code>st_is_longlat(london_proj)</code> は現在 <code>FALSE</code> を返し、<code>london_proj</code> に対する幾何演算は警告なしで機能する。
+<code>london_proj</code> のバッファ操作は GEOS を使用し、結果は適切な距離の単位で返される。
+次のコードは、ちょうど 100 km の<u>投影</u>データの周りにバッファを作成するものである。</p>
+<div class="sourceCode" id="cb236"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">london_buff_projected</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">london_proj</span>, <span class="fl">100000</span><span class="op">)</span></span></code></pre></div>
+<p>先に作成した CRS を<u>持つ</u> 3 つの <code>london_buff*</code> オブジェクト (<code>london_buff_s2</code>、<code>london_buff_lonlat</code>、<code>london_buff_projected</code>) の形状を Figure <a href="reproj-geo-data.html#fig:crs-buf">7.2</a> に示す。</p>
+<pre><code>#&gt; 
+#&gt; Attaching package: 'tmap'
+#&gt; The following object is masked from 'package:datasets':
+#&gt; 
+#&gt;     rivers</code></pre>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:crs-buf"></span>
+<img src="figures/crs-buf-1.png" alt="London 周辺のバッファで、S2 球面幾何エンジンを用いて作成した緯度経度データ (左)、投影データ (中)、球面幾何を用いない緯度経度データ (右) の結果を示している。左のプロットは、投影されていないデータを sf でバッファ作成した結果を示しており、デフォルトで Google の S2 spherical geometry engine を max_cells を 1000 に設定して呼び出している (細線)。太い「ブロック状の」線は、max_cells を 100 に設定して同じ操作を行った結果を示している。" width="100%"><p class="caption">
+FIGURE 7.2: London 周辺のバッファで、S2 球面幾何エンジンを用いて作成した緯度経度データ (左)、投影データ (中)、球面幾何を用いない緯度経度データ (右) の結果を示している。左のプロットは、投影されていないデータを sf でバッファ作成した結果を示しており、デフォルトで Google の S2 spherical geometry engine を max_cells を 1000 に設定して呼び出している (細線)。太い「ブロック状の」線は、max_cells を 100 に設定して同じ操作を行った結果を示している。
+</p>
+</div>
+<p><code>s2</code> と適切に予測された CRS に基づくバッファは、バッファの境界のすべての部分が London から等距離にあることを意味し、「つぶされた」ものではないことは、Figure <a href="reproj-geo-data.html#fig:crs-buf">7.2</a> から明らかである。
+入力に CRS がないか、<code><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2()</a></code> がオフになっているため、<code>s2</code> が<u>使われていない</u>ときに緯度経度 CRS から生成される結果は、南北軸に細長く歪んでいる。緯度経度に投影データを仮定する (GEOS による) アルゴリズムを使うことが危険であることが明らかである。
+しかし、S2 で生成された結果も、劇的な変化はないものの、歪んでいる。
+Figure <a href="reproj-geo-data.html#fig:crs-buf">7.2</a> (左) のバッファ境界はどちらもギザギザしているが、これは <code>s2</code> の引数 <code>max_cells</code> を 100 に設定して作成したバッファを表す太い境界の場合のみ、明らかまたは関連性があると考えられる。
+S2 経由の緯度経度データから得られる結果は、投影データから得られる結果とは異なるという教訓である。
+投影データにおける S2 由来のバッファと GEOS 由来のバッファの差は、<code>max_cells</code> の値が大きくなるほど小さくなる。この引数の「正しい」値は多くの要因に依存すると思われるが、デフォルト値 1000 は妥当なデフォルト値だと思われる。
+<code>max_cells</code> の値を選択する時、計算の速度と結果の解像度のバランスをとる必要がある。
+滑らかな曲線の境界が有利な場合、バッファ作成 (または他のジオメトリ操作) の前に投影型 CRS に変換することが適切な場合がある。</p>
+<p>CRS の重要性 (投影座標か地理座標か) と、緯度経度に対してバッファ作成する際に S2 を使用するという <strong>sf</strong> のデフォルト設定がデータに与える影響は、上記の例から明らかである。
+この後のセクションでは、投影 CRS が必要な場合にどの CRS を使用するか、ベクタおよびラスタオブジェクトの再投影の詳細について、より深く掘り下げて説明する。</p>
+</div>
+<div id="whenproject" class="section level2" number="7.5">
+<h2>
+<span class="header-section-number">7.5</span> いつ再投影するべきか？<a class="anchor" aria-label="anchor" href="#whenproject"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+前節では、CRS を手動で設定する方法として、<code>st_set_crs(london, "EPSG:4326")</code> を紹介した。
+しかし、現実のアプリケーションでは、データの読み込み時に自動的に CRS が設定されるのが一般的である。
+多くのプロジェクトで、CRS 関連の主なタスクは、ある CRS から別の CRS に、オブジェクトを<u>変換</u>することである。
+しかし、どのような場合にデータを変換する必要があるのだろうか。
+そして、どの CRS に？
+こういった質問に対する明確な答えはなく、CRS の選択には常にメリットだけでなくデメリットもある <span class="citation">(<a href="references.html#ref-maling_coordinate_1992">Maling 1992</a>)</span>。
+このセクションでは、決定する際に役立つ一般原則を紹介しよう。</p>
+<p>まず最初に、<u>いつ変換するべきか</u>を考える。
+<strong>leaflet</strong> パッケージでデータをオンライン公開する場合など、地理的 CRS が必要になる。
+また、異なる CRS を持つ2つのオブジェクトの距離を求める場合のように、異なる CRS を持つ 2 つの <code>sf</code> オブジェクトを比較したり、組み合わせたりする必要がある場合もある。</p>
+<div class="sourceCode" id="cb238"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_distance</a></span><span class="op">(</span><span class="va">london_geo</span>, <span class="va">london_proj</span><span class="op">)</span></span>
+<span><span class="co"># &gt; Error: st_crs(x) == st_crs(y) is not TRUE</span></span></code></pre></div>
+<p><code>london</code> と <code>london_proj</code> のオブジェクトを地理的に比較できるようにするには、一方を他方の CRS に変換する必要がある。
+しかし、どの CRS を使えばいいのか？
+特にウェブマッピングを含む多くのプロジェクトでは、EPSG:4326 での出力が必要であるが、その場合、投影オブジェクトを変換する価値がある。
+しかし、球面幾何演算エンジンではなく平面ジオメトリ演算が必要なプロジェクト (例えば、滑らかなエッジを持つバッファを作成する) の場合、地理的 CRS のデータを英国ナショナルグリッド (EPSG:27700) などの投影 CRS で同等のオブジェクトに変換する価値があるだろう。
+それが、Section <a href="reproj-geo-data.html#reproj-vec-geom">7.7</a> のテーマである。</p>
+</div>
+<div id="which-crs" class="section level2" number="7.6">
+<h2>
+<span class="header-section-number">7.6</span> どの CRS を使うべきか？<a class="anchor" aria-label="anchor" href="#which-crs"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+どの CRS を使うかというのは難しい問題で、「正しい」答えがあるわけではない。
+「万能の投影は存在せず、すべて指定したフレームの中心から離れると歪みが発生する」 <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span> 。
+さらに言えば、すべてのタスクで 1 つの投影法だけに執着するべきではない。
+ある投影法を解析の一部に使い、別の投影法を別の部分に使い、さらに別の投影法を可視化することも可能である。
+常に自分の目標に最も適した CRS を選ぶように心がけよう。</p>
+<p><strong>地理的 CRS</strong> を選択する場合、<a href="https://en.wikipedia.org/wiki/World_Geodetic_System#A_new_World_Geodetic_System:_WGS_84">WGS84</a> (<a href="https://ja.wikipedia.org/w/index.php?curid=52196">日本語</a> 版) となることが多い。(訳注: 上で既に述べたが、WGS84 に対応する日本の CRS は、東日本大震災以降の JGD2011 と、それ以前の JGD2000 である。大事なことなので繰り返す。)
+ウェブマッピングだけでなく、GPS データセットや何千ものラスタ、ベクタデータセットがこの CRS でデフォルトで提供されているため、利用されている。
+WGS84 は世界で最も一般的な CRS なので、その EPSG コード 4326 を知っておくとよいだろう。(訳注: JGD2011は 6668、JGD2000 は 4612 である。)<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+&lt;code&gt;"EPSG:4326"&lt;/code&gt; の代わりに、&lt;code&gt;"OGC:CRS84"&lt;/code&gt; を使うこともできる。前者では、経度の前に緯度が並べ替えられる。後者は、GeoJSON の標準形式であり、緯度の前に経度が並べ替えられる。&lt;/p&gt;'><sup>31</sup></a>
+この「マジックナンバー」は、投影された CRS が異常なオブジェクトを、広く理解されるものに変換するために使用することができる。</p>
+<p><strong>投影 CRS</strong> が必要な場合はどうだろうか？
+自由に決められないこともある。
+「多くの場合、投影の選択は公的な地図作成機関によって行われる」 <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span> 。
+つまり、現地のデータソースで作業する場合、公式の CRS が最も正確ではないとしても、互換性を確保するために、データが提供された CRS で作業することが望ましいと思われる。
+London の例は、(a) 英国ナショナルグリッド (関連する EPSG コード27700) がよく知られており、(b) 元のデータセット (<code>london</code>) がすでにその CRS を持っていたので、簡単に答えることができたのである。</p>
+<p>
+一般的に使われているデフォルトは Universal Transverse Mercator (<a href="https://en.wikipedia.org/wiki/Universal_Transverse_Mercator_coordinate_system">UTM</a> <a href="https://ja.wikipedia.org/w/index.php?curid=118035">日本語</a>) で、地球を縦 60 個のくさびと横 20 個の緯度に分割した CRS のセットである。
+地球上のほとんどの場所には UTM コードがあり、例えば「60H」 は R が発明された New Zealand 北部を指している。
+UTM EPSG コードは、北半球では 32601 から 32660 まで、南半球では 32701 から 32760 まで順次表示される。</p>
+<p>その仕組みを説明するために、 <a href="https://stackoverflow.com/a/9188972/">ここにある通り</a>、地球上の任意の地点に関連する EPSG コードを計算する関数 <code>lonlat2UTM()</code> を作ってみよう。</p>
+<div class="sourceCode" id="cb239"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lonlat2UTM</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">lonlat</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">utm</span> <span class="op">=</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Round.html">floor</a></span><span class="op">(</span><span class="op">(</span><span class="va">lonlat</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">+</span> <span class="fl">180</span><span class="op">)</span> <span class="op">/</span> <span class="fl">6</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/Arithmetic.html">%%</a></span> <span class="fl">60</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span></span>
+<span>  <span class="kw">if</span> <span class="op">(</span><span class="va">lonlat</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span> <span class="op">{</span></span>
+<span>    <span class="va">utm</span> <span class="op">+</span> <span class="fl">32600</span></span>
+<span>  <span class="op">}</span> <span class="kw">else</span><span class="op">{</span></span>
+<span>    <span class="va">utm</span> <span class="op">+</span> <span class="fl">32700</span></span>
+<span>  <span class="op">}</span></span>
+<span><span class="op">}</span></span></code></pre></div>
+<p>次のコマンドは、この機能を利用して、Auckland と London の UTM ゾーンと関連する EPSG コードを特定する。</p>
+<div class="sourceCode" id="cb240"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">lonlat2UTM</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">174.7</span>, <span class="op">-</span><span class="fl">36.9</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 32760</span></span>
+<span><span class="fu">lonlat2UTM</span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates</a></span><span class="op">(</span><span class="va">london</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 32630</span></span></code></pre></div>
+<p>UTM CRS で使用されている横メルカトル図法は等角 (conformal) であるが、UTM ゾーンの中心から離れるにつれて面積や距離の歪みがひどくなる。
+そのため、GIS ソフトウェア Manifold のドキュメントでは、UTM ゾーンを使用するプロジェクトの縦断範囲を中心子午線から 6 度までに制限することを提案している (<a href="https://manifold.net/doc/mfd9/universal_transverse_mercator_projection.htm">manifold.net</a>)。
+そのため、UTM は比較的狭い範囲での角度保存を重視する場合にのみ使用することを勧める。</p>
+<p>現在、適切な CRS を選択するためのツールも用意されており、これには <strong>crssuggest</strong> パッケージ<!--add ref or docs--> が含まれている。
+このパッケージのメイン関数である <code>suggest_crs()</code> は、地理的な CRS を持つ空間オブジェクトを受け取り、与えられた領域に使用可能な投影 CRS のリストを返す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;また、本パッケージでは、CRS 情報を付加していないデータの真の CRS を把握することも可能。&lt;/p&gt;"><sup>32</sup></a>
+もう一つの便利なツールは、選択した場所とタイプに基づいて CRS をリストアップするウェブページ <a href="https://jjimenezshaw.github.io/crs-explorer/" class="uri">https://jjimenezshaw.github.io/crs-explorer/</a> である。
+重要な注意点: これらのツールは多くの場面で役立つが、適用する前に推奨される CRS の特性を知っておく必要がある。</p>
+<p>
+適切な CRS がすぐにわからない場合、CRS の選択は、その後の地図や分析において保存することが最も重要である特性によって決められるべきだろう。
+CRS は、等面積、等距離、等角 (形状はそのまま)、またはそれらの妥協点の組み合わせである (Section <a href="spatial-class.html#projected-coordinate-reference-systems">2.4.2</a> 参照)。
+ローカルパラメータを持つカスタム CRS を対象地域に合わせて作成し、単一の CRS がすべてのタスクに適合しないプロジェクトでは、複数の CRS を使用することができる。
+「測地線計算」は、CRS が適切でない場合の代替手段を提供することができる (<a href="https://proj.org/geodesic.html">proj.org/geodesic.html</a> を参照)。
+どの投影 CRS を使っても、数百キロメートルに及ぶジオメトリでは、結果が正確でない可能性がある。</p>
+<p>
+カスタム CRS を決定する際には、以下を勧める。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+このアドバイスの基礎となるコメントを下さった匿名の査読者の方に感謝する。&lt;/p&gt;"><sup>33</sup></a></p>
+<p>
+</p>
+<ul>
+<li>カスタムローカル投影 (原点の緯度・経度を調査地域の中心に設定) のランベルト正積方位図法 (Lambert azimuthal equal-area, <a href="https://en.wikipedia.org/wiki/Lambert_azimuthal_equal-area_projection">LAEA</a> <a href="https://ja.wikipedia.org/w/index.php?curid=536287">日本語版</a>)、これはすべての場所で等面積投影だが数千キロメートル以上では形状が歪んでしまう。</li>
+<li>ある地点とローカル投影の中心点との直線距離を具体的に正確に表す正距方位図法 (Azimuthal equidistant, <a href="https://en.wikipedia.org/wiki/Azimuthal_equidistant_projection">AEQD</a> <a href="https://ja.wikipedia.org/w/index.php?curid=40783">日本語版</a>) 投影図</li>
+<li>数千 km に及ぶ地域のランベルト正角円錐図法 (Lambert conformal conic, <a href="https://en.wikipedia.org/wiki/Lambert_conformal_conic_projection">LCC</a> <a href="https://ja.wikipedia.org/w/index.php?curid=536310">日本語版</a>) 投影。円錐は、距離と面積の特性がセカント線間で妥当となるように設定されている。</li>
+<li>極域のステレオ投影 (Stereographic, <a href="https://en.wikipedia.org/wiki/Stereographic_projection">STERE</a> <a href="https://ja.wikipedia.org/w/index.php?curid=1463335">日本語版</a>) 投影。ただし、中心から数千キロメートル離れた面積や距離の計算に頼らないように注意すること。</li>
+</ul>
+<p>地域のデータセットに特化した投影 CRS を自動的に選択する方法として、調査地域の中心点に対して正距方位図法投影を作成することが考えられる。
+これは、データセットの中心点に基づくメートル単位でカスタム CRS (EPSG コードなし) を作成するものである。
+他のデータセットが作成したカスタム CRS と互換性がなく、数百キロメートルに及ぶ広範なデータセットに使用すると、結果が正確でなくなる可能性がある。</p>
+<p>このセクションで説明する原則は、ベクタデータセットとラスタデータセットに等しく適用される。
+しかし、CRS 変換には、それぞれの地理データモデルに特有の特徴がある。
+ベクタデータ変換の特殊性は Section <a href="reproj-geo-data.html#reproj-vec-geom">7.7</a> で、ラスタ変換の特殊性は Section <a href="reproj-geo-data.html#reproj-ras">7.8</a> で説明する。
+次に、Section <a href="reproj-geo-data.html#mapproj">7.9</a> で、カスタム地図投影を作成する方法を紹介する。</p>
+</div>
+<div id="reproj-vec-geom" class="section level2" number="7.7">
+<h2>
+<span class="header-section-number">7.7</span> ベクタジオメトリの再投影<a class="anchor" aria-label="anchor" href="#reproj-vec-geom"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+Chapter <a href="spatial-class.html#spatial-class">2</a> は、ベクタ幾何学がいかに点で構成されているか、そしていかに点が直線や多角形などのより複雑なオブジェクトの基礎を形成しているかを示した。
+つまり、ベクタの再投影は、直線や多角形の頂点となるこれらの点の座標を変換することになる。</p>
+<p>Section <a href="reproj-geo-data.html#whenproject">7.5</a> は、2 つのオブジェクト間の距離を計算するために、少なくとも1つの <code>sf</code> オブジェクトを異なる CRS を持つ同等のオブジェクトに変換する必要がある例を含んでいる。</p>
+<div class="sourceCode" id="cb241"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">london2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">london_geo</span>, <span class="st">"EPSG:27700"</span><span class="op">)</span></span></code></pre></div>
+<p><code>london</code> の変換版ができたので、<strong>sf</strong> 関数 <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform()</a></code> を使って、2 つのロンドン表現間の距離を求めることができる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+&lt;code&gt;st_transform()&lt;/code&gt; に代わるものとして、&lt;strong&gt;lwgeom&lt;/strong&gt; の &lt;code&gt;st_transform_proj()&lt;/code&gt; がある。これは、GDAL を使用しない変換を可能にし、GDAL がサポートしていない投影をサポートすることができる。
+しかし、本稿執筆時点 (2024年) では、&lt;code&gt;st_transform_proj()&lt;/code&gt; でサポートされているが、&lt;code&gt;st_transform()&lt;/code&gt; でサポートされていない投影法を見つけることはできなかった。&lt;/p&gt;"><sup>34</sup></a>
+<code>london</code> と <code>london2</code> が 2 km 以上も離れているのは意外かもしれない。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+この 2 点の位置の違いは、変換操作の不完全さ (実際は非常に正確) ではなく、&lt;code&gt;london&lt;/code&gt; と &lt;code&gt;london_proj&lt;/code&gt; を作成した手動で作成した座標の精度の低さによるものである。
+また、驚くべきは、その結果がメートル単位の行列で提供されていることである。
+これは、&lt;code&gt;st_distance()&lt;/code&gt; が多くのフィーチャ間の距離を提供できることと、CRS の単位がメートルであるためである。
+&lt;code&gt;as.numeric()&lt;/code&gt; を使って、結果を普通の数値型に型強制 (coerce) する。&lt;/p&gt;"><sup>35</sup></a></p>
+<div class="sourceCode" id="cb242"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_distance</a></span><span class="op">(</span><span class="va">london2</span>, <span class="va">london_proj</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Units: [m]</span></span>
+<span><span class="co">#&gt;      [,1]</span></span>
+<span><span class="co">#&gt; [1,] 2018</span></span></code></pre></div>
+<p>CRS の確認と再投影のための関数を、<code>cycle_hire_osm</code> を参照して以下に示す。これは <strong>spData</strong> の <code>sf</code> オブジェクトで、ロンドンで自転車をレンタルできる「ドッキングステーション」を表しているものである。
+Section <a href="reproj-geo-data.html#reproj-intro">7.1</a> で学んだように、<code>sf</code>オブジェクトの CRS は、関数 <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> を使って問い合わせることができる。
+出力は、以下で示すように座標系に関する情報を複数行のテキストとして表示する。</p>
+<div class="sourceCode" id="cb243"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">cycle_hire_osm</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate Reference System:</span></span>
+<span><span class="co">#&gt;   User input: EPSG:4326 </span></span>
+<span><span class="co">#&gt;   wkt:</span></span>
+<span><span class="co">#&gt; GEOGCS["WGS 84",</span></span>
+<span><span class="co">#&gt;     DATUM["WGS_1984",</span></span>
+<span><span class="co">#&gt;         SPHEROID["WGS 84",6378137,298.257223563,</span></span>
+<span><span class="va">....</span></span></code></pre></div>
+<p>Section <a href="reproj-geo-data.html#crs-setting">7.3</a> で見たように、主な CRS コンポーネントである <code>User input</code> と <code>wkt</code> は単一の実体として出力される。<code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> の出力は、実際には、次のコードチャンクの出力に示すように、<code>input</code> と <code>wkt</code> という単一の文字列という 2 つの要素を持つクラス <code>crs</code> の名前付きリストになっている。</p>
+<div class="sourceCode" id="cb244"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">crs_lnd</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">london_geo</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">crs_lnd</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "crs"</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">crs_lnd</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "input" "wkt"</span></span></code></pre></div>
+<p><code>Name</code>、<code>proj4string</code>、<code>epsg</code> を含む追加の要素を <code>$</code> 演算子で取り出すことができる (詳しくは <a href="https://r-spatial.github.io/sf/reference/st_crs.html"><code>?st_crs</code></a>) と GDAL <a href="https://gdal.org/tutorials/osr_api_tut.html#querying-coordinate-reference-system">website</a> の CRS and tranformation tutorial を参照)。</p>
+<div class="sourceCode" id="cb245"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">crs_lnd</span><span class="op">$</span><span class="va">Name</span></span>
+<span><span class="co">#&gt; [1] "WGS 84"</span></span>
+<span><span class="va">crs_lnd</span><span class="op">$</span><span class="va">proj4string</span></span>
+<span><span class="co">#&gt; [1] "+proj=longlat +datum=WGS84 +no_defs"</span></span>
+<span><span class="va">crs_lnd</span><span class="op">$</span><span class="va">epsg</span></span>
+<span><span class="co">#&gt; [1] 4326</span></span></code></pre></div>
+<p>Section <a href="reproj-geo-data.html#crs-in-r">7.2</a> で述べたように、<code>crs_lnd</code> オブジェクトの <code>$wkt</code> 要素に格納された WKT 表現は、究極の真理の源である。
+これは、前のコードチャンクの出力が、オブジェクトとその CRS の固有の属性ではなく、PROJ によって提供される <code>wkt</code> 表現からのクエリであることを意味する。</p>
+<p>オブジェクトの CRS が変換されると、CRS の <code>wkt</code> と <code>User Input</code> の両方の要素が変更される。
+以下のコードチャンクでは、CRS を投影した新しいバージョンの <code>cycle_hire_osm</code> を作成する (簡潔にするため、CRS 出力の最初の 4 行のみを表示する)。</p>
+<div class="sourceCode" id="cb246"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cycle_hire_osm_projected</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">cycle_hire_osm</span>, <span class="st">"EPSG:27700"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">cycle_hire_osm_projected</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Coordinate Reference System:</span></span>
+<span><span class="co">#&gt;   User input: EPSG:27700 </span></span>
+<span><span class="co">#&gt;   wkt:</span></span>
+<span><span class="co">#&gt; PROJCRS["OSGB36 / British National Grid",</span></span>
+<span><span class="co">#&gt; ...</span></span></code></pre></div>
+<p>この結果、オブジェクトは EPSG コード 27700 の新しい CRS を持つことになる。
+しかし、この EPSG コードや他のコードの詳細を調べるにはどうしたらよいだろうか？
+ネットで検索するのも一つの方法であるが、CRS オブジェクトのプロパティを見ても良い。</p>
+<div class="sourceCode" id="cb247"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb247-1"><a href="reproj-geo-data.html#cb247-1" tabindex="-1"></a>crs_lnd_new <span class="ot">=</span> <span class="fu">st_crs</span>(<span class="st">"EPSG:27700"</span>)</span>
+<span id="cb247-2"><a href="reproj-geo-data.html#cb247-2" tabindex="-1"></a>crs_lnd_new<span class="sc">$</span>Name</span>
+<span id="cb247-3"><a href="reproj-geo-data.html#cb247-3" tabindex="-1"></a><span class="co">#&gt; [1] "OSGB36 / British National Grid"</span></span>
+<span id="cb247-4"><a href="reproj-geo-data.html#cb247-4" tabindex="-1"></a>crs_lnd_new<span class="sc">$</span>proj4string</span>
+<span id="cb247-5"><a href="reproj-geo-data.html#cb247-5" tabindex="-1"></a><span class="co">#&gt; [1] "+proj=tmerc +lat_0=49 +lon_0=-2 +k=0.9996012717 +x_0=400000</span></span>
+<span id="cb247-6"><a href="reproj-geo-data.html#cb247-6" tabindex="-1"></a><span class="sc">+</span>y_0<span class="ot">=</span><span class="sc">-</span><span class="dv">100000</span> <span class="sc">+</span>ellps<span class="ot">=</span>airy <span class="sc">+</span>units<span class="ot">=</span>m <span class="sc">+</span>no_defs<span class="st">"</span></span>
+<span id="cb247-7"><a href="reproj-geo-data.html#cb247-7" tabindex="-1"></a><span class="st">crs_lnd_new$epsg</span></span>
+<span id="cb247-8"><a href="reproj-geo-data.html#cb247-8" tabindex="-1"></a><span class="st">#&gt; [1] 27700</span></span></code></pre></div>
+<p>その結果、EPSG コード 27700 が英国ナショナルグリッドを表しており、「 <a href="https://www.google.com/search?q=CRS+27700">EPSG 27700</a>」とネット検索すれば出てくるだろう。</p>
+
+<div class="rmdnote">
+コンソールで空間オブジェクトを表示すると、自動的にその座標参照系が返される。
+明示的にアクセスして変更するには、<code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> 関数、例えば <code>st_crs(cycle_hire_osm)</code> を使用する。
+</div>
+</div>
+<div id="reproj-ras" class="section level2" number="7.8">
+<h2>
+<span class="header-section-number">7.8</span> ラスタジオメトリの再投影<a class="anchor" aria-label="anchor" href="#reproj-ras"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+前節で説明した投影の概念は、ラスタにも適用できる。
+しかし、ベクタとラスタの再投影には重要な違いがある。
+ベクタオブジェクトの変換は、すべての頂点の座標を変更することになるが、ラスタデータには当てはまらない。
+ラスタは同じ大きさの矩形セル (度やメートルなどの地図単位で表現される) で構成されているため、通常、ピクセルの座標を個別に変換することは不可能である。
+よってラスタの再投影では、多くの場合、元のオブジェクトとは異なる列と行の数で、新しいラスタオブジェクトを作成する。
+その後、新しいピクセルを適切な値で「埋める」ことができるように、属性を再推定する必要がある。
+つまり、ラスタの再投影は、ラスタ範囲を別の CRS にベクタ再投影 (Section <a href="reproj-geo-data.html#reproj-vec-geom">7.7</a>)、リサンプリングによる新しいピクセル値の計算 (Section <a href="geometry-operations.html#resampling">5.3.4</a>) という 2 つの別々の空間処理として考えることができる。
+したがって、ラスタデータとベクタデータの両方を使用する場合は、ラスタの再投影を避け、ベクタの再投影を行う方が良い場合がほとんどである。</p>
+
+<div class="rmdnote">
+通常のラスタの再投影は、幾何補正 (warp) とも呼ばれている。
+さらに、似たような操作で「変形」と呼ばれるものが 2 つある。
+すべての値をリサンプリングするのではなく、すべての値をそのままに、ラスタセルごとに新しい座標を再計算し、グリッドジオメトリを変更する。
+例えば、入力されたラスタ (正方形の格子) を曲線的な格子に変換することができる。
+変換操作は、<a href="https://r-spatial.github.io/stars/articles/stars5.html"><strong>stars</strong> パッケージ</a>を用いて R で行うことができる。
+</div>
+<p>ラスタの再投影処理は、<strong>terra</strong> パッケージの <code><a href="https://rspatial.github.io/terra/reference/project.html">project()</a></code> を使用する。
+前節で紹介した <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform()</a></code> 関数と同様、<code><a href="https://rspatial.github.io/terra/reference/project.html">project()</a></code> は空間オブジェクト (この場合はラスタデータセット) と何らかの CRS 表現を第 2 引数として受け取る。
+第 2 引数には、異なる CRS を持つ既存のラスタオブジェクトを指定することもできる。</p>
+<p>ラスタ変換の例として、カテゴリデータと連続データを使ったものを見てみよう。
+土地被覆データは、通常、カテゴリ化された地図で表現される。
+<code>nlcd.tif</code> ファイルは、以下のコードチャンクの出力に示すように、NAD83 / UTM ゾーン 12N CRS の <a href="https://www.mrlc.gov/data/nlcd-2011-land-cover-conus">National Land Cover Database 2011</a> から取得した米国ユタ州の小領域の情報を提供する (出力の最初の行のみ示す)。</p>
+<div class="sourceCode" id="cb248"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cat_raster</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/nlcd.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html">crs</a></span><span class="op">(</span><span class="va">cat_raster</span><span class="op">)</span></span>
+<span><span class="co">#&gt; PROJCRS["NAD83 / UTM zone 12N",</span></span>
+<span><span class="co">#&gt; ...</span></span></code></pre></div>
+<p>この地域では、8 つの土地被覆クラスが区別された (NLCD2011 の土地被覆クラスの全リストは、 <a href="https://www.mrlc.gov/data/legends/national-land-cover-database-2011-nlcd2011-legend">mrlc.gov</a>で見ることができる)。</p>
+<div class="sourceCode" id="cb249"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/unique.html">unique</a></span><span class="op">(</span><span class="va">cat_raster</span><span class="op">)</span></span>
+<span><span class="co">#&gt;       levels</span></span>
+<span><span class="co">#&gt; 1      Water</span></span>
+<span><span class="co">#&gt; 2  Developed</span></span>
+<span><span class="co">#&gt; 3     Barren</span></span>
+<span><span class="co">#&gt; 4     Forest</span></span>
+<span><span class="co">#&gt; 5  Shrubland</span></span>
+<span><span class="co">#&gt; 6 Herbaceous</span></span>
+<span><span class="co">#&gt; 7 Cultivated</span></span>
+<span><span class="co">#&gt; 8   Wetlands</span></span></code></pre></div>
+<p>カテゴリ別ラスタを再投影する場合、推定値は元のラスタと同じでなければならない。
+これは、各新規セルの値を入力ラスタの最も近いセル (中心) の値に設定する最近傍補間法 (<code>near</code>) を使って行うことができる。
+例えば、ウェブマッピングに適した地理的 CRS である WGS84 に <code>cat_raster</code> を再投影している。
+まず、この CRS の 定義を取得する。
+次のステップは、<code><a href="https://rspatial.github.io/terra/reference/project.html">project()</a></code> 関数でラスタを再投影することである。カテゴリデータの場合は、最近傍補間法 (<code>near</code>) を使用する。</p>
+<div class="sourceCode" id="cb250"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">cat_raster_wgs84</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html">project</a></span><span class="op">(</span><span class="va">cat_raster</span>, <span class="st">"EPSG:4326"</span>, method <span class="op">=</span> <span class="st">"near"</span><span class="op">)</span></span></code></pre></div>
+<p>新しいオブジェクトの多くのプロパティは、Table <a href="reproj-geo-data.html#tab:catraster">7.1</a> に示すように、列と行の数 (したがってセルの数)、解像度 (メートルから度に変換)、範囲など、以前のオブジェクトとは異なる (新しいカテゴリが作成されたのではなく、<code>NA</code> 値が追加されたため、カテゴリ数が 8 から 9 に増加していることに注意。土地被覆クラスは維持されている)。</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:catraster">TABLE 7.1: </span>オリジナル (cat_raster_wgs84) と 投影 (cat_raster_wgs84) のカテゴリラスタ データセットの主要な属性。</caption>
+<thead><tr class="header">
+<th align="left">CRS</th>
+<th align="right">nrow</th>
+<th align="right">ncol</th>
+<th align="right">ncell</th>
+<th align="right">resolution</th>
+<th align="right">unique_categories</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">NAD83</td>
+<td align="right">1359</td>
+<td align="right">1073</td>
+<td align="right">1458207</td>
+<td align="right">31.5275</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">WGS84</td>
+<td align="right">1246</td>
+<td align="right">1244</td>
+<td align="right">1550024</td>
+<td align="right">0.0003</td>
+<td align="right">9</td>
+</tr>
+</tbody>
+</table></div>
+<p>数値ラスタ (<code>numeric</code> またはこの場合は <code>integer</code> の値) の再投影もほぼ同じ手順で行う。
+これは、<a href="https://www2.jpl.nasa.gov/srtm/">Shuttle Radar Topography Mission (SRTM)</a> の <strong>spDataLarge</strong> にある <code>srtm.tif</code> で実証されており、WGS84 CRS による海抜メートル (標高) の高さを表している。</p>
+<div class="sourceCode" id="cb251"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con_raster</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/srtm.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html">crs</a></span><span class="op">(</span><span class="va">con_raster</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; GEOGCRS["WGS 84",</span></span>
+<span><span class="co">#&gt;     DATUM["World Geodetic System 1984",</span></span>
+<span><span class="co">#&gt;         ELLIPSOID["WGS 84",6378137,298.257223563,</span></span>
+<span><span class="co">#&gt;             LENGTHUNIT["metre",1]]],</span></span>
+<span><span class="co">#&gt;     PRIMEM["Greenwich",0,</span></span>
+<span><span class="co">#&gt;         ANGLEUNIT["degree",0.0174532925199433]],</span></span>
+<span><span class="va">....</span></span></code></pre></div>
+<p>これから、このデータセットを投影型 CRS に再投影するが、カテゴリデータに適した最近傍法では<u>ない</u>。
+その代わりに、元のラスタの 4 つの最近接セルに基づいて出力セルの値を計算する双一次補間法を使用する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+Section &lt;a href="geometry-operations.html#resampling"&gt;5.3.4&lt;/a&gt; に記載されている他の方法も、ここで使用することができる。&lt;/p&gt;'><sup>36</sup></a>
+投影されたデータセットの値は、これら 4 つのセルの値の距離加重平均である。
+入力セルが出力セルの中心に近いほど、その重みは大きくなる。
+以下のコマンドは、WGS 84 / UTM zone 12N を表すテキストストリングを作成し、この CRS にラスタを双一次補間法 (<code>bilinear</code>) で再投影するものである (出力は示していない)。</p>
+<div class="sourceCode" id="cb252"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">con_raster_ea</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html">project</a></span><span class="op">(</span><span class="va">con_raster</span>, <span class="st">"EPSG:32612"</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/cat.html">cat</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html">crs</a></span><span class="op">(</span><span class="va">con_raster_ea</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>数値変数のラスタ再投影は、セル数、解像度、範囲などの値や空間特性にも変化をもたらす。
+これらの変化は、Table <a href="reproj-geo-data.html#tab:rastercrs">7.2</a> で実証されている。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+もう一つの小さな変更点は、Table &lt;a href="reproj-geo-data.html#tab:rastercrs"&gt;7.2&lt;/a&gt; で表現されていないが、新しい投影ラスタデータセットの値のクラスが &lt;code&gt;numeric&lt;/code&gt; になっていることである。
+これは、双一次補間法 (&lt;code&gt;bilinear&lt;/code&gt;) が連続データを扱うため、結果が整数値に型強制されることがほとんどないためである。
+これは、ラスタデータセットを保存する際のファイルサイズに影響を与える可能性がある。&lt;/p&gt;'><sup>37</sup></a></p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:rastercrs">TABLE 7.2: </span>オリジナル (‘con_raster’) と投影 (‘con_raster_ea’) 連続ラスタデータセット の主要な属性。</caption>
+<thead><tr class="header">
+<th align="left">CRS</th>
+<th align="right">nrow</th>
+<th align="right">ncol</th>
+<th align="right">ncell</th>
+<th align="right">resolution</th>
+<th align="right">mean</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">WGS84</td>
+<td align="right">457</td>
+<td align="right">465</td>
+<td align="right">212505</td>
+<td align="right">0.0008</td>
+<td align="right">1843</td>
+</tr>
+<tr class="even">
+<td align="left">UTM zone 12N</td>
+<td align="right">515</td>
+<td align="right">422</td>
+<td align="right">217330</td>
+<td align="right">83.5334</td>
+<td align="right">1842</td>
+</tr>
+</tbody>
+</table></div>
+<div class="rmdnote">
+もちろん、2 次元の地球投影の限界は、ラスタデータと同様にベクタデータにも当てはまる。
+3 つの空間特性 (距離、面積、方向) のうち 2 つを維持することしかできない。
+したがって、どの投影法を選択するかは、目の前の課題によって決まる。
+例えば、密度 (1 グリッドセルあたりの点数や1グリッドセルあたりの住民数) に興味がある場合は、等面積投影を使用する (Chapter <a href="location.html#location">14</a> も参照)。
+</div>
+</div>
+<div id="mapproj" class="section level2" number="7.9">
+<h2>
+<span class="header-section-number">7.9</span> カスタム地図投影法<a class="anchor" aria-label="anchor" href="#mapproj"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+<code>EPSG:4326</code> のような <code>AUTHORITY:CODE</code> の識別子で捕捉される確立された CRS は、多くのアプリケーションに適している。
+しかし、場合によっては、代替的な予測を使用したり、カスタム CRS を作成したりすることが望ましい。
+Section <a href="reproj-geo-data.html#which-crs">7.6</a> は、カスタム CRS を使用する理由を述べ、いくつかの可能なアプローチを提示した。
+ここでは、これらのアイデアを R で応用する方法を紹介する。</p>
+<p>一つは、既存の CRS の WKT の定義を取り、その要素の一部を変更し、新しい定義を再投影に使用する方法である。
+これは、空間ベクタでは <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> と <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform()</a></code> で、空間ラスタでは <code><a href="https://rspatial.github.io/terra/reference/crs.html">crs()</a></code> と <code><a href="https://rspatial.github.io/terra/reference/project.html">project()</a></code> で行うことができる。次の例では、<code>zion</code> オブジェクトをカスタム正距方位図法 (AEQD) CRS に変換する例を示している。</p>
+<div class="sourceCode" id="cb253"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">zion</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"vector/zion.gpkg"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>カスタム AEQD CRS を使用するには、データセットの中心点の座標を度数で知る必要がある (地理的 CRS)。
+私たちの場合、<code>zion</code> 領域の重心を計算し、WGS84 に変換することでこの情報を抽出することができる。</p>
+<div class="sourceCode" id="cb254"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">zion_centr</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">zion</span><span class="op">)</span></span>
+<span><span class="va">zion_centr_wgs84</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">zion_centr</span>, <span class="st">"EPSG:4326"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_text.html">st_as_text</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">zion_centr_wgs84</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "POINT (-113 37.3)"</span></span></code></pre></div>
+<p>次に、新たに得られた値を用いて、以下に示す正距方位図法 CRS の WKT 定義を更新することができる。
+<code>"Central_Meridian"</code> は重心の経度、<code>"Latitude_Of_Origin"</code> は緯度であることに注意しておこう。</p>
+<div class="sourceCode" id="cb255"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">my_wkt</span> <span class="op">=</span> <span class="st">'PROJCS["Custom_AEQD",</span></span>
+<span><span class="st"> GEOGCS["GCS_WGS_1984",</span></span>
+<span><span class="st">  DATUM["WGS_1984",</span></span>
+<span><span class="st">   SPHEROID["WGS_1984",6378137.0,298.257223563]],</span></span>
+<span><span class="st">  PRIMEM["Greenwich",0.0],</span></span>
+<span><span class="st">  UNIT["Degree",0.0174532925199433]],</span></span>
+<span><span class="st"> PROJECTION["Azimuthal_Equidistant"],</span></span>
+<span><span class="st"> PARAMETER["Central_Meridian",-113.0263],</span></span>
+<span><span class="st"> PARAMETER["Latitude_Of_Origin",37.29818],</span></span>
+<span><span class="st"> UNIT["Meter",1.0]]'</span></span></code></pre></div>
+<p>この方法の最後のステップは、元のオブジェクト (<code>zion</code>) を新しいカスタム CRS (<code>zion_aeqd</code>) に変換することである。</p>
+<div class="sourceCode" id="cb256"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">zion_aeqd</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">zion</span>, <span class="va">my_wkt</span><span class="op">)</span></span></code></pre></div>
+<p>カスタム投影法は、例えば <a href="https://projectionwizard.org/#">Projection Wizard</a> のウェブアプリケーションを使って、対話的に行うことも可能である <span class="citation">(<a href="references.html#ref-savric_projection_2016">Šavrič, Jenny, and Jenny 2016</a>)</span>。
+このサイトでは、データの空間的範囲と歪みのプロパティを選択すると、可能な投影のリストが返される。
+また、このリストには投影の WKT 定義が含まれており、コピーして再投影に使用することができる。
+WKT 文字列を用いたカスタム CRS 定義の作成については、<span class="citation">Open Geospatial Consortium (<a href="references.html#ref-opengeospatialconsortium_wellknown_2019">2019</a>)</span> を参照。</p>
+<p>
+PROJ 文字列は、Section <a href="reproj-geo-data.html#crs-in-r">7.2</a> で述べた、投影、特に大きな地理的領域をカバーする幾何学に固有の制限を受け入れて、カスタム投影を作成するために使用することもできる。
+多くの投影法が開発され、PROJ 文字列の <code>+proj=</code> の要素で設定することができる。 <a href="https://proj.org/operations/projections/index.html">PROJ website</a> だけでも数十の投影法が詳細に記述されている。</p>
+<p>面積の関係を維持したまま世界を地図化する場合、Figure <a href="reproj-geo-data.html#fig:mollproj">7.3</a> に示されるモルワイデ図法 (Mollweide) が、一般的で賢明な選択となる <span class="citation">(<a href="references.html#ref-jenny_guide_2017">Jenny et al. 2017</a>)</span>。
+この投影法を使用するには、<code>st_transform</code> 関数の proj-string 要素 <code>"+proj=moll"</code> を使って指定する必要がある。</p>
+<div class="sourceCode" id="cb257"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_mollweide</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">world</span>, crs <span class="op">=</span> <span class="st">"+proj=moll"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:mollproj"></span>
+<img src="figures/mollproj-1.png" alt="世界のモルワイデ図法。" width="100%"><p class="caption">
+FIGURE 7.3: 世界のモルワイデ図法。
+</p>
+</div>
+<p>世界地図を作成する際、すべての空間特性 (面積、方向、距離) に対して歪みを最小化することが望まれることが多い。
+これを実現するための代表的な投影法として、Figure <a href="reproj-geo-data.html#fig:wintriproj">7.4</a> に示される <a href="https://www.winkel.org/other/Winkel%20Tripel%20Projections.htm">ヴィンケル図法 (第 3 図法)</a> (Winkel Tripel Projections) がある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+この投影図は、ナショナルジオグラフィック協会などで使用されている。&lt;/p&gt;"><sup>38</sup></a>
+結果は、以下のコマンドで作成された。</p>
+<div class="sourceCode" id="cb258"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_wintri</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">world</span>, crs <span class="op">=</span> <span class="st">"+proj=wintri"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:wintriproj"></span>
+<img src="figures/wintriproj-1.png" alt="世界のヴィンケル第 3 図法。" width="100%"><p class="caption">
+FIGURE 7.4: 世界のヴィンケル第 3 図法。
+</p>
+</div>
+<p>さらに、proj-string パラメータはほとんどの CRS 定義で変更可能であり、例えば <code>+lon_0</code> と <code>+lat_0</code> パラメータを使用して投影の中心を調整することができる。
+以下のコードは、ニューヨークの経度と緯度を中心としたランベルト正積方位図法 (Lambert azimuthal equal-area projection) に座標を変換するものである (Figure <a href="reproj-geo-data.html#fig:laeaproj2">7.5</a>)。</p>
+<div class="sourceCode" id="cb259"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_laea2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">world</span>,</span>
+<span>                           crs <span class="op">=</span> <span class="st">"+proj=laea +x_0=0 +y_0=0 +lon_0=-74 +lat_0=40"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:laeaproj2"></span>
+<img src="figures/laeaproj2-1.png" alt="ニューヨークを中心とした世界のランベルト正積方位図法。" width="100%"><p class="caption">
+FIGURE 7.5: ニューヨークを中心とした世界のランベルト正積方位図法。
+</p>
+</div>
+<p>CRS の変更に関する詳しい情報は、<a href="https://proj.org/usage/index.html">Using PROJ</a> のドキュメントに記載されている。</p>
+</div>
+<div id="演習-5" class="section level2" number="7.10">
+<h2>
+<span class="header-section-number">7.10</span> 演習<a class="anchor" aria-label="anchor" href="#%E6%BC%94%E7%BF%92-5"><i class="fas fa-link"></i></a>
+</h2>
+<p>E1. オブジェクト <code>nz</code> を WGS84 CRS に変換した <code>nz_wgs</code> というオブジェクトを作成しなさい。</p>
+<ul>
+<li>クラス <code>crs</code> のオブジェクトを作成し、CRS を調べなさい。</li>
+<li>オブジェクトの範囲への参照について、CRS によってどの単位を使っているか？</li>
+<li>
+<code>nz_wgs</code> から CRS を削除してプロットしなさい。New Zealand の地図のどこがおかしいか？その理由は？</li>
+</ul>
+<p>E2. データセット <code>world</code> をユニバーサル横メルカトル図法に変換し (<code>"+proj=tmerc"</code>)、っ結果をプロットしなさい。
+何が変わったか? その理由は?
+WGS 84 に戻してプロットしなさい。
+なぜ、このオブジェクトはオリジナルと異なるのか?</p>
+<p>E3. 連続色ラスタ (<code>con_raster</code>) を、最近傍補間法で NAD83 / UTM zone 12N に変換しなさい。
+何が変わったか?
+それは、結果にどのように影響するか?</p>
+<p>E4. 影鳥ラスタ (<code>cat_raster</code>) を、双一次補間法 (biulinear) で WGS 84 に変換しなさい。
+何が変わったか?
+それは、結果にどのように影響するか?</p>
+<!--toDo:jn-->
+<!--improve/replace/modify the following q-->
+<!-- E5. Create your own proj-string.  -->
+<!-- It should have the Lambert Azimuthal Equal Area (`laea`) projection, the WGS84 ellipsoid, the longitude of projection center of 95 degrees west, the latitude of projection center of 60 degrees north, and its units should be in meters. -->
+<!-- Next, subset Canada from the `world` object and transform it into the new projection.  -->
+<!-- Plot and compare a map before and after the transformation. -->
+<!-- ```{r 06-reproj-40} -->
+<!-- new_p4s = "+proj=laea +ellps=WGS84 +lon_0=-95 +lat_0=60 +units=m" -->
+<!-- canada = dplyr::filter(world, name_long == "Canada") -->
+<!-- new_canada = st_transform(canada, new_p4s) -->
+<!-- par(mfrow = c(1, 2)) -->
+<!-- plot(st_geometry(canada), graticule = TRUE, axes = TRUE) -->
+<!-- plot(st_geometry(new_canada), graticule = TRUE, axes = TRUE) -->
+<!-- ``` -->
+
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></div>
+<div class="next"><a href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#reproj-geo-data"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="nav-link" href="#prerequisites-07">必須パッケージ</a></li>
+<li><a class="nav-link" href="#reproj-intro"><span class="header-section-number">7.1</span> イントロダクション</a></li>
+<li><a class="nav-link" href="#crs-in-r"><span class="header-section-number">7.2</span> 座標参照系</a></li>
+<li><a class="nav-link" href="#crs-setting"><span class="header-section-number">7.3</span> 座標系の照会と設定</a></li>
+<li><a class="nav-link" href="#geom-proj"><span class="header-section-number">7.4</span> 投影データおよび非投影データに対する幾何学操作</a></li>
+<li><a class="nav-link" href="#whenproject"><span class="header-section-number">7.5</span> いつ再投影するべきか？</a></li>
+<li><a class="nav-link" href="#which-crs"><span class="header-section-number">7.6</span> どの CRS を使うべきか？</a></li>
+<li><a class="nav-link" href="#reproj-vec-geom"><span class="header-section-number">7.7</span> ベクタジオメトリの再投影</a></li>
+<li><a class="nav-link" href="#reproj-ras"><span class="header-section-number">7.8</span> ラスタジオメトリの再投影</a></li>
+<li><a class="nav-link" href="#mapproj"><span class="header-section-number">7.9</span> カスタム地図投影法</a></li>
+<li><a class="nav-link" href="#%E6%BC%94%E7%BF%92-5"><span class="header-section-number">7.10</span> 演習</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/07-reproj-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/07-reproj-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

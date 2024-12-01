@@ -1,0 +1,964 @@
+# 地理データI/O  {#read-write}
+
+
+
+## 必須パッケージ  {- #prerequisites}
+
+この章では、以下のパッケージが必要である。
+
+
+``` r
+library(sf)
+library(terra)
+library(dplyr)
+library(spData)
+```
+
+## イントロダクション  {#introduction-08}
+
+この章では、地理データの読み書きの方法について説明する。
+地理データ<u>入力</u> (Input) はジオコンピューテーション\index{じおこんぴゅてーしょん@ジオコンピューテーション}に不可欠である。 実世界のアプリケーションはデータなしには不可能である。
+データ<u>出力</u> (Output) も重要で、研究の結果得られた価値ある新しいデータセットや改良されたデータセットを他の人が利用できるようにすることができる。
+これらの入力/出力の処理をまとめて、データ I/O と呼ぶことができる。
+地理データの入出力は、プロジェクトの最初と最後に簡単に行われることが多い。
+しかし、データの入出力はプロジェクト成功の基礎である。プロジェクトの初期に犯したミス (例えば、古いデータや何らかの欠陥のあるデータセットを使用すること) は、大きな問題につながる可能性がある。
+
+地理ファイル形式はたくさんあり、それぞれに長所と短所があるので、Section \@ref(file-formats) で説明する。
+これらのファイルの入力と出力は、それぞれ Section \@ref(data-input) と Section  \@ref(data-output) で説明する。
+Section \@ref(retrieving-data) では、様々な<u>ジオポータル</u>とその使用方法について説明する。
+データへのアクセスを容易にするため地理データをダウンロードするためのパッケージについては、Section \@ref(geographic-data-packages) で説明する。
+作成したデータをウェブ上などに公開したい場合、地理メタデータが重要となるので、Section \@ref(geographic-metadata) で説明する。
+空間データは、ウェブサービスとして取得することもできる。これは Section \@ref(geographic-web-services) で説明する。
+最後の Section \@ref(visual-outputs) では、ビジュアライゼーションに関する Chapter \@ref(adv-map) に備えて、ビジュアル出力 (地図) を保存するための方法を紹介する。
+
+## ファイル形式  {#file-formats}
+
+\index{ふぁいるけいしき@ファイル形式}
+地理データセットは通常、ファイルまたは空間データベースとして保存される。
+ファイル形式はベクタデータとラスタデータのどちらかを保存できるが、 [PostGIS](https://postgis.net/) のような空間データベースは両方を保存できる (Section \@ref(postgis) も参照)。
+今日、ファイル形式の多様性は困惑するほどある。しかし、1960年代には、ハーバード大学で空間解析のための最初の広く配布されたプログラム ([SYMAP](https://news.harvard.edu/gazette/story/2011/10/the-invention-of-gis/)) などの初期の GIS ソフトウェアが開発された。それ以降、多くの統合と標準化が行われてきた [@coppock_history_1991]。
+
+\index{GDAL}
+GDAL (Geospatial Data Abstraction Library、「グードル」と発音する。「グー」の goo の oo 部分は、Object Oeirneted を表す) は、2000年のリリース以来、地理ファイル形式間の非互換性に関連する多くの問題を解決した。
+GDAL は、多くのラスタおよびベクタデータフォーマットの読み書きのための統一された高性能なインタフェースを提供する。^[Chapter \@ref(geometry-operations) で解説する通り、GDAL には、ラスタのモザイク処理、リサンプリング、クロッピング、再投影などを可能にするユーティリティ関数群もある。] 
+GRASS、ArcGIS\index{ArcGIS}、QGIS\index{QGIS} など、多くのオープンおよびプロプライエタリな GIS プログラムは、GUI\index{ぐらふぃかるゆーざいんたーふぇーす@グラフィカル・ユーザー・インターフェース} の背後に GDAL\index{GDAL}  を使用して、地理データを取り込み、適切な形式で出力するという足回りの作業を行なっている。
+
+GDAL\index{GDAL} は、200 以上のベクタおよびラスタデータフォーマットへのアクセスを提供する。
+Table \@ref(tab:formats) では、よく使われる空間ファイル形式についての基本情報を紹介している。
+
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<caption>(\#tab:formats)(\#tab:formats)代表的な空間ファイル形式。</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> 名称              |拡 </th>
+   <th style="text-align:left;"> 子                       |情報 </th>
+   <th style="text-align:left;"> |タイプ </th>
+   <th style="text-align:left;"> |モデル </th>
+   <th style="text-align:left;"> | </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ESRI Shapefile </td>
+   <td style="text-align:left;width: 5em; "> .shp  (メインとなるファイル) |よく使われているフ </td>
+   <td style="text-align:left;width: 12em; "> ーマットで、少なくとも3つのファイルから構成される。ファイルサイズが &gt;2 GB、種類が混在するもの、名前が &gt;10 文字、列数が &gt;255 はサポートされていない。 |ベクタ                       |一部オープン     | </td>
+   <td style="text-align:left;width: 4em; ">  </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GeoJSON </td>
+   <td style="text-align:left;width: 5em; "> .geojson </td>
+   <td style="text-align:left;width: 12em; "> JSON 交換フォーマットを、シンプルフィーチャを含むように 拡張したもので、主に経度・緯度の座標を格納するために使用され、TopoJSON フォーマットによって拡張される。          |ベクタ                       |オープン         | </td>
+   <td style="text-align:left;width: 4em; ">  </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KML </td>
+   <td style="text-align:left;width: 5em; "> .kml </td>
+   <td style="text-align:left;width: 12em; "> Google Earth で使用するために開発された、XML ベースの空間可視化フォーマット。ZIP 形式の KML ファイルは KMZ 形式。                                                        |ベクタ                       |オープン </td>
+   <td style="text-align:left;width: 4em; ">  </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GPX </td>
+   <td style="text-align:left;width: 5em; "> .gpx </td>
+   <td style="text-align:left;width: 12em; "> GPS データ交換のために作成された XML スキーマ。                                                                                                                          |ベクタ </td>
+   <td style="text-align:left;width: 4em; "> |オープン         | </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FlatGeobuf </td>
+   <td style="text-align:left;width: 5em; "> .fgb </td>
+   <td style="text-align:left;width: 12em; "> ベクタデータを高速に読み書きできる単一ファイル形式。ストリーミング機能を持つ。                                                                                           |ベクタ                       |オープン </td>
+   <td style="text-align:left;width: 4em; "> | </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GeoTIFF </td>
+   <td style="text-align:left;width: 5em; "> .tif/.tiff </td>
+   <td style="text-align:left;width: 12em; "> 一般的なラスタフォーマット。空間メタデータを追加したTIFFファイル。                                                                                                       |ラスタ                       |オープ </td>
+   <td style="text-align:left;width: 4em; "> | </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Arc ASCII </td>
+   <td style="text-align:left;width: 5em; "> .asc </td>
+   <td style="text-align:left;width: 12em; "> 最初の6行がラスタヘッダーで、その後にラスタセルの値が行と列に並んでいるテキスト形式。                                                                                    |ラスタ                       |オープン         | </td>
+   <td style="text-align:left;width: 4em; ">  </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> SQLite/SpatiaLite </td>
+   <td style="text-align:left;width: 5em; "> .sqlite </td>
+   <td style="text-align:left;width: 12em; "> スタンドアローンのリレーショナルデータベースである SpatiaLite は、SQLite の空間拡張版。                                                                                  |ベクタとラスタ               |オープン </td>
+   <td style="text-align:left;width: 4em; "> | </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> ESRI FileGDB </td>
+   <td style="text-align:left;width: 5em; "> .gdb </td>
+   <td style="text-align:left;width: 12em; "> ArcGIS で作成された空間および非空間オブジェクト。可能なこと: 複数のフィーチャクラス、トポロジー。GDAL によるサポートは限定される。                                       |ベクタとラスタ               |プロプライエタリ | </td>
+   <td style="text-align:left;width: 4em; ">  </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GeoPackage </td>
+   <td style="text-align:left;width: 5em; "> .gpkg </td>
+   <td style="text-align:left;width: 12em; "> SQLite をベースとした軽量なデータベースコンテナで、プラットフォームに依存しないジオデータの交換を容易に行うことができる。                                                |ベクタと (制限のある) ラスタ |オープン         | </td>
+   <td style="text-align:left;width: 4em; ">  </td>
+   <td style="text-align:left;width: 5em; ">  </td>
+  </tr>
+</tbody>
+</table>
+
+
+
+\index{Shapefile}
+\index{GeoPackage}
+ファイル形式の標準化とオープンソースを保証する重要な発展は、1994年の Open Geospatial Consortium ([OGC](https://www.ogc.org/)) の設立であった。
+OGC は、シンプルフィーチャというデータモデル (Section \@ref(intro-sf) 参照) を定義するだけでなく、例えば GML\index{GML}、KML\index{KML} や GeoPackage\index{GeoPackage} などのファイル形式で使用されているようなオープンスタンダードの開発も調整している。
+OGC が推奨するオープンなファイル形式は、プロプライエタリなフォーマットと比較して、いくつかの利点がある。標準が公開され、透明性が確保され、ユーザーがファイル形式をさらに開発し、特定のニーズに合わせて調整する可能性が開かれることである。
+
+ESRI Shapefile\index{Shapefile}  は最も一般的なベクタデータ交換フォーマットであるが、オープンフォーマットではない (仕様はオープン)。
+1990 年代初頭に開発されたもので、多くの制約がある。
+まず、少なくとも 3 つのファイルで構成されるマルチファイル形式であること。
+255 列までしかサポートしておらず、列名は 10 文字まで、ファイルサイズは 2 GB までと制限されている。
+さらに、ESRI Shapefile\index{Shapefile}  は、ポリゴンと複合ポリゴンの区別ができないなど、可能なすべてのジオメトリタイプをサポートしていない。^[ESRI Shapefile の制限と可能な代替ファイル形式については、http://switchfromshapefile.org/ 参照。] 
+このような制約があるにもかかわらず、長い間、有力な代替手段が見つかっていなかった。 
+最近では、[GeoPackage](https://www.geopackage.org/)\index{GeoPackage} が登場し、ESRI Shapefile に取って代わろうとしている。
+Geopackage は、地理空間情報を交換するためのフォーマットで、OGC 規格の一つである。 
+GeoPackage 規格は、地理空間情報を SQLite の小さなコンテナに格納する方法についての規則を記述している。
+したがって、GeoPackage は軽量な空間データベースコンテナであり、ベクタおよびラスタデータだけでなく、非空間データおよび拡張機能も格納することができる。
+GeoPackage 以外にも、調べる価値のある地理空間データ交換フォーマットがある (Table \@ref(tab:formats))。
+
+\index{GeoTIFF}
+\index{COG}
+ラスタデータの形式としては、GeoTIFF 形式が主流である。
+TIFF ファイル内に CRS などの空間情報を埋め込むことができる。 
+ESRI Shapefile と同様に1990年代に開発されたフォーマットで、オープンなフォーマットである。
+さらに、GeoTIFF は現在も拡張・改良が続けられている。
+GeoTIFF フォーマットに最近追加された最も重要なものの1つが、[COG](https://www.cogeo.org/) (*Cloud Optimized GeoTIFF*) と呼ばれるバージョンである。
+COG として保存されたラスタオブジェクトは、HTTP サーバーでホストすることで、他の人がファイル全体をダウンロードすることなく、ファイルの一部だけを読むことができる (Section \@ref(raster-data-read) と Section \@ref(raster-data-write) を参照)。
+
+この他にも、Table \@ref(tab:formats) で触れていない地理ファイル形式が多数存在し、また新しい空間データフォーマットが開発されている。
+最近開発されているものには、[GeoArrow](https://github.com/geoarrow/geoarrow) や [Zarr](https://zarr.dev/)) がある。
+GDAL ドキュメントは、[ベクタ](https://gdal.org/drivers/vector/index.html)や[ラスタ](https://gdal.org/drivers/raster/index.html)ドライバに関して学ぶ際に優れたリソースである。
+さらに、Section \@ref(intro-sf) で紹介するように、空間データフォーマットの中には、ベクタやラスタ以外のデータモデル (タイプ) を格納できるものもある。
+LiDAR 点群を格納するための LAS、LAZ 形式、多次元配列を格納するための NetCDF、HDF 形式が含まれる。
+
+また、空間データは、CSV ファイルや Excel スプレッドシートなど、表形式 (非空間) のテキスト形式で保存されることも多い。
+例えば、GIS ツールを使わない人と空間サンプルを共有したり、空間データ形式を受け付けない他のソフトウェアとデータを交換したりする際に便利である。 
+しかし、この方法は、点よりも複雑な形状を保存するにはかなり困難であり、CRS など重要な空間メタ情報を直接保存できないなど、いくつかの欠点がある。
+
+## データ入力 (I) {#data-input}
+
+`sf::read_sf()` (ベクタデータの読み込みに使うメイン関数) や `terra::rast()` (ラスタデータの読み込みに使うメイン関数) などのコマンドを実行すると、ファイルからデータを読み込むイベントの連鎖が無言で開始される。
+さらに、多くの R パッケージは、サンプルデータを提供していたり (たとえば、これまでにも使ってきた `spData::world`)、あるいはさまざまなデータソースからデータを取得する関数を提供している。
+これらはすべて、R にデータをロードするか、より正確には、ワークスペースにオブジェクトを割り当てる。
+すなわち、オブジェクトが R にインポートされると、これは RAM に保存され^[例外として、**terra** の `SpatRaster` オブジェクト (実際のデータの C++ ポインタ) や、データベース接続がある。たとえば、Section \@ref(postgis) で説明するように、`dplyr::collect()` などでメモリにインポートされる。]、`ls()` で一覧を表示することができ (あるいは開発環境の 'Environment' に表示され)、R セッション中の [`.GlobalEnv`](http://adv-r.had.co.nz/Environments.html) からアクセスできる。
+
+### ベクタデータ  {#iovec}
+
+\index{べくた@ベクタ!でーたにゅうりょく@データ入力}
+空間ベクタデータは、さまざまなファイル形式で提供されている。
+`.geojson` や `.gpkg` ファイルなど、よく使われる表現のほとんどは、裏で [GDAL のベクタドライバ](https://gdal.org/drivers/vector/index.html)\index{GDAL} を使う **sf** 関数 `read_sf()` (または同等の `st_read()`) で直接 R に取り込むことができる。
+`st_drivers()` は、最初の 2 列に `name` と `long_name` を含むデータフレームを返す。続く列に、Table \@ref(tab:drivers) の主要ファイル形式について図示しているように、データの書き込みやラスタデータの保存など GDAL (従って **sf**) で利用できる各ドライバの機能を返す。  
+
+<table>
+<caption>(\#tab:drivers)(\#tab:drivers)ベクタデータを読み書きするための一般的な ドライバ/フォーマット。</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> name </th>
+   <th style="text-align:left;"> long_name </th>
+   <th style="text-align:left;"> write </th>
+   <th style="text-align:left;"> copy </th>
+   <th style="text-align:left;"> is_raster </th>
+   <th style="text-align:left;"> is_vector </th>
+   <th style="text-align:left;"> vsi </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> ESRI Shapefile </td>
+   <td style="text-align:left;width: 7em; "> ESRI Shapefile </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GPX </td>
+   <td style="text-align:left;width: 7em; "> GPX </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> KML </td>
+   <td style="text-align:left;width: 7em; "> Keyhole Markup Language (KML) </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GeoJSON </td>
+   <td style="text-align:left;width: 7em; "> GeoJSON </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> GPKG </td>
+   <td style="text-align:left;width: 7em; "> GeoPackage </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> FlatGeobuf </td>
+   <td style="text-align:left;width: 7em; "> FlatGeobuf </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> FALSE </td>
+   <td style="text-align:left;"> TRUE </td>
+   <td style="text-align:left;"> TRUE </td>
+  </tr>
+</tbody>
+</table>
+
+
+
+以下のコマンドは、コンピュータにインストールされた GDAL の最初の 3 つのドライバを報告し (結果はインストールされた GDAL のバージョンによって異なる場合がある)、それらのフィーチャの要約を表示する。
+なお、大半のドライバはデータの書き込みが可能であるが (87 種類中 51 種類)、ベクタデータに加えてラスタデータを効率的に表現できるフォーマットは 16 種類しかない (詳しくは `?st_drivers()`)。
+
+
+``` r
+sf_drivers = st_drivers()
+head(sf_drivers, n = 3)
+summary(sf_drivers[-c(1:2)])
+```
+
+`read_sf()` の第一引数は `dsn` で、これはテキスト文字列または単一のテキスト文字列を含むオブジェクトであるべきである。
+テキスト文字列の内容は、ドライバによって異なる可能性がある。
+多くの場合、ESRI Shapefile\index{Shapefile} (`.shp`) や `GeoPackage`\index{GeoPackage} 形式 (`.gpkg`) と同様に、`dsn` はファイル名となる。
+`read_sf()` は、ファイルの拡張子からドライバを推測する (下の例は、`.gpkg` の場合)。 (訳注: 日本語データを含むファイルは、文字エンコーディングを指定しないと文字化けを起こす。ほとんどの場合、CP932 を使用しているので、`read_sf()` に引数 `options = "ENCODING=CP932"` を設定するとよい。なお、国土数値情報の近年のファイルは UTF-8 を採用していることもある。)  
+
+
+``` r
+f = system.file("shapes/world.gpkg", package = "spData")
+world = read_sf(f)
+```
+
+ドライバによっては、`dsn` は、フォルダ名、データベースのアクセス認証情報、または GeoJSON 文字列表現として提供されることがある (詳細は、`read_sf()` のヘルプページの例を参照)。
+
+ベクタドライバのフォーマットには、複数のデータレイヤを格納できるものがある。
+デフォルトでは、`read_sf()` は `dsn` で指定されたファイルの最初のレイヤを自動的に読み込む。しかし、`layer` 引数を使用すると、他のレイヤを指定することができる。
+
+\index{OGR SQL}
+また、`read_sf()` 関数には、ファイルの一部だけを RAM に読み込む方法が 2 つある。
+1 つ目は、`query` の引数に関連して、[OGR SQL query text](https://gdal.org/user/ogr_sql_dialect.html) でデータのどの部分を読み取るかを指定できるようにしたものである。
+以下の例では、タンザニアのみのデータを抽出している (Figure \@ref(fig:readsfquery)A)。
+これは、`"world"` のレイヤから `name_long` が `"Tanzania"` と等しいすべての列 (`SELECT *`) を取得すると指定することで実現する。
+
+
+``` r
+tanzania = read_sf(f, query = 'SELECT * FROM world WHERE name_long = "Tanzania"')
+```
+
+利用可能な列の名前がわからない場合、`'SELECT * FROM world WHERE FID = 1'` でデータの 1 行だけを読み込むのが良い方法である。
+`FID` は<u>フィーチャ ID</u>を表し、多くの場合行番号であるが、その値は使用するファイル形式に依存する。 
+例えば、`FID` は、ESRI Shapefile では 0 から始まり、他のファイル形式では 1 または任意の番号から始まる。
+
+
+
+2 つ目の仕組みは、`wkt_filter` の引数を使用する。
+この引数は、データを抽出したい研究領域を表すよく知られたテキストを想定している。
+タンザニアの国境線 50,000 m と交差するポリゴンをファイルから読み込む。
+そのためには、(a) バッファを作成する (Section \@ref(buffers))、(b) `st_geometry()` で `sf` バッファオブジェクトを `sfc` ジオメトリオブジェクトに変換する、(c) `st_as_text()` でジオメトリを WKT に変換する、のいずれかの方法で「フィルタ」を準備する必要がある。
+
+
+``` r
+tanzania_buf = st_buffer(tanzania, 50000)
+tanzania_buf_geom = st_geometry(tanzania_buf)
+tanzania_buf_wkt = st_as_text(tanzania_buf_geom)
+```
+
+では、この「フィルタ」を `wkt_filter` の引数で適用してみよう。
+
+
+``` r
+tanzania_neigh = read_sf(f, wkt_filter = tanzania_buf_wkt)
+```
+
+Figure \@ref(fig:readsfquery) :B に示すように、この結果はタンザニアとその 50 km バッファ内のすべての国を含めている。
+
+<div class="figure" style="text-align: center">
+<img src="figures/readsfquery-1.png" alt="(A) クエリと (B) wkt フィルタを用いて、ベクタデータの部分集合を読み込む。" width="100%" />
+<p class="caption">(\#fig:readsfquery)(A) クエリと (B) wkt フィルタを用いて、ベクタデータの部分集合を読み込む。</p>
+</div>
+
+当然ながら、一部のオプションは特定のドライバに固有のものである。^[
+対応するベクタフォーマットとオプションの一覧は、http://gdal.org/ogr_formats.html に記載されている。
+]
+例えば、表計算ソフトのフォーマット (`.csv`) に保存された座標を考えてみよう。
+このようなファイルを空間オブジェクトとして読み込むには、当然、座標を表す列の名前 (以下の例では、`X` と `Y`) を指定しなければならない。
+これは、`options` パラメータを設定することで行うことができる。
+可能なオプションについては、対応する GDAL\index{GDAL} ドライバの説明の「オープンオプション」セクションを参照。
+カンマ区切り値 (csv) 形式は、https://gdal.org/drv_csv.html。
+
+
+``` r
+cycle_hire_txt = system.file("misc/cycle_hire_xy.csv", package = "spData")
+cycle_hire_xy = read_sf(cycle_hire_txt,
+  options = c("X_POSSIBLE_NAMES=X", "Y_POSSIBLE_NAMES=Y"))
+```
+
+「XY」座標を記述する代わりに、1 つの列でジオメトリ情報を記述することも可能である。
+Well-known text (WKT)\index{well-known text}、well-known binary (WKB)\index{well-known binary}、GeoJSON 形式がその例である。
+例えば、`world_wkt.csv` のファイルには、世界の国々のポリゴンを表す `WKT` という列がある。
+このことを示すために、今回も `options` パラメータを使用する。
+
+
+``` r
+world_txt = system.file("misc/world_wkt.csv", package = "spData")
+world_wkt = read_sf(world_txt, options = "GEOM_POSSIBLE_NAMES=WKT")
+```
+
+\BeginKnitrBlock{rmdnote}<div class="rmdnote">サポートされているすべてのベクタファイル形式が、その座標参照系に関する情報を格納しているわけではない。
+このような場合、`st_set_crs()` 関数を用いて不足する情報を追加することが可能である。
+詳細は Section \@ref(crs-setting) も参照。</div>\EndKnitrBlock{rmdnote}
+
+\index{KML}
+最後の例として、`read_sf()` が KML ファイルも読み込むことを紹介する。
+KML ファイルは、地理情報を XML 形式で格納している。これは、アプリケーションに依存しない方法で Web ページを作成し、データを転送するためのデータ形式である [@nolan_xml_2014]。
+ここでは、ウェブから KML ファイルにアクセスする。
+このファイルには、複数のレイヤが含まれている。
+`st_layers()` は、利用可能なすべてのレイヤを表示する。
+`read_sf()` の `layer` パラメータの助けを借りて最初のレイヤ `Placemarks` を選択する。
+
+
+``` r
+u = "https://developers.google.com/kml/documentation/KML_Samples.kml"
+download.file(u, "KML_Samples.kml")
+st_layers("KML_Samples.kml")
+#> Driver: LIBKML 
+#> Available layers:
+#>               layer_name geometry_type features fields crs_name
+#> 1             Placemarks                      3     11   WGS 84
+#> 2      Styles and Markup                      1     11   WGS 84
+#> 3       Highlighted Icon                      1     11   WGS 84
+....
+kml = read_sf("KML_Samples.kml", layer = "Placemarks")
+```
+
+このセクションで紹介した例はすべて、地理データのインポートに **sf** パッケージを使用したものである。
+高速で柔軟性があるが、特定のファイル形式については他のパッケージも見てみる価値があるだろう。**duckdb** は、DuckDB というデータベースへの R インターフェースで、[空間拡張](https://duckdb.org/docs/extensions/spatial.html)もある。
+
+### ラスタデータ  {#raster-data-read}
+
+\index{らすた@ラスタ!でーたにゅうりょく@データ入力}
+ラスタデータは、ベクタデータと同様に多くのファイル形式があり、中にはマルチレイヤファイルをサポートするものもある。
+**terra** の `rast()` コマンドは、レイヤが 1 つだけのファイルが提供された場合、1 つのレイヤで読み込む。
+
+
+``` r
+raster_filepath = system.file("raster/srtm.tif", package = "spDataLarge")
+single_layer = rast(raster_filepath)
+```
+
+また、マルチレイヤファイルを読み込む場合にも有効である。
+
+
+``` r
+multilayer_filepath = system.file("raster/landsat.tif", package = "spDataLarge")
+multilayer_rast = rast(multilayer_filepath)
+```
+
+\index{vsicurl}
+\index{GDAL}
+\index{COG}
+これまでの例はすべて、ハードディスクに保存されているファイルから空間情報を読み取るものであった。 
+しかし、GDAL は HTTP/HTTPS/FTP の Web リソースなど、オンラインのリソースから直接データを読み込むことも可能である。
+あとは、ファイルへのパスの前に `/vsicurl/` というプレフィックスを付けるだけである。
+試しに、2000年から2012年までの 500 m 解像度での全球の月別積雪確率に接続してみよう。
+12月の積雪確率は、COG (Cloud Optimized GeoTIFF) ファイル (Section \@ref(file-formats)) として、[zenodo.org](https://zenodo.org/record/5774954/files/clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif) に保存されている。
+オンラインファイルを読むには、そのURLと `/vsicurl/` プレフィックスを指定するだけである。
+
+
+``` r
+myurl = paste0("/vsicurl/https://zenodo.org/record/5774954/files/",
+               "clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif")
+snow = rast(myurl)
+snow
+#> class       : SpatRaster 
+#> dimensions  : 35849, 86400, 1  (nrow, ncol, nlyr)
+#> resolution  : 0.00417, 0.00417  (x, y)
+#> extent      : -180, 180, -62, 87.4  (xmin, xmax, ymin, ymax)
+#> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+#> source      : clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif 
+#> name        : clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0
+```
+
+\index{COG} 
+入力データが COG であるため、実際にはこのファイルを RAM に読み込むのではなく、値を取得せずに接続を作成している。
+その値は、何らかの値に基づく操作 (例えば、`crop()` や `extract()`) を適用した場合に読み取られる。
+これにより、ファイル全体をダウンロードすることなく、データのごく一部だけを読み出すこともできるようになった。
+例えば、レイキャビクの座標を指定し、`extract()` 関数を適用すると、12 月の積雪確率 (70%) を求めることができる。
+
+
+``` r
+rey = data.frame(lon = -21.94, lat = 64.15)
+snow_rey = extract(snow, rey)
+snow_rey
+#>   ID clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0
+#> 1  1                                                         70
+```
+
+この方法では、大きな GeoTIFF ファイル全体をダウンロードするのではなく、一つの値だけをダウンロードすることになる。
+上記の例は、単純な (しかし有用な) 1 つのケースを示しただけであるが、もっと探求すべきことがある。
+また、`/vsicurl/` のプレフィックスは、ラスタだけでなく、ベクタファイル形式にも有効である。
+ベクタファイルのURLの前に接頭辞を付けるだけで、`read_sf()`、オンラインストレージから直接ベクタを読み込むことができるようになる。
+
+重要なのは、GDAL が提供する接頭辞は `/vsicurl/` だけではないことである。ZIP アーカイブから空間ファイルを解凍せずに読み込むための `/vsizip/` や、AWS S3 バケットにあるファイルをオンザフライで読み込むための `/vsis3/` など、他にも多くの接頭辞が存在するのである。
+詳しくは、https://gdal.org/user/virtual_file_systems.html。
+
+ベクタデータと同様、ラスタデータも PostGIS などの空間データベースからも読み込むことができる。
+詳細は、Section \@ref(postgis) を参照。
+
+## データ出力 (O)   {#data-output}
+
+地理データの書き込みでは、あるフォーマットから別のフォーマットへの変換や、新しく作成したオブジェクトの保存が可能である。
+データの種類 (ベクタまたはラスタ)、オブジェクトのクラス (例: `sf` または `SpatRaster`)、保存される情報の種類と量 (オブジェクトのサイズ、値の範囲など) に応じて、空間ファイルを最も効率的に保存する方法を知ることが重要である。
+次の 2 つのセクションでは、その方法を説明する。
+
+### ベクタデータ
+
+\index{べくた@ベクタ!でーたしゅつりょく@データ出力}
+
+
+`read_sf()` と対になるのは `write_sf()` である。
+`.geojson`、`.shp`、`.gpkg` などの最も一般的なものを含む、広範囲の地理ベクタファイル形式に **sf** オブジェクトを書き込むことができる。
+ファイル名から、`write_sf()` が自動的に使用するドライバを決定する。 
+また、書き込み速度はドライバに依存する。
+
+
+``` r
+write_sf(obj = world, dsn = "world.gpkg")
+```
+
+**注意**: 同じデータソースに再度書き込もうとすると、この機能はファイルを上書きしてしまう。
+
+
+``` r
+write_sf(obj = world, dsn = "world.gpkg")
+```
+
+ファイルを上書きする代わりに、引数 `layer` でファイルに新しいレイヤを追加することができる。
+これは、GeoPackage を含むいくつかの空間フォーマットでサポートされている。
+
+
+``` r
+write_sf(obj = world, dsn = "world_many_layers.gpkg", layer = "second_layer")
+```
+
+また、`write_sf()` と同等である、`st_write()` を使用することもできる。
+ただし、デフォルトの挙動は異なる。異なる点は、ファイルを上書きしない (上書きしようとするとエラーを返す)、書き込まれたファイル形式とオブジェクトの短い要約を表示する、などである。
+
+
+``` r
+st_write(obj = world, dsn = "world2.gpkg")
+#> Writing layer `world2' to data source `world2.gpkg' using driver `GPKG'
+#> Writing 177 features with 10 fields and geometry type Multi Polygon.
+```
+
+`layer_options` 引数はまた、さまざまな目的で使用することができる。
+そのひとつが、空間データをテキストファイルに書き出すことである。
+これは、`layer_options` の中に `GEOMETRY` を指定することで可能である。 
+単純な点データセットの場合は `AS_XY` (座標のための新しい列を2つ作成する)、より複雑な空間データの場合は `AS_WKT` (空間オブジェクトのよく知られたテキスト表現を含む新しい列を1つ作成する) のいずれかになる。
+
+
+``` r
+write_sf(cycle_hire_xy, "cycle_hire_xy.csv", layer_options = "GEOMETRY=AS_XY")
+write_sf(world_wkt, "world_wkt.csv", layer_options = "GEOMETRY=AS_WKT")
+```
+
+
+
+### ラスタデータ  {#raster-data-write}
+
+\index{らすた@ラスタ!でーたしゅつりょく@データ出力}
+`writeRaster()` 機能は、`SpatRaster` のオブジェクトをディスク上のファイルに保存する。 
+この関数は、出力データ型とファイル形式に関する入力を期待するが、選択されたファイル形式に固有の GDAL オプションも受け付ける (詳しくは `?writeRaster` を参照)。
+
+\index{らすた@ラスタ!でーたがた@データ型}
+ラスタを保存する際、**terra** パッケージは以下の 7 つのデータ形式を提供する: INT1U、INT2S、INT2U、INT4S、INT4U、FLT4S、FLT8S。^[
+R は 32 ビット符号なし整数をサポートしていないため、INT4U の使用は推奨されていない。
+] データ型は、ディスクに書き込まれるラスタオブジェクトのビット表現を決定する (Table \@ref(tab:datatypes))。
+どのデータ型を使用するかは、ラスタオブジェクトの値の範囲による。
+データ型が表現できる値が多いほど、ディスク上のファイルサイズは大きくなる。
+符号なし整数 (INT1U、INT2U、INT4U) はカテゴリデータに適しており、浮動小数点数 (FLT4S、FLT8S) は通常連続データを表す。
+`writeRaster()` は FLT4S をデフォルトとして使用する。
+これはほとんどの場合において有効であるが、二値やカテゴリデータを保存する場合、出力ファイルのサイズは不必要に大きくなる。
+したがって、最小限の記憶容量を必要とし、なおかつすべての値を表現できるデータ型を使用することを勧める (`summary()` 関数で値の範囲を確認する)。
+
+
+
+Table: (\#tab:datatypes)terra パッケージが対応しているデータ型。
+
+|データタイプ |最小値          |最大値        |
+|:------------|:---------------|:-------------|
+|INT1U        |0               |255           |
+|INT2S        |--32,767        |32,767        |
+|INT2U        |0               |65,534        |
+|INT4S        |--2,147,483,647 |2,147,483,647 |
+|INT4U        |0               |4,294,967,296 |
+|FLT4S        |--3.4e+38       |3.4e+38       |
+|FLT8S        |--1.7e+308      |1.7e+308      |
+
+
+
+デフォルトでは、出力ファイル形式はファイル名から導かれる。
+ファイル名を `*.tif` とすると、以下のように GeoTIFF ファイルが作成される。
+
+
+``` r
+writeRaster(single_layer, filename = "my_raster.tif", datatype = "INT2U")
+```
+
+ラスタファイル形式によっては、追加オプションがあり、`writeRaster()` の `options` 引数に [GDAL parameters](https://gdal.org/formats_list.html) を与えることで設定できる。
+GeoTIFF ファイルは、デフォルトで **terra** で記述され、LZW 圧縮が施されている `gdal = c("COMPRESS=LZW")`。
+圧縮を変更したり無効にしたりするには、この引数を変更する必要がある。
+
+
+``` r
+writeRaster(x = single_layer, filename = "my_raster.tif",
+            gdal = c("COMPRESS=NONE"), overwrite = TRUE)
+```
+
+\index{COG}
+さらに、`filetype = "COG"` のオプションでラスタオブジェクトを COG (Cloud Optimized GeoTIFF, Section \@ref(file-formats) ) として保存することができる。
+
+
+``` r
+writeRaster(x = single_layer, filename = "my_raster.tif",
+            filetype = "COG", overwrite = TRUE)
+```
+
+GeoTIFF 形式の圧縮については、Paul Ramsey の [GeoTIFF 圧縮についてのブログ](https://blog.cleverelephant.ca/2015/02/geotiff-compression-for-dummies.html) に包括的に書かれている。
+
+## オープンデータの取得  {#retrieving-data}
+
+\index{おーぷんでーた@オープンデータ}
+インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。^[例えば、自由に使える地理データの長いサイト一覧が [https://freegisdata.rtwilson.com/](https://freegisdata.rtwilson.com/) にある。]
+同じデータセットにアクセスする場所が複数あるという意味で、ある意味、データは<u>多すぎる</u>くらいにある。
+一部のデータセットは品質が低い。
+そこで、最初に最も重要な情報源をいくつか紹介する。
+様々な「ジオポータル」 (地理空間データセットを提供するウェブサービス、[Data.gov](https://catalog.data.gov/dataset?metadata_type=geospatial) など) は、幅広いデータを提供しているが、特定の場所についてのみ提供している場合が多い (この話題については、最新の [Wikipedia page](https://en.wikipedia.org/wiki/Geoportal) で説明されている)。
+
+\index{じおぽーたる@ジオポータル}
+グローバルなジオポータルの中には、この問題を克服しているものもある。
+例えば、[GEOSS portal](https://www.geoportal.org/) や [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu/) には、全世界をカバーするラスタデータセットを多数含んでいる。
+また、米国航空宇宙局 (NASA) が運営するポータルサイト [SEDAC](https://sedac.ciesin.columbia.edu/) や欧州連合の [INSPIRE geoportal](http://inspire-geoportal.ec.europa.eu/) から、豊富なベクタデータセットにアクセスすることができ、世界や地域を網羅したデータを入手することができる。
+
+ジオポータルは、ほとんどの場合空間的および時間的範囲などの特性に基づいてデータセットを照会できるグラフィカルなインターフェースを提供している。米国地質調査所の [EarthExplorer](https://earthexplorer.usgs.gov/) はその代表例である。
+ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤを理解する上で効果的な方法である。
+しかし、データの<u>ダウンロード</u>は、再現性と効率性の観点から、コードで行うのがベストである。
+ダウンロードは、主に URL や API\index{API} を経由して、様々な手法でコマンドラインから開始することができる (例: [Copernicus APIs](https://dataspace.copernicus.eu/analyse/apis) を参照)。^[Section \@ref(staccog) に、STAC-API を使用して Sentinel-2 データをダウンロードする例を示している。]
+静的 URL にホストされているファイルは、`download.file()` でダウンロードすることができる。以下のコードは、[pangaea.de](https://doi.pangaea.de/10.1594/PANGAEA.868349) から米国の国立公園のデータにアクセスする例である。
+
+
+``` r
+download.file(url = "https://irma.nps.gov/DataStore/DownloadFile/673366",
+              destfile = "nps_boundary.zip",
+              mode = "wb")
+unzip(zipfile = "nps_boundary.zip")
+usa_parks = read_sf(dsn = "nps_boundary.shp")
+```
+
+## 地理データパッケージ  {#geographic-data-packages}
+
+\index{でーたぱっけーじ@データパッケージ}
+地理データにアクセスするための R パッケージが多数開発されており、その一部を Table \@ref(tab:datapackages) で紹介している。
+これらのパッケージは、1 つまたは複数の空間ライブラリやジオポータルへのインターフェースを提供し、コマンドラインからのデータアクセスをさらに高速化することを目的としている。
+
+<table>
+<caption>(\#tab:datapackages)(\#tab:datapackages)地理データ取得パッケージの一部。</caption>
+ <thead>
+  <tr>
+   <th style="text-align:left;"> パッケージ    |説明 </th>
+   <th style="text-align:left;"> | </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;width: 5em; "> climateR </td>
+   <td style="text-align:left;width: 22em; "> 2,000 を超えるデータプロバイダーが提供する 10 万  を超えるグリッド化された気候および景観データセットに、関心のある分野ごとにアクセスできる。 | </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 5em; "> elevatr </td>
+   <td style="text-align:left;width: 22em; "> さまざまなソースからのポイントおよびラスタ標高データにアクセスする。                                                                         | </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 5em; "> FedData </td>
+   <td style="text-align:left;width: 22em; "> 米国連邦政府のデータセット。標高や地表などのデータがある。                                                                                   | </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 5em; "> geodata </td>
+   <td style="text-align:left;width: 22em; "> 行政データ、標高データ、WorldClim データのダウンロードとインポート。                                                                         | </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 5em; "> osmdata </td>
+   <td style="text-align:left;width: 22em; "> OpenStreetMap の小さなデータセットをダウンロードし、インポート。                                                                             | </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 5em; "> osmextract </td>
+   <td style="text-align:left;width: 22em; "> OpenStreetMap の大きなデータセットをダウンロードし、インポート。                                                                             | </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 5em; "> rnaturalearth </td>
+   <td style="text-align:left;width: 22em; "> Natural Earth ベクタ・ラスタデータ。                                                                                                         | </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;width: 5em; "> rnoaa </td>
+   <td style="text-align:left;width: 22em; "> 米国海洋大気庁 (National Oceanic and Atmospheric Administration, NOAA) の気候データをインポート。                                            | </td>
+  </tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+Table \@ref(tab:datapackages) は、利用可能な地理データパッケージのごく一部に過ぎないことを強調しておく。
+この他、**tidycensus**、**tigris** (USA)、**cancensus** (Canada)、**eurostat**、**giscoR** (European Union) あるいは **idbr** (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。[Analyzing US Census Data](https://walker-data.com/census-r/) [@walker_analyzing_2022]  には、こうしたデータを分析する方法がいくつか例示されている。
+同様に、**bcdata** (Province of British Columbia)、**geobr** (Brazil)、**RCzechia** (Czech Republic)、**rgugik** (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。
+
+各データパッケージは、データにアクセスするためのコードの書き方がそれぞれ異なる。
+Table \@ref(tab:datapackages) の 3 つのパッケージについて、違いを確認できるようにデータを取得するコードチャンクを示す。^[R 専用パッケージを使用したデータダウンロードの他の例は、以下を参照。 https://rspatialdata.github.io/] 
+まず、国の境界線はよく使うので、**rnaturalearth** パッケージ [@R-rnaturalearth] の `ne_countries()` 関数を用いて、以下のようにアクセスしてみよう。
+
+
+``` r
+library(rnaturalearth)
+usa_sf = ne_countries(country = "United States of America", returnclass = "sf")
+```
+
+国境データは、**geodata**、**giscoR**、**rgeoboundaries** などでも得られる。
+
+2 つ目の例は、**geodata** パッケージを使用して、10 分の空間分解能 (赤道では約 18.5 km) で全球の月別降水量の合計を含む一連のラスタをダウンロードしてみよう [@R-geodata]。
+その結果、`SpatRaster` クラスのマルチレイヤオブジェクトが生成される。
+
+
+``` r
+library(geodata)
+worldclim_prec = worldclim_global("prec", res = 10, path = tempdir())
+class(worldclim_prec)
+```
+
+3 つ目の例では、**osmdata** パッケージ [@R-osmdata]  を使って、OpenStreetMap\index{OpenStreetMap} (OSM) データベースから公園を検索してみよう。
+以下のコードチャンクに示すように、クエリは関数 `opq()` (OpenStreetMap query の略) で始まり、最初の引数は bounding box、またはつまり境界線を表すテキスト文字列 (この場合はリーズ市) である。
+その結果は、どの OSM 要素 (この場合は公園) に興味があるかを選択する関数に渡され、<u>key-value ペア</u>で表される。
+次に、これらのデータは関数 `osmdata_sf()` に渡され、データのダウンロードと `sf` オブジェクトのリストへの変換が行われる (詳しくは `vignette('osmdata')` を参照)。
+
+
+``` r
+library(osmdata)
+parks = opq(bbox = "leeds uk") |> 
+  add_osm_feature(key = "leisure", value = "park") |> 
+  osmdata_sf()
+```
+
+**osmdata** パッケージの制限は「容量制限」があり、大きな OSM データセット (例えば、大きな都市のすべての OSM データ) をダウンロードすることができない。
+この制限を克服するために、**osmextract** パッケージが開発された。これは、あらかじめ定義された地域の OSM データベースの圧縮バージョンを含むバイナリ `.pbf` ファイルをダウンロードし、インポートすることができる。
+
+OpenStreetMap は、クラウドソースによる膨大なグローバルデータベースであり、日々成長を続けている。また、OSM クエリの迅速な開発とテストを行うためのウェブサービス [Overpass turbo](https://overpass-turbo.eu/) から PostGIS データベースへのデータ取り込みを行うための [osm2pgsql](https://osm2pgsql.org/) まで、データに容易にアクセスできるツールのエコシステムが充実している。
+OSM から得られるデータセットの質は様々だが、データソースと OSM のエコシステムには多くの利点がある。データセットが世界中で利用でき、無料で、ボランティアの軍隊のおかげで常に改善されている。
+OSM の利用は、「市民科学」とデジタルコモンズへの還元を促すものである ([www.openstreetmap.org](https://www.openstreetmap.org) から、よく知る世界の一部を表すデータの編集を始めることができる)。
+OSM データの活用例については、Chapter \@ref(gis)、Chapter \@ref(transport)、Chapter \@ref(location) を参照。
+
+
+
+パッケージにデータセットが組み込まれていることがある。
+この場合、アクセス方法は 4 つある。パッケージをアタッチする方法 (パッケージが **spData** のように 'lazy loading' を使用している場合) は `data(dataset, package = mypackage)`、データセットを参照する方法は `mypackage::dataset`、生のデータファイルを参照する方法は `system.file(filepath, package = mypackage)` とする。
+次のコードは、`world` データセット (親パッケージを `library(spData)` にアタッチしてロード済み) を使って、後者の2つのオプションを説明している。^[
+R パッケージによるデータインポートの詳細については、@gillespie_efficient_2016 の Section 5.5 および Section 5.6 を参照。
+]
+
+
+``` r
+world2 = spData::world
+world3 = read_sf(system.file("shapes/world.gpkg", package = "spData"))
+```
+
+最後の例、`system.file("shapes/world.gpkg", package = "spData")` は、**spData** パッケージの `"shapes/"` フォルダ内に格納されている `world.gpkg` ファイルへのパスを返す。
+
+\index{じおこーでぃんぐ@ジオコーディング}
+空間情報を得るもう一つの方法は、ジオコーディング (住所などの位置情報を座標に変換すること) である。
+これは通常、オンラインサービスに問い合わせを行い、その結果として位置情報を取得するものである。
+このようなサービスは数多く存在するが、使用するジオコーディングの方法、使用制限、コスト、Application Programming Interface (API) キーの要件などが異なっている。 
+R にはジオコーディングのためのパッケージがいくつかあるが、**tidygeocoder** は一貫したインタフェースで[最も多くのジオコーディングサービス](https://jessecambon.github.io/tidygeocoder/articles/geocoder_services.html)に接続することができるようである。
+**tidygeocoder** のメイン関数は `geocode` で、アドレスを持つデータフレームを受け取り、`"lat"` と `"long"` として座標を追加する。
+また、この関数は `method` の引数でジオコーディングサービスを選択することができ、多くの追加パラメータを持つ。
+
+このパッケージを使って、London の Soho 地区のビルにある John Snow (訳注: 疫学的手法を導入しコレラの原因、感染経路を初めて特定した医師) の青い銘板の座標を検索してみよう。
+
+
+``` r
+library(tidygeocoder)
+geo_df = data.frame(address = "54 Frith St, London W1D 4SJ, UK")
+geo_df = geocode(geo_df, address, method = "osm")
+geo_df
+```
+
+得られたデータフレームは、`st_as_sf()` を用いて `sf` オブジェクトに変換することができる。
+
+
+``` r
+geo_sf = st_as_sf(geo_df, coords = c("long", "lat"), crs = "EPSG:4326")
+```
+
+また、**tidygeocoder** は、一組の座標に基づいて一連の情報 (名前、住所など) を取得するために使用される逆ジオコーディングと呼ばれる逆の処理を実行することもできる。
+Chapter \@ref(gis) で紹介するように、地理データは地理ソフトのブリッジから R にインポートすることもできる。
+
+## 地理メタデータ
+
+地理メタデータは地理情報管理の要であり、データセット、データ構造、サービスを記述するために使用される。\{ちりめたでーた@地理メタデータ}
+メタデータはデータセットを FAIR (Findable, Accessible, Interoperable, Reusable) にするためのもので、ISO/OGC 標準、特に ISO 19115 標準とその基礎となるスキーマによって定義されている。
+これらの標準は、メタデータカタログを通じて扱われる空間データインフラで広く使用されている。
+
+地理メタデータは **geometa** で管理することができる。**geometa** は ISO/OGC 標準に従って地理メタデータの書き込み、読み込み、検証ができるパッケージである。
+**geometa** は、ISO 19110 (Feature catalogue)、ISO 19115-1 および 19115-2 (Geographic metadata for vector and gridded/imagery datasets)、ISO 19119 (geographic metadata for service)、ISO 19136 (Geographic Markup Language) など、地理メタデータ情報に関するさまざまな国際標準をすでにサポートしており、ISO/TS 19139 (XML) 技術仕様を使ってRから地理メタデータを読み込んだり、検証したり、書き込んだりする方法を提供しています。
+<!-- 規格の複雑さと網羅性、そしてそれらを使用するために必要な高度な知識に対処するために、[geoflow](https://github.com/r-geoflow/geoflow) のような補完的なパッケージが、メタデータの管理を容易にし、自動化するために構築されている。 -->
+地理メタデータは、**geometa** で以下のように作成することができ、メタデータファイルを作成して保存する。
+
+
+``` r
+library(geometa)
+# メタデータを作成
+md = ISOMetadata$new()
+#... fill the metadata 'md' object
+# メタデータを検証
+md$validate()
+# ISOMetadata の XML での表現
+xml = md$encode()
+# save metadata
+md$save("my_metadata.xml")
+# XML からメタデータを読む
+md = readISO19139("my_metadata.xml")
+```
+
+このパッケージにはさらに多くの[例](https://github.com/eblondel/geometa/tree/master/inst/extdata/examples)が付属しており、メタデータの管理を容易にし自動化するために、**[geoflow](https://github.com/r-geoflow/geoflow)** などのパッケージによって拡張されている。
+
+標準的な地理情報管理の分野では、データとメタデータの区別はあまり明確ではない。
+例えば、Geography Markup Language (GML) 標準とファイル形式は、データとメタデータの両方をカバーしている。
+**geometa** パッケージでは、**sf** でモデリングされたジオメトリオブジェクトから GML (ISO 19136) オブジェクトをエクスポートすることができる。
+このような機能により、地理メタデータの使用 (例えば、単純なバウンディングボックスではなく、詳細な地理的範囲や時間的範囲に関するメタデータを含めることが可能) や、GML 標準を拡張するサービス (例 Open Geospatial Consortium Web Coverage Service, OGC-WCS) の提供が可能になる。
+
+## 地理ウェブサービス  {#geographic-web-services}
+
+\index{ちりうぇぶさーびす@地理ウェブサービス}
+空間データにアクセスするための Web API の標準化を目指して、Open Geospatial Consortium (OGC) は、Web サービス (OGC Web Services の略で OWS と総称) の標準仕様を多数策定している。
+これらのサービスは、[ISO/OGC Spatial Schema (ISO 19107:2019)](https://www.iso.org/standard/66175.html) や [Simple Features (ISO 19125-1:2004)](https://www.iso.org/standard/40114.html) のような地理情報をモデル化し、[Geographic Markup Language (GML)](https://www.iso.org/standard/75676.html)のようなデータをフォーマットするために開発されたコア標準を補完して使用する。
+これらの仕様は、データとメタデータの一般的なアクセスサービスをカバーしています。
+ベクトルデータは、Web Feature Service (WFS)\index{ちりうぇぶさーびす@地理ウェブサービス!WFS}でアクセスでき、グリッド/画像は、Web Coverage Service (WCS)\index{ちりうぇぶさーびす@地理ウェブサービス!WCS}でアクセスできる。
+Web Feature Service (WFS)\index{ちりうぇぶさーびす@地理ウェブサービス!WFS} や Web Map Tile Service (WMTS)\index{ちりうぇぶさーびす@地理ウェブサービス!WMTS} は、タイルのような地図画像にアクセスできる。
+メタデータは、Catalogue Service for the Web (CSW)\index{ちりうぇぶさーびす@地理ウェブサービス!CSW} によってもカバーされる。
+最後に、標準的な処理は、Web Processing Service (WPS)\index{ちりうぇぶさーびす@地理ウェブサービス!WPS} または Web Coverage Processing Service (WCPS)\index{ちりうぇぶさーびす@地理ウェブサービス!WCPS} によって処理される。
+
+様々なオープンソースプロジェクトがこれらのプロトコルを採用している。例えば、データハンドリ ングのための [GeoServer](https://geoserver.org/) や [MapServer](https://mapserver.org/)、メタデータハンドリングのための [GeoNetwork](https://geonetwork-opensource.org/) や [PyCSW](https://pycsw.org/) などがあり、クエリの標準化につながっている。
+[GeoNode](https://geonode.org/)、[GeOrchestra](https://www.georchestra.org/)、 [Examind](https://www.examind.com/) のような空間データ基盤 (Spatial Data Infrastructures, SDI) のための統合ツールも、これらの標準ウェブサービスを直接、または前述のオープンソースツールを利用して採用している。
+
+他のウェブ API と同様に、OWS API はデータを要求するために `?` に続く「ベース URL」と「エンドポイント」および「URL クエリ引数」を使う (**httr** パッケージ内の [`best-practices-api-packages`](https://httr.r-lib.org/articles/api-packages.html) vignette を参照)。
+
+OWS のサービスへのリクエスト方法はたくさんある。
+
+まず、**httr** パッケージを使った例で、ウェブサービスがどのように機能するかを理解しよう。
+最も基本的なものの 1 つが `getCapabilities` であり、以下の **httr** 関数 `GET()` と `modify_url()` で示されている。
+以下のコードチャンクは、API\index{API} のクエリを作成しデータ取得する方法を示している。この場合、国連食糧農業機関 (Food and Agriculture Organization, UN-FAO) が運営するサービスの機能を確認することができる。
+
+
+``` r
+library(httr)
+base_url = "https://www.fao.org"
+endpoint = "/fishery/geoserver/wfs"
+q = list(request = "GetCapabilities")
+res = GET(url = modify_url(base_url, path = endpoint), query = q)
+res$url
+#> [1] "https://www.fao.org/fishery/geoserver/wfs?request=GetCapabilities"
+```
+
+上記のコードチャンクは、API\index{API} リクエストを `GET()` 関数でプログラム的に構築する方法を示している。この関数は、ベース URL とクエリパラメータのリストを受け取り、簡単に拡張することができる。
+リクエストの結果を、**httr** パッケージで定義されたクラス `response` のオブジェクト `res` に保存し、URL を含むリクエストの情報を含むリストとなる。
+`browseURL(res$url)` を実行するとわかるように、結果はブラウザで直接読むこともできる。
+リクエストの内容を抽出する一つの方法として、次のようなものがある。
+
+
+``` r
+txt = content(res, "text")
+xml = xml2::read_xml(txt)
+xml
+#> {xml_document} ...
+#> [1] <ows:ServiceIdentification>\n  <ows:Title>GeoServer WFS...
+#> [2] <ows:ServiceProvider>\n  <ows:ProviderName>UN-FAO Fishe...
+#> ...
+```
+
+WFS サービスからデータをダウンロードするには、`GetFeature` リクエストと特定の `typeName` (以下のコードチャンクに示す) が必要である。
+
+
+
+利用できる名称は、アクセスする Web 機能サービスによって異なる。
+`GetCapabilities` ウェブ技術を使ってプログラムで抽出することもでき、 [@nolan_xml_2014]、ブラウザで出力された内容を手動でスクロールさせることもできる。
+
+
+``` r
+library(sf)
+sf::sf_use_s2(FALSE)
+qf = list(request = "GetFeature", typeName = "fifao:FAO_MAJOR")
+file = tempfile(fileext = ".gml")
+GET(url = base_url, path = endpoint, query = qf, write_disk(file))
+fao_areas = read_sf(file)
+```
+
+データアクセスチェーンに沿ったジオメトリの妥当性を保つため、また、標準やオープンソースのサーバーソリューション (GeoServer など) はシンプルフィーチャアクセスに基づいて構築されているため、**sf** で導入された新しいデフォルトの動作を無効にし、データアクセス時に S2 ジオメトリモデルを使用しないようにすることが重要である。
+これは上記のコード `sf::sf_use_s2(FALSE)` で行う。
+`write_disk()` を使って、結果をメモリにロードされるのではなく、ディスクに書き込むようにすることで、**sf** でインポートできるようにすることに注意しておこう。
+
+しかし、多くの日常的な作業には、より高レベルのインターフェースの方が適している場合があり、この目的のために多くのRパッケージやチュートリアルが開発されている。
+OWS サービスを利用する **ows4R** というパッケージが開発された。
+WFS、データ用の WCS、メタデータ用の CSW、処理用の WPS など、一般的なアクセスサービスへの安定したインタフェースを提供する。
+OGC のサービスカバレッジは [github.com/eblondel/ows4R](https://github.com/eblondel/ows4R?tab=readme-ov-file#ogc-standards-coverage-status) にあるパッケージの README に記載されており、新しい標準プロトコルは調査/開発中である。
+
+上記の例に基づいて、このパッケージで `getCapabilities` と `getFeatures` の操作を実行する方法を以下のコードに示す。
+**ows4R** パッケージはクライアントの原理に依存している。
+OWSサービス (WFS など) と対話するために、以下のようにクライアントを作成する。
+
+
+``` r
+library(ows4R)
+WFS = WFSClient$new(
+  url = "https://www.fao.org/fishery/geoserver/wfs",
+  serviceVersion = "1.0.0",
+  logger = "INFO"
+)
+```
+
+例えば、`getCapabilities` や `getFeatures` などである。
+
+
+``` r
+library(ows4R)
+caps = WFS$getCapabilities()
+features = WFS$getFeatures("fifao:FAO_MAJOR")
+```
+
+先に説明したように、OGC サービスでデータにアクセスする場合、**sf** 機能を扱うには、**sf** で導入された新しいデフォルトの動作を `sf::sf_use_s2(FALSE)` で無効にする必要がある。
+これは **ows4R** でデフォルトで行われる。
+
+vignette にも例がある。たとえば、[how to access raster data with the WCS](https://cran.r-project.org/web/packages/ows4R/vignettes/wcs.html) や [how to access metadata with the CSW](https://cran.r-project.org/web/packages/ows4R/vignettes/csw.html) を参照。
+
+## ビジュアル出力  {#visual-outputs}
+
+\index{ちずさくせい@地図作成!しゅつりょく@出力}
+R は、多くの静的および対話的なグラフィックス形式をサポートしている。
+静的プロットを保存する最も一般的な方法は、例えばグラフィックデバイスを開き、プロットを作成し、それを閉じることである。
+
+
+``` r
+png(filename = "lifeExp.png", width = 500, height = 350)
+plot(world["lifeExp"])
+dev.off()
+```
+
+この他の利用可能なグラフィックデバイスには、`pdf()`、`bmp()`、`jpeg()`、`tiff()` がある。 
+出力プロットの幅、高さ、解像度など、いくつかのプロパティを指定することができる。
+
+\index{tmap (package)!ちずのほぞん@地図の保存}
+さらに、いくつかのグラフィックパッケージは、グラフィック出力を保存するための独自の関数を提供している。
+例えば、**tmap** パッケージには、`tmap_save()` という関数がある。
+オブジェクト名と新規ファイルへのファイルパスを指定することで、`tmap` オブジェクトをさまざまなグラフィックフォーマットまたは HTML ファイルに保存することができる。
+
+
+``` r
+library(tmap)
+tmap_obj = tm_shape(world) + tm_polygons(col = "lifeExp")
+tmap_save(tmap_obj, filename = "lifeExp_tmap.png")
+```
+
+一方、**mapview** パッケージで作成したインタラクティブ地図は、`mapshot2()` 関数を使用して HTML ファイルまたは画像として保存することができる。
+
+
+``` r
+library(mapview)
+mapview_obj = mapview(world, zcol = "lifeExp", legend = TRUE)
+mapshot2(mapview_obj, url = "my_interactive_map.html")
+```
+
+## 演習
+
+
+E1. ベクタ、ラスタ、地理データベースの形式を 3 つ挙げて説明しなさい。
+
+
+
+E2. **sf** 関数 `read_sf()` と `st_read()` の違いを 2 つ以上述べなさい。
+
+
+
+
+
+E3. パッケージ **spData** から `cycle_hire_xy.csv` ファイルを空間オブジェクトとして読みこみなさい (ヒント: `misc` フォルダにある)。
+読み込んだオブジェクトのジオメトリ型は何か?
+
+
+
+E4. **rnaturalearth** を使ってドイツの国境をダウンロードし、`germany_borders` というオブジェクトを作りなさい。
+このオブジェクトを GeoPackage 形式のファイルに書き込みなさい。
+
+
+
+E5. **geodata** パッケージを用い、世界の月毎の最低気温を、空間解像度 5 分でダウンロードしなさい。
+6 月の値を抽出し、`tmin_june.tif` というファイルに保存しなさい (ヒント: `terra::subset()` を使う)。
+
+
+
+E6. ドイツの国境の性的地図を作成し、PNG ファイルとして保存しなさい。
+
+
+
+E7. `cycle_hire_xy.csv` ファイルのデータを使ってインタラクティブ地図を作りなさい。
+この地図を `cycle_hire.html` に書き出しなさい。

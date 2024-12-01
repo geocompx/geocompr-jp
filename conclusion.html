@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 16 結論 | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="イントロダクション 第 1 章と同様、結論にはコードチャンクはほとんどない。 ここでの目的は、繰り返されるテーマ/概念に言及しながら、本書の内容を総括し、今後の応用や開発の方向性を鼓舞することにある。 この章には前提条件はない。 しかし、第I部 (基礎編) の練習問題を読んで挑戦し、第II部 (拡張機能) のより高度な問題に挑戦し、第III部 (応用編)...">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="Chapter 16 結論 | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/conclusion.html">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="イントロダクション 第 1 章と同様、結論にはコードチャンクはほとんどない。 ここでの目的は、繰り返されるテーマ/概念に言及しながら、本書の内容を総括し、今後の応用や開発の方向性を鼓舞することにある。 この章には前提条件はない。 しかし、第I部 (基礎編) の練習問題を読んで挑戦し、第II部 (拡張機能) のより高度な問題に挑戦し、第III部 (応用編)...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 16 結論 | Geocomputation with R">
+<meta name="twitter:description" content="イントロダクション 第 1 章と同様、結論にはコードチャンクはほとんどない。 ここでの目的は、繰り返されるテーマ/概念に言及しながら、本書の内容を総括し、今後の応用や開発の方向性を鼓舞することにある。 この章には前提条件はない。 しかし、第I部 (基礎編) の練習問題を読んで挑戦し、第II部 (拡張機能) のより高度な問題に挑戦し、第III部 (応用編)...">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 16 結論 | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="active" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="conclusion" class="section level1" number="16">
+<h1>
+<span class="header-section-number">16</span> 結論<a class="anchor" aria-label="anchor" href="#conclusion"><i class="fas fa-link"></i></a>
+</h1>
+<div id="introduction-16" class="section level2 unnumbered">
+<h2>イントロダクション<a class="anchor" aria-label="anchor" href="#introduction-16"><i class="fas fa-link"></i></a>
+</h2>
+<p>第 1 章と同様、結論にはコードチャンクはほとんどない。
+ここでの目的は、繰り返されるテーマ/概念に言及しながら、本書の内容を総括し、今後の応用や開発の方向性を鼓舞することにある。
+この章には前提条件はない。
+しかし、第I部 (基礎編) の練習問題を読んで挑戦し、第II部 (拡張機能) のより高度な問題に挑戦し、第III部 (応用編) の章を参考に、ジオコンピュテーションが仕事、研究、その他の問題の解決にどのように役立つかを考えていたならば、より多くのものを得ることができるであろう。</p>
+<p>本章は、以下のように構成されている。
+Section <a href="conclusion.html#package-choice">16.1</a> は、R で地理データを扱うための幅広いオプションについて説明する。
+選択は、オープンソースソフトウェアの重要な特徴である。このセクションでは、様々なオプションの中から選択するためのガイダンスを提供する。
+Section <a href="conclusion.html#gaps">16.2</a> では、本書の内容とのギャップを説明し、意図的に省略された研究分野、強調された分野の理由を説明している。
+Section <a href="conclusion.html#questions">16.3</a> では、問題に直面した時にどのように質問し、オンラインで解決を探すためのアドバイスを行う。
+Section <a href="conclusion.html#next">16.4</a>は、この本を読んだあとで、次はどこへ行くのかという問いに答える。
+Section <a href="conclusion.html#benefit">16.5</a> は、Chapter <a href="intro.html#intro">1</a> で提起されたより広範な問題に戻る。
+その中で、ジオコンピュテーションを、手法が一般にアクセス可能で、再現性があり、協力的なコミュニティによってサポートされていることを保証する、より広い「オープンソースアプローチ」の一部として考えている。
+この最終章では、参加するためのポイントも紹介している。</p>
+</div>
+<div id="package-choice" class="section level2" number="16.1">
+<h2>
+<span class="header-section-number">16.1</span> パッケージの選択<a class="anchor" aria-label="anchor" href="#package-choice"><i class="fas fa-link"></i></a>
+</h2>
+<p>オープンソース全般に言えることだが、R の特徴として、同じ結果を得るために複数の方法が存在することが多い。
+下記のコードでは、Chapter <a href="attr.html#attr">3</a> と Chapter <a href="geometry-operations.html#geometry-operations">5</a> にある 3 つの関数を使って、New Zealand の 16 の地域を 1 つの幾何学的形状にまとめている。</p>
+<div class="sourceCode" id="cb514"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
+<span><span class="va">nz_u1</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span></span>
+<span><span class="va">nz_u2</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">nz</span><span class="op">[</span><span class="st">"Population"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span></span>
+<span><span class="va">nz_u3</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span><span class="va">nz</span>, t <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">Population</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/identical.html">identical</a></span><span class="op">(</span><span class="va">nz_u1</span>, <span class="va">nz_u2</span><span class="op">$</span><span class="va">geometry</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/identical.html">identical</a></span><span class="op">(</span><span class="va">nz_u1</span>, <span class="va">nz_u3</span><span class="op">$</span><span class="va">geom</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>作成されたクラス、属性、列の名称は <code>nz_u1</code> から <code>nz_u3</code> まで異なるが、その幾何学的な形状は同一であることを Base R 関数 <code><a href="https://rspatial.github.io/terra/reference/identical.html">identical()</a></code> を使って検証している。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+最初の操作は、関数 &lt;code&gt;st_union()&lt;/code&gt; によって行われ、クラス &lt;code&gt;sfc&lt;/code&gt; のオブジェクト (シンプルフィーチャ列) が作成される。
+後者の2つの操作は、&lt;code&gt;sf&lt;/code&gt; オブジェクトを作成し、その各オブジェクトはシンプルフィーチャ列を&lt;u&gt;含んでいる&lt;/u&gt;。
+したがって、同一なのはシンプルフィーチャ列の中に含まれる形状であって、物体そのものではない。&lt;/p&gt;"><sup>103</sup></a>
+どの方法を使うべきかは、ケースバイケースである。
+１番目の方法は <code>nz</code> に含まれるジオメトリデータのみを処理するので高速であるが、２・３番目の方法は属性操作を行うので、この後の処理に役立つ可能性がある。
+Base R の <code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> 関数を使うか、<strong>dplyr</strong> の <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise()</a></code> を使うかは好みの問題であるが、後者の方が読みやすいだろう。</p>
+<p>つまり、R で地理データを扱う場合、たとえ 1 つのパッケージであっても、複数の選択肢から選ぶことができる場合が多いということである。
+R のパッケージが増えれば、さらに選択肢は広がる。例えば、古いパッケージの <strong>sp</strong> を使っても同じ結果を得ることができる。
+しかしながら、良いアドバイスをしたいという本書のゴールに従うと、パフォーマンスもよく将来性のある <strong>sf</strong> パッケージを推奨する。
+このことは、本書のすべてのパッケージに当てはまるが、他の手段の存在を知って自分の選択について正当化できることは、(邪魔にならない程度に) 役に立つことがある。</p>
+<p>ジオコンピュテーションをする際の選択で困ることの代表として、 <strong>tidyverse</strong> と Base R のどちらを使うかという簡単に答えられない問題がある。
+例えば、次のコードチャンクは、Chapter <a href="attr.html#attr">3</a> で説明したした <code>nz</code> オブジェクトから <code>Name</code> 列を抽出する操作を、<strong>tidyverse</strong> と Base R の 2 つの方法を示している。</p>
+<div class="sourceCode" id="cb515"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>                          <span class="co"># TidyVerse パッケージをアタッチ</span></span>
+<span><span class="va">nz_name1</span> <span class="op">=</span> <span class="va">nz</span><span class="op">[</span><span class="st">"Name"</span><span class="op">]</span>                   <span class="co"># Base R による方法</span></span>
+<span><span class="va">nz_name2</span> <span class="op">=</span> <span class="va">nz</span> <span class="op">|&gt;</span>                        <span class="co"># TidyVerse による方法</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">Name</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/identical.html">identical</a></span><span class="op">(</span><span class="va">nz_name1</span><span class="op">$</span><span class="va">Name</span>, <span class="va">nz_name2</span><span class="op">$</span><span class="va">Name</span><span class="op">)</span> <span class="co"># 結果の確認</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+<p>ここで、「どちらを使うべきか？」という問題が出てくる。
+答えは、「人それぞれ」である。
+それぞれのアプローチには利点がある。Base R は、安定でよく知られており、依存関係が最小である傾向があるため、ソフトウェア (パッケージ) 開発に好まれることが多い。
+一方、Tidyverse アプローチは、対話型プログラミングに好まれている。
+したがって、2つのアプローチのどちらを選ぶかは、好みと用途の問題である。</p>
+<p>本書では、Rの基本演算子である <code>[</code> サブセット演算子や、上のコードで示した <strong>dplyr</strong> 関数 <code><a href="https://dplyr.tidyverse.org/reference/select.html">select()</a></code> など、一般的に必要とされる関数を取り上げているが、地理データを扱うための、他のパッケージの関数には触れていないものが多くある。
+Chapter <a href="intro.html#intro">1</a> では、地理データを扱うための 20 以上の有力なパッケージが紹介したが、この本ではそのうちのほんの一握りしか紹介されていない。
+R で地理データを扱うためのパッケージは他にも何百とあり、毎年多くのパッケージが開発されている。
+2024年現在、Spatial <a href="https://cran.r-project.org/web/views/">Task View</a>で紹介されているパッケージは 160 以上あり、地理データ解析のための無数の関数が毎年開発されている。</p>
+<p>R の空間生態系の進化のスピードは速いが、幅広い選択肢に対応するための戦略がある。
+アドバイスは、まず 1 つのアプローチを<u>深く</u>学び、利用可能なオプションの<u>広さ</u>を知っておく。
+このアドバイスは、R で地理的な問題を解決する際にも他の分野の知識や応用と同様に適用される。
+他の言語での開発については、Section <a href="conclusion.html#next">16.4</a> で説明する。</p>
+<p>もちろん、同じタスクでもパッケージによっては他のパッケージより性能が良いものもあり、その場合はどのパッケージを使うべきかを知ることが重要です。
+この本では、将来性があり (将来も使える)、(他の R パッケージと比較して) 高性能で、(ユーザーや開発者のコミュニティがあり) よくメンテナンスされており、補完的なパッケージに焦点を当てることを目的としている。
+また、本書で取り上げたパッケージの中には、重複しているものもあり、例えば、「地図作成用パッケージの多様性」については、本章の「地図作成用パッケージの多様性」で紹介している。</p>
+<p>機能が重複することは良いことである。
+既存のパッケージと同様の (しかし同一ではない) 機能を持つ新しいパッケージは、オープンソースソフトウェアでジオコンピュテーションを行う重要な利点である回復力、パフォーマンス (開発者間の切磋琢磨と相互学習による部分もある)、選択肢を増やすことができる。
+この文脈では、<strong>sf</strong>、<strong>tidyverse</strong>、<strong>terra</strong> や他のパッケージのどの組み合わせを使用するかを決めることは、代替案を知った上で行うべきである。
+例えば、<strong>sf</strong> が取って代わるように設計されている <strong>sp</strong> エコシステムは、本書で取り上げたことの多くを行うことができ、その古さゆえに他の多くのパッケージが構築されている。
+2024年の執筆時点で、463 のパッケージが <strong>sp</strong> を <code>Depend</code> または <code>Import</code>しており、2018年10月の 452 からわずかに増加しており、そのデータ構造が広く使われ、多くの方向に拡張されていることを示している。
+<strong>sf</strong> の方はというと、2018年に 69、2023年に 431 であり、このパッケージが将来性を持ち、ユーザーベースと開発者コミュニティが拡大していることを強調している <span class="citation">(<a href="references.html#ref-bivand_progress_2021">Bivand 2021</a>)</span>。
+点パターン解析でよく知られている <strong>spatstat</strong> パッケージは、ラスタやその他のベクトルジオメトリもサポートし、空間統計などのための強力な機能を提供する <span class="citation">(<a href="references.html#ref-baddeley_spatstat_2005">Baddeley and Turner 2005</a>)</span>。
+また、既存のパッケージでは満たされないニーズがある場合は、開発中の新しい選択肢を研究する価値があるかもしれない。</p>
+</div>
+<div id="gaps" class="section level2" number="16.2">
+<h2>
+<span class="header-section-number">16.2</span> ギャップとオーバーラップ<a class="anchor" aria-label="anchor" href="#gaps"><i class="fas fa-link"></i></a>
+</h2>
+<p>ジオコンピュテーションは巨大な分野であり、多くのギャップがあることは避けられない。
+特定にトピックやテクニック、パッケージを意図的に強調し、あるいは省略するなど、選択的に行っている。
+地理データの操作、座標参照系の基本、データの読み書き、可視化技術など、実際のアプリケーションで最もよく必要とされるトピックを重視するよう努めた。
+また、本書は、ジオコンピュテーションに必要なスキルを身につけ、さらに高度なトピックや特定のアプリケーションに進む方法を紹介することを目的としており、いくつかのトピックやテーマは何度も登場する。</p>
+<p>また、他で深く取り上げられているトピックをあえて省略した。
+例えば、点パターン解析、空間補間 (例えばクリギング)、空間回帰といった空間データの統計的モデリングは、機械学習の文脈で Chapter <a href="spatial-cv.html#spatial-cv">12</a> で触れているが、詳細には触れていない。
+これらの手法については、<span class="citation">Pebesma and Bivand (<a href="references.html#ref-pebesma_spatial_2023">2023c</a>)</span> の統計学的指向の章や、ポイントパターン分析に関する書籍 <span class="citation">(<a href="references.html#ref-baddeley_spatial_2015">Baddeley, Rubak, and Turner 2015</a>)</span>、空間データに適用するベイズ手法 <span class="citation">(<a href="references.html#ref-gomez-rubio_bayesian_2020">Gómez-Rubio 2020</a>; <a href="references.html#ref-moraga_spatial_2023">Moraga 2023</a>)</span>、健康 <span class="citation">(<a href="references.html#ref-moraga_geospatial_2019">Moraga 2019</a>)</span> や<a href="https://bookdown.org/mcwimberly/gdswr-book/application---wildfire-severity-analysis.html">山火事深刻度分析</a> など特定のアプリケーションに焦点を当てた書籍といった優れた資料がすでに存在している <span class="citation">(<a href="references.html#ref-wimberly_geographic_2023">Wimberly 2023</a>)</span>。
+その他の話題としては、リモートセンシングや、GIS 専用ソフトと並行しての R の利用 (ブリッジとしてではなく) などが挙げられるが、これらは限定的である。
+これらの話題については、<a href="https://github.com/r-spatial/discuss/issues/56">R におけるリモートセンシングについての議論</a>、<span class="citation">Wegmann, Leutner, and Dech (<a href="references.html#ref-wegmann_remote_2016">2016</a>)</span> や <a href="https://geomoer.github.io/moer-info-page/courses.html">Marburg University</a> から入手できる GIS 関連教材など、多くの資料がある。</p>
+<p>Chapter <a href="spatial-cv.html#spatial-cv">12</a> と Chapter <a href="eco.html#eco">15</a> で空間統計推論よりも機械学習に焦点を当てたのは、このトピックに関する質の高いリソースが豊富にあるためである。
+これらのリソースには、生態系のユースケースに焦点を当てた <span class="citation">A. Zuur et al. (<a href="references.html#ref-zuur_mixed_2009">2009</a>)</span>、<span class="citation">A. F. Zuur et al. (<a href="references.html#ref-zuur_beginners_2017">2017</a>)</span>、そして <a href="https://css.cornell.edu/faculty/dgr2/teach/">css.cornell.edu/faculty/dgr2</a> でホストされている <em>Geostatistics &amp; Open-source Statistical Computing</em> の自由に利用できる教材とコードがある。
+<a href="https://sdesabbata.github.io/r-for-geographic-data-science/"><em>R for Geographic Data Science</em></a> では、地理データサイエンスとモデリングのための R の紹介をしている。</p>
+<p>また、「ビッグデータ」(ハイスペックなラップトップに収まらないデータセットという意味) に対するジオコンピュテーションはほとんど省略している。
+この決定は、一般的な研究や政策アプリケーションに必要な地理的データセットの大部分は、個人用ハードウェアに収まるという事実によって正当化される (Section <a href="gis.html#cloud">10.8</a> 参照)。
+コンピュータの RAM を増やしたり、<a href="https://github.com/codespaces/new?hide_repo_select=true&amp;ref=main&amp;repo=84222786&amp;machine=basicLinux32gb&amp;devcontainer_path=.devcontainer.json&amp;location=WestEurope">GitHub Codespaces: 本書のコードを実行可能</a> のようなプラットフォームで利用できる計算能力を一時的に「借りる」ことは可能である。
+さらに、小さなデータセットで問題を解くことを学ぶことは、巨大なデータセットで問題を解くための前提条件であり、本書で強調しているのは「始めること」であり、ここで学んだスキルは大きなデータセットに移行したときに役立つものである。
+「ビッグデータ」の解析には、特定の統計解析のためデータベースからデータを抽出することもある。
+Chapter <a href="gis.html#gis">10</a> で紹介した空間データベースは、メモリで処理しきれないデータセットの解析に有用である。
+‘Earth observation cloud back-ends’ は、<strong>openeo</strong> パッケージを使うことで R でアクセスすることができる。
+大きな地理データを扱う必要がある場合は、<a href="https://sedona.apache.org/">Apache Sedona</a> などのプロジェクトや、<a href="https://paleolimbot.github.io/geoarrow/">GeoParquet</a> などの新しいファイル形式について調べることも勧める。</p>
+</div>
+<div id="questions" class="section level2" number="16.3">
+<h2>
+<span class="header-section-number">16.3</span> ヘルプを求める<a class="anchor" aria-label="anchor" href="#questions"><i class="fas fa-link"></i></a>
+</h2>
+<!-- Now wondering if this should be an appendix, or even a new chapter?? -->
+<!-- Chapter \@ref(intro) states that the approach advocated in this book "can help remove constraints on your creativity imposed by software". -->
+<!-- We have covered many techniques that should enable you to put many of your ideas into reproducible and scalable code for research and applied geocomputation. -->
+<!-- However, creativity involves thinking coming up with *new* ideas that have not yet been implemented, raising the question: what happens when software *does* impose a constraint because you are not sure how to implement your creative ideas? -->
+<!-- In Chapter \@ref(intro) we set out our aim of providing strong foundations on which a wide range of data analysis, research and methodological and software development projects can build. -->
+<!-- Geocomputation is about not only using existing techniques but developing new tools which, by definition, involves generating new knowledge. -->
+<p>ジオコンピュテーションは大規模で困難な分野であるため、問題や一時的な作業中断は避けられない。
+多くの場合、データ解析のワークフローの特定の時点で、デバッグが困難な不可解なエラーメッセージに直面し、「立ち往生」することがある。
+また、何が起こっているのかほとんどわからないまま、予期せぬ結果が出ることもある。
+このセクションでは、そのような問題を克服するために、問題を明確に定義し、解決策に関する既存の知識を検索し、それらのアプローチで問題が解決されない場合は、良い質問をする技術によって、ポイントを提供する。
+<!-- generating new open knowledge by engaging with the community. --></p>
+<p>ある地点で行き詰まったとき、まず一歩下がって、どのようなアプローチが最も解決につながるかを考えてみるのもよいだろう。
+以下のステップを順番に試すことで、問題解決のための構造的なアプローチが得られる (すでに試している場合はステップをスキップすることもできる)。</p>
+<ol style="list-style-type: decimal">
+<li>第一原理から始めて、何を達成しようとしているのかを正確に定義する (多くの場合、以下のようなスケッチも必要)。</li>
+<li>コードの個々の行や個々のコンポーネントの出力を実行し、調べることによって、コードのどこで予期せぬ結果が発生したかを正確に診断する (例えば、RStudio でカーソルで選択し、Ctrl + Enter を押すことによって、複雑なコマンドの個々の部分を実行することができる)。</li>
+<li>前のステップで「問題のポイント」と診断された関数のドキュメントを読んでみよう。関数に必要な入力を理解し、ヘルプページの下部によく掲載されている例を実行するだけで、驚くほど大きな割合の問題を解決できる (コマンド <code><a href="https://rspatial.github.io/terra/reference/rast.html">?terra::rast</a></code> を実行し、その関数を使い始めるときに再現する価値のある例までスクロールダウンする。例)</li>
+<li>前のステップで説明したように R の付属ドキュメントを読んでも問題が解決しない場合は、あなたが見ている問題について他の人が書いていないかどうか、オンラインで広く検索してみるのもよいだろう。検索する場所については、以下のヘルプリストを参照。</li>
+<li>上記のすべてのステップが失敗し、オンライン検索で解決策が見つからない場合、再現性のある例で質問を作成し、適切な場所に投稿することができる。</li>
+</ol>
+<p>上記のステップ 1 から 3 は自明なことであるが、インターネットは広大であり、検索オプションも多数あるため、質問を作成する前に効果的な検索方法を検討する価値がある。</p>
+<div id="searching-for-solutions-online" class="section level3" number="16.3.1">
+<h3>
+<span class="header-section-number">16.3.1</span> オンラインによる解決方法の検索<a class="anchor" aria-label="anchor" href="#searching-for-solutions-online"><i class="fas fa-link"></i></a>
+</h3>
+<p>多くの問題に対して論理的なスタートを切るのは、検索エンジンである。
+「ググる」ことで、あなたが抱えている問題についてのブログ記事、フォーラムメッセージ、その他のオンラインコンテンツを発見することができる場合があるのである。
+問題や質問について明確に記述することは有効な方法であるが、具体的に記述することが重要である (例えば、データセット固有の問題であれば、関数やパッケージ名、入力データセットのソースなどを参照すること)。
+また、詳細な情報を記載することで、オンライン検索をより効果的にすることができる。
+<!-- To provide a concrete example, imagine you want to know how to use custom symbols in an interactive map. --></p>
+<ul>
+<li>引用符を使用すると、返される結果の数を減るため、検索結果が問題に関連する確率を上げる。たとえば、GeoJSON ファイルをすでに存在する場所に保存しようとして失敗した場合、“GDAL Error 6: DeleteLayer() not supported by this dataset” というメッセージを含むエラーが表示される。引用符を使わずに <code>GDAL Error 6</code> を検索するよりも、<code>"GDAL Error 6" sf</code> のような特定の検索クエリを使用したほうが、解決策が見つかる可能性が高くなる</li>
+<li>
+<a href="https://uk.pcmag.com/software-services/138320/21-google-search-tips-youll-want-to-learn">期間の制限</a>を設定する。例えば、過去1年以内に作成されたコンテンツのみを返すようにすれば、進化するパッケージのヘルプを検索する際に便利である</li>
+<li>追加の<a href="https://www.makeuseof.com/tag/6-ways-to-search-by-date-on-google/">検索エンジン機能</a>を利用する。例えば、site:r-project.org で CRAN にホストされているコンテンツに検索を限定する</li>
+</ul>
+</div>
+<div id="help" class="section level3" number="16.3.2">
+<h3>
+<span class="header-section-number">16.3.2</span> 助けを求めるための検索 (依頼) 場所<a class="anchor" aria-label="anchor" href="#help"><i class="fas fa-link"></i></a>
+</h3>
+<p>ネットで検索しても解決しない場合は、助けを求めてもよい。
+これを行うには、以下のような多くのフォーラムがある.</p>
+<ul>
+<li>R の Special Interest Group on Geographic データメーリングリスト ( <a href="https://stat.ethz.ch/mailman/listinfo/r-sig-geo">R-SIG-GEO</a>)</li>
+<li>GIS Stackexchange のウェブサイト (<a href="https://gis.stackexchange.com/">gis.stackexchange.com</a>)</li>
+<li>大型・汎用プログラミングQ&amp;Aサイト <a href="https://stackoverflow.com/">stackoverflow.com</a>
+</li>
+<li>
+<a href="https://forum.posit.co/">Posit Community</a>、<a href="https://discuss.ropensci.org/">rOpenSci Discuss</a> ウェブフォーラム、 <a href="https://discourse.mc-stan.org/">Stan</a> フォーラムなど、特定のソフトウェアツールに関連するフォーラムなど、特定のエンティティに関連するオンラインフォーラム。</li>
+<li>GitHub などのソフトウェア開発プラットフォームは、R-spatial パッケージの大半の課題トラッカーや、最近では <strong>sfnetworks</strong> パッケージに関する議論 (バグ報告だけでなく) を促すために作られた議論ページなどをホストしている (<a href="https://github.com/luukvdmeer/sfnetworks/discussions/">luukvdmeer/sfnetworks/discussions</a>を参照)。</li>
+<li>チャットルームやフォーラム <a href="https://ropensci.org/blog/2022/09/13/contributing-ropensci/">rOpenSci</a> や <a href="https://geocompx.org">geocompx</a> コミュニティ (これには質問をすることができる <a href="https://discord.com/invite/PMztXYgNxp">Discord server</a> もある)。本書もここに関係している。</li>
+<li>
+<a href="https://www.osgeo.jp/mailing_list">OSGeoJapan のメーリングリスト</a> (日本語)</li>
+<li>
+<a href="https://github.com/tokyor/r-wakalang">r-wakalang Slack</a> (日本語)</li>
+</ul>
+</div>
+<div id="reprex" class="section level3" number="16.3.3">
+<h3>
+<span class="header-section-number">16.3.3</span> <strong>reprex</strong> による再現性の例<a class="anchor" aria-label="anchor" href="#reprex"><i class="fas fa-link"></i></a>
+</h3>
+<p>良い質問とは、明確に述べられた質問で、さらにアクセスしやすい完全に再現可能な例があるとよい (<a href="https://r4ds.hadley.nz/workflow-help.html" class="uri">https://r4ds.hadley.nz/workflow-help.html</a> も参照)。
+また、ユーザーの視点から「うまくいかなかった」コードを示した後、何を見たいかを説明することも有効である。
+再現可能な例を作成するための非常に便利なツールが、<strong>reprex</strong> パッケージである。
+予期せぬ動作を強調するために、問題を示す完全に再現可能なコードを書き、<code>reprex()</code>関数を使って、フォーラムや他のオンラインスペースに貼り付けられるようなコードのコピーを作成することができる。</p>
+<p>青い海と緑の陸地がある世界地図を作ろうとしているとしよう。
+前項で説明したような場所で、その方法を尋ねることもできできる。
+しかし、あなたがこれまでに試したことの再現可能な例を示すことで、より良い回答が得られる可能性がある。
+次のコードは、青い海と緑の陸地がある世界地図を作成するが、陸地は塗りつぶされない。</p>
+<div class="sourceCode" id="cb516"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span></span></code></pre></div>
+<p>このコードをフォーラムに投稿すれば、より具体的で有用な回答が得られる可能性がある。
+例えば、Figure <a href="conclusion.html#fig:16-synthesis-reprex">16.1</a> のように、問題を解決する以下のようなコードを投稿してくれる人がいるかもしれない。</p>
+<div class="sourceCode" id="cb517"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
+<span><span class="co"># 塗りつぶすために引数を使用</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"green"</span>, bg <span class="op">=</span> <span class="st">"lightblue"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:16-synthesis-reprex"></span>
+<img src="figures/16-synthesis-reprex-1.png" alt="世界地図の土地を緑色で示した再現可能な例題 (左) と解 (右) の地図。" width="49%"><img src="figures/16-synthesis-reprex-2.png" alt="世界地図の土地を緑色で示した再現可能な例題 (左) と解 (右) の地図。" width="49%"><p class="caption">
+FIGURE 16.1: 世界地図の土地を緑色で示した再現可能な例題 (左) と解 (右) の地図。
+</p>
+</div>
+<p>読者のための練習: 上記のコードをコピーし、コマンド <code><a href="https://reprex.tidyverse.org/reference/reprex.html">reprex::reprex()</a></code> を実行し (またはコマンドを <code>reprex()</code> の関数呼び出しにペーストし)、その出力をフォーラムや他のオンラインスペースにペーストしなさい。</p>
+<p>ジオコンピュテーションが、オープンソースとコラボレーションすることで、膨大で進化し続ける知識体系を生み出すことは強みとなり、本書もその一部である。
+問題を解決するための自分自身の努力を示し、問題の再現可能な例を提供することは、この知識体系に貢献する方法である。</p>
+</div>
+<div id="defining-and-sketching-the-problem" class="section level3" number="16.3.4">
+<h3>
+<span class="header-section-number">16.3.4</span> 問題の定義とスケッチ<a class="anchor" aria-label="anchor" href="#defining-and-sketching-the-problem"><i class="fas fa-link"></i></a>
+</h3>
+<p>場合によっては、ネット上で問題解決策を見つけることができなかったり、検索エンジンで答えられるような質問を立てることができないこともある。
+新しいジオコンピュテーションの方法論やアプローチを開発するときの最良の出発点は、ペンと紙 (または共同スケッチやアイデアの迅速な共有を可能にする <a href="https://excalidraw.com/">Excalidraw</a> や <a href="https://www.tldraw.com/">tldraw</a> などの同等のデジタルスケッチツール) である。方法論開発の作業の最も創造的な初期段階においては、<u>どのような</u>ソフトウェアも思考の速度を落とし、重要な抽象概念から思考を遠ざけることになる。
+方法論開発の最も創造的な初期段階において、ソフトウェア (あらゆる種類のもの) は、思考を鈍らせ、重要な抽象的思考から思考を遠ざけることができる。
+また、数値的に「前と後」をスケッチできる最小限の例を参照しながら、数学で質問を組み立てることも強く推奨される。
+もし、あなたにスキルがあり、問題がそれを必要とするならば、代数的にアプローチを記述することは、場合によっては効果的な実装を開発するのに役立つ。</p>
+</div>
+</div>
+<div id="next" class="section level2" number="16.4">
+<h2>
+<span class="header-section-number">16.4</span> 次はどこへ行く？<a class="anchor" aria-label="anchor" href="#next"><i class="fas fa-link"></i></a>
+</h2>
+<p>Section <a href="conclusion.html#gaps">16.2</a> にあるように、この本は R の地理的なエコシステムのほんの一部しかカバーしておらず、まだまだ発見があるはずである。
+Chapter <a href="spatial-class.html#spatial-class">2</a> の地理データモデルから、Chapter <a href="eco.html#eco">15</a> の高度なアプリケーションまで、急速に進展している。
+学習した技術の統合、地理データを扱うための新しいパッケージやアプローチの発見、新しいデータセットやドメインへの手法の適用が今後の方向性として提案されている。
+このセクションでは、この一般的なアドバイスに加え、具体的な「次のステップ」を提案し、以下の<strong>太字</strong>で強調している。</p>
+<p>R を使って、例えば前節で引用した研究を参考に、さらなる地理的手法や応用について学ぶことに加え、<strong>R そのもの</strong>の理解を深めることが、論理的な次のステップとなる。
+R の基本クラスである <code>data.frame</code> や <code>matrix</code> は、<strong>sf</strong> や <strong>terra</strong> クラスの基礎となるものなので、これらを勉強することで地理データの理解が深まるだろう。
+これは、R の一部であり、<code><a href="https://rdrr.io/r/utils/help.start.html">help.start()</a></code> コマンドで見つけることができるドキュメントや、<span class="citation">Wickham (<a href="references.html#ref-wickham_advanced_2019">2019</a>)</span> や <span class="citation">Chambers (<a href="references.html#ref-chambers_extending_2016">2016</a>)</span> などによるこのテーマに関する追加リソースを参照することで行うことができる。</p>
+<p>また、ソフトウェア関連の今後の学習方向としては、<strong>他の言語によるジオコンピュテーションの発見</strong>が挙げられる。
+Chapter <a href="intro.html#intro">1</a> で紹介されているように、ジオコンピュテーションのための言語として R を学習することには理由があるが、R が唯一の選択肢というわけではない。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+R の強みは、科学的な再現性を重視し、学術研究において広く使用され、地理データの統計的モデリングを比類なくサポートすることから、特にジオコンピュテーションの定義に関連しています。
+さらに、他の言語やフレームワークを学ぶのはコンテキストスイッチというコストが発生するため、ジオコンピュテーションのための 1 つの言語を深く学ぶことを推奨する。&lt;/p&gt;"><sup>104</sup></a>
+<em>Python</em>、<em>C++</em>、<em>JavaScript</em>、<em>Scala</em>、<em>Rust</em> を使っても、同じ深さでジオコンピュテーションを勉強することができる。
+それぞれが進化した地理空間能力を有している。
+例えば、Pythonのパッケージ <a href="https://github.com/rasterio/rasterio"><strong>rasterio</strong></a> は、この本で使われている <strong>terra</strong> パッケージを補足/置換できるものである。
+Python のジオコンピュテーションについては、<a href="https://py.geocompx.org/"><em>Geocomputation with Python</em></a> を参照。</p>
+<p>C++ では、GDAL や GEOS などのよく知られたライブラリから、リモートセンシング (ラスタ) データを処理する <strong><a href="https://github.com/orfeotoolbox/OTB">Orfeo Toolbox</a></strong> などのあまり知られていないライブラリなど、数十の地理空間ライブラリが開発されている。
+<a href="https://github.com/Turfjs/turf"><strong>Turf.js</strong></a> は、JavaScript でジオコンピュテーションを行う可能性を示す一例である。
+<a href="https://geotrellis.io/">GeoTrellis</a> は、Java ベースの言語である Scala でラスタおよびベクタデータを扱うための関数を提供する。
+また、<a href="https://github.com/jblindsay/whitebox-tools">WhiteBoxTools</a> は、Rust で実装された急速に進化するコマンドライン GIS の例を示している。
+これらのパッケージ/ライブラリ/言語はそれぞれジオコンピュテーションに有利であり、オープンソースの地理空間リソースのキュレーションリスト <a href="https://github.com/sacridini/Awesome-Geospatial">Awesome-Geospatial</a> に記されているように、さらに多くの発見がある。</p>
+<p>しかし、ジオコンピュテーションには、ソフトウェア以上のものがある。
+学術的・理論的な観点から、<strong>新しい研究テーマや手法の探求・習得</strong>をお勧めできる。
+これまで書かれてきた手法の中には、まだ実装されていないものも多くある。
+そのため、コードを書く前に、地理的な手法や潜在的なアプリケーションについて学ぶことは有意義なことである。
+R で実装されることが多くなった地理的手法の例として、科学的なアプリケーションのためのサンプル戦略がある。
+この場合の次のステップは、 <a href="https://github.com/DickBrus/TutorialSampling4DSM">github.com/DickBrus/TutorialSampling4DSM</a> でホストされている再現可能なコードとチュートリアルコンテンツを伴う <span class="citation">Brus (<a href="references.html#ref-brus_sampling_2018">2018</a>)</span> などの領域の関連記事を読み解くことである。</p>
+</div>
+<div id="benefit" class="section level2" number="16.5">
+<h2>
+<span class="header-section-number">16.5</span> オープンソースのアプローチ<a class="anchor" aria-label="anchor" href="#benefit"><i class="fas fa-link"></i></a>
+</h2>
+<p>この本は技術書であるから、前節で説明した次のステップも技術的なものであることに意味がある。
+しかし、この最後のセクションでは、ジオコンピュテーションの定義に戻り、より広範な問題を検討する価値がある。
+Chapter <a href="intro.html#intro">1</a> で紹介した用語の要素のひとつに、「ジオグラフィック・メソッドはポジティブな影響を与えるものでなければならない」というものがある。
+もちろん、「ポジティブ」をどう定義し、どう測定するかは、本書の範囲を超えた、主観的で哲学的な問題である。
+どのような世界観を持っていても、ジオコンピュテーションがもたらす影響について考えることは有益なことである。
+また逆に、新しい手法は多くの応用分野を開拓する可能性がある。
+これらのことから、ジオコンピュテーションはより広範な「オープンソースアプローチ」の一部であるという結論が導き出される。</p>
+<p>Section <a href="intro.html#what-is-geocomputation">1.1</a> は、地理データ科学 (geographic data science, GDS) や GIScience など、ジオコンピュテーションとほぼ同じ意味を持つ他の用語を提示した。
+どちらも地理データを扱うことの本質を捉えているが、ジオコンピュテーションには利点がある。本書で提唱する地理データの「計算」的な扱い方 (コードで実装されているので再現性がある) を簡潔に捉え、初期の定義にあった望ましい要素に基づいて構築されている <span class="citation">(<a href="references.html#ref-openshaw_geocomputation_2000">Openshaw and Abrahart 2000</a>)</span>。</p>
+<ul>
+<li>地理データの<u>クリエイティブ</u>な活用法</li>
+<li>
+<u>実社会の問題</u>への応用</li>
+<li>「科学的」な道具を作る</li>
+<li>再現性</li>
+</ul>
+<p>再現性は、ジオコンピュテーションの初期の研究ではほとんど言及されていなかったが、最初の 2 つの要素に不可欠な要素であることを強く主張することができる。
+再現性は、</p>
+<ul>
+<li>(共有コードで容易に利用できる) 基本から応用へと焦点を移すことで、<u>創造性</u>を促進する。</li>
+<li>「車輪の再発明」を防ぐ: 他の人がやったことを、他の人が使えるのであれば、やり直す必要はない。</li>
+<li>あらゆる分野の誰もが新しい分野であなたの方法を適用できるようにすることで、研究をより実世界での応用に近づけられるようにする。</li>
+</ul>
+<p>もし再現性がジオコンピュテーション (あるいはコマンドライン GIS) の決定的な資産であるならば、何が再現性をもたらすかを考える価値がある。
+そこで、「オープンソースアプローチ」に行き着くのだが、これには 3 つの主要な要素がある。</p>
+<ul>
+<li>コマンドラインインターフェース (CLI): 地理的な作業を記録したスクリプトの共有と再現を促進する</li>
+<li>オープンソースソフトウェア: 世界中の誰もが検査し、改良できる可能性がある。</li>
+<li>活発なユーザーと開発者コミュニティは、補完的でモジュール化されたツールを構築するために協力し、自己組織化している。</li>
+</ul>
+<p>ジオコンピュテーションという言葉があるように、オープンソース的アプローチは単なる技術的な存在にとどまらない。
+商業的、法的な制約を受けず、誰でも使える高性能なツールを作るという共通の目的を持って日々活動している人たちで構成されるコミュニティである。
+地理データを扱うオープンソース的アプローチには、ソフトウェアの動作に関する技術的な問題を超えて、学習、コラボレーション、効率的な分業を促進する利点がある。</p>
+<p>特に GitHub のような、コミュニケーションとコラボレーションを促進するコードホスティングサイトの出現により、このコミュニティに参加する方法はたくさんある。
+手始めに、興味のある地理的なパッケージのソースコード、issues、commits のいくつかに目を通すとよいだろう。
+<code>r-spatial/sf</code> GitHub リポジトリをざっと見ると、<strong>sf</strong> パッケージの基礎となるコードをホストしており、100 人以上がコードベースとドキュメントに貢献していることがわかる。
+さらに何十人もの人が、質問をしたり、<strong>sf</strong> が使っている「上流」のパッケージに貢献している。
+その <a href="https://github.com/r-spatial/sf/issues">issue tracker</a> には 1,500 以上の問題がクローズされ、より速く、より安定した、ユーザーフレンドリーな <strong>sf</strong> を実現するための膨大な作業が行われている。
+この例は、数十のパッケージのうちのたった一つの例であるが、R を非常に効果的で継続的に進化するジオコンピュテーションとするために行われている知的作業の規模を表している。</p>
+<p>GitHub のような公的な場で絶え間なく起こる開発活動を見るのも勉強になるが、自分が積極的に参加することでより大きな収穫を得ることができる。
+これは、オープンソースの最大の特徴で、人々の参加を促すものである。
+この本自体もオープンソース化した結果である。
+これは、過去 20 年間の R の地理的機能の驚くべき発展によって動機づけられたが、共同作業のためのプラットフォーム上での対話とコード共有によって、現実的に可能になった。
+本書が、地理データを扱うための有用な手法を広めるだけでなく、よりオープンソースに近いアプローチをとるきっかけになればと願っている。</p>
+
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="eco.html"><span class="header-section-number">15</span> 生態学</a></div>
+<div class="next"><a href="references.html">References</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#conclusion"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="nav-link" href="#introduction-16">イントロダクション</a></li>
+<li><a class="nav-link" href="#package-choice"><span class="header-section-number">16.1</span> パッケージの選択</a></li>
+<li><a class="nav-link" href="#gaps"><span class="header-section-number">16.2</span> ギャップとオーバーラップ</a></li>
+<li>
+<a class="nav-link" href="#questions"><span class="header-section-number">16.3</span> ヘルプを求める</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#searching-for-solutions-online"><span class="header-section-number">16.3.1</span> オンラインによる解決方法の検索</a></li>
+<li><a class="nav-link" href="#help"><span class="header-section-number">16.3.2</span> 助けを求めるための検索 (依頼) 場所</a></li>
+<li><a class="nav-link" href="#reprex"><span class="header-section-number">16.3.3</span> reprex による再現性の例</a></li>
+<li><a class="nav-link" href="#defining-and-sketching-the-problem"><span class="header-section-number">16.3.4</span> 問題の定義とスケッチ</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#next"><span class="header-section-number">16.4</span> 次はどこへ行く？</a></li>
+<li><a class="nav-link" href="#benefit"><span class="header-section-number">16.5</span> オープンソースのアプローチ</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/16-synthesis-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/16-synthesis-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

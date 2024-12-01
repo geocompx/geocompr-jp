@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 13 交通解析 | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="必須パッケージ この章では、以下のパッケージを使用する89 library(sf) library(dplyr) library(spDataLarge) library(stplanr)  # 地理交通データを処理 library(tmap)    # 地図作成 (Chapter 9 参照) library(ggplot2)  # データ可視化パッケージ...">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="Chapter 13 交通解析 | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/transport.html">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="必須パッケージ この章では、以下のパッケージを使用する89 library(sf) library(dplyr) library(spDataLarge) library(stplanr)  # 地理交通データを処理 library(tmap)    # 地図作成 (Chapter 9 参照) library(ggplot2)  # データ可視化パッケージ...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 13 交通解析 | Geocomputation with R">
+<meta name="twitter:description" content="必須パッケージ この章では、以下のパッケージを使用する89 library(sf) library(dplyr) library(spDataLarge) library(stplanr)  # 地理交通データを処理 library(tmap)    # 地図作成 (Chapter 9 参照) library(ggplot2)  # データ可視化パッケージ...">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 13 交通解析 | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="active" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="transport" class="section level1" number="13">
+<h1>
+<span class="header-section-number">13</span> 交通解析<a class="anchor" aria-label="anchor" href="#transport"><i class="fas fa-link"></i></a>
+</h1>
+<div id="必須パッケージ" class="section level2 unnumbered">
+<h2>必須パッケージ<a class="anchor" aria-label="anchor" href="#%E5%BF%85%E9%A0%88%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>この章では、以下のパッケージを使用する<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;strong&gt;nabor&lt;/strong&gt; パッケージもインストールされている必要があるが、ロードする必要はない。&lt;/p&gt;"><sup>89</sup></a>
+</li>
+</ul>
+<div class="sourceCode" id="cb442"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Nowosad/spData">spDataLarge</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/stplanr">stplanr</a></span><span class="op">)</span>    <span class="co"># 地理交通データを処理</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap">tmap</a></span><span class="op">)</span>       <span class="co"># 地図作成 (Chapter 9 参照)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>    <span class="co"># データ可視化パッケージ</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://luukvdmeer.github.io/sfnetworks/">sfnetworks</a></span><span class="op">)</span> <span class="co"># 空間ネットワークのクラスと関数</span></span></code></pre></div>
+</div>
+<div id="introduction-13" class="section level2" number="13.1">
+<h2>
+<span class="header-section-number">13.1</span> イントロダクション<a class="anchor" aria-label="anchor" href="#introduction-13"><i class="fas fa-link"></i></a>
+</h2>
+<p>交通ほど地理的空間が明確な分野も少ないだろう。
+1970年に Waldo Tobler が述べたように、移動の努力 (距離の克服) は、地理学の「第一法則」の中心である <span class="citation">(<a href="references.html#ref-tobler_computer_1970">Waldo R. Tobler 1970</a>)</span>。</p>
+<blockquote>
+<p>Everything is related to everything else, but near things are more related than distant things.</p>
+</blockquote>
+<p>この「法則」は、空間自己相関など、地理学の重要な概念の基礎となるものである。
+それは、友情のネットワークや生態系の多様性といった多様な現象に適用され、「距離の摩擦」を構成する時間、エネルギー、金銭といった交通コストによって説明することができる。
+この観点からすると、交通テクノロジーは破壊的であり、移動する人間やモノを含む地理的な実体間の関係を変化させる。「交通の目的は空間を克服することである」 <span class="citation">(<a href="references.html#ref-rodrigue_geography_2013">Rodrigue, Comtois, and Slack 2013</a>)</span>。</p>
+<p>交通とは、本質的に空間的な活動であり、出発点「A」から目的点「B」に移動し、その間にある無限の地域を通過することである。
+したがって、交通研究者は、移動パターンを理解し、介入によってそのパフォーマンスをどのように改善できるかを理解するため、昔から地理的・計算的手法に注目してきた <span class="citation">(<a href="references.html#ref-lovelace_open_2021">Lovelace 2021</a>)</span>。</p>
+<p>本章では、交通システムの地理的分析について、さまざまな地理的レベルで紹介する。</p>
+<ul>
+<li>
+<strong>エリア単位</strong>: 交通パターンは、主な移動手段 (車、自転車、徒歩など) や、特定のゾーンに住む人々の平均移動距離など、ゾーンごとの集計を参照して理解することができる (Section <a href="transport.html#transport-zones">13.3</a> で解説する)。</li>
+<li>
+<strong>希望線</strong> (desire line): 地理空間における場所 (点またはゾーン) 間を何人が移動したか (または移動できたか) を記録した「起点-終点」データを表す直線で、Section <a href="transport.html#desire-lines">13.4</a> の話題である。</li>
+<li>
+<strong>ノード</strong> : ノードとは、共通の起点と終点を表すことができる交通システムの点であり、バス停や鉄道駅などの公共交通機関の駅、Section <a href="transport.html#nodes">13.5</a> のトピックである。</li>
+<li>
+<strong>ルート</strong>: 希望線に沿ったルート網とノード間のルートを表す線である。
+ルート (1 つの線または複数の<u>セグメント</u>の場合がある) と、ルートを生成する<u>ルートエンジン</u>は、Section <a href="transport.html#routes">13.6</a> で詳しく述べる。</li>
+<li>
+<strong>ルートネットワーク</strong> (network): これらは、ある地域の道路、小道、その他の線形特徴のシステムを表し、Section <a href="transport.html#route-networks">13.7</a> で取り上げている。
+これらは地理的な特徴 (短いセグメントでネットワーク全体を作り上げる) として表現することもできるし、相互接続されたグラフとして構造化することもできる。異なるセグメント上の交通のレベルは、交通モデルでは「フロー」と呼ばれる <span class="citation">(<a href="references.html#ref-hollander_transport_2016">Hollander 2016</a>)</span>。</li>
+</ul>
+<p>もうひとつの重要なレベルは、私やあなたのような移動する存在を表す<strong>エージェント</strong>である。
+エージェントは、 <a href="http://www.matsim.org/">MATSim</a> のようなソフトウェアのおかげで、計算によって表現することができる。これは、エージェントベースモデリング (agent-based modelling, ABM)のアプローチを用いて、高い空間および時間分解能で交通システムのダイナミクスを捉えるものである <span class="citation">(<a href="references.html#ref-horni_multi-agent_2016">Horni, Nagel, and Axhausen 2016</a>)</span>。
+ABM は、R の空間クラスと統合できる可能性が高い交通研究の強力なアプローチであるが <span class="citation">(<a href="references.html#ref-thiele_r_2014">Thiele 2014</a>; <a href="references.html#ref-lovelace_spatial_2016">Lovelace and Dumont 2016</a>)</span>、本章の範囲外である。
+地理的レベルやエージェントの次に来るのは、ほとんどの交通モデルの分析の基本単位である<strong>トリップ</strong>であり、出発地「A」から目的地「B」までの単一目的の旅である <span class="citation">(<a href="references.html#ref-hollander_transport_2016">Hollander 2016</a>)</span>。
+トリップは、異なるレベルの交通システムを結合し、単純化すると、<u>ゾーン</u>の重心 (<u>ノード</u>) を結ぶ地理的な<u>希望線</u>として、あるいは交通<u>ルートネットワーク</u>に沿った経路として表現することができる。
+この文脈では、<u>エージェント</u>は通常、交通ネットワーク内を移動する点である。</p>
+<p>交通システムは動的である <span class="citation">(<a href="references.html#ref-xie_evolving_2011">Xie and Levinson 2011</a>)</span>。
+この章では、交通システムの地理的な分析に焦点を当てるが、変化のシナリオをシミュレートするために、この手法をどのように利用できるかについて、Section <a href="transport.html#prioritizing-new-infrastructure">13.8</a> にて詳しくみていこう。
+地理学上の交通モデルの目的は、このような時空間システムの複雑さを、その本質を捉える形で単純化することにあると解釈できる。
+適切なレベルの地理的分析を選択することで、最も重要な特徴や変数を失うことなく、この複雑さを単純化し、より良い意思決定とより効果的な介入を可能にすることができる <span class="citation">(<a href="references.html#ref-hollander_transport_2016">Hollander 2016</a>)</span>。</p>
+<p>一般的に、モデルは特定の問題を解決するために設計される。
+そのため、本章では、次章で紹介する政策シナリオを軸に、Bristol 市内で自転車を増やす方法は何があるかを問う。
+Chapter <a href="location.html#location">14</a> では、ジオコンピュテーションの応用として、新しい自転車店の立地の優先順位付けを行う。
+新しい自転車利用・インフラが効果的に配置されると、人々が自転車利用するようになり、自転車利用・ショップの需要や地域の経済活動を高めることができる。
+これは、交通システムの重要な特徴を強調している。交通システムは、より広範な現象や土地利用パターンと密接に関連している。</p>
+</div>
+<div id="bris-case" class="section level2" number="13.2">
+<h2>
+<span class="header-section-number">13.2</span> Bristol のケーススタディ<a class="anchor" aria-label="anchor" href="#bris-case"><i class="fas fa-link"></i></a>
+</h2>
+<p>本章で使用する事例は、England 西部の都市 Bristol で、Wales の首都 Cardiff から東に 30 km ほど離れた場所にある。
+この地域の交通網の概要は、Figure <a href="transport.html#fig:bristol">13.1</a> に示されており、自転車、公共交通、自家用車のための多様な交通インフラが示されている。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:bristol"></span>
+<img src="images/13_bristol.png" alt="Bristol の交通網は、アクティブ (緑)、公共 (鉄道、青)、自家用車 (赤) の各移動手段を色分けして表現している。黒い境界線は、市街地の境界線 (黄色でハイライト) と、より広い TTWA (Travel To Work Area) を表している。" width="100%"><p class="caption">
+FIGURE 13.1: Bristol の交通網は、アクティブ (緑)、公共 (鉄道、青)、自家用車 (赤) の各移動手段を色分けして表現している。黒い境界線は、市街地の境界線 (黄色でハイライト) と、より広い TTWA (Travel To Work Area) を表している。
+</p>
+</div>
+<p>Bristol は England で 10 番目に大きい市で、人口は 50 万人であるが、そのトラベルキャッチメントエリアはもっと大きい (Section <a href="transport.html#transport-zones">13.3</a> 参照)。
+市内には航空宇宙、メディア、金融サービス、観光などの企業が集まり、2 つの主要な大学とともに、活気ある経済が展開されている。
+Bristol は一人当たりの平均所得が高いが、深刻な貧困地域も含まれている <span class="citation">(<a href="references.html#ref-bristol_city_council_deprivation_2015">Bristol City Council 2015</a>)</span>。</p>
+<p>交通の面では、Bristol は鉄道や道路の便がよく、アクティブトラベル (訳註: 「アクティブトラベル」とは自転車または徒歩による交通のこと) のレベルも比較的高い。
+<a href="https://www.gov.uk/government/statistical-data-sets/how-often-and-time-spent-walking-and-cycling-at-local-authority-level-cw010#table-cw0103">Active People Survey</a> によると、国民の 19% が月に 1 回以上自転車を利用し、88% が歩いている (全国平均はそれぞれ 15%、81%)。
+2011年の国勢調査では、自転車で通勤していると答えた人は全体の 8% だったのに対し、全国ではわずか 3% にとどまっている。</p>
+<p>多くの都市と同様に Bristol も渋滞、大気質、運動不足などの大きな問題を抱えている。
+自転車は、これらの問題すべてに効率的に取り組むことができる。典型的な<a href="https://en.wikipedia.org/wiki/Bicycle_performance">速度</a>は、徒歩の時速 4〜6 km に対して時速 15〜20 km と、徒歩よりも自動車による移動を置き換える可能性が大きい。
+このため、Bristol の<a href="https://www.bristol.gov.uk/council-and-mayor/policies-plans-and-strategies/bristol-transport-strategy">交通戦略</a>では、自転車利用について野心的な計画を立てている。</p>
+<p>この章では、交通研究における政策的配慮の重要性を強調するため、人々を車から解放し、より持続可能な手段、特に徒歩と自転車に乗せることを任務とする人々 (交通プランナー、政治家、その他の利害関係者) にエビデンスを提供する目的で書かれている。
+より広い目的として、ジオコンピュテーションがどのように証拠に基づく交通計画をサポートできるかを示すことである。
+この章では、次のことを学ぶ。</p>
+<ul>
+<li>都市における交通行動の地理的パターンを説明する</li>
+<li>マルチモード・トリップをサポートする主要な公共交通機関のノードを特定する。</li>
+<li>移動の「希望線」を分析、多くの人が短距離をドライブする場所を見つける</li>
+<li>自動車を減らし自転車を増やすような自転車ルートの位置を特定する</li>
+</ul>
+<p>本章の実用的な面から始めるため、次節で、移動パターンに関するゾーンデータをロードする。
+このようなゾーンレベルのデータは少ないが、地域の交通システム全体を基本的に理解するためには不可欠な場合が多い。</p>
+</div>
+<div id="transport-zones" class="section level2" number="13.3">
+<h2>
+<span class="header-section-number">13.3</span> 交通ゾーン<a class="anchor" aria-label="anchor" href="#transport-zones"><i class="fas fa-link"></i></a>
+</h2>
+<p>交通システムは主に線形のフィーチャやノード (例えば、ルートや駅) に基づいているが、連続した空間を具体的な単位に分割するために、面的なデータから始めることがしばしば意味を持つ <span class="citation">(<a href="references.html#ref-hollander_transport_2016">Hollander 2016</a>)</span>。
+調査地域 (ここでは Bristol) を定義する境界線に加えて、交通研究者にとって特に関心の高い 2 つのゾーンタイプ、すなわち発着地ゾーンがある。
+多くの場合、発着地には同じ地理的単位が使用される。
+しかし、学校や商店などの「トリップアトラクター」が多い地域では、「 <a href="https://www.data.gov.uk/dataset/022e455a-b5cc-4247-bfc5-1aaf9da78379/workplace-zones-a-new-geography-for-workplace-statistics">Workplace Zones</a>」のような異なるゾーニングシステムが、トリップ先の密度上昇を表すのに適切だろう <span class="citation">(<a href="references.html#ref-office_for_national_statistics_workplace_2014">Office for National Statistics 2014</a>)</span>。</p>
+<p>調査地域を定義する最も簡単な方法は、OpenStreetMap が返す最初のマッチング境界であることが多い。
+これは <strong>osmdata</strong> を使用して <code>bristol_region = osmdata::getbb("Bristol", format_out = "sf_polygon")</code> のようなコマンドで取得することができる。
+この結果、最大の一致する都市地域の境界を表す <code>sf</code> オブジェクトが得られ、バウンディングボックスの長方形ポリゴンまたは詳細なポリゴン境界のいずれかが得られる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;最初のマッチングで正しい名称が得られない場合、国または地域を指定する必要がある。例えば、アメリカにある Bristol は &lt;code&gt;Bristol Tennessee&lt;/code&gt; のように指定する。&lt;/p&gt;"><sup>90</sup></a>
+イギリスの Bristol については、<strong>spDataLarge</strong> パッケージにある Bristol の公式な境界を表す詳細なポリゴンが返される。
+Figure <a href="transport.html#fig:bristol">13.1</a> の内側の青い境界を参照。なお、この方法にはいくつかの問題点がある。</p>
+<ul>
+<li>OSM から最初に返された境界は、自治体が使用する正式な境界とは異なる場合がある</li>
+<li>OSM が正式な境界線を返したとしても、人々が移動する場所とはほとんど関係がないため、交通研究にとっては不適切かもしれない。</li>
+</ul>
+<p>Travel To Work Area (TTWA)) は、水文学的における流域のようなゾーニングシステムを構築することで、これらの問題に対処している。
+TTWA はまず、人口の75％が通勤で利用する連続したゾーンと定義されており <span class="citation">(<a href="references.html#ref-coombes_efficient_1986">Coombes, Green, and Openshaw 1986</a>)</span>、この章ではこの定義を用いる。
+Bristol は、周辺の町からのトラベル者を惹きつける主要な雇用主であるため、その TTWA は市域よりもかなり大きい (Figure <a href="transport.html#fig:bristol">13.1</a> 参照)。
+この交通方向の境界を表すポリゴンは、本章の冒頭でロードした <strong>spDataLarge</strong> パッケージが提供するオブジェクト <code>bristol_ttwa</code> に格納されている。</p>
+<p>本章で使用する出発地と目的地は同じである。中間の地理的解像度で公式に定義されたゾーン (<a href="https://www.ons.gov.uk/peoplepopulationandcommunity/populationandmigration/populationestimates/bulletins/annualsmallareapopulationestimates/2014-10-23">公式</a>名称は Middle layer Super Output Areas MSOA) である。
+それぞれ約 8,000 人が暮らしている。
+このような行政区域は、特定の介入から最も恩恵を受ける可能性のある人々のタイプなど、交通分析に不可欠な状況を提供することができる (例 <span class="citation">Moreno-Monroy, Lovelace, and Ramos (<a href="references.html#ref-moreno-monroy_public_2017">2017</a>)</span>)。</p>
+<p>ゾーンの地理的解像度は重要である。通常、地理的解像度の高い小さなゾーンが望ましいが、大きな地域で数が多いと、処理に影響を及ぼすことがある。
+特に、起点-終点 (OD) 分析は、 ゾーン数に応じて非線形に可能性の数が増加する <span class="citation">(<a href="references.html#ref-hollander_transport_2016">Hollander 2016</a>)</span>。</p>
+<div class="rmdnote">
+<p>
+ゾーンが小規模の場合、匿名性のルールに関連する問題も発生する。
+ゾーン内の個人の特定を推測できないようにするため、詳細な社会人口統計変数は、低い地理的解像度でしか利用できない。
+例えばイギリスでは、年齢や性別による移動手段の内訳は、自治体レベルでは利用できるが
+100 世帯程度で構成される出力エリアレベルでは利用できない。
+詳細は、www.ons.gov.uk/methodology/geography を参照。
+</p>
+</div>
+<p>本章で使用する 102 のゾーンは、Figure <a href="transport.html#fig:zones">13.2</a> に図示されているように <code>bristol_zones</code> に格納されている。
+人口が密集しているところでは、ゾーンが小さくなっていることに注意しておこう。
+<code>bristol_zones</code> は、交通に関する属性データは含まず、各ゾーンの名称とコードのみである。</p>
+<div class="sourceCode" id="cb443"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">bristol_zones</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "geo_code" "name"     "geometry"</span></span></code></pre></div>
+<p>トラベルデータを追加するために、Section <a href="attr.html#vector-attribute-joining">3.2.4</a> で説明されている一般的なタスクである<u>属性結合</u>を実行する。
+ここでは、<a href="https://www.ons.gov.uk/help/localstatistics">ons.gov.uk</a> データポータルで提供されている、英国の2011年国勢調査の出勤時間に関するトラベルデータ <code>bristol_od</code> を使用する。
+<code>bristol_od</code> は、英国の2011年国勢調査によるゾーン間の通勤に関する起点 (Origin)ー終点 (Desitination) (OD) データセットである (Section <a href="transport.html#desire-lines">13.4</a> 参照)。
+Section <a href="transport.html#desire-lines">13.4</a> 1 列目は出発地のゾーン ID、2 列目は目的地のゾーンである。
+<code>bristol_od</code> は、<code>bristol_zones</code> よりも多くの行を持ち、ゾーンそのものよりもゾーン<u>間</u>の移動を表している。</p>
+<div class="sourceCode" id="cb444"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">bristol_od</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2910</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">bristol_zones</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 102</span></span></code></pre></div>
+<p>先ほどのコードチャンクの結果、各ゾーンに 10 組以上の OD ペアがあることがわかった。つまり、下図のように、<code>bristol_zones</code> に結合する前に発着地データを集約する必要がある (発着地データは Section <a href="transport.html#desire-lines">13.4</a> に記述されている)。</p>
+<div class="sourceCode" id="cb445"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">zones_attr</span> <span class="op">=</span> <span class="va">bristol_od</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">o</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarize_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html">rename</a></span><span class="op">(</span>geo_code <span class="op">=</span> <span class="va">o</span><span class="op">)</span></span></code></pre></div>
+<p>上記のチャンクは、</p>
+<ul>
+<li>原産地別にデータをグループ化した (<code>o</code> の列に含まれる)</li>
+<li>
+<code>bristol_od</code> データセットの変数が数値であれば、それを集計して、各ゾーンに住む人の交通手段別の総数を求める<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;code&gt;_if&lt;/code&gt; の接頭辞は、変数に対して &lt;code&gt;TRUE&lt;/code&gt;/&lt;code&gt;FALSE&lt;/code&gt; の質問をすることを要求しており、この場合は「それは数値か？」で、真を返す変数のみが要約される。&lt;/p&gt;"><sup>91</sup></a>
+</li>
+<li>グループ化変数 <code>o</code> の名前を変更し、<code>bristol_zones</code> オブジェクトの ID 列 <code>geo_code</code> と一致するようにした</li>
+</ul>
+<p>結果として得られるオブジェクト <code>zones_attr</code> は、ゾーンを表す行と ID 変数を持つデータフレームである。
+ID が <code>zones</code> データセットのものと一致するかどうかは、<code>%in%</code> 演算子を用いて以下のように確認することができる。</p>
+<div class="sourceCode" id="cb446"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">zones_attr</span><span class="op">$</span><span class="va">geo_code</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html">%in%</a></span> <span class="va">bristol_zones</span><span class="op">$</span><span class="va">geo_code</span><span class="op">)</span></span>
+<span><span class="co">#&gt;    Mode    TRUE </span></span>
+<span><span class="co">#&gt; logical     102</span></span></code></pre></div>
+<p>その結果、新しいオブジェクトには 102 のゾーンがすべて存在し、<code>zone_attr</code>、ゾーン上に結合できる形になっていることがわかった。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;また、実データで ID が逆方向で一致するかどうかのチェックも重要だろう。
+これは、&lt;code&gt;summary()&lt;/code&gt; コマンドの ID の順序を変更することで可能となる。&lt;code&gt;summary(bristol_zones $geo_code %in% zones_attr$ geo_code)&lt;/code&gt; — または、&lt;code&gt;setdiff()&lt;/code&gt; を次のように使用することで可能である。&lt;code&gt;setdiff(bristol_zones $geo_code, zones_attr$ geo_code)&lt;/code&gt;&lt;/p&gt;"><sup>92</sup></a>
+これは、結合関数 <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code> を使って行われる (なお、<code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join()</a></code> でも同じ結果になる)。</p>
+<div class="sourceCode" id="cb447"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">zones_joined</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">bristol_zones</span>, <span class="va">zones_attr</span>, by <span class="op">=</span> <span class="st">"geo_code"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">zones_joined</span><span class="op">$</span><span class="va">all</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 238805</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">zones_joined</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "geo_code"   "name"       "all"        "bicycle"    "foot"      </span></span>
+<span><span class="co">#&gt; [6] "car_driver" "train"      "geometry"</span></span></code></pre></div>
+<p>結果は、調査地域の各ゾーンを起点とするトリップの総数 (ほぼ 25 万) とその移動手段 (自転車、徒歩、自動車、電車) を表す列が新たに追加されている <code>zones_joined</code> である。
+トリップの起点の地理的な分布は、左パネル (Figure <a href="transport.html#fig:zones">13.2</a>) に示されている。
+このことから、ほとんどのゾーンは、調査エリア内で 0〜4,000 のトリップを発生させていることがわかる。
+Bristol の中心部付近に住む人の移動が増え、郊外に住む人の移動が減っている。
+これはなぜだろうか。調査地域内のトリップだけを扱っていることを思い出そう。
+周辺ゾーンのトリップ数が少ないのは、周辺ゾーンにいる人の多くが、調査地域外の他の地域へ移動するためであると考えられる。
+調査地域外のトリップは、モデルで表現されていないゾーンに行くトリップをカバーする特別な目的地IDによって、地域モデルに含めることができる <span class="citation">(<a href="references.html#ref-hollander_transport_2016">Hollander 2016</a>)</span>。
+しかし、<code>bristol_od</code> のデータは、このようなトリップを無視している。「ゾーン内」モデルということである。</p>
+<p>OD データセットが出発地のゾーンに集約されるのと同じように、目的地のゾーンに関する情報を提供するために集約することもできる。
+人は、中心部に引き寄せられるように集まる傾向がある。
+このことは、右図 (Figure <a href="transport.html#fig:zones">13.2</a>) で表される空間分布が比較的不均一であり、最も多い目的地ゾーンが Bristol 市の中心部に集中していることを説明している。
+その結果、任意のモードによるトラベル先数を報告する新しい列を含む、<code>zones_od</code> が以下のように作成される。</p>
+<div class="sourceCode" id="cb448"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">zones_destinations</span> <span class="op">=</span> <span class="va">bristol_od</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>geo_code <span class="op">=</span> <span class="va">d</span>, all_dest <span class="op">=</span> <span class="va">all</span><span class="op">)</span></span>
+<span><span class="va">zones_od</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">zones_joined</span>, <span class="va">zones_destinations</span>, by <span class="op">=</span> <span class="st">"geo_code"</span><span class="op">)</span></span></code></pre></div>
+<p>Figure <a href="transport.html#fig:zones">13.2</a> の簡易版は、以下のコードで作成する (図を再現するには、本書の GitHub リポジトリの <a href="https://github.com/geocompx/geocompr/tree/main/code"><code>code</code></a> フォルダ の <code>13-zones.R</code> を参照。<strong>tmap</strong> によるファセット地図の詳細は Section <a href="adv-map.html#faceted-maps">9.2.7</a> を参照)。</p>
+<div class="sourceCode" id="cb449"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm</a></span><span class="op">(</span><span class="va">zones_od</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"all_dest"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>panel.labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Origin"</span>, <span class="st">"Destination"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:zones"></span>
+<img src="figures/zones-1.png" alt="地域内に居住・勤務するトリップ (通勤者) 数。左の地図は通勤トリップの出発地、右の地図は目的地のゾーン (`13-zones.R` スクリプトで生成)。" width="100%"><p class="caption">
+FIGURE 13.2: 地域内に居住・勤務するトリップ (通勤者) 数。左の地図は通勤トリップの出発地、右の地図は目的地のゾーン (<code>13-zones.R</code> スクリプトで生成)。
+</p>
+</div>
+</div>
+<div id="desire-lines" class="section level2" number="13.4">
+<h2>
+<span class="header-section-number">13.4</span> 希望線<a class="anchor" aria-label="anchor" href="#desire-lines"><i class="fas fa-link"></i></a>
+</h2>
+<p>希望線 (desire line) は、出発地と目的地をつなぎ、人々がゾーン間で行きたいと<u>望む</u>場所を表している。
+これは、建物や風の強い道路などの障害物がなければ、A-B 間を最も早く移動できる「蜂の飛行線」または「カラスの飛行線」ルートを表している (希望線をルートに変換する方法については、次のセクションで説明する)。
+一般的に、希望線は各ゾーンの地理的 (または人口加重) 重心を始点および終点として地理的に表現される。
+このセクションでは、このタイプの希望線を作成して使用するが、OD データを基にした分析の空間的なカバレッジと精度を高めるために、複数の開始点と終了点を可能にする「ジッタリング」技術は知っておく価値がある <span class="citation">(<a href="references.html#ref-lovelace_jittering_2022b">Lovelace, Félix, and Carlino 2022</a>)</span>。</p>
+<p>データセット <code>bristol_od</code> に、希望線を表すデータをすでに読み込んでいる。
+この起点ー終点 (OD) データフレームオブジェクトは、<code>o</code> で表されるゾーンと <code>d</code>、Table <a href="transport.html#tab:od">13.1</a> で示されるゾーン間の移動人数を表している。
+OD データをすべてのトリップで並べ、上位5つだけをフィルタリングするには、次のように入力する (非空間属性操作の詳細については、Chapter <a href="attr.html#attr">3</a> を参照)。</p>
+<div class="sourceCode" id="cb450"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">od_top5</span> <span class="op">=</span> <span class="va">bristol_od</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">all</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:od">TABLE 13.1: </span>Bristol ODデータフレームの上位5組の起点と終点の サンプルで、調査地域のゾーン間の トラベル希望線を表している。</caption>
+<thead><tr class="header">
+<th align="left">o</th>
+<th align="left">d</th>
+<th align="right">all</th>
+<th align="right">bicycle</th>
+<th align="right">foot</th>
+<th align="right">car_driver</th>
+<th align="right">train</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">E02003043</td>
+<td align="left">E02003043</td>
+<td align="right">1493</td>
+<td align="right">66</td>
+<td align="right">1296</td>
+<td align="right">64</td>
+<td align="right">8</td>
+</tr>
+<tr class="even">
+<td align="left">E02003047</td>
+<td align="left">E02003043</td>
+<td align="right">1300</td>
+<td align="right">287</td>
+<td align="right">751</td>
+<td align="right">148</td>
+<td align="right">8</td>
+</tr>
+<tr class="odd">
+<td align="left">E02003031</td>
+<td align="left">E02003043</td>
+<td align="right">1221</td>
+<td align="right">305</td>
+<td align="right">600</td>
+<td align="right">176</td>
+<td align="right">7</td>
+</tr>
+<tr class="even">
+<td align="left">E02003037</td>
+<td align="left">E02003043</td>
+<td align="right">1186</td>
+<td align="right">88</td>
+<td align="right">908</td>
+<td align="right">110</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">E02003034</td>
+<td align="left">E02003043</td>
+<td align="right">1177</td>
+<td align="right">281</td>
+<td align="right">711</td>
+<td align="right">100</td>
+<td align="right">7</td>
+</tr>
+</tbody>
+</table></div>
+<p>この表は、Bristol での通勤・通学パターンを示すものである。
+これは、上位 5 つの OD ペアにおいて、徒歩が最も人気のある交通手段であること、ゾーン <code>E02003043</code> が人気のある目的地であること (Bristol の中心部、上位 5 つの OD ペアの目的地)、ゾーン <code>E02003043</code> のある部分から別の部分への<u>ゾーン内</u>トリップ (Table <a href="transport.html#tab:od">13.1</a> の最初の行) がデータセットで最も移動した OD ペアであることを実証している。
+しかし、政策的な観点から見ると、Table <a href="transport.html#tab:od">13.1</a> で示される生データは、限られた用途にしか使えない。2,910 組の OD のうち、ごく一部しか含まれていないという事実を除けば、政策的措置が必要な場所は<u>どこ</u>か、徒歩や自転車による移動が<u>どの程度の割合を占める</u>のかについては、ほとんどわからないのである。
+次のコマンドは、これらのアクティブモードによって作られる各希望線の割合を計算する。</p>
+<div class="sourceCode" id="cb451"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bristol_od</span><span class="op">$</span><span class="va">Active</span> <span class="op">=</span> <span class="op">(</span><span class="va">bristol_od</span><span class="op">$</span><span class="va">bicycle</span> <span class="op">+</span> <span class="va">bristol_od</span><span class="op">$</span><span class="va">foot</span><span class="op">)</span> <span class="op">/</span></span>
+<span>  <span class="va">bristol_od</span><span class="op">$</span><span class="va">all</span> <span class="op">*</span> <span class="fl">100</span></span></code></pre></div>
+<p>OD ペアは、大きく分けて<u>ゾーン間</u>と<u>ゾーン内</u>の 2 種類がある。
+ゾーン間 OD ペアは、目的地と出発地が異なるゾーン間の移動を表する。
+ゾーン内 OD ペアは、同一ゾーン内の移動を表す (Table <a href="transport.html#tab:od">13.1</a> の上段参照)。
+以下のコードチャンクでは、<code>od_bristol</code> をこの2種類に分割している。</p>
+<div class="sourceCode" id="cb452"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">od_intra</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bristol_od</span>, <span class="va">o</span> <span class="op">==</span> <span class="va">d</span><span class="op">)</span></span>
+<span><span class="va">od_inter</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bristol_od</span>, <span class="va">o</span> <span class="op">!=</span> <span class="va">d</span><span class="op">)</span></span></code></pre></div>
+<p>次のステップは、ゾーン間 OD ペアを、<strong>stplanr</strong> 関数 <code><a href="https://docs.ropensci.org/stplanr/reference/od2line.html">od2line()</a></code> を用いて地図上にプロットできる希望線を表す <code>sf</code> オブジェクトに変換することである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;&lt;code&gt;od2line()&lt;/code&gt; は、 オブジェクトの最初の 2 列の ID を、地理的な オブジェクトの ID 列にマッチングさせることで動作する。
+&lt;code&gt;bristol_od&lt;/code&gt; &lt;code&gt;zones_od&lt;/code&gt; &lt;code&gt;zone_code&lt;/code&gt; なお、この操作は警告を発するが、これは &lt;code&gt;od2line()&lt;/code&gt; が各起点と終点のペアをその起点と終点のゾーンの&lt;u&gt;重心&lt;/u&gt;に割り当てることで動作するためである。
+実際の使用では、投影データから生成された重心を使用するか、できれば&lt;u&gt;人口重み付け&lt;/u&gt;された重心を使用することになるだろう &lt;span class="citation"&gt;(&lt;a href="references.html#ref-lovelace_propensity_2017"&gt;Lovelace et al. 2017&lt;/a&gt;)&lt;/span&gt;。&lt;/p&gt;'><sup>93</sup></a></p>
+<div class="sourceCode" id="cb453"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">desire_lines</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/od2line.html">od2line</a></span><span class="op">(</span><span class="va">od_inter</span>, <span class="va">zones_od</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Creating centroids representing desire line start and end points.</span></span></code></pre></div>
+<p>結果の図は Figure <a href="transport.html#fig:desire">13.3</a> に示されており、その簡易版は以下のコマンドで作成される (図を正確に再現するには <code>13-desire.R</code> のコードを、 <strong>tmap</strong> による視覚化の詳細については Chapter <a href="adv-map.html#adv-map">9</a> を参照)。</p>
+<div class="sourceCode" id="cb454"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm</a></span><span class="op">(</span><span class="va">desire_lines</span>, lines.lwd <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:desire"></span>
+<img src="figures/desire-1.png" alt="Bristol のトリップパターンを表す希望線は、幅がトリップ数、色がアクティブモード (徒歩と自転車) によるトリップの割合を表している。4 本の黒い線は、Table 13.1のゾーン間 OD ペアを表している。" width="100%"><p class="caption">
+FIGURE 13.3: Bristol のトリップパターンを表す希望線は、幅がトリップ数、色がアクティブモード (徒歩と自転車) によるトリップの割合を表している。4 本の黒い線は、Table 13.1のゾーン間 OD ペアを表している。
+</p>
+</div>
+<p>この地図から、地域の交通パターンを支配しているのは中心市街地であり、そこに政策を優先させるべきであることがわかるが、周辺には副都心も多く見られる。
+希望線は交通システムの重要な一般化された構成要素である。
+より具体的な構成要素としては、(希望線のような仮想的な直線ではなく) 特定の目的地を持つノードがある。
+ノードについては次節で述べる。</p>
+</div>
+<div id="nodes" class="section level2" number="13.5">
+<h2>
+<span class="header-section-number">13.5</span> ノード<a class="anchor" aria-label="anchor" href="#nodes"><i class="fas fa-link"></i></a>
+</h2>
+<p>地理的な交通データにおけるノードは、ネットワークを構成する主に一次元のフィーチャ (線) とゼロ次元のフィーチャ (点) である。
+交通ノードには 2 種類ある。</p>
+<ol style="list-style-type: decimal">
+<li>ネットワーク上に直接存在しないノード、例えばゾーン重心 (次のセクションで取り上げる) あるいは家や職場などの個人の発着地</li>
+<li>交通網の一部であるノード。
+技術的には、ノードは交通ネットワーク上のどの点にも位置することができるが、実際には、ルートの交差点 (ジャンクション) やバス停や駅など交通ネットワークに出入りする点など、特殊な頂点である場合が多い<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;&lt;strong&gt;sfnetworks&lt;/strong&gt; パッケージの関数 &lt;a href="https://luukvdmeer.github.io/sfnetworks/reference/st_network_blend.html"&gt;&lt;code&gt;st_network_blend()&lt;/code&gt;&lt;/a&gt; により、ネットワーク上またはネットワーク外の任意の点への近接性に基づいて、ネットワーク上に新しいノードを作成することができる。&lt;/p&gt;'><sup>94</sup></a>
+</li>
+</ol>
+<p>交通ネットワークは、グラフとして表すことができ、その中で各セグメントは、ネットワーク内の 1 つ以上の他のエッジに (地理的な線を表すエッジを介して) 接続されている。
+ネットワーク外のノードは「重心コネクタ」で追加可能。重心コネクタとは、ネットワーク上の近くのノードへの新しいルートセグメントである <span class="citation">(<a href="references.html#ref-hollander_transport_2016">Hollander 2016</a>)</span> 。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;これらのコネクタは、その近辺の交通量を過大に見積もる可能性があるため、その位置は慎重に選ぶ必要がある &lt;span class="citation"&gt;(&lt;a href="references.html#ref-jafari_investigation_2015"&gt;Jafari et al. 2015&lt;/a&gt;)&lt;/span&gt;。&lt;/p&gt;'><sup>95</sup></a>
+ネットワークの各ノードは、ネットワーク上の個々のセグメントを表す 1 つ以上の「エッジ」によって接続されている。
+交通ネットワークがグラフとして表現できることを Section <a href="transport.html#route-networks">13.7</a> で確認する。</p>
+<p>公共交通機関の駅や停留所は特に重要なノードである。道路の一部であるバス停、または線路から数百メートルの歩行者入口ポイントによって表される大規模な鉄道駅のいずれかのタイプのノードとして表現されることができる。
+ここでは、Bristol における自転車の増加という研究課題に関連して、公共交通機関のノードを説明するために鉄道駅を使用しよう。
+鉄道駅のデータは、<code>bristol_stations</code> の <strong>spDataLarge</strong> で提供されている。</p>
+<p>通勤において自動車から他の交通への転換を阻む共通の障壁は、自宅から職場までの距離が遠すぎると徒歩や自転車では無理だということである。
+公共交通機関は、都市への一般的なルートにおいて、高速かつ大量に利用できるオプションを提供することで、この障壁を軽減することができる。
+アクティブトラベルの観点から、公共交通機関を利用した長距離移動の「行程」は、旅を 3 つに分けている。</p>
+<ul>
+<li>住宅地から公共交通機関の駅までの起点となる行程</li>
+<li>公共交通機関 (通常、出発地の最寄り駅から目的地の最寄り駅まで)</li>
+<li>降車駅から目的地までの行程</li>
+</ul>
+<p>Section <a href="transport.html#desire-lines">13.4</a> で行った分析に基づき、公共交通機関のノードを使って、バスと (この例では) 鉄道を利用できるトラベルのための 3 分割の希望線を構築することができる。
+最初の段階は、公共交通機関の利用が多い希望線を特定することである。ここでは、先に作成したデータセット <code>desire_lines</code> にすでに電車での移動回数を表す変数が含まれているので簡単である (公共交通機関の利用可能性は、<a href="http://www.opentripplanner.org/">OpenTripPlanner</a> などの公共交通ルート探索サービスを使って推定することも可能)。
+アプローチを簡単にするために、レールの使用量の上位 3 つの希望線のみを選択することにする。</p>
+<div class="sourceCode" id="cb455"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">desire_rail</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/top_n.html">top_n</a></span><span class="op">(</span><span class="va">desire_lines</span>, n <span class="op">=</span> <span class="fl">3</span>, wt <span class="op">=</span> <span class="va">train</span><span class="op">)</span></span></code></pre></div>
+<p>そこで、これらの線を 3 つに分解し、公共交通機関の乗り換えを表現することにする。
+これは、希望線を、トラベルの出発地、公共交通機関、目的地の 3 つの線ジオメトリからなる複合線に変換することで実現できる。
+この作業は、行列の作成 (起点、終点、鉄道駅を表す「経由点」)、最近傍の特定、複合線への変換の 3 段階に分けることができる。
+この一連の処理は、<code><a href="https://docs.ropensci.org/stplanr/reference/line_via.html">line_via()</a></code> 関数が行う。
+この <strong>stplanr</strong> 関数は入力された線と点を受け取り、希望線のコピーを返す (この動作の詳細については geocompr.github.io ウェブサイトの <a href="https://geocompr.github.io/geocompkg/articles/linevia.html">Desire Lines Extended</a> vignette と <code><a href="https://docs.ropensci.org/stplanr/reference/line_via.html">?line_via</a></code> を参照)。
+出力は入力と同じだが、公共交通機関のノードを使った旅を表す新しいジオメトリの列がある (以下に示す)。</p>
+<div class="sourceCode" id="cb456"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">ncol</a></span><span class="op">(</span><span class="va">desire_rail</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 9</span></span>
+<span><span class="va">desire_rail</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/line_via.html">line_via</a></span><span class="op">(</span><span class="va">desire_rail</span>, <span class="va">bristol_stations</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">ncol</a></span><span class="op">(</span><span class="va">desire_rail</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 12</span></span></code></pre></div>
+<p>Figure <a href="transport.html#fig:stations">13.4</a> に示すように、最初の <code>desire_rail</code> の行に、自宅から出発駅まで、そこから目的地まで、そして最後に目的地から目的地までの移動を表す 3 つのジオメトリリスト列が追加されている。
+この場合、目的地までの距離は非常に短いが (歩行距離)、出発地までの距離は十分であるため、往路の駅まで自転車での移動を促すためのインフラ投資を正当化することができる。Figure <a href="transport.html#fig:stations">13.4</a> にある 3 つの出発地の駅周辺の住宅地では、人々が通勤するために自転車を利用することができる。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:stations"></span>
+<img src="figures/stations-1.png" alt="鉄道利用率の高い直線的な希望線 (黒) を、公共交通機関 (グレー) を経由して出発駅 (赤) へ、そして目的地 (ごく短い青線) へという 3 レグに変換する中間点として使用される駅ノード (赤い点)。" width="100%"><p class="caption">
+FIGURE 13.4: 鉄道利用率の高い直線的な希望線 (黒) を、公共交通機関 (グレー) を経由して出発駅 (赤) へ、そして目的地 (ごく短い青線) へという 3 レグに変換する中間点として使用される駅ノード (赤い点)。
+</p>
+</div>
+</div>
+<div id="routes" class="section level2" number="13.6">
+<h2>
+<span class="header-section-number">13.6</span> ルート<a class="anchor" aria-label="anchor" href="#routes"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+地理学者から見れば、ルートとは直線でなくなった希望線である。出発地と目的地は同じだが、A から B へのルートはより複雑である。
+ルートは、ローカルまたはリモートで実行されるルート探索サービスを使用して、希望線 (より一般的には起点と終点のペア) から生成される。</p>
+<p>希望線が 2 つの頂点 (始点と終点) しか持たないのに対し、ルートは任意の数の頂点を持つことができ、A-B 間の点を直線で結んだものと定義される。これは線ジオメトリ (linestring) の定義である。
+長距離をカバーするルートや複雑なネットワークに沿ったルートは何千もの頂点を持つことができるが、グリッドベースや簡略化された道路ネットワーク上のルートは頂点数が少なくなる傾向がある。</p>
+<p>ルートは、希望線から生成されるか、より一般的には、希望線を表す座標ペアを含むマトリックスから生成される。
+このルート検索プロセスは、広義に定義されたさまざまな<u>ルート検索エンジン</u>、すなわち、起点から目的地までの移動方法を記述した形状と属性を返すソフトウェアやウェブサービスによって行われる。
+ルート検索エンジンは、以下のように、R と相対的に実行される<u>場所</u>に基づいて分類することができる。</p>
+<ul>
+<li>ルート計算を可能にする R パッケージを使用したメモリ内ルート検索 (Section <a href="transport.html#memengine">13.6.2</a>)</li>
+<li>R から呼び出せる、R の外部にあるローカルホスティングのルート検索エンジン (Section <a href="transport.html#localengine">13.6.3</a>)</li>
+<li>R から呼び出せる Web API を提供する、外部エンティティによるリモートホスティング型ルート検索エンジン (Section <a href="transport.html#remoteengine">13.6.4</a>)</li>
+</ul>
+<p>それぞれについて説明する前に、ルート検索エンジンを分類する他の方法について概説しておく価値がある。
+ルート検索エンジンはマルチモードである。つまり、複数の交通手段からなるトリップを計算することができるし、そうでないこともある。
+マルチモードなルート検索エンジンは、それぞれが異なる交通手段で作られた複数の<u>旅程 (leg)</u>からなる結果を返すことができる。
+住宅地から商業地までの最適なルートは、(1) 最寄りのバス停まで歩く、(2) 目的地に最も近いノードまでバスに乗る、(3) 目的地まで歩く、などが考えられる (入力パラメータ式がある場合)。
+この 3 つの旅程間の移行点は、一般的に「入口」(ingress) と「出口」(egress) と呼ばれ、公共交通機関の乗り降りを意味する。
+R5 のようなマルチモードなルート検索エンジンは、OpenStreetMap Routing Machine (OSRM) のような「ユニモーダル」ルート検索エンジンよりも高度で、入力データ要件も大きくなる (Section <a href="transport.html#localengine">13.6.3</a> に記載)。</p>
+<p>マルチモードエンジンの大きな強みは、電車やバスなどの「トランジット」(公共交通機関) トリップを表現する能力にある。
+マルチモデルルート検索エンジンは、公共交通機関のネットワークを表す入力データセットを必要とする。一般的には、General Transit Feed Specification (<a href="https://developers.google.com/transit/gtfs">GTFS</a>) ファイルで、これは <a href="https://r-transit.github.io/tidytransit/index.html"><strong>tidytransit</strong></a> および <a href="https://ipeagit.github.io/gtfstools/"><strong>gtfstools</strong></a> パッケージ内の関数で処理できる (GTFS ファイルを処理する他のパッケージやツールは利用可能)。
+特定の (公共ではない) 交通手段に焦点を当てたプロジェクトでは、単一モードなルート検索エンジンで十分かもしれない。
+ルート検索エンジン (または設定) を分類するもう一つの方法は、ルート、レッグ、セグメントという出力の地理的なレベルによるものである。</p>
+<div id="route-legs-segments" class="section level3" number="13.6.1">
+<h3>
+<span class="header-section-number">13.6.1</span> ルート、レッグ、セグメント<a class="anchor" aria-label="anchor" href="#route-legs-segments"><i class="fas fa-link"></i></a>
+</h3>
+<p>ルート検索エンジンは、ルート、レッグ、セグメントという 3 つの地理的なレベルで出力を生成することができる。</p>
+<ul>
+<li>
+<strong>ルート</strong> レベルの出力には、出発地と目的地のペアごとに 1 つのフィーチャ (通常はデータフレーム表現におけるマルチライン文字列と関連する行) が含まれ、トリップごとに 1 つのデータ行があることを意味する</li>
+<li>
+<strong>レッグ</strong> レベルの出力には、各起点と終点のペアに 1 つのフィーチャと関連する属性が含まれまる。1 つのモードを含むだけのトリップの場合 (たとえば、自宅から職場まで車で行き、車まで の短い徒歩は無視)、レッグはルートと同じで、車の旅になる。公共交通機関を利用するトリップの場合、レッグは重要な情報を提供する。<strong>r5r</strong> の関数 <code>detailed_itineraries()</code> はレッグを返すが、紛らわしいことに、これは「セグメント」と呼ばれることもある</li>
+<li>セグメントレベルの出力は、交通ネットワークの各小セクションのレコードを持つ、ルートに関する最も詳細な情報を提供する。一般的にセグメントは、OpenStreetMap の道と同じか、同じ長さになっている。<strong>cyclestreets</strong> 関数 <code>journey()</code> はセグメントレベルのデータを返し、これは <strong>stplanr</strong> の <code><a href="https://docs.ropensci.org/stplanr/reference/route.html">route()</a></code> 関数が返す出発地と目的地レベルのデータでグループ化することによって集約できる</li>
+</ul>
+<p>ほとんどのルート検索エンジンは、デフォルトでルートレベルを返すが、マルチモードエンジンは一般的にレッグレベル (単一の交通モードによる連続した移動ごとに 1 つの機能) の出力を提供する。
+セグメントレベルの出力は、より詳細な情報を提供するという利点がある。
+<strong>cyclestreets</strong> パッケージは、ルートごとに複数の「静かさ」レベルを返し、サイクルネットワークの「最も弱いリンク」の特定を可能にする。
+セグメントレベル出力の欠点は、ファイルサイズの増大と余分な詳細情報に関連する複雑さである。</p>
+<p>ルートレベルの結果は、関数 <code><a href="https://docs.ropensci.org/stplanr/reference/overline.html">stplanr::overline()</a></code> を使用してセグメントレベルの結果に変換することができる <span class="citation">(<a href="references.html#ref-morgan_travel_2020">Morgan and Lovelace 2020</a>)</span>。
+セグメントやレッグレベルのデータを扱う場合、トラベルの開始点と終了点を表す列でグループ化し、セグメントレベルのデータを含む列を要約/集計することで、ルートレベルの統計情報を返すことができる。</p>
+</div>
+<div id="memengine" class="section level3" number="13.6.2">
+<h3>
+<span class="header-section-number">13.6.2</span> R のメモリ内ルート検索<a class="anchor" aria-label="anchor" href="#memengine"><i class="fas fa-link"></i></a>
+</h3>
+<p>R のルート検索エンジンは、R のオブジェクトとして<u>メモリ</u>に格納されているルートネットワークをルート計算のベースとして使用することができる。
+選択肢としては、<a href="https://luukvdmeer.github.io/sfnetworks/"><strong>sfnetworks</strong></a> 、 <a href="https://urbananalyst.github.io/dodgr/"><strong>dodgr</strong></a>、 <a href="https://github.com/vlarmet/cppRouting"><strong>cppRouting</strong></a> といったパッケージがあり、それぞれ次節のテーマであるルートネットワークを表す独自のクラス体系を提供している。</p>
+<p>R ネイティブなルート検索は高速で柔軟な反面、現実的なルート計算のための専用ルート検索エンジンに比べて、一般に設定が困難である。
+ルート検索は難しい問題であり、ダウンロードしてローカルでホストできるオープンソースのルート検索エンジンに何百時間もの時間が費やされている。
+一方、R ベースのルート検索エンジンは、モデル実験や、ネットワークへの変更の影響の統計的分析に適しているかもしれない。
+ルートネットワークの特性 (または異なるルートセグメントの種類に関連する重み) を変更し、ルートを再計算し、多くのシナリオの下で結果を分析することを1つの言語で行うことは、研究用途にメリットがある。</p>
+</div>
+<div id="localengine" class="section level3" number="13.6.3">
+<h3>
+<span class="header-section-number">13.6.3</span> ローカル型専用ルート検索エンジン<a class="anchor" aria-label="anchor" href="#localengine"><i class="fas fa-link"></i></a>
+</h3>
+<p><strong>ローカル型</strong>ルート検索エンジンには、OpenTripPlanner、<a href="https://github.com/valhalla/valhalla">Valhalla</a>、OpenStreetMap Routing Machine (OSRM) (これは「ユニモーダル」のみ対応)、R5 などがある。
+R からこうしたサービスにアクセスするには、<strong>opentripplanner</strong>、<a href="https://github.com/chris31415926535/valhallr"><strong>valhallr</strong></a>、<strong>r5r</strong>、<a href="https://github.com/riatelab/osrm"><strong>osrm</strong></a> などのパッケージがある <span class="citation">(<a href="references.html#ref-morgan_opentripplanner_2019">Morgan et al. 2019</a>; <a href="references.html#ref-pereira_r5r_2021">Pereira et al. 2021</a>)</span>。
+ローカルにホストされたルート検索エンジンは、ユーザのコンピュータ上で実行されるが、R とは別のプロセスで実行される。
+利点としては、実行速度が速く、異なる交通手段に対する重み付けプロファイルを制御できるという点がある。
+反対に欠点は、複雑なネットワークをローカルに表現することが難しい、定義済みルートプロファイルがない、時間的ダイナミクス (例えば交通)、特殊なソフトウェアが必要となる、などが挙げられる。</p>
+</div>
+<div id="remoteengine" class="section level3" number="13.6.4">
+<h3>
+<span class="header-section-number">13.6.4</span> リモート型専用ルート検索エンジン<a class="anchor" aria-label="anchor" href="#remoteengine"><i class="fas fa-link"></i></a>
+</h3>
+<p><strong>リモート型</strong>ルート検索エンジンは、Web API を使用して、起点と終点に関するクエリを送信し、専用のソフトウェアが動作する強力なサーバーで生成された結果を返す。
+OSRM の一般公開されているサービスのような、オープンソースルート検索エンジンに基づくルート検索サービスは、R から呼び出された場合、ローカルにホストされたインスタンスと全く同じように動作し、単に更新される「ベース URL」を指定する引数を必要とするだけである。
+しかし、外部のルート検索サービスは専用のマシンでホストされているため (通常、正確なルートを生成するインセンティブを持つ営利企業が資金を提供している)、以下のような利点がある。</p>
+<ul>
+<li>世界中 (または通常少なくとも広い地域) にルート検索サービスを提供すること</li>
+<li>確立されたルート検索サービスは、通常定期的に更新され、トラフィックレベルに対応することができる</li>
+<li>ルート検索サービスは通常、専用のハードウェアとソフトウェアで実行され、ロードバランサーなどのシステムにより一貫したパフォーマンスを確保できる</li>
+</ul>
+<p>リモートルート検索サービスのデメリットとしては、バッチジョブができない場合の速度 (ルートごとにインターネットでのデータ転送に頼ることが多い)、価格 (例えば Google ルート検索 API では、無料のクエリ回数に制限がある)、ライセンス問題などが挙げられる。
+<a href="http://symbolixau.github.io/googleway/"><strong>googleway</strong></a> と <a href="https://walker-data.com/mapboxapi/articles/navigation.html"><strong>mapbox</strong></a> という二つのパッケージは、それぞれ Google と Mapbox のルート検索サービスへのアクセスを提供する。
+無料 (ただし料金に制限あり) のルート検索サービスは、 <a href="http://project-osrm.org/">OSRM</a>、 <a href="https://rgeomatic.hypotheses.org/category/osrm"><strong>osrm</strong></a> からアクセスできる <a href="https://openrouteservice.org/">openrouteservice.org</a>、<a href="https://github.com/GIScience/openrouteservice-r"><strong>openrouteservice</strong></a> などがある。最後のパッケージは CRAN にはない。
+また、<a href="https://www.cyclestreets.net/">CycleStreets.net</a> のような、より具体的なルート検索サービスもある。これは、「サイクリストによるサイクリストのための」サイクル・ジャーニー・プランナーで非営利の交通技術会社である。
+R では <a href="https://rpackage.cyclestreets.net/"><strong>cyclestreets</strong></a> パッケージを通して CycleStreets ルートにアクセスできるが、多くのルート検索サービスには R インターフェースがなく、パッケージ開発の大きなチャンスとなっている。Web API へのインターフェースを提供する R パッケージを構築することはやりがいのある経験になることだろう。</p>
+</div>
+<div id="contraction-hierarchies-and-traffic-assigment" class="section level3" number="13.6.5">
+<h3>
+<span class="header-section-number">13.6.5</span> 縮約階層とトラフィック割り当て<a class="anchor" aria-label="anchor" href="#contraction-hierarchies-and-traffic-assigment"><i class="fas fa-link"></i></a>
+</h3>
+<p>縮約階層とトラフィック割当は、交通モデリングにおける高度だが重要なトピックである。
+多くの経路を計算することは計算資源を大量に消費し、何時間もかかることがあるため、経路計算を高速化するためのアルゴリズムがいくつか開発された。
+<strong>縮約階層</strong> (contraction hierarchy) はよく知られたアルゴリズムで、ネットワークのサイズにもよるが、ルート検索課題の大幅な (場合によっては 1,000 倍以上の) 高速化につながる。
+縮約階層は、前のセクションで述べたルート検索エンジンの舞台裏で使われている。</p>
+<p>交通の割当てはルート検索と密接に関係する問題で、実際には 2 点間の最短経路が最速とは限らず、特に混雑している場合は最速になる。
+この処理では、<a href="transport.html#desire-lines">13.4</a> で説明するような OD データセットを受け取り、 ネットワークの各セグメントにトラフィックを割り当てて、<a href="transport.html#route-networks">13.7</a> で説明するような ルートネットワークを生成する。
+この問題に対する解は、Wardrop の利用者均衡の原則である。この原則は、現実に即して、ネットワーク上のフローを見積もる際に混雑を、数学的に定義されたコスト・フロー関係を参照しながら考慮すべきであることを示している <span class="citation">(<a href="references.html#ref-wardrop_theoretical_1952">Wardrop 1952</a>)</span>。
+この最適化問題は、<a href="https://github.com/vlarmet/cppRouting"><strong>cppRouting</strong></a> パッケージで実装されている反復アルゴリズムによって解くことができる。このパッケージは、高速ルート検索のための縮約階層も実装している。</p>
+</div>
+<div id="ルート検索-実例紹介" class="section level3" number="13.6.6">
+<h3>
+<span class="header-section-number">13.6.6</span> ルート検索: 実例紹介<a class="anchor" aria-label="anchor" href="#%E3%83%AB%E3%83%BC%E3%83%88%E6%A4%9C%E7%B4%A2-%E5%AE%9F%E4%BE%8B%E7%B4%B9%E4%BB%8B"><i class="fas fa-link"></i></a>
+</h3>
+<p>前のセクションで生成された希望線を<u>すべて</u>ルート探索する代わりに、政策上関心のある希望線に焦点を当てることにする。
+データ全体を処理する前に、一部のデータに対して計算量の多い処理を実行することは、賢明な方法である。ルート検索も然り。
+ルート検索は、ジオメトリが詳細でかつローとオブジェクトの属性が多いと、時間とメモリを消費し、オブジェクトが巨大になる。
+このため、この節では、ルートを計算する前に希望線をフィルタする。</p>
+<p>自転車トラベルの利点は、自動車トラベルを置き換えるときに最も大きく、比較的短いトラベルは長いトラベルよりも自転車に乗る可能性が高いという観察に基づいて、自転車トラベルの可能性を推定することに重点を置いて希望線のサブセットをフィルタリングする <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span>。
+短いトリップ (5 km 程度、時速 20 km で 15 分程度で走れる距離) は、比較的自転車で移動する確率が高く、電動自転車で移動すると最大距離が延びる <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span>。
+これらの考察に基づき、希望線をフィルタし、多くの (100 以上の) 短い (ユークリッド距離 2.5〜5 km) トリップを駆動する OD ペアを表すオブジェクト <code>desire_lines_short</code> を返す次のコードチャンクに反映しよう。</p>
+<div class="sourceCode" id="cb457"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">desire_lines</span><span class="op">$</span><span class="va">distance_km</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_length</a></span><span class="op">(</span><span class="va">desire_lines</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1000</span></span>
+<span><span class="va">desire_lines_short</span> <span class="op">=</span> <span class="va">desire_lines</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">car_driver</span> <span class="op">&gt;=</span> <span class="fl">100</span>, <span class="va">distance_km</span> <span class="op">&lt;=</span> <span class="fl">5</span>, <span class="va">distance_km</span> <span class="op">&gt;=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
+<p>上記のコードで、<code><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_length()</a></code> は Section <a href="spatial-operations.html#distance-relations">4.2.3</a> にあるように、各希望線の長さを計算している。
+Section <a href="attr.html#vector-attribute-subsetting">3.2.1</a> で述べるように、<strong>dplyr</strong> の <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> 関数で、上記の条件に基づいて <code>desire_lines</code> データセットにフィルタをかけている。
+次に、この希望線をルートに変換する。
+これは一般に公開されている OSRM サービスを用いて、以下のコードにある <strong>stplanr</strong> 関数 <code><a href="https://docs.ropensci.org/stplanr/reference/route.html">route()</a></code> と <code><a href="https://docs.ropensci.org/stplanr/reference/route_osrm.html">route_osrm()</a></code> で行われる。</p>
+<div class="sourceCode" id="cb458"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">routes_short</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/route.html">route</a></span><span class="op">(</span>l <span class="op">=</span> <span class="va">desire_lines_short</span>, route_fun <span class="op">=</span> <span class="va">route_osrm</span>,</span>
+<span>                     osrm.profile <span class="op">=</span> <span class="st">"bike"</span><span class="op">)</span></span></code></pre></div>
+<p>出力は <code>routes_short</code> で、(少なくとも OSRM ルート検索エンジンによれば) 自転車利用に適したトランスポートネットワーク 上のルートを表す <code>sf</code> オブジェクトで、各希望線に対して一つずつ出力される。
+注意: 上記のコマンドのような外部のルート検索エンジンの呼び出しは、インターネット接続 (そして、今回は必要ないが、環境変数に保存された API キーも必要な場合がある) でのみ動作する。
+<code>desire_lines</code> オブジェクトに含まれる列に加えて、新しいルートデータセットには <code>distance</code> (今回はルートの距離を参照) と <code>duration</code> (秒単位) の列が含まれ、それぞれのルートについて有用な追加情報を提供する可能性がある。
+自転車ルートと並行する車による短い希望線をプロットする。
+道路網への介入に優先順位をつける効果的な方法を提供するため、ルート幅を置き換えられる可能性のある車の旅の数に比例させる <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span>。
+Figure <a href="transport.html#fig:routes">13.5</a> は、自動車による短距離ルートを示している (ソースコードは github.com/geocompx を参照)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;なお、赤いルートと黒い希望線は、まったく同じ地点からスタートしているわけではない。
+これは、ゾーンの重心がルートネットワーク上に存在することはほとんどなく、重心に最も近い交通ネットワークノードからルートが発信されるためである。
+また、ルートはゾーン重心を起点とすると仮定しているが、これは可能な起点と目的地のすべての組み合わせの間の最短ルートを計算するのに必要な計算資源を減らすために交通モデルで使用される単純化した仮定であることに注意 &lt;span class="citation"&gt;(&lt;a href="references.html#ref-hollander_transport_2016"&gt;Hollander 2016&lt;/a&gt;)&lt;/span&gt;。&lt;/p&gt;'><sup>96</sup></a></p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:routes"></span>
+<img src="figures/routes-1.png" alt="短距離 (ユークリッド距離 5 km 未満) の自動車移動が多数 (100 回以上) 行われたルート (赤) と、同じ移動を表す希望線 (黒) および重心 (点) を重ねたもの。" width="100%"><p class="caption">
+FIGURE 13.5: 短距離 (ユークリッド距離 5 km 未満) の自動車移動が多数 (100 回以上) 行われたルート (赤) と、同じ移動を表す希望線 (黒) および重心 (点) を重ねたもの。
+</p>
+</div>
+<p>インタラクティブ地図で可視化してみると、Bristol 中心部から約 10 km 北の Bradley Stoke 周辺で多くの短距離自動車トラベルが行われていることがわかる。
+<a href="https://en.wikipedia.org/wiki/Bradley_Stoke">Wikipedia</a> によると、Bradley Stoke は「民間投資によって建設されたヨーロッパ最大のニュータウン」であり、公共交通機関の整備が限定的であることを示唆している。
+さらに、この町は、「M4 高速道路と M5 高速道路など、大規模な (自転車利用に不利な) 道路構造に囲まれている」 <span class="citation">(<a href="references.html#ref-tallon_bristol_2007">Tallon 2007</a>)</span>。</p>
+<p>トラベル希望線をトラベルルートに変換することは、政策の観点から多くの利点がある。
+ルート検索エンジンによって計算された正確なルートをたどるトリップがどれだけあるか (あったとしても) 確認することはできないことを覚えておくことが重要である。
+しかし、ルートや道路・区間レベルの結果は、政策に大きく関連する可能性がある。
+ルートセグメントの結果は、利用可能なデータ に従って、最も必要な場所に投資を優先させることを可能にすることができる <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span>。</p>
+</div>
+</div>
+<div id="route-networks" class="section level2" number="13.7">
+<h2>
+<span class="header-section-number">13.7</span> ルートネットワーク<a class="anchor" aria-label="anchor" href="#route-networks"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+一般に路線は、希望線と同じレベルのデータ (または重複する可能性のあるセグメントのレベル) を含むが、路線網データセットは、交通網をほぼ完全に表現するものである。
+路線網の各セグメント (交差点間の連続した道路区間にほぼ相当) は、一度だけ存在する。しかし、セグメントの平均長はデータソースによって異なる (このセクションで使用した OSM 由来の <code>bristol_ways</code> データセットのセグメントの平均長は 200 m 強で、標準偏差は 500 m 近い)。
+セグメント長にばらつきがあるのは、地方では交差点が遠く、密集した都市部では数メートルおきに交差点があるなど、セグメントの切れ目があるためと思われる。</p>
+<p>路線網は、インプットの場合もあれば、アウトプットの場合もあり、両方の場合もある。
+ルート計算を行う交通研究は、内部または外部のルート検索エンジンのルートネットワークデータを必要とする (後者の場合、ルート網データは必ずしも R にインポートされるわけではない)。
+しかし、路線ネットワークは、多くの交通研究プロジェクトにおいて重要なアウトプットでもある。特定の区間で発生しうるトリップ数などのデータをまとめ、路線ネットワークとして表現することで、最も必要なところに優先的に投資することができる。
+</p>
+<p>ルートレベルのデータから得られる出力としてルートネットワークを作成する方法を示すために、モーダルシフトの簡単なシナリオを想像してみたい。
+ルート距離 0～3 km の車移動の 50% が自転車に置き換えられ、その割合はルート距離が 1 km 増えるごとに 10 ポイントずつ下がり、6 km の車移動の 20％ が自転車に置き換えられ、8 km 以上の車移動が自転車に置き換えられないと想像しよう。
+これはもちろん非現実的なシナリオ <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span> ではあるものの、出発点としては有用であろう。
+この場合、自動車から自転車へのモーダルシフトを次のようにモデル化することができる。</p>
+<div class="sourceCode" id="cb459"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">uptake</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
+<span>    <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">3</span> <span class="op">~</span> <span class="fl">0.5</span>,</span>
+<span>    <span class="va">x</span> <span class="op">&gt;=</span> <span class="fl">8</span> <span class="op">~</span> <span class="fl">0</span>,</span>
+<span>    <span class="cn">TRUE</span> <span class="op">~</span> <span class="op">(</span><span class="fl">8</span> <span class="op">-</span> <span class="va">x</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="fl">8</span> <span class="op">-</span> <span class="fl">3</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.5</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span><span class="va">routes_short_scenario</span> <span class="op">=</span> <span class="va">routes_short</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>uptake <span class="op">=</span> <span class="fu">uptake</span><span class="op">(</span><span class="va">distance</span> <span class="op">/</span> <span class="fl">1000</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>bicycle <span class="op">=</span> <span class="va">bicycle</span> <span class="op">+</span> <span class="va">car_driver</span> <span class="op">*</span> <span class="va">uptake</span>,</span>
+<span>         car_driver <span class="op">=</span> <span class="va">car_driver</span> <span class="op">*</span> <span class="op">(</span><span class="fl">1</span> <span class="op">-</span> <span class="va">uptake</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">routes_short_scenario</span><span class="op">$</span><span class="va">bicycle</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">routes_short</span><span class="op">$</span><span class="va">bicycle</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3848</span></span></code></pre></div>
+<p>約 4,000 のトリップが車から自転車に切り替わるというシナリオを作成したので、この更新されたモデル化された自転車利用活動がどこで行われるかをモデル化することができるようになった。
+これには、<strong>stplanr</strong> パッケージの関数 <code><a href="https://docs.ropensci.org/stplanr/reference/overline.html">overline()</a></code> を使用する。
+この関数は、ルートと要約する属性の名前を含むオブジェクトを第 1 と第 2 の引数として受け取り、分岐点 (2 つ以上の線の形状が出会うところ) で線を切断し、それぞれのユニークなルートセグメント <span class="citation">(<a href="references.html#ref-morgan_travel_2020">Morgan and Lovelace 2020</a>)</span> について集約した統計量を計算するものである。</p>
+<div class="sourceCode" id="cb460"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">route_network_scenario</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/overline.html">overline</a></span><span class="op">(</span><span class="va">routes_short_scenario</span>, attrib <span class="op">=</span> <span class="st">"bicycle"</span><span class="op">)</span></span></code></pre></div>
+<p>前出の 2 つのコードチャンクの出力は、以下の Figure <a href="transport.html#fig:rnetvis">13.6</a> に要約している。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:rnetvis"></span>
+<img src="figures/rnetvis-1.png" alt="距離関数による自動車から自転車への移行率 (左) と、この関数のルートネットワークレベルの結果 (右)。" width="49%"><img src="figures/rnetvis-2.png" alt="距離関数による自動車から自転車への移行率 (左) と、この関数のルートネットワークレベルの結果 (右)。" width="49%"><p class="caption">
+FIGURE 13.6: 距離関数による自動車から自転車への移行率 (左) と、この関数のルートネットワークレベルの結果 (右)。
+</p>
+</div>
+<p>道路種別や幅員などの属性がセグメントレベルで記録されている交通網は、一般的な路線網の一種である。
+このような路線網のデータセットは、OpenStreetMap から世界中で入手でき、<strong>osmdata</strong> や <strong>osmextract</strong> などのパッケージでダウンロードすることが可能である。
+OSMのダウンロードと準備の時間を節約するために、以下の出力に示すように、ケーススタディ地域の交通ネットワークのサンプルを表す LINESTRING ジオメトリと属性を持つ <code>sf</code> オブジェクト、<strong>spDataLarge</strong> パッケージから <code>bristol_ways</code> オブジェクトを使用する (詳細は <code><a href="https://rdrr.io/pkg/spDataLarge/man/bristol_ways.html">?bristol_ways</a></code> を参照)。</p>
+<div class="sourceCode" id="cb461"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">bristol_ways</span><span class="op">)</span></span>
+<span><span class="co">#&gt;      highway       maxspeed             ref                     geometry   </span></span>
+<span><span class="co">#&gt;  cycleway:1721   Length:6160        Length:6160        LINESTRING   :6160  </span></span>
+<span><span class="co">#&gt;  rail    :1017   Class :character   Class :character   epsg:4326    :   0  </span></span>
+<span><span class="co">#&gt;  road    :3422   Mode  :character   Mode  :character   +proj=long...:   0</span></span></code></pre></div>
+<p>出力は、<code>bristol_ways</code> が交通ネットワーク上の 6,000 以上のセグメントを表していることを示している。
+このネットワークや他の地理的なネットワークは、数学的なグラフとして表現することができ、ネットワーク上のノードとエッジで接続されている。
+このようなグラフを扱うために、多くの R パッケージが開発されており、特に <strong>igraph</strong> が有名である。
+ルートネットワークを手動で <code>igraph</code> オブジェクトに変換することはできるが、地理的な属性は失われる。
+この <strong>igraph</strong> の制限を克服するために、路線ネットワークをグラフと地理的な線として同時に表現する <strong>sfnetworks</strong> パッケージ <span class="citation">(<a href="references.html#ref-R-sfnetworks">van der Meer et al. 2023</a>)</span> が開発された。
+これは、グラフおよび地理的な線で表現し、以下に見るように tidy な文法である。</p>
+<div class="sourceCode" id="cb462"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bristol_ways</span><span class="op">$</span><span class="va">lengths</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_length</a></span><span class="op">(</span><span class="va">bristol_ways</span><span class="op">)</span></span>
+<span><span class="va">ways_sfn</span> <span class="op">=</span> <span class="fu"><a href="https://luukvdmeer.github.io/sfnetworks/reference/as_sfnetwork.html">as_sfnetwork</a></span><span class="op">(</span><span class="va">bristol_ways</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">ways_sfn</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "sfnetwork" "tbl_graph" "igraph"</span></span></code></pre></div>
+<div class="sourceCode" id="cb463"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ways_sfn</span></span>
+<span><span class="co">#&gt; # A sfnetwork with 5728 nodes and 4915 edges</span></span>
+<span><span class="co">#&gt; # A directed multigraph with 1013 components with spatially explicit edges</span></span>
+<span><span class="co">#&gt; # Node Data:     5,728 × 1 (active)</span></span>
+<span><span class="co">#&gt; # Edge Data:     4,915 × 7</span></span>
+<span><span class="co">#&gt;    from    to highway maxspeed ref                              geometry lengths</span></span>
+<span><span class="co">#&gt;   &lt;int&gt; &lt;int&gt; &lt;fct&gt;   &lt;fct&gt;    &lt;fct&gt;                    &lt;LINESTRING [°]&gt;     [m]</span></span>
+<span><span class="co">#&gt; 1     1     2 road    &lt;NA&gt;     B3130 (-2.61 51.4, -2.61 51.4, -2.61 51.…    218.</span></span>
+<span><span class="co">#&gt; # … </span></span></code></pre></div>
+<p>前のコードチャンクの出力 (スペースの関係上、最終的な出力は最も重要な 8 行のみを含むように短縮されている) は、<code>ways_sfn</code> がグラフ形式と空間形式の両方のノードとエッジを含む複合オブジェクトであることを表している。
+<code>ways_sfn</code> は <code>sfnetwork</code> クラスで、 <strong>igraph</strong> パッケージの <code>igraph</code> クラスをベースにしている。
+下の例では、各エッジを通る最短ルートの数を意味する ‘edge betweenness’ が計算されている (詳しくは <code><a href="https://r.igraph.org/reference/betweenness.html">?igraph::betweenness</a></code> を参照)。
+このデータセットに対して、エッジの間隔を計算した結果を図に示す。図には、比較のために <code><a href="https://docs.ropensci.org/stplanr/reference/overline.html">overline()</a></code> 関数で計算した自転車ルートネットワークデータセットをオーバーレイで表示している。
+この結果は、グラフの各エッジがセグメントを表していることを示している。道路ネットワークの中心に近いセグメントは最も高い betweenness 値を持ち、一方、Bristol 中心部に近いセグメントはより高い自転車利用の可能性を持っていることが、これらの単純化されたデータセットに基づいて示されている。</p>
+<div class="sourceCode" id="cb464"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ways_centrality</span> <span class="op">=</span> <span class="va">ways_sfn</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://tidygraph.data-imaginist.com/reference/activate.html">activate</a></span><span class="op">(</span><span class="st">"edges"</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>betweenness <span class="op">=</span> <span class="fu">tidygraph</span><span class="fu">::</span><span class="fu"><a href="https://tidygraph.data-imaginist.com/reference/centrality.html">centrality_edge_betweenness</a></span><span class="op">(</span><span class="va">lengths</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
+<div class="sourceCode" id="cb465"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bb_wayssln</span> <span class="op">=</span> <span class="fu">tmaptools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tmaptools/man/bb.html">bb</a></span><span class="op">(</span><span class="va">route_network_scenario</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.6</span><span class="op">)</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">zones_od</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill</a></span><span class="op">(</span>fill_alpha <span class="op">=</span> <span class="fl">0.2</span>, lwd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">ways_centrality</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span>, bb <span class="op">=</span> <span class="va">bb_wayssln</span>, is.main <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_lines.html">tm_lines</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="st">"betweenness"</span>, </span>
+<span>           lwd.scale <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale.html">tm_scale</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, values.scale <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>           lwd.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html">tm_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"Betweenness"</span><span class="op">)</span>,</span>
+<span>           col <span class="op">=</span> <span class="st">"#630032"</span>, col_alpha <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">route_network_scenario</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_lines.html">tm_lines</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="st">"bicycle"</span>,</span>
+<span>           lwd.scale <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale.html">tm_scale</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">2</span>, values.scale <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>           lwd.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html">tm_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"自転車トリップ数 (modeled, one direction)"</span><span class="op">)</span>,</span>
+<span>           col <span class="op">=</span> <span class="st">"darkgreen"</span>, col_alpha <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>fontfamily <span class="op">=</span> <span class="st">"HiraginoSans-W3"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:wayssln"></span>
+<img src="figures/wayssln-1.png" alt="路線ネットワークデータセット。グレーの線は簡略化された道路網を表し、セグメントの太さは betweenness に比例する。緑色の線は、上記のコードで計算された潜在的な自転車利用フロー (片道) である。" width="100%"><p class="caption">
+FIGURE 13.7: 路線ネットワークデータセット。グレーの線は簡略化された道路網を表し、セグメントの太さは betweenness に比例する。緑色の線は、上記のコードで計算された潜在的な自転車利用フロー (片道) である。
+</p>
+</div>
+<p>また、<strong>sfnetworks</strong> パッケージを用いると、このルートネットワークのグラフ表現を使って、出発地と目的地の間の最短ルートを求めることができる。
+<!-- TODO: make an exercise based on this if time allows (RL 2022-07) -->
+このセクションで紹介した方法は比較的単純で、実際にはもっと可能なことはある。
+<strong>sfnetworks</strong> が提供するグラフと空間の二つの機能により、多くの新しい強力な技法が可能になるが、このセクションで完全にカバーすることはできない。このセクションは、この分野のさらなる探求と研究のための強力な出発点を提供する。
+上で使った例のデータセットが比較的小さい。
+データのサブセットで手法をテストし、十分な RAM を確保することが助けになるが、R5 <span class="citation">(<a href="references.html#ref-alessandretti_multimodal_2022">Alessandretti et al. 2022</a>)</span> などの大規模ネットワークに最適化された交通ネットワーク分析ができる他のツールも調べる価値があるだろう。</p>
+</div>
+<div id="prioritizing-new-infrastructure" class="section level2" number="13.8">
+<h2>
+<span class="header-section-number">13.8</span> 新インフラの優先順位付け<a class="anchor" aria-label="anchor" href="#prioritizing-new-infrastructure"><i class="fas fa-link"></i></a>
+</h2>
+<p>この節では、交通計画分野においてジオコンピュテーションが政策関連の成果を作ることができることを示す。
+持続可能な交通インフラの投資先として有望な場所を、教育目的のシンプルなアプローチで特定する。</p>
+<p>本章で紹介するデータ駆動型アプローチの利点は、モジュール化されていることである。
+この段階に至るまでには、(希望線から生成された)短いが車に依存する通勤経路を特定するための手順があり、(ルートネットワーク) セクションで <strong>sfnetworks</strong> パッケージを使用してルートネットワークの特性を分析することが含まれている。
+本章の最後のコードチャンクは、自転車利用インフラから短い距離のエリアを表す新しいデータセットに、前のセクションの自転車利用潜在力の推定値を重ねることによって、これらの一連の分析を結合する。
+この新しいデータセットは、以下のコードで作成される。(1) 交通ネットワークを表す <code>bristol_ways</code> オブジェクトから自転車道をフィルタする。(2) 自転車道の個々の線エンティティを単一の複合線オブジェクトに「統合」する (バッファ作成が速くなるため)。(3) 周囲に 100 m バッファのポリゴンを生成する。</p>
+<div class="sourceCode" id="cb466"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">existing_cycleways_buffer</span> <span class="op">=</span> <span class="va">bristol_ways</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">highway</span> <span class="op">==</span> <span class="st">"cycleway"</span><span class="op">)</span> <span class="op">|&gt;</span>    <span class="co"># 1) filter out cycleways</span></span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span>                       <span class="co"># 2) unite geometries</span></span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span>dist <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>               <span class="co"># 3) create buffer</span></span></code></pre></div>
+<p>次の段階は、ネットワークの中で、自転車利用の可能性が高いが、自転車利用のための設備がほとんどない点を表すデータセットを作成することである。</p>
+<div class="sourceCode" id="cb467"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">route_network_no_infra</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_difference</a></span><span class="op">(</span></span>
+<span>  <span class="va">route_network_scenario</span>,</span>
+<span>  <span class="va">route_network_scenario</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_set_crs</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">existing_cycleways_buffer</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  <span class="va">existing_cycleways_buffer</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>Figure <a href="transport.html#fig:cycleways">13.8</a> は、自動車への依存度が高く、自転車の利用可能性が高いが、自転車専用道路が整備されていないルートを示している。</p>
+<div class="sourceCode" id="cb468"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm</a></span><span class="op">(</span><span class="va">route_network_no_infra</span>, basemaps <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/leaflet/reference/providers.html">providers</a></span><span class="op">$</span><span class="va">Esri.WorldTopoMap</span>,</span>
+<span>    lines.lwd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:cycleways"></span>
+<img src="figures/cycleways-1.png" alt="Bristol における自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。`qtm()` 関数から生成されたインタラクティブ地図のスクリーンショットは、新しい自転車道から利益を得ることができる場所として Whiteladies Road を強調している (右)。" width="50%"><img src="images/bristol_cycleways_zoomed.png" alt="Bristol における自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。`qtm()` 関数から生成されたインタラクティブ地図のスクリーンショットは、新しい自転車道から利益を得ることができる場所として Whiteladies Road を強調している (右)。" width="50%"><p class="caption">
+FIGURE 13.8: Bristol における自動車依存度を下げるために、自転車インフラを優先的に整備するルートの候補。静的マップは、既存のインフラと自動車と自転車の乗り換えの可能性が高いルートとの間のオーバーレイの概要を提供する (左)。<code><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm()</a></code> 関数から生成されたインタラクティブ地図のスクリーンショットは、新しい自転車道から利益を得ることができる場所として Whiteladies Road を強調している (右)。
+</p>
+</div>
+<p>この方法には限界がある。現実には、人々はゾーン重心に移動したり、特定のモードの最短ルートアルゴリズムを常に使用するわけではない。
+しかし、この結果は、自動車依存と公共交通の観点から、自転車専用道路を優先的に整備できるルートを示している。
+この分析は、現実の交通計画の立案に使うためには、より大きなデータを使うなど、大幅に拡大して行う必要がある。</p>
+</div>
+<div id="future-directions-of-travel" class="section level2" number="13.9">
+<h2>
+<span class="header-section-number">13.9</span> 今後の方向性<a class="anchor" aria-label="anchor" href="#future-directions-of-travel"><i class="fas fa-link"></i></a>
+</h2>
+<p>この章では、交通研究にジオコンピュテーションを利用する可能性を紹介し、オープンデータと再現可能なコードを用いて、都市の交通システムを構成するいくつかの重要な地理的要素を調査した。
+この結果は、どこに投資が必要かを計画するのに役立つだろう。</p>
+<p>交通システムは複数の相互作用レベルで機能しているため、ジオコンピュテーションの手法は交通システムの仕組みや異なる介入の効果を理解する上で大きな可能性を秘めている。
+この分野でできることはまだまだたくさんある。この章で紹介した基礎の上に、さまざまな方向性を構築することが可能であろう。
+交通は、多くの国で温室効果ガスの排出源として最も急速に増加しており、「特に先進国では最大の温室効果ガス排出部門」になると言われている (<a href="https://www.euractiv.com/section/agriculture-food/opinion/transport-needs-to-do-a-lot-more-to-fight-climate-change/">EURACTIV.com</a> を参照)。
+交通機関の排出量は社会全体で非常に不平等に配分されており、交通機関は (食料や暖房とは異なり) 幸福に不可欠なものではない。
+需要の削減、車両の電化、徒歩や自転車などのアクティブな移動手段の導入により、このセクターが急速に脱炭素化する大きな可能性を秘めている。
+新しいテクノロジーは、カーシェアリングを可能にすることで、車への依存度を下げることができる。
+ドックレス型自転車や e スクーターのような「マイクロモビリティ」システムも出現し、General Bikeshare Feed Specification (GBFS) フォーマットの貴重なデータセットを作成し、<a href="https://github.com/simonpcouch/gbfs"><strong>gbfs</strong></a>パッケージで取り込んで処理することができるようになった。
+こうした新しい交通などの変化は、人々が必要とする雇用やサービスの場所に到達する能力であるアクセシビリティに大きな影響を与える。そして、<a href="https://ipeagit.github.io/accessibility/"><strong>accessibility</strong></a> パッケージなどのパッケージを使用して、現在および変化のシナリオに基づいて定量化することが可能である。
+こうした「交通の未来」を地域や国レベルでさらに探求することで、新たな知見を得られるだろう。</p>
+<p>方法論的には、本章で示した基礎は、より多くの変数を分析に含めることで拡張することが可能である。
+速度制限、交通量の多さ、自転車や歩行者用保護道の設置などのルートの特徴は、「モーダルスプリット」 (modal split、異なる交通手段によるトラベルの割合) に関連付けることができる。
+例えば、OpenStreetMap のデータをバッファや、Chapter <a href="attr.html#attr">3</a> と Chapter <a href="spatial-operations.html#spatial-operations">4</a> で紹介した地理データ手法で集約すれば、交通ルートの近くに緑地があるかどうかを検出することも可能である。
+R の統計モデリング機能を使えば、例えば、現在と将来の自転車利用のレベルを予測することができるだろう。</p>
+<p>この種の分析のベースには、Propensity to Cycle Tool (PCT)がある。 これは、R で開発された一般にアクセス可能な ( <a href="https://www.pct.bike/">www.pct.bike</a> 参照) 地図作成ツールで、イングランド全域の自転車利用への投資を優先させるために使用されている <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span>。
+同様のツールは、世界中の大気汚染や公共交通機関へのアクセスなど、他のテーマに関連したエビデンスに基づく交通政策を奨励するためにも使用できる。</p>
+</div>
+<div id="ex-transport" class="section level2" number="13.10">
+<h2>
+<span class="header-section-number">13.10</span> 演習<a class="anchor" aria-label="anchor" href="#ex-transport"><i class="fas fa-link"></i></a>
+</h2>
+<p>E1. 本章で紹介した分析の多くでは、アクティブ (自転車のこと) という交通モードに焦点を当てたが、車でのトリップ についてはどうだろうか?</p>
+<ul>
+<li>
+<code>desire_lines</code> オブジェクトに含まれるトリップのうち、車でのトリップの割合は?</li>
+<li>直線距離が 5 km 以上の<code>desire_lines</code>の割合は?</li>
+<li>長さが 5 km 以上の希望線に含まれるトリップのうち、車で移動するトリップの割合は?</li>
+<li>長さが 5 km 未満で、移動の 50% 以上が車である希望線をプロットする。</li>
+<li>これらの自動車に依存しながらも短い希望線の位置について、何か気づくことはあるか?</li>
+</ul>
+<p>E2. Figure 13.8 に示されたすべてのルート (既存の自転車道から 100 m 以上離れた区間) が建設された場合、自転車道の長さはどの程度増加するか?</p>
+<p>E3. <code>desire_lines</code> に含まれるトリップのうち、<code>routes_short_scenario</code> に含まれるトリップの割合はいくらか?</p>
+<ul>
+<li>ボーナス: 全トリップのうち、<code>routes_short_scenario</code> を横切る希望線の割合は？</li>
+</ul>
+<p>E4. 本章で紹介する分析は、ジオコンピュテーションの手法をどのように交通研究に応用できるかを教えるためのものである。
+実際に政府機関や交通コンサルタント会社でこのようなことをする場合、どの点が変わるだろうか? 大きいものから 3 点述べなさい。</p>
+<p>E5. Figure 13.8 で特定されたルートは、明らかに、全体像の一部を示しているに過ぎない。
+どのように分析を拡張するか?</p>
+<p>E6. カーフリーゾーン、駐輪ポイント、減車戦略など、場所ベースのサイクリング政策に投資するための主要な<strong>エリア</strong> (ルートではない) を作成することによって、シナリオを拡張したいと想像する。
+ラスタデータセットは、この作業をどのように支援できるか?</p>
+<ul>
+<li>ボーナス: Bristol 地域を 100 のセル (10 * 10) に分割し、それぞれの道路の平均制限速度を <code>bristol_ways</code> データセットから推定するラスタレイヤを開発しなさい (Chapter <a href="location.html#location">14</a> 参照)。</li>
+</ul>
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></div>
+<div class="next"><a href="location.html"><span class="header-section-number">14</span> 商圏分析</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#transport"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="nav-link" href="#%E5%BF%85%E9%A0%88%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8">必須パッケージ</a></li>
+<li><a class="nav-link" href="#introduction-13"><span class="header-section-number">13.1</span> イントロダクション</a></li>
+<li><a class="nav-link" href="#bris-case"><span class="header-section-number">13.2</span> Bristol のケーススタディ</a></li>
+<li><a class="nav-link" href="#transport-zones"><span class="header-section-number">13.3</span> 交通ゾーン</a></li>
+<li><a class="nav-link" href="#desire-lines"><span class="header-section-number">13.4</span> 希望線</a></li>
+<li><a class="nav-link" href="#nodes"><span class="header-section-number">13.5</span> ノード</a></li>
+<li>
+<a class="nav-link" href="#routes"><span class="header-section-number">13.6</span> ルート</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#route-legs-segments"><span class="header-section-number">13.6.1</span> ルート、レッグ、セグメント</a></li>
+<li><a class="nav-link" href="#memengine"><span class="header-section-number">13.6.2</span> R のメモリ内ルート検索</a></li>
+<li><a class="nav-link" href="#localengine"><span class="header-section-number">13.6.3</span> ローカル型専用ルート検索エンジン</a></li>
+<li><a class="nav-link" href="#remoteengine"><span class="header-section-number">13.6.4</span> リモート型専用ルート検索エンジン</a></li>
+<li><a class="nav-link" href="#contraction-hierarchies-and-traffic-assigment"><span class="header-section-number">13.6.5</span> 縮約階層とトラフィック割り当て</a></li>
+<li><a class="nav-link" href="#%E3%83%AB%E3%83%BC%E3%83%88%E6%A4%9C%E7%B4%A2-%E5%AE%9F%E4%BE%8B%E7%B4%B9%E4%BB%8B"><span class="header-section-number">13.6.6</span> ルート検索: 実例紹介</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#route-networks"><span class="header-section-number">13.7</span> ルートネットワーク</a></li>
+<li><a class="nav-link" href="#prioritizing-new-infrastructure"><span class="header-section-number">13.8</span> 新インフラの優先順位付け</a></li>
+<li><a class="nav-link" href="#future-directions-of-travel"><span class="header-section-number">13.9</span> 今後の方向性</a></li>
+<li><a class="nav-link" href="#ex-transport"><span class="header-section-number">13.10</span> 演習</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/13-transport-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/13-transport-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

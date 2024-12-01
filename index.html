@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>ようこそ | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="ようこそ | Geocomputation with R は、オープンソースソフトウェアを使って地理データを分析、視覚化、モデル化するために書かれた。本書は、強力なデータ処理、可視化、地理空間機能を持つ統計プログラミング言語である R をベースにしている。本書は、科学的、社会的、環境的な意味合いを含む、地理データに現れるさまざまな問題に取り組むための知識とスキルを身につけることができる。地理情報システム (Geographic Information Systems, GIS) のユーザーで、データサイエンスのための強力なオープンソース言語での専門分野の知識の応用に興味がある人、R のユーザーで空間データを扱うスキルの拡張に興味がある人など、さまざまな立場の人が本書に興味を持つだろう。">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="ようこそ | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="ようこそ | Geocomputation with R は、オープンソースソフトウェアを使って地理データを分析、視覚化、モデル化するために書かれた。本書は、強力なデータ処理、可視化、地理空間機能を持つ統計プログラミング言語である R をベースにしている。本書は、科学的、社会的、環境的な意味合いを含む、地理データに現れるさまざまな問題に取り組むための知識とスキルを身につけることができる。地理情報システム (Geographic Information Systems, GIS) のユーザーで、データサイエンスのための強力なオープンソース言語での専門分野の知識の応用に興味がある人、R のユーザーで空間データを扱うスキルの拡張に興味がある人など、さまざまな立場の人が本書に興味を持つだろう。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="ようこそ | Geocomputation with R">
+<meta name="twitter:description" content="ようこそ | Geocomputation with R は、オープンソースソフトウェアを使って地理データを分析、視覚化、モデル化するために書かれた。本書は、強力なデータ処理、可視化、地理空間機能を持つ統計プログラミング言語である R をベースにしている。本書は、科学的、社会的、環境的な意味合いを含む、地理データに現れるさまざまな問題に取り組むための知識とスキルを身につけることができる。地理情報システム (Geographic Information Systems, GIS) のユーザーで、データサイエンスのための強力なオープンソース言語での専門分野の知識の応用に興味がある人、R のユーザーで空間データを扱うスキルの拡張に興味がある人など、さまざまな立場の人が本書に興味を持つだろう。">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="ようこそ | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="active" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><!--bookdown:title:end--><!--bookdown:title:start--><div id="index" class="section level1 unnumbered">
+<h1>ようこそ<a class="anchor" aria-label="anchor" href="#index"><i class="fas fa-link"></i></a>
+</h1>
+<p>ここは、地理データの解析、可視化、モデリングに関する書籍 <em>Geocomputation with R</em> のオンラインホーム (日本語版) です。</p>
+<p><a href="https://www.routledge.com/9781032248882"><img src="images/cover2.png" width="250" height="375" alt="The geocompr ed2 book cover" align="right" style="margin: 0 1em 0 1em"></a></p>
+<p><strong>注</strong>: 本書の原著第 1 版は CRC プレス社の <a href="https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER">R Series</a> で出版されています。
+<a href="https://www.routledge.com/9781138304512">CRC Press</a> または <a href="https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/">Amazon</a> で購入できます。</p>
+<p>また、<strong>第 1 版</strong> は、<a href="https://bookdown.org/robinlovelace/geocompr/">bookdown.org</a>.で保存されています。</p>
+<p>本書は、Free and Open Source Software for Geospatial (<a href="https://foss4g.org/">FOSS4G</a>) の活動に触発されているおり、本書の基盤となるコードと解説はオープンであり、内容の再現性、透明性、アクセス性を保証しています。
+<a href="https://github.com/geocompx/geocompr">GitHub</a> でソースコードを公開しているため、誰でも課題 (Issue) を開いたり、新しいコンテンツや誤植の修正に貢献することでプロジェクトに関わり、みんなのために役立てることができます。</p>
+<p><a href="https://github.com/geocompx/geocompr"><img src="https://img.shields.io/github/stars/geocompx/geocompr?style=for-the-badge"></a>
+<a href="https://github.com/geocompx/geocompr/graphs/contributors"><img src="https://img.shields.io/github/contributors/geocompx/geocompr?style=for-the-badge"></a></p>
+<p>本書のオンライン版は、<a href="https://r.geocompx.org">r.geocompx.org</a> でホストされ、<a href="https://github.com/geocompx/geocompr/actions">GitHub Actions</a> によって最新版が維持されています。(訳注: 日本語版は、<a href="https://babayoshihiko.ddns.net/geo">https://babayoshihiko.ddns.net/geo</a> と<a href="http://124.219.182.167/geo/">http://124.219.182.167/geo/</a>でホストされている。)
+現在の「ビルド状況」は以下の通りです。</p>
+<p><a href="https://github.com/geocompx/geocompr/actions"><img src="https://github.com/geocompx/geocompr/workflows/Render/badge.svg" alt="Actions"></a></p>
+<p>This version of the book was built on GH Actions on 2024-12-01.</p>
+<p><a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png"></a><br>本書は、<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> ライセンスで提供。</p>
+<p><a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/"><img alt="Creative Commons License" style="border-width:0" src="https://licensebuttons.net/l/zero/1.0/88x31.png"></a><br>本書のサンプルコードは、<a rel="license" href="https://creativecommons.org/publicdomain/zero/1.0/">Creative Commons CC0 1.0 Universal (CC0 1.0)</a> ライセンスで提供されています。</p>
+<div id="how-to-contribute" class="section level2 unnumbered">
+<h2>貢献するには<a class="anchor" aria-label="anchor" href="#how-to-contribute"><i class="fas fa-link"></i></a>
+</h2>
+<p><strong>bookdown</strong> では、GitHub のアカウント (<a href="https://github.com/join">sign-up at github.com</a>) があれば、Wiki を編集するように簡単に本を編集することができます。
+GitHub にログイン後、書籍サイトの右パネルにある「Edit this page」アイコンをクリックしてください。
+これで、今読んでいるこのページを生成したソース <a href="http://rmarkdown.rstudio.com/">R Markdown</a> ファイルの編集可能なバージョンに移動します。</p>
+<p>この本の内容に関する問題提起 (コードが実行されないなど) や機能リクエストは、<a href="https://github.com/geocompx/geocompr/issues">Issue Tracker</a> 課題追跡システムで確認できます。</p>
+<p>管理者と貢献者は、このリポジトリの<a href="https://github.com/geocompx/geocompr/blob/main/CODE_OF_CONDUCT.md">行動規範</a> に従ってください。</p>
+</div>
+<div id="reproducibility" class="section level2 unnumbered">
+<h2>本書のコードを再現<a class="anchor" aria-label="anchor" href="#reproducibility"><i class="fas fa-link"></i></a>
+</h2>
+<p>初めて R で地理データを扱うのであれば、手軽に本書の内容を再現する方法は、ウェブブラウザで <a href="https://mybinder.org/">Binder</a> というサイトにアクセスすることでしょう。
+以下のリンクをクリックすると、RStudio Server を含む新しいウィンドウがウェブブラウザで開き、各章のファイルを開いたり、コードチャンクを実行して、コードが再現可能かどうかテストすることができます (訳注: 英語版が開く)。</p>
+<p><a href="https://mybinder.org/v2/gh/geocompx/geocompr/main?urlpath=rstudio"><img src="https://mybinder.org/badge_logo.svg" alt="Binder"></a></p>
+<p>下の画像のようなものが表示されたら成功です。
+<a href="https://mybinder.readthedocs.io/en/latest/about/user-guidelines.html">mybinder.org ユーザガイドライン</a>に従い、クラウドベースの環境で R によるジオコンピュテーションの探求を始めてください。</p>
+<div class="figure">
+<span style="display:block;" id="fig:index-2-4"></span>
+<img src="https://user-images.githubusercontent.com/1825120/134802314-6dd368c7-f5eb-4cd7-b8ff-428dfa93954c.png" alt="Geocomputation with R に含まれる再現可能なコードを、Binder が提供するブラウザ上の RStudio Server で実行した画面"><p class="caption">
+FIGURE 0.1: Geocomputation with R に含まれる再現可能なコードを、Binder が提供するブラウザ上の RStudio Server で実行した画面
+</p>
+</div>
+<p>この本のコードを自分のコンピュータで再現するには、最近のバージョンの <a href="https://cran.r-project.org/">R</a> と最新のパッケージが必要です。
+パッケージは <a href="https://github.com/r-lib/remotes"><strong>remotes</strong></a> パッケージを使用してインストールすることができます。</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"geocompr/geocompkg"</span><span class="op">)</span></span></code></pre></div>
+<p>この本で使用するパッケージやデータをインストールした後、テストや教育目的のためにこの本を再構築することができます。
+再構築するには、この本のソースコードを <a href="https://github.com/geocompx/geocompr/archive/refs/heads/main.zip">ダウンロード</a>して解凍するか、 <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository">clone</a> してください。
+<a href="https://posit.co/download/rstudio-desktop/#download">RStudio</a> (または <a href="https://github.com/REditorSupport/vscode-R">VS Code</a> などの他の IDE) で <code>geocompr.Rproj</code> プロジェクトを開き、以下のコマンドで内容を再現することができるようになります。</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">bookdown</span><span class="fu">::</span><span class="fu"><a href="https://pkgs.rstudio.com/bookdown/reference/serve_book.html">serve_book</a></span><span class="op">(</span><span class="st">"."</span><span class="op">)</span></span></code></pre></div>
+<p>再現の詳細は、同プロジェクトの <a href="https://github.com/geocompx/geocompr#reproducing-the-book">GitHub repo</a> を参照。</p>
+</div>
+<div id="getting-involved" class="section level2 unnumbered">
+<h2>プロジェクトに参加<a class="anchor" aria-label="anchor" href="#getting-involved"><i class="fas fa-link"></i></a>
+</h2>
+<p>もし、この本が役に立つと思ったら、以下の方法で応援してください。</p>
+<ul>
+<li>この本について、人々に話す</li>
+<li>
+<a href="https://github.com/geocompx/geocompr">geocompr GitHub repository</a> に<a href="https://help.github.com/articles/about-stars/">スターをつける</a>
+</li>
+<li>
+<a href="https://github.com/geocompx/geocompr/raw/main/CITATION.bib">引用</a>または<a href="https://r.geocompx.org">リンク</a>を貼る</li>
+<li>オンラインで本書について伝える。例えば、Twitterの <a href="https://twitter.com/hashtag/geocompr">#geocompr ハッシュタグ</a> を使う (<a href="https://geocompr.github.io/guestbook/">geocompr.github.ioのゲストブック</a>を参照)、本書を使った<a href="https://github.com/geocompr/geocompr.github.io/edit/source/content/guestbook/index.md">コース</a>について知らせる、等</li>
+<li>一冊<a href="https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577">購入</a>する</li>
+<li>Amazon や <a href="https://www.goodreads.com/book/show/42780859-geocomputation-with-r">Goodreads</a> でレビューを書く</li>
+<li>
+<a href="https://github.com/geocompx/geocompr/issues">GitHub</a> または X (旧 Twitter) あるいは <a href="https://discord.com/invite/PMztXYgNxp">Discord</a> で、質問や提案を行う (日本語の場合、<a href="https://github.com/tokyor/r-wakalang">r-wakalang Slack</a> や <a href="https://www.osgeo.jp/mailing_list">OSGeo 財団メーリングリスト</a> などがある)</li>
+<li>質問に答えたり、質問がわかりにくい場合に説明や再現例を求めるなど何らかの応答をする</li>
+<li>再現可能な研究に向けたオープンソースを皆に広める。とくに、R における地理データを扱う (これは、自分のスキルアップに最適な方法でもある)</li>
+<li>コミュニティによる翻訳
+<ul>
+<li>スペイン語版: <a href="https://geocompr.github.io/es/" class="uri">https://geocompr.github.io/es/</a>
+</li>
+<li>フランス語版: <a href="https://geocompr.github.io/fr/" class="uri">https://geocompr.github.io/fr/</a>
+</li>
+<li>日本語版: <a href="http://babayoshihiko.ddns.net/geo/" class="uri">http://babayoshihiko.ddns.net/geo/</a>
+</li>
+</ul>
+</li>
+</ul>
+<p>詳しくは、<a href="https://github.com/geocompx/geocompr/issues">github.com/geocompx/geocompr</a> 参照。</p>
+<hr>
+<p>本書で使用している地球儀のアイコンは、<a href="https://github.com/Viglino">Jean-Marc Viglino</a> によって作成され、<a href="https://github.com/Viglino/font-gis/blob/main/LICENSE-CC-BY.md">CC-BY 4.0 International</a> のライセンスで提供されています。</p>
+<p><a href="https://www.netlify.com"><img src="https://www.netlify.com/img/global/badges/netlify-color-accent.svg"></a>
+本書のウェブサイト (英語版) は、<a href="https://www.netlify.com/">Netlify</a> でホストされています。</p>
+</div>
+</div>
+  <div class="chapter-nav">
+<div class="empty"></div>
+<div class="next"><a href="foreword-1st-edition.html">序文 (第 1 版)</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#index">ようこそ</a></li>
+<li><a class="nav-link" href="#how-to-contribute">貢献するには</a></li>
+<li><a class="nav-link" href="#reproducibility">本書のコードを再現</a></li>
+<li><a class="nav-link" href="#getting-involved">プロジェクトに参加</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/index-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/index-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>

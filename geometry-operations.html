@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<title>Chapter 5 ジオメトリ演算 | Geocomputation with R</title>
+<meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
+<meta name="description" content="必須パッケージ この章では、Chapter 4 と同じパッケージを使用するが、Chapter 2 でインストールされた spDataLarge を追加している。 library(sf) library(terra) library(dplyr) library(spData) library(spDataLarge)  5.1 イントロダクション これまで本書では、地理データセットの構造...">
+<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta property="og:title" content="Chapter 5 ジオメトリ演算 | Geocomputation with R">
+<meta property="og:type" content="book">
+<meta property="og:url" content="http://124.219.182.167/geo/geometry-operations.html">
+<meta property="og:image" content="http://124.219.182.167/geo/images/cover2.png">
+<meta property="og:description" content="必須パッケージ この章では、Chapter 4 と同じパッケージを使用するが、Chapter 2 でインストールされた spDataLarge を追加している。 library(sf) library(terra) library(dplyr) library(spData) library(spDataLarge)  5.1 イントロダクション これまで本書では、地理データセットの構造...">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Chapter 5 ジオメトリ演算 | Geocomputation with R">
+<meta name="twitter:description" content="必須パッケージ この章では、Chapter 4 と同じパッケージを使用するが、Chapter 2 でインストールされた spDataLarge を追加している。 library(sf) library(terra) library(dplyr) library(spData) library(spDataLarge)  5.1 イントロダクション これまで本書では、地理データセットの構造...">
+<meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
+<!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 5 ジオメトリ演算 | Geocomputation with R">
+<meta name="citation_author" content="Robin Lovelace">
+<meta name="citation_author" content="Jakub Nowosad">
+<meta name="citation_author" content="Jannes Muenchow">
+<meta name="citation_publication_date" content="2019">
+<meta name="citation_isbn" content="9780203730058">
+<link href="libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+<script src="libs/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="libs/leaflet-1.3.1/leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-1.3.1/leaflet.js"></script><link href="libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
+<script src="libs/proj4-2.6.2/proj4.min.js"></script><script src="libs/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="libs/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
+<script src="libs/leaflet-binding-2.2.2/leaflet.js"></script><script src="libs/kePrint-0.0.1/kePrint.js"></script><link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-99618359-1', 'auto');
+      ga('send', 'pageview');
+
+    </script><!-- Google tag (gtag.js) --><script async src="https://www.googletagmanager.com/gtag/js?id=G-VDC2S0ZNH5"></script><script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-VDC2S0ZNH5');
+    </script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- CSS --><link rel="stylesheet" href="style/style.css">
+</head>
+<body data-spy="scroll" data-target="#toc">
+
+<div class="container-fluid">
+<div class="row">
+  <header class="col-sm-12 col-lg-3 sidebar sidebar-book"><a class="sr-only sr-only-focusable" href="#content">Skip to main content</a>
+
+    <div class="d-flex align-items-start justify-content-between">
+      <h2>
+        <a href="index.html" title="">Geocomputation with R</a>
+      </h2>
+      <button class="btn btn-outline-primary d-lg-none ml-2 mt-1" type="button" data-toggle="collapse" data-target="#main-nav" aria-expanded="true" aria-controls="main-nav"><i class="fas fa-bars"></i><span class="sr-only">Show table of contents</span></button>
+    </div>
+
+    <div id="main-nav" class="collapse-lg">
+      <form role="search">
+        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+</form>
+
+      <nav aria-label="Table of contents"><h2>Table of contents</h2>
+        <ul class="book-toc list-unstyled">
+<li><a class="" href="index.html">ようこそ</a></li>
+<li><a class="" href="foreword-1st-edition.html">序文 (第 1 版)</a></li>
+<li><a class="" href="forward-2nd-edition.html">序文 (第 2 版)</a></li>
+<li><a class="" href="preface.html">序文</a></li>
+<li><a class="" href="intro.html"><span class="header-section-number">1</span> はじめに</a></li>
+<li class="book-part">基本機能</li>
+<li><a class="" href="spatial-class.html"><span class="header-section-number">2</span> 地理データと R</a></li>
+<li><a class="" href="attr.html"><span class="header-section-number">3</span> 属性データ操作</a></li>
+<li><a class="" href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></li>
+<li><a class="active" href="geometry-operations.html"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="" href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></li>
+<li><a class="" href="reproj-geo-data.html"><span class="header-section-number">7</span> 地理データの再投影</a></li>
+<li><a class="" href="read-write.html"><span class="header-section-number">8</span> 地理データI/O</a></li>
+<li class="book-part">拡張機能</li>
+<li><a class="" href="adv-map.html"><span class="header-section-number">9</span> R で地図を作成</a></li>
+<li><a class="" href="gis.html"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
+<li><a class="" href="algorithms.html"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
+<li><a class="" href="spatial-cv.html"><span class="header-section-number">12</span> 統計的学習</a></li>
+<li class="book-part">応用</li>
+<li><a class="" href="transport.html"><span class="header-section-number">13</span> 交通解析</a></li>
+<li><a class="" href="location.html"><span class="header-section-number">14</span> 商圏分析</a></li>
+<li><a class="" href="eco.html"><span class="header-section-number">15</span> 生態学</a></li>
+<li><a class="" href="conclusion.html"><span class="header-section-number">16</span> 結論</a></li>
+<li><a class="" href="references.html">References</a></li>
+</ul>
+
+        <div class="book-extra">
+          <p><a id="book-repo" href="https://github.com/geocompx/geocompr">View book source <i class="fab fa-github"></i></a></p>
+        </div>
+      </nav>
+</div>
+  </header><main class="col-sm-12 col-md-9 col-lg-7" id="content"><div id="geometry-operations" class="section level1" number="5">
+<h1>
+<span class="header-section-number">5</span> ジオメトリ演算<a class="anchor" aria-label="anchor" href="#geometry-operations"><i class="fas fa-link"></i></a>
+</h1>
+<div id="prerequisites-05" class="section level2 unnumbered">
+<h2>必須パッケージ<a class="anchor" aria-label="anchor" href="#prerequisites-05"><i class="fas fa-link"></i></a>
+</h2>
+<ul>
+<li>この章では、Chapter <a href="spatial-operations.html#spatial-operations">4</a> と同じパッケージを使用するが、Chapter <a href="spatial-class.html#spatial-class">2</a> でインストールされた <strong>spDataLarge</strong> を追加している。</li>
+</ul>
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Nowosad/spData">spDataLarge</a></span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="introduction-05" class="section level2" number="5.1">
+<h2>
+<span class="header-section-number">5.1</span> イントロダクション<a class="anchor" aria-label="anchor" href="#introduction-05"><i class="fas fa-link"></i></a>
+</h2>
+<p>これまで本書では、地理データセットの構造 (Chapter <a href="spatial-class.html#spatial-class">2</a>)、地理以外の属性 (Chapter <a href="attr.html#attr">3</a>) と空間関係 (Chapter <a href="spatial-operations.html#spatial-operations">4</a>) に基づく操作方法について説明してきた。
+この章では、バッファ作成、ベクタの簡略化と変換、ラスタデータの集計や最サンプルなど、空間オブジェクトの地理的要素の操作に重点を置いている。
+この本を読めば (そして最後にある演習を試した後)、<code>sf</code> オブジェクトのジオメトリ列と、他の地理的オブジェクトとの関係でラスタに表されたピクセルの範囲と地理的位置を理解し、コントロールできるようになるはずである。</p>
+<p>Section <a href="geometry-operations.html#geo-vec">5.2</a> は、「単項」と「二項」演算によるベクタジオメトリの変換を扱う。
+単項演算 (unary operation) とは、単体のジオメトリに対して、線分やポリゴンの単純化、バッファや中心点の作成、「アフィン変換」による単体のジオメトリの移動・拡大・縮小・回転などを行う (Section <a href="geometry-operations.html#simplification">5.2.1</a> ～ Section <a href="geometry-operations.html#affine-transformations">5.2.4</a> を参照)。
+一方、二項変換 (binary transformations) とは、あるジオメトリを別のジオメトリの形状に基づいて変更するもので、Section <a href="geometry-operations.html#clipping">5.2.5</a> で切り取り (clip) を、Section <a href="geometry-operations.html#geometry-unions">5.2.7</a> で結合 (union) を説明する。
+ジオメトリ型の変換 (例えば、ポリゴンからラインへの変換) は、Section <a href="geometry-operations.html#type-trans">5.2.8</a> で実際に行う。</p>
+<p>Section <a href="geometry-operations.html#geo-ras">5.3</a> は、ラスタオブジェクトの幾何学変換を扱っている。
+これは、基本となる画素のサイズと数を変更し、新しい値を割り当てるというものである。
+ラスタの解像度 (ラスタ集計・分解ともいう)、範囲、原点を変更する方法を教える。
+これらの操作は、異なるソースのラスタデータセットの位置合わせを行う場合に特に有効である。
+整列されたラスタオブジェクトは、ピクセル間の一対一の対応を共有し、Section <a href="spatial-operations.html#map-algebra">4.3.2</a> で説明されているマップ代数演算を使用して処理することができる。</p>
+<p>Section <a href="raster-vector.html#raster-vector">6</a> では、ベクタオブジェクトとラスタオブジェクトの間の操作をカバーする。
+ラスタ値をベクタジオメトリで「マスク」し、「抽出」する方法を紹介する。
+重要なのは、ラスタデータを「ポリゴン化」し、ベクタデータを「ラスタ化」する方法を示し、この2つのデータモデルをより互換性のあるものにすることである。</p>
+</div>
+<div id="geo-vec" class="section level2" number="5.2">
+<h2>
+<span class="header-section-number">5.2</span> ベクタデータに対するジオメトリ操作<a class="anchor" aria-label="anchor" href="#geo-vec"><i class="fas fa-link"></i></a>
+</h2>
+<p>ここでは、ベクタ (<code>sf</code>) オブジェクトのジオメトリを何らかの方法で変更する操作について説明する。
+前の章 (Section <a href="spatial-operations.html#spatial-vec">4.2</a>) で紹介した空間データ操作よりも高度なもので、ここではジオメトリを掘り下げていくことがある。
+このセクションで説明する関数は、クラス <code>sf</code> のオブジェクトに加えて、クラス <code>sfc</code> のオブジェクトにも作用する。</p>
+<div id="simplification" class="section level3" number="5.2.1">
+<h3>
+<span class="header-section-number">5.2.1</span> 簡略化<a class="anchor" aria-label="anchor" href="#simplification"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+簡略化とは、通常、縮尺の小さい地図で使用するために、ベクタオブジェクト (線やポリゴン) を一般化する処理のことである。
+オブジェクトを単純化するもう一つの理由は、それらが消費するメモリ、ハードディスク容量、ネットワーク帯域幅の量を減らすためである。
+インタラクティブ地図として公開する前に、複雑な形状を簡略化することが賢明だろう。
+<strong>sf</strong> パッケージは <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify()</a></code> を提供する。これは Douglas-Peucker アルゴリズムの実装を使用して、頂点数を削減するものである。
+<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify()</a></code> は、<code>dTolerance</code> を使用することで、一般化のレベルを地図で使われている単位で制御することができる <span class="citation">(詳細は <a href="references.html#ref-douglas_algorithms_1973">Douglas and Peucker 1973</a>)</span>。
+Figure <a href="geometry-operations.html#fig:seine-simp">5.1</a> は、セーヌ川とその支流を表すジオメトリ <code>LINESTRING</code> を簡略化したものである。
+以下のコマンドで簡略化したジオメトリを作成してみよう。</p>
+<div class="sourceCode" id="cb160"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">seine_simp</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify</a></span><span class="op">(</span><span class="va">seine</span>, dTolerance <span class="op">=</span> <span class="fl">2000</span><span class="op">)</span> <span class="co"># 2000 m</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:seine-simp"></span>
+<img src="figures/seine-simp-1.png" alt="seine のオリジナルと簡略化した形状の比較。" width="100%"><p class="caption">
+FIGURE 5.1: seine のオリジナルと簡略化した形状の比較。
+</p>
+</div>
+<p>ここでできた <code>seine_simp</code> オブジェクトは、元の <code>seine</code> のコピーであるが、頂点の数は少なくなっている。
+これは明らかで、以下の検証のように、結果は視覚的にシンプルになり (Figure <a href="geometry-operations.html#fig:seine-simp">5.1</a>、右)、元のオブジェクトよりもメモリ消費が少ない。</p>
+<div class="sourceCode" id="cb161"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span><span class="op">(</span><span class="va">seine</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 18096 bytes</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/object.size.html">object.size</a></span><span class="op">(</span><span class="va">seine_simp</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 9112 bytes</span></span></code></pre></div>
+<p>
+簡略化はポリゴンにも適用できる。
+下の例は、米国本土 <code>us_states</code> を表している。</p>
+<div class="sourceCode" id="cb162"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">us_states_simp1</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify</a></span><span class="op">(</span><span class="va">us_states</span>, dTolerance <span class="op">=</span> <span class="fl">100000</span><span class="op">)</span> <span class="co"># 100 km</span></span></code></pre></div>
+<p><code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify()</a></code> の制限として、ジオメトリ単位でオブジェクトを簡略化することが挙げられる。
+このため、「トポロジー」が失われ、Figure <a href="geometry-operations.html#fig:us-simp">5.2</a> (パネル右上) に示すような、重なり合った「穴のあいた」面単位になってしまうのである。
+<strong>rmapshaper</strong> の <code>ms_simplify()</code> が代替となる。
+デフォルトでは、Douglas-Peucker アルゴリズムのいくつかの制限を克服した Visvalingam アルゴリズムが使用される <span class="citation">(<a href="references.html#ref-visvalingam_line_1993">Visvalingam and Whyatt 1993</a>)</span>。
+<!-- https://bost.ocks.org/mike/simplify/ -->
+次のコードチャンクは、この関数を使用して、<code>us_states</code> を簡略化している。
+結果は入力 (引数 <code>keep</code> で設定) の 1% の頂点しか持たないが、<code>keep_shapes = TRUE</code> を設定したため、オブジェクトの数はそのままである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+マルチポリゴンオブジェクトの簡略化では、&lt;code&gt;keep_shapes&lt;/code&gt; 引数が TRUE に設定されていても、内部の小さなポリゴンが削除されることがある。これを防ぐには、&lt;code&gt;explode = TRUE&lt;/code&gt; を設定する必要がある。このオプションは、単純化する前に、すべてのマルチポリゴンを個別のポリゴンに変換する。&lt;/p&gt;"><sup>22</sup></a></p>
+<div class="sourceCode" id="cb163"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 保持するポイントの割合 (0～1、デフォルト 0.05)</span></span>
+<span><span class="va">us_states_simp2</span> <span class="op">=</span> <span class="fu">rmapshaper</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_simplify.html">ms_simplify</a></span><span class="op">(</span><span class="va">us_states</span>, keep <span class="op">=</span> <span class="fl">0.01</span>,</span>
+<span>                                          keep_shapes <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p>
+簡略化の代わりに、ポリゴンや線のジオメトリの境界を平滑化するという方法もあり、<strong>smoothr</strong> パッケージで実装されている。
+平滑化はジオメトリのエッジを補間するため、必ずしも頂点の数が少なくなるわけではないが、ラスタを空間的にベクトル化したジオメトリを扱うときに特に有用である (このトピックは Chapter <a href="raster-vector.html#raster-vector">6</a> で説明する)。
+<strong>Smoothr</strong> は、Gaussian kernel 回帰、Chaikin’s corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と<a href="https://strimas.com/smoothr/">web</a>で説明されている。
+<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify()</a></code> と同様に、平滑化アルゴリズムは「トポロジー」を保存しないことに注意。
+<strong>smoothr</strong> の主要関数は <code><a href="https://rdrr.io/r/stats/smooth.html">smooth()</a></code> であり、 <code>method</code> 引数は使用する平滑化手法を指定する。
+以下は、Gaussian kernel 回帰を使用して、<code>method=ksmooth</code> を使用して米国の州の境界線を滑らかにする。
+引数 <code>smoothness</code> は、形状を滑らかにするために使用するガウスの帯域幅を制御する。デフォルト値は 1。</p>
+<div class="sourceCode" id="cb164"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">us_states_simp3</span> <span class="op">=</span> <span class="fu">smoothr</span><span class="fu">::</span><span class="fu"><a href="https://strimas.com/smoothr/reference/smooth.html">smooth</a></span><span class="op">(</span><span class="va">us_states</span>, method <span class="op">=</span> <span class="st">"ksmooth"</span>, smoothness <span class="op">=</span> <span class="fl">6</span><span class="op">)</span></span></code></pre></div>
+<p>最後に、元のデータセットと 2 つの簡易版を視覚的に比較してみよう。
+Figure <a href="geometry-operations.html#fig:us-simp">5.2</a> で、Douglas-Peucker (<code>st_simplify</code>)、Visvalingam (<code>ms_simplify</code>)、Gaussian kernel 回帰 (<code>smooth(method=ksmooth</code>) アルゴリズムの出力に違いがあることがわかる。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:us-simp"></span>
+<img src="figures/us-simp-1.png" alt="ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。" width="100%"><p class="caption">
+FIGURE 5.2: ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。
+</p>
+</div>
+</div>
+<div id="centroids" class="section level3" number="5.2.2">
+<h3>
+<span class="header-section-number">5.2.2</span> 重心<a class="anchor" aria-label="anchor" href="#centroids"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+重心 (centroid) 演算は、地理的な物体の中心を特定するものである。
+統計的な中心傾向の測定 (「平均」の平均値や中央値の定義を含む) と同様に、物体の地理的な中心を定義する方法はたくさんある。
+いずれも、より複雑なベクタオブジェクトの一点表現を作成する。</p>
+<p>重心の操作で最もよく使われるのは、<u>地理的重心</u>である。
+このタイプの重心操作 (「セントロイド」とも呼ばれる) は、空間オブジェクトにおける質量の中心を表す (指の上で皿のバランスをとることを想像してほしい)。
+地理的重心は、複雑な形状をシンプルな点で表現したり、ポリゴン間の距離を推定したりと、さまざまな用途に利用されている。
+これらは、以下のコードで示すように、<strong>sf</strong> 関数 (<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid()</a></code>) で計算することができる。では、New Zealand の地域とセーヌ川の支流の地理的重心 (Figure <a href="geometry-operations.html#fig:centr">5.3</a> の黒い点で示される) を生成してみよう。</p>
+<div class="sourceCode" id="cb165"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nz_centroid</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span></span>
+<span><span class="va">seine_centroid</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">seine</span><span class="op">)</span></span></code></pre></div>
+<p>地理的重心は、親オブジェクトの境界の外にあることもある (ドーナツを想像すればよい)。
+このような場合、親オブジェクトに点があることを保証するために、<em>point on surface</em> オペレーションを使用することができ (例: 島国のような不規則なマルチポリゴンオブジェクトのラベル付け)、Figure <a href="geometry-operations.html#fig:centr">5.3</a> の赤い点に示されている。
+これらの赤い点は、常に親オブジェクトの上にあることに確認しておこう。
+<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_point_on_surface()</a></code> を使い、以下のように作成する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+&lt;code&gt;st_point_on_surface()&lt;/code&gt; の動作の説明は、&lt;a href="https://gis.stackexchange.com/a/76563/20955" class="uri"&gt;https://gis.stackexchange.com/a/76563/20955&lt;/a&gt; に記載されている。&lt;/p&gt;'><sup>23</sup></a></p>
+<div class="sourceCode" id="cb166"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nz_pos</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_point_on_surface</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span></span>
+<span><span class="va">seine_pos</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_point_on_surface</a></span><span class="op">(</span><span class="va">seine</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:centr"></span>
+<img src="figures/centr-1.png" alt="New Zealand の地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「サーフェス上の点」(赤い点)。" width="100%"><p class="caption">
+FIGURE 5.3: New Zealand の地域 (左) とセーヌ川 (右) のデータセットの重心 (黒い点) と「サーフェス上の点」(赤い点)。
+</p>
+</div>
+<p>重心には、他にも<u>チェビシェフ中心</u>や<u>ビジュアル中心</u>などが存在する。
+ここでは深入りしないが、Chapter <a href="algorithms.html#algorithms">11</a> で見るように、R を使って計算することが可能である。</p>
+</div>
+<div id="buffers" class="section level3" number="5.2.3">
+<h3>
+<span class="header-section-number">5.2.3</span> バッファ<a class="anchor" aria-label="anchor" href="#buffers"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+バッファとは、フィーチャから一定距離内の領域を表すポリゴンのことである。
+入力が点、線、ポリゴンのいずれであっても、出力はバッファとなる。
+簡略化 (可視化やファイルサイズの縮小によく使われる) とは異なり、バッファ作成は地理的なデータ解析に使われる傾向がある。
+この線から所定の距離内にある点はいくつあるか?
+この新店舗から移動可能な距離にあるのは、どのような層なのだろうか?
+このような疑問には、関心のある地理的要素の周囲にバッファを作成することで回答し、可視化することができる。</p>
+<p>Figure <a href="geometry-operations.html#fig:buffs">5.4</a> は、セーヌ川と支流を囲む様々な大きさの緩衝地帯 (5 km と 50 km)を示している。
+これらのバッファは以下のコマンドで作成できる。コマンド <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer()</a></code> は少なくとも 2 つの引数を必要とする。入力ジオメトリと、CRS の単位 (この場合はメートル) で指定された距離である。</p>
+<div class="sourceCode" id="cb167"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">seine_buff_5km</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">seine</span>, dist <span class="op">=</span> <span class="fl">5000</span><span class="op">)</span></span>
+<span><span class="va">seine_buff_50km</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">seine</span>, dist <span class="op">=</span> <span class="fl">50000</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:buffs"></span>
+<img src="figures/buffs-1.png" alt="Seine データセット周辺の 5 km (左) と 50 km (右) のバッファ。ジオメトリフィーチャごとに 1 つのバッファが作成されることを反映した色に注目。" width="100%"><p class="caption">
+FIGURE 5.4: Seine データセット周辺の 5 km (左) と 50 km (右) のバッファ。ジオメトリフィーチャごとに 1 つのバッファが作成されることを反映した色に注目。
+</p>
+</div>
+
+<div class="rmdnote">
+<p><code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer()</a></code> には、追加の引数がある。
+最も重要な引数は、以下の通り。</p>
+<ul>
+<li>
+<code>nQuadSegs</code> (GEOS エンジン使用時): これは「1 象限あたりの分割数」を意味し、デフォルトでは 30 に設定されている (バッファで作られる円は <span class="math inline">\(4 \times 30 = 120\)</span> ラインで構成されることを意味する)。
+この引数が有用な例外的なケースとしては、バッファ操作の出力によって消費されるメモリが大きな懸念材料である場合 (この場合は減らす)、または非常に高い精度が必要な場合 (この場合は増やす)。</li>
+<li>
+<code>max_cells</code> (S2 エンジン使用時): 値が大きいほどバッファが滑らかになるが、時間がかかる</li>
+<li>
+<code>endCapStyle</code> と <code>joinStyle</code> (GEOS エンジン使用時): バッファの縁の見た目を制御する</li>
+<li>
+<code>singleSide</code> (GEOS エンジン使用時): バッファを入力ジオメトリの片側につくるか両側につくるかを制御する</li>
+</ul>
+</div>
+</div>
+<div id="affine-transformations" class="section level3" number="5.2.4">
+<h3>
+<span class="header-section-number">5.2.4</span> アフィン変換<a class="anchor" aria-label="anchor" href="#affine-transformations"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+アフィン変換とは、直線と平行を保存する変換のことである。
+ただし、角度や長さは必ずしも保存されるとは限らない。
+アフィン変換には、特に、平行移動、拡大縮小、回転が含まれる。
+さらに、これらを任意に組み合わせて使用することも可能である。
+アフィン変換はジオコンピュテーションに不可欠な要素である。
+例えば、ラベルの配置には平行移動が必要であり、非連続領域のカルトグラムでは拡大縮小が使用され (Section <a href="adv-map.html#other-mapping-packages">9.6</a> 参照)、歪んだ地図や間違った投影に基づいて作成されたジオメトリを再投影または改善する際には多くのアフィン変換が適用される。
+<strong>sf</strong> パッケージは <code>sfg</code> と <code>sfc</code> のクラスのオブジェクトに対してアフィン変換を実装している。</p>
+<div class="sourceCode" id="cb168"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nz_sfc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span></span></code></pre></div>
+<p>平行移動は、すべての点を地図単位で同じ距離だけ移動させる。
+ベクタオブジェクトに数値ベクタを追加することで、実現できるだろう。
+例えば、以下のコードでは、すべての y 座標を北に 10 万メートル移動させ、x 座標はそのままにしている (Figure <a href="geometry-operations.html#fig:affine-trans">5.5</a> 左図)。</p>
+<div class="sourceCode" id="cb169"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nz_shift</span> <span class="op">=</span> <span class="va">nz_sfc</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100000</span><span class="op">)</span></span></code></pre></div>
+<p>拡大縮小は、オブジェクトを係数倍ずつ拡大または縮小する機能である。
+グローバルにもローカルにも適用可能である。
+グローバル拡大縮小は、すべてのジオメトリの位相関係を維持したまま、原点座標を基準としてすべての座標値を増減させる。
+<code>sfg</code>、<code>sfc</code> オブジェクトの減算または乗算によって行うことができる。</p>
+<p>ローカル拡大縮小はジオメトリを独立して扱い、ジオメトリが拡大縮小されるポイント (重心など) を必要とする。
+以下の例では、各ジオメトリは重心を中心に2倍に縮小されている (Figure <a href="geometry-operations.html#fig:affine-trans">5.5</a> 中央)。
+そのために、まず各オブジェクトは、その中心が <code>0, 0</code> (<code>(nz_sfc - nz_centroid_sfc)</code>) の座標となるように移動される。
+次に、ジオメトリのサイズを半分に縮小する (<code>* 0.5</code>)。
+最後に、各オブジェクトの重心を入力データの座標に戻す (<code>+ nz_centroid_sfc</code>)。</p>
+<div class="sourceCode" id="cb170"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nz_centroid_sfc</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">nz_sfc</span><span class="op">)</span></span>
+<span><span class="va">nz_scale</span> <span class="op">=</span> <span class="op">(</span><span class="va">nz_sfc</span> <span class="op">-</span> <span class="va">nz_centroid_sfc</span><span class="op">)</span> <span class="op">*</span> <span class="fl">0.5</span> <span class="op">+</span> <span class="va">nz_centroid_sfc</span></span></code></pre></div>
+<p>2 次元座標の回転には、回転行列が必要である。</p>
+<p><span class="math display">\[
+R =
+\begin{bmatrix}
+\cos \theta &amp; -\sin \theta \\  
+\sin \theta &amp; \cos \theta \\
+\end{bmatrix}
+\]</span></p>
+<p>時計回りにポイントを回転させる。
+回転行列は R で次のように実装することができる。</p>
+<div class="sourceCode" id="cb171"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">rotation</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">a</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">r</span> <span class="op">=</span> <span class="va">a</span> <span class="op">*</span> <span class="va">pi</span> <span class="op">/</span> <span class="fl">180</span> <span class="co"># 度をラジアンに変換</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, <span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html">sin</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html">cos</a></span><span class="op">(</span><span class="va">r</span><span class="op">)</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">}</span> </span></code></pre></div>
+<p><code>rotation</code> 関数は、1 つの引数 <code>a</code> (回転角度, angle) を度単位で受け取る。
+重心のような選択された点を中心に回転させることができる (Figure <a href="geometry-operations.html#fig:affine-trans">5.5</a> 右図)。
+その他の例については、<code><a href="https://r-spatial.github.io/sf/articles/sf3.html">vignette("sf3")</a></code> を参照 (訳注: <a href="https://www.uclmail.net/users/babayoshihiko/R/index.html">日本語版</a>)。</p>
+<div class="sourceCode" id="cb172"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nz_rotate</span> <span class="op">=</span> <span class="op">(</span><span class="va">nz_sfc</span> <span class="op">-</span> <span class="va">nz_centroid_sfc</span><span class="op">)</span> <span class="op">*</span> <span class="fu">rotation</span><span class="op">(</span><span class="fl">30</span><span class="op">)</span> <span class="op">+</span> <span class="va">nz_centroid_sfc</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:affine-trans"></span>
+<img src="figures/affine-trans-1.png" alt="アフィン変換 (平行移動、拡大縮小、回転)。" width="100%"><p class="caption">
+FIGURE 5.5: アフィン変換 (平行移動、拡大縮小、回転)。
+</p>
+</div>
+<p>最後に、新しく作成されたジオメトリは、<code><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry()</a></code> 関数を使用して古いジオメトリを置き換えることができる。</p>
+<div class="sourceCode" id="cb173"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">nz_scale_sf</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_set_geometry</a></span><span class="op">(</span><span class="va">nz</span>, <span class="va">nz_scale</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="clipping" class="section level3" number="5.2.5">
+<h3>
+<span class="header-section-number">5.2.5</span> 切り取り (clip)<a class="anchor" aria-label="anchor" href="#clipping"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+空間切り取り (clip) は、空間部分集合の作成の一種で、影響を受けるフィーチャの少なくとも一部の <code>geometry</code> 列を変更するものである。</p>
+<p>切り取りは、
+点よりも複雑なフィーチャである線、ポリゴン、およびそれらの複合にしか適用できない。
+コンセプトを説明するために、まずは簡単な例で説明する。
+中心点が互いに 1 単位離れていて、半径が 1 である 2 つの重なり合った円を用意しよう (Figure <a href="geometry-operations.html#fig:points">5.6</a>)。</p>
+<div class="sourceCode" id="cb174"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">b</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="co"># 点を二つ作成</span></span>
+<span><span class="va">b</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">b</span>, dist <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="co"># 点を円に変換</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">b</span>, border <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/text.html">text</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span><span class="op">)</span>, y <span class="op">=</span> <span class="fl">1</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span>, cex <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="co"># テキストを追加</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:points"></span>
+<img src="figures/points-1.png" alt="重なり合った円。" width="100%"><p class="caption">
+FIGURE 5.6: 重なり合った円。
+</p>
+</div>
+<p>どちらかの円を選択するのではなく、<code>x</code> <u>と</u> <code>y</code> の両方で覆われた空間を選択したい。
+これは、関数 <code><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_intersection()</a></code>、左手と右手の円を表す <code>x</code> と <code>y</code> というオブジェクトを使って説明することができる (Figure <a href="geometry-operations.html#fig:circle-intersection">5.7</a>)。</p>
+<div class="sourceCode" id="cb175"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">op</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html">par</a></span><span class="op">(</span>mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">4</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">x</span> <span class="op">=</span> <span class="va">b</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">y</span> <span class="op">=</span> <span class="va">b</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
+<span><span class="va">x_and_y</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_intersection</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">b</span>, border <span class="op">=</span> <span class="st">"gray"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">x_and_y</span>, col <span class="op">=</span> <span class="st">"lightgray"</span>, border <span class="op">=</span> <span class="st">"gray"</span>, add <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="co"># 範囲を intersect</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:circle-intersection"></span>
+<img src="figures/circle-intersection-1.png" alt="重なり合った円はグレーで表示され、円同士が交差していることを示す。" width="100%"><p class="caption">
+FIGURE 5.7: 重なり合った円はグレーで表示され、円同士が交差していることを示す。
+</p>
+</div>
+<p>次のコードチャンクは、<code>x</code> と <code>y</code> を表すベン図のすべての組み合わせに対して、これがどのように機能するかを示している。これは、書籍 <em>R for Data Science</em> の <a href="https://r4ds.had.co.nz/transform.html#logical-operators">Figure 5.1</a> から着想を得ている <span class="citation">(<a href="references.html#ref-grolemund_r_2016">Grolemund and Wickham 2016</a>)</span>。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:venn-clip"></span>
+<img src="figures/venn-clip-1.png" alt="論理演算子の空間的等価性。" width="100%"><p class="caption">
+FIGURE 5.8: 論理演算子の空間的等価性。
+</p>
+</div>
+</div>
+<div id="部分集合と切り取り-clip" class="section level3" number="5.2.6">
+<h3>
+<span class="header-section-number">5.2.6</span> 部分集合と切り取り (clip)<a class="anchor" aria-label="anchor" href="#%E9%83%A8%E5%88%86%E9%9B%86%E5%90%88%E3%81%A8%E5%88%87%E3%82%8A%E5%8F%96%E3%82%8A-clip"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+オブジェクトの切り取りは、その形状を変更することができるが、オブジェクトを部分集合を作成することもでき、切り取り/部分集合オブジェクトと交差する (または部分的に交差する) フィーチャのみを返す。
+この点を説明するために、を Figure <a href="geometry-operations.html#fig:venn-clip">5.8</a> の円 <code>x</code> と <code>y</code> の境界ボックスをカバーする点の部分集合を作成しよう。
+ある点は1つの円の中に入り、ある点は両方の円の中に入り、ある点はどちらの円の中にも入らない。
+<code><a href="https://r-spatial.github.io/sf/reference/st_sample.html">st_sample()</a></code> は、円 <code>x</code> と <code>y</code> の範囲内にある点を <u>単純なランダム化</u>をして生成し、Figure <a href="geometry-operations.html#fig:venn-subset">5.9</a> に示すような出力を得るために、以下のように使用する。ここで一つ問題がある。円 <code>x</code> と <code>y</code> 両方と交差する点の部分集合はどのように得られるだろうか？</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:venn-subset"></span>
+<img src="figures/venn-subset-1.png" alt="円x、yを囲むバウンディングボックス内にランダムに分布する点。オブジェクトx、yの両方と交差する点がハイライトされる。" width="100%"><p class="caption">
+FIGURE 5.9: 円x、yを囲むバウンディングボックス内にランダムに分布する点。オブジェクトx、yの両方と交差する点がハイライトされる。
+</p>
+</div>
+<div class="sourceCode" id="cb176"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">bb</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">box</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="va">bb</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2024</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_sample.html">st_sample</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">box</span>, size <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">x_and_y</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_intersection</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span></span></code></pre></div>
+<p>以下のコードは、同じ結果を得るための3つの方法を示している。
+以下のコードチャンクの最初の行に示すように、<code>x</code> と <code>y</code> の交差 (前のコードチャンクでは <code>x_and_y</code> で表される) を直接部分集合オブジェクトとして使用することができる。
+また、以下のコードチャンクの 2 行目で示すように、<code>p</code> で表される入力点と部分集合/クリッピングオブジェクト <code>x_and_y</code> との<u>交点</u>を求めることもできる。
+この第二のアプローチは、<code>x_and_y</code> と部分的に交差するフィーチャを返すが、部分集合・オブジェクトの境界を越える空間的に広範囲なフィーチャについては、形状を修正したものを返すことになる。
+3 つ目のアプローチは、前の章で紹介した二項の空間述語 <code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects()</a></code> を使って部分集合オブジェクトを作成することである。
+結果は (属性名の表面的な違いを除いて) 同じだが、実装は大きく異なる。</p>
+<div class="sourceCode" id="cb177"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># way #1</span></span>
+<span><span class="va">p_xy1</span> <span class="op">=</span> <span class="va">p</span><span class="op">[</span><span class="va">x_and_y</span><span class="op">]</span></span>
+<span><span class="co"># way #2</span></span>
+<span><span class="va">p_xy2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_intersection</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">x_and_y</span><span class="op">)</span></span>
+<span><span class="co"># way #3</span></span>
+<span><span class="va">sel_p_xy</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">x</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">&amp;</span> </span>
+<span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects</a></span><span class="op">(</span><span class="va">p</span>, <span class="va">y</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span></span>
+<span><span class="va">p_xy3</span> <span class="op">=</span> <span class="va">p</span><span class="op">[</span><span class="va">sel_p_xy</span><span class="op">]</span></span></code></pre></div>
+<p>上記の例は、応用というより教育的な目的で作成されたものであり、R で地理的ベクタオブジェクトを扱うための理解を深めるために結果を再現することを勧める。しかし、これは、どの実装を使うべきかという重要な問題を提起している。
+一般に、上記の最初のアプローチのような簡潔な実装が好まれる。
+Chapter <a href="algorithms.html#algorithms">11</a> では、同じ技術やアルゴリズムの異なる実装を選択する問題に戻る。</p>
+</div>
+<div id="geometry-unions" class="section level3" number="5.2.7">
+<h3>
+<span class="header-section-number">5.2.7</span> ジオメトリ結合<a class="anchor" aria-label="anchor" href="#geometry-unions"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+Section <a href="attr.html#vector-attribute-aggregation">3.2.3</a> で見たように、空間的な集約は、同グループの接しているポリゴンのジオメトリを静かにディゾルブ (dissolve) させることができる。
+以下のコードでは、Base と <strong>dplyr</strong> 関数を使って 48 の米国の州と District of Columbia (<code>us_states</code>) を 4 つの地域に集約している (結果は Figure <a href="geometry-operations.html#fig:us-regions">5.10</a> を参照)。</p>
+<div class="sourceCode" id="cb178"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">regions</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">us_states</span><span class="op">[</span>, <span class="st">"total_pop_15"</span><span class="op">]</span>, by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">us_states</span><span class="op">$</span><span class="va">REGION</span><span class="op">)</span>,</span>
+<span>                    FUN <span class="op">=</span> <span class="va">sum</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">regions2</span> <span class="op">=</span> <span class="va">us_states</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">REGION</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>pop <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">total_pop_15</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:us-regions"></span>
+<img src="figures/us-regions-1.png" alt="連続したポリゴンに対する空間的な集計。アメリカの州の人口を地域に集計し、人口を色で表した。この操作により、州間の境界が自動的に解消されることに注意。" width="100%"><p class="caption">
+FIGURE 5.10: 連続したポリゴンに対する空間的な集計。アメリカの州の人口を地域に集計し、人口を色で表した。この操作により、州間の境界が自動的に解消されることに注意。
+</p>
+</div>
+<p>ジオメトリ的にはどうなっているのだろうか？
+裏側では、<code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> と <code><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize()</a></code> の両方がジオメトリを結合し、<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union()</a></code> を使ってジオメトリ間の境界を解消している。
+これは、アメリカ西部の連合体を作成する以下のコードチャンクで実証されている。</p>
+<div class="sourceCode" id="cb179"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">us_west</span> <span class="op">=</span> <span class="va">us_states</span><span class="op">[</span><span class="va">us_states</span><span class="op">$</span><span class="va">REGION</span> <span class="op">==</span> <span class="st">"West"</span>, <span class="op">]</span></span>
+<span><span class="va">us_west_union</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="va">us_west</span><span class="op">)</span></span></code></pre></div>
+<p>この関数は 2 つの形状を受け取り、結合することができる。以下のコードでは、Texas を組み込んだ西側のブロックを結合している (課題: 結果を再現してプロットしなさい)。</p>
+<div class="sourceCode" id="cb180"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">texas</span> <span class="op">=</span> <span class="va">us_states</span><span class="op">[</span><span class="va">us_states</span><span class="op">$</span><span class="va">NAME</span> <span class="op">==</span> <span class="st">"Texas"</span>, <span class="op">]</span></span>
+<span><span class="va">texas_union</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="va">us_west_union</span>, <span class="va">texas</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div id="type-trans" class="section level3" number="5.2.8">
+<h3>
+<span class="header-section-number">5.2.8</span> ジオメトリ型の変換<a class="anchor" aria-label="anchor" href="#type-trans"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+ジオメトリキャストは、ジオメトリ型の変換を可能にする強力な操作である。
+これは、<strong>sf</strong> パッケージの <code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code> 関数で実装されている。
+重要なことは、<code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code> は、単一のシンプルフィーチャ (<code>sfg</code>) オブジェクト、シンプルフィーチャ列 (<code>sfc</code>)、およびシンプルフィーチャオブジェクトで異なる動作をすることである。</p>
+<p>ここでは、複合点を作成して、シンプルフィーチャ (<code>sfg</code>) オブジェクトに対するジオメトリ型のキャストの動作を説明する。</p>
+<div class="sourceCode" id="cb181"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">multipoint</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_multipoint</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">5</span>, <span class="fl">1</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>この場合、<code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code> は新しいオブジェクトを線やポリゴン (Figure <a href="geometry-operations.html#fig:single-cast">5.11</a>) に変換するのに便利である。</p>
+<div class="sourceCode" id="cb182"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">linestring</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">multipoint</span>, <span class="st">"LINESTRING"</span><span class="op">)</span></span>
+<span><span class="va">polyg</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">multipoint</span>, <span class="st">"POLYGON"</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:single-cast"></span>
+<img src="figures/single-cast-1.png" alt="多点ジオメトリからキャストされた線とポリゴンの例。" width="100%"><p class="caption">
+FIGURE 5.11: 多点ジオメトリからキャストされた線とポリゴンの例。
+</p>
+</div>
+<p>複合点から線への変換は、GPS 測定やジオタグ付きメディアなど、順序付けられたポイント観測から線オブジェクトを作成する一般的な操作である。
+これにより、移動した経路の長さを計算するなどの空間演算を行うことができる。
+複合点や線からポリゴンへの変換は、例えば、湖の周囲で取得した GPS 測定値のセットや建物の敷地の角から面積を計算するためによく使われる。</p>
+<p>また、<code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code> では、逆の変換をすることも可能である。</p>
+<div class="sourceCode" id="cb183"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">multipoint_2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">linestring</span>, <span class="st">"MULTIPOINT"</span><span class="op">)</span></span>
+<span><span class="va">multipoint_3</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">polyg</span>, <span class="st">"MULTIPOINT"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/all.equal.html">all.equal</a></span><span class="op">(</span><span class="va">multipoint</span>, <span class="va">multipoint_2</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/all.equal.html">all.equal</a></span><span class="op">(</span><span class="va">multipoint</span>, <span class="va">multipoint_3</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
+
+<div class="rmdnote">
+単純なジオメトリ (<code>sfg</code>) に対して、<code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code> は、非複合タイプから複合タイプ (例えば、<code>POINT</code> から <code>MULTIPOINT</code>) や複合タイプから非複合タイプへのジオメトリキャストも提供する。
+しかし、複合タイプから非複合タイプにキャストする場合、古いオブジェクトの最初の要素だけが出力オブジェクトに残る。
+</div>
+<p>シンプルフィーチャのジオメトリ列 (<code>sfc</code>) とシンプルフィーチャオブジェクトのジオメトリキャストは、ほとんどの場合、<code>sfg</code> の場合と同じように動作する。
+重要な違いの 1 つは、複合タイプから非複合タイプへの変換である。
+この処理の結果、<code>sfc</code> または <code>sf</code> の複合オブジェクトは、多数の非複合オブジェクトに分割される。</p>
+<p>以下のような <code>sf</code> オブジェクトを持っている。</p>
+<ul>
+<li>
+<code>POI</code> - 点 (定義上、一つの点)</li>
+<li>
+<code>MPOI</code> - 4 点からなる複合点</li>
+<li>
+<code>LIN</code> - 5 点からなる線</li>
+<li>
+<code>MLIN</code> - 二つの線の複合線 (5 つの点と 2 つの点)</li>
+<li>
+<code>POL</code> - ポリゴン (5 つの点)</li>
+<li>
+<code>MPOL</code> - 二つのポリゴンからなる複合ポリゴン (どちらも 5 つの点)</li>
+<li>
+<code>GC</code> - GEOMETRYCOLLECTION で複合点 (4 つの点) と線 (5 つの点)</li>
+</ul>
+<p>Table <a href="geometry-operations.html#tab:sfs-st-cast">5.1</a> は、シンプルフィーチャに対して可能なジオメトリタイプの変換を示したものである。
+単一のシンプルフィーチャ (表の最初の列で表される) は、Table <a href="geometry-operations.html#tab:sfs-st-cast">5.1</a> の列で表される複数のジオメトリタイプに変換することができる。
+例えば、1 つの点から複数行の文字列やポリゴンに変換することはできない。<code>[1, 4:5]</code> のセルに NA が含まれている理由を説明する。
+一部の変換では、単一のフィーチャ入力を複数のサブフィーチャに分割し、<code>sf</code> オブジェクトを「拡張」(重複する属性値を持つ新しい行を追加) している。
+例えば、5 組の座標からなる多点ジオメトリを「POINT」ジオメトリに変換すると、出力には 5 つのフィーチャが含まれる。</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:sfs-st-cast">TABLE 5.1: </span>シンプルフィーチャジオメトリ (Section 2.1 参照) に対する 入力型は行、出力型は列で指定。</caption>
+<thead><tr class="header">
+<th align="left"></th>
+<th align="right">POI</th>
+<th align="right">MPOI</th>
+<th align="right">LIN</th>
+<th align="right">MLIN</th>
+<th align="right">POL</th>
+<th align="right">MPOL</th>
+<th align="right">GC</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">POI(1)</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">MPOI(1)</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">LIN(1)</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">MLIN(1)</td>
+<td align="right">7</td>
+<td align="right">2</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">POL(1)</td>
+<td align="right">5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">MPOL(1)</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+<td align="right">2</td>
+<td align="right">1</td>
+<td align="right">1</td>
+</tr>
+<tr class="odd">
+<td align="left">GC(1)</td>
+<td align="right">9</td>
+<td align="right">1</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">1</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>Note:</strong>
+注: 括弧内の値はフィーチャ数を表し、NA は操作が不可能なことを表す。</p>
+<p>例として、新しいオブジェクトである <code>multilinestring_sf</code> にジオメトリタイプの変換を適用してみよう (Figure <a href="geometry-operations.html#fig:line-cast">5.12</a> の左側)。</p>
+<div class="sourceCode" id="cb184"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">multilinestring_list</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">4</span>, <span class="fl">5</span>, <span class="fl">3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>, </span>
+<span>                            <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>                            <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">multilinestring</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_multilinestring</a></span><span class="op">(</span><span class="op">(</span><span class="va">multilinestring_list</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">multilinestring_sf</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html">st_sf</a></span><span class="op">(</span>geom <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span><span class="va">multilinestring</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">multilinestring_sf</span></span>
+<span><span class="co">#&gt; Simple feature collection with 1 feature and 0 fields</span></span>
+<span><span class="co">#&gt; Geometry type: MULTILINESTRING</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 1 ymin: 1 xmax: 4 ymax: 5</span></span>
+<span><span class="co">#&gt; CRS:           NA</span></span>
+<span><span class="co">#&gt;                             geom</span></span>
+<span><span class="co">#&gt; 1 MULTILINESTRING ((1 5, 4 3)...</span></span></code></pre></div>
+<p>道路や河川のネットワークをイメージしていただきたい。
+新しいオブジェクトは、すべての線を定義する 1 つの行だけを持っている。
+このため、各線分に名前を付けたり、1 本の線の長さを計算したりすることができないなど、実行できる操作に制限がある。
+このような場合、1 つの複合線を 3 つの線に分離する <code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code> 関数を使用することができる。</p>
+<div class="sourceCode" id="cb185"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">linestring_sf2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">multilinestring_sf</span>, <span class="st">"LINESTRING"</span><span class="op">)</span></span>
+<span><span class="va">linestring_sf2</span></span>
+<span><span class="co">#&gt; Simple feature collection with 3 features and 0 fields</span></span>
+<span><span class="co">#&gt; Geometry type: LINESTRING</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 1 ymin: 1 xmax: 4 ymax: 5</span></span>
+<span><span class="co">#&gt; CRS:           NA</span></span>
+<span><span class="co">#&gt;                    geom</span></span>
+<span><span class="co">#&gt; 1 LINESTRING (1 5, 4 3)</span></span>
+<span><span class="co">#&gt; 2 LINESTRING (4 4, 4 1)</span></span>
+<span><span class="co">#&gt; 3 LINESTRING (2 2, 4 2)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:line-cast"></span>
+<img src="figures/line-cast-1.png" alt="複合線 (左) と線 (右) 間の型キャストの例。" width="100%"><p class="caption">
+FIGURE 5.12: 複合線 (左) と線 (右) 間の型キャストの例。
+</p>
+</div>
+<p>新しく作成されたオブジェクトでは、属性の作成 (詳しくは Section <a href="attr.html#vec-attr-creation">3.2.5</a> を参照) や長さの測定が可能である。</p>
+<div class="sourceCode" id="cb186"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">linestring_sf2</span><span class="op">$</span><span class="va">name</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Riddle Rd"</span>, <span class="st">"Marshall Ave"</span>, <span class="st">"Foulke St"</span><span class="op">)</span></span>
+<span><span class="va">linestring_sf2</span><span class="op">$</span><span class="va">length</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_length</a></span><span class="op">(</span><span class="va">linestring_sf2</span><span class="op">)</span></span>
+<span><span class="va">linestring_sf2</span></span>
+<span><span class="co">#&gt; Simple feature collection with 3 features and 2 fields</span></span>
+<span><span class="co">#&gt; Geometry type: LINESTRING</span></span>
+<span><span class="co">#&gt; Dimension:     XY</span></span>
+<span><span class="co">#&gt; Bounding box:  xmin: 1 ymin: 1 xmax: 4 ymax: 5</span></span>
+<span><span class="co">#&gt; CRS:           NA</span></span>
+<span><span class="co">#&gt;                    geom         name length</span></span>
+<span><span class="co">#&gt; 1 LINESTRING (1 5, 4 3)    Riddle Rd   3.61</span></span>
+<span><span class="co">#&gt; 2 LINESTRING (4 4, 4 1) Marshall Ave   3.00</span></span>
+<span><span class="co">#&gt; 3 LINESTRING (2 2, 4 2)    Foulke St   2.00</span></span></code></pre></div>
+</div>
+</div>
+<div id="geo-ras" class="section level2" number="5.3">
+<h2>
+<span class="header-section-number">5.3</span> ラスタデータに対するジオメトリ操作<a class="anchor" aria-label="anchor" href="#geo-ras"><i class="fas fa-link"></i></a>
+</h2>
+<p>
+幾何学的なラスタ操作には、画像の平行移動 (shift)、反転 (flip)、ミラー (mirror)、拡大縮小 (scale)、回転 (rotate)、幾何補正 (warp) などがある。
+これらの操作は、ジオリファレンスなど様々な用途で必要とされ、既知の CRS を持つ正確な地図に画像を重ね合わせるために使用される <span class="citation">(<a href="references.html#ref-liu_essential_2009">Liu and Mason 2009</a>)</span>。
+ジオリファレンスには、さまざまな手法が存在する。</p>
+<ul>
+<li>既知の<a href="https://www.qgistutorials.com/en/docs/3/georeferencing_basics.html">地上基準点</a>に基づく地理補正 (georectification)</li>
+<li>局所的な地形も考慮したオルソ補正 (orthorectification)</li>
+<li>画像<a href="https://en.wikipedia.org/wiki/Image_registration">位置合わせ</a> (image registration) は、異なるセンサーから撮影された同じものの画像を、ある画像と別の画像に (座標系や解像度の点で) 位置合わせして結合するために使用する。</li>
+</ul>
+<p>最初の 2 つについては、手作業が必要になることが多いため、R はむしろ不向きで、通常は専用の GIS ソフトウェアの助けを借りて行われる (Chapter <a href="gis.html#gis">10</a> も参照)。
+一方、R では複数の画像の位置合わせが可能であり、本節ではその方法を中心に紹介する。
+これには、画像の範囲、解像度、原点を変更することがよく含まれる。
+もちろん、投影法の一致も必要であるが、それはすでに Section <a href="reproj-geo-data.html#reproj-ras">7.8</a> で説明した。</p>
+<p>いずれにせよ、1 枚のラスタ画像に対してジオメトリ演算を行う理由は他にもある。
+例えば、Chapter <a href="location.html#location">14</a> で、ドイツの大都市圏を人口 50 万人以上の 20 km<sup>2</sup> のピクセルと定義している。
+しかし、元の住民ラスタの解像度は 1 km<sup>2</sup> であるため、解像度を 20 分の 1 に下げる (集約する) (Section <a href="location.html#define-metropolitan-areas">14.5</a> を参照)。
+ラスタを集約するもう一つの理由は、単純に実行時間の短縮やディスクスペースの節約である。
+もちろん、この方法はラスタデータの粗い解像度が可能なタスクの場合にのみ推奨される。</p>
+<div id="geometric-intersections" class="section level3" number="5.3.1">
+<h3>
+<span class="header-section-number">5.3.1</span> ジオメトリ交差<a class="anchor" aria-label="anchor" href="#geometric-intersections"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+Section <a href="spatial-operations.html#spatial-raster-subsetting">4.3.1</a> では、他の空間オブジェクトが重なったラスタから値を抽出する方法を示した。
+空間出力を取り出すには、ほぼ同じ部分集合構文を使うことができる。
+唯一の違いは、<code>drop</code> の引数を <code>FALSE</code> にすることで、行列構造を維持したいことを明確にしなければならないことである。
+これは、中点が <code>clip</code> と重なるセルを含むラスタオブジェクトを返すものである。</p>
+<div class="sourceCode" id="cb187"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/elev.tif"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">clip</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">0.9</span>, xmax <span class="op">=</span> <span class="fl">1.8</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="fl">0.45</span>, ymax <span class="op">=</span> <span class="fl">0.45</span>,</span>
+<span>            resolution <span class="op">=</span> <span class="fl">0.3</span>, vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">elev</span><span class="op">[</span><span class="va">clip</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span></span></code></pre></div>
+<p>同じ操作で、<code><a href="https://rspatial.github.io/terra/reference/intersect.html">intersect()</a></code> と <code><a href="https://rspatial.github.io/terra/reference/crop.html">crop()</a></code> のコマンドも使用できる。</p>
+</div>
+<div id="extent-and-origin" class="section level3" number="5.3.2">
+<h3>
+<span class="header-section-number">5.3.2</span> 範囲と原点<a class="anchor" aria-label="anchor" href="#extent-and-origin"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+ラスタをマージしたり、マップ代数演算を実行する場合、解像度、投影、原点、範囲が一致する必要がある。そうでない場合、分解能が 0.2 度のラスタの値を、分解能が 1 度の 2 番目のラスタにどのように追加すればよいのだろうか。
+また、投影方法や解像度の異なるセンサーの衛星画像を合成したい場合も、同じような問題が発生する。
+このような不一致は、ラスタの位置合わせをすることで対処することができる。</p>
+<p>最も単純なケースとして、2 つの画像はその範囲 (extent) だけが異なる。
+以下のコードでは、ラスタの各辺に 1 行と 2 列を追加し、新しい値をすべて <code>NA</code> (Figure <a href="geometry-operations.html#fig:extend-example">5.13</a>) に設定する。</p>
+<div class="sourceCode" id="cb188"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/elev.tif"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">elev_2</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/extend.html">extend</a></span><span class="op">(</span><span class="va">elev</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:extend-example"></span>
+<img src="figures/extend-example-1.png" alt="元のラスタ (左) と同じラスタ (右) を上下 1 行ずつ、左右 2 列ずつに拡張したもの。" width="100%"><p class="caption">
+FIGURE 5.13: 元のラスタ (左) と同じラスタ (右) を上下 1 行ずつ、左右 2 列ずつに拡張したもの。
+</p>
+</div>
+<p>R の <strong>terra</strong> パッケージで、範囲が異なる2つのオブジェクトに対して代数演算を実行するとエラーが発生する。</p>
+<div class="sourceCode" id="cb189"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev_3</span> <span class="op">=</span> <span class="va">elev</span> <span class="op">+</span> <span class="va">elev_2</span></span>
+<span><span class="co">#&gt; Error: [+] extents do not match</span></span></code></pre></div>
+<p>しかし、2 つのラスタの範囲を <code><a href="https://rspatial.github.io/terra/reference/extend.html">extend()</a></code> で揃えることができる。
+追加する行や列の数を (以前のように) 関数に指示するのではなく、別のラスタオブジェクトを使って計算させるようにしている。
+ここでは、<code>elev</code> のオブジェクトを、<code>elev_2</code> の範囲に拡張している。
+新しく追加された行と列は、<code>NA</code> を受け取る。</p>
+<div class="sourceCode" id="cb190"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">elev_4</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/extend.html">extend</a></span><span class="op">(</span><span class="va">elev</span>, <span class="va">elev_2</span><span class="op">)</span></span></code></pre></div>
+<p>
+ラスタの原点 (origin) は、座標 (0, 0) に最も近いセルコーナーである。
+<code><a href="https://rspatial.github.io/terra/reference/origin.html">origin()</a></code> 関数は、原点の座標を返す。
+以下の例では、座標 (0, 0) のセルコーナーが存在するが、必ずしもそうとは限らない。</p>
+<div class="sourceCode" id="cb191"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/origin.html">origin</a></span><span class="op">(</span><span class="va">elev_4</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 0 0</span></span></code></pre></div>
+<p>2 つのラスタが異なる原点を持つ場合、それらのセルは完全に重ならず、マップ代数は不可能となる。
+原点を変更する場合 <code><a href="https://rspatial.github.io/terra/reference/origin.html">origin()</a></code> を使用する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+2 つのラスタデータセットの原点がわずかに離れている場合、&lt;code&gt;terra::terraOptions()&lt;/code&gt; の引数 &lt;code&gt;tolerance&lt;/code&gt; を増やすだけで十分な場合がある。&lt;/p&gt;"><sup>24</sup></a>
+Figure <a href="geometry-operations.html#fig:origin-example">5.14</a> は、このように原点を変更した場合の効果を明らかにしたものである。</p>
+<div class="sourceCode" id="cb192"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># 原点を変更</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/origin.html">origin</a></span><span class="op">(</span><span class="va">elev_4</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.25</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:origin-example"></span>
+<img src="figures/origin-example-1.png" alt="同じ値を持つが、原点が異なるラスタ。" width="100%"><p class="caption">
+FIGURE 5.14: 同じ値を持つが、原点が異なるラスタ。
+</p>
+</div>
+<p>なお、解像度を変更すると (次節)、原点も頻繁に変更される。</p>
+</div>
+<div id="aggregation-and-disaggregation" class="section level3" number="5.3.3">
+<h3>
+<span class="header-section-number">5.3.3</span> 低解像度化と高解像度化<a class="anchor" aria-label="anchor" href="#aggregation-and-disaggregation"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+ラスタデータセットは、その解像度に関しても異なる場合がある。
+解像度を合わせるには、1　つのラスタの解像度を下げる (低解像度化、<code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code>) か上げる (高解像度化、<code><a href="https://rspatial.github.io/terra/reference/disaggregate.html">disagg()</a></code>) かのどちらかを選択する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+ここでは、空間分解能を指す。
+リモートセンシングでは、スペクトル (スペクトルバンド)、時間分解能 (同じエリアを時間をかけて観測)、ラジオメトリック (色深度) 分解能も重要である。
+ドキュメントにある &lt;code&gt;tapp()&lt;/code&gt; の例で、時間的ラスタ集計の方法を確認してみよう。&lt;/p&gt;"><sup>25</sup></a></p>
+<p>例として、<code>dem</code> (<strong>spDataLarge</strong> パッケージにある) の空間解像度を 5 倍に変更する (Figure <a href="geometry-operations.html#fig:aggregate-example">5.15</a>)。
+さらに、出力セルの値は入力セルの平均に対応する (<code><a href="https://rspatial.github.io/terra/reference/summarize-generics.html">median()</a></code>、<code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code> など、他の関数も使用可能)。</p>
+<div class="sourceCode" id="cb193"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/dem.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">dem_agg</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">dem</span>, fact <span class="op">=</span> <span class="fl">5</span>, fun <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:aggregate-example"></span>
+<img src="figures/aggregate-example-1.png" alt="オリジナル (左) と 集計後 (右)。" width="100%"><p class="caption">
+FIGURE 5.15: オリジナル (左) と 集計後 (右)。
+</p>
+</div>
+<p>Table <a href="geometry-operations.html#tab:aggdf">5.2</a> は、オリジナルと集計後の比較である。
+<code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> で解像度を「下げた」ことにより、<span class="math inline">\((30.85, 30.85)\)</span> から <span class="math inline">\((154.25, 154.25)\)</span> に上がった。
+列数 (<code>nrow</code>) と行数 (<code>ncol</code>) を減らすことで行った (Section <a href="spatial-class.html#raster-data">2.3</a> 参照)。
+範囲は、新しいグリッドに合うように微調整された。</p>
+<div class="inline-table"><table class="table table-sm">
+<caption>
+<span id="tab:aggdf">TABLE 5.2: </span>Properties of the original and aggregated raster.</caption>
+<colgroup>
+<col width="10%">
+<col width="23%">
+<col width="15%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Object</th>
+<th align="left">Resolution</th>
+<th align="left">Dimensions</th>
+<th align="left">Extent</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">dem</td>
+<td align="left">(30.85, 30.85)</td>
+<td align="left">117 * 117</td>
+<td align="left">794599.1, 798208.6, 8931775, 8935384</td>
+</tr>
+<tr class="even">
+<td align="left">dem_agg</td>
+<td align="left">(154.25, 154.25)</td>
+<td align="left">24 * 24</td>
+<td align="left">794599.1, 798301.1, 8931682, 8935384</td>
+</tr>
+</tbody>
+</table></div>
+<p>
+<code><a href="https://rspatial.github.io/terra/reference/disaggregate.html">disagg()</a></code> 関数は、ラスタオブジェクトの解像度を上げ、新しく作成されたセルに値を割り当てるための 2 つの方法を提供する。
+新たに生成されたセルの値を計算する方法は 2 つある。デフォルトの方法 (<code>method = "near"</code>) は、すべての出力セルに入力セルの値を与えるだけなので、値が重複し、「ブロック状の」出力となる。
+<code>bilinear</code> 法は、入力画像の 4 つの最近接画素中心 (Figure <a href="geometry-operations.html#fig:bilinear">5.16</a> のオレンジ色の点) を用いて、距離で重み付けした平均値を計算する (Figure <a href="geometry-operations.html#fig:bilinear">5.16</a> の矢印)。
+出力セルの値は、左上の四角で表現される (Figure <a href="geometry-operations.html#fig:bilinear">5.16</a>)。</p>
+<div class="sourceCode" id="cb194"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dem_disagg</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/disaggregate.html">disagg</a></span><span class="op">(</span><span class="va">dem_agg</span>, fact <span class="op">=</span> <span class="fl">5</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/identical.html">identical</a></span><span class="op">(</span><span class="va">dem</span>, <span class="va">dem_disagg</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:bilinear"></span>
+<img src="figures/bilinear-1.png" alt="双一次補間法で分解する場合は、最も近い 4 つの入力セルの距離加重平均で出力を決定。" width="100%"><p class="caption">
+FIGURE 5.16: 双一次補間法で分解する場合は、最も近い 4 つの入力セルの距離加重平均で出力を決定。
+</p>
+</div>
+<p><code>dem</code> と <code>dem_disagg</code> の値を比較すると、両者が同一ではないことがわかる (<code><a href="https://rspatial.github.io/terra/reference/compareGeom.html">compareGeom()</a></code> や <code><a href="https://rspatial.github.io/terra/reference/all.equal.html">all.equal()</a></code> を使うこともできる)。
+分解は単純な補間技術であるため、これは予想外の結果である。
+分解することで解像度が上がるが、対応する値は解像度の低いソースと同程度の精度しかないことを念頭に置くことが重要である。</p>
+</div>
+<div id="resampling" class="section level3" number="5.3.4">
+<h3>
+<span class="header-section-number">5.3.4</span> リサンプリング<a class="anchor" aria-label="anchor" href="#resampling"><i class="fas fa-link"></i></a>
+</h3>
+<p>
+上記の低解像度化・高解像度化の方法は、低解像度化・高解像度化係数によってラスタの解像度を変えたい場合にのみ適している。
+しかし、解像度や原点の異なるラスタが 2 つ以上ある場合はどうしたらよいのだろうか。
+これがリサンプリングの役割で、新しい画素の位置に対して値を計算する処理である。
+つまり、この処理では、元のラスタの値を受け取り、カスタム解像度と原点を持つターゲットラスタの値を新たに計算し直す (Figure <a href="geometry-operations.html#fig:resampl0">5.17</a>)。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:resampl0"></span>
+<img src="figures/resampl0-1.png" alt="オリジナルからカスタムの解像度と原点のターゲットラスタへのリサンプリング" width="100%"><p class="caption">
+FIGURE 5.17: オリジナルからカスタムの解像度と原点のターゲットラスタへのリサンプリング
+</p>
+</div>
+<p>
+Figure <a href="geometry-operations.html#fig:resampl">5.18</a> に示すように、解像度/原点の異なるラスタの値を推定する方法はいくつかある。
+主なリサンプリング方法には、以下のようなものがある。</p>
+<ul>
+<li>最近傍 (Nearest neighbor): 元のラスタの最も近いセルの値を、ターゲットのセルに割り当てる。これは高速でシンプルな手法で、通常、カテゴリラスタのリサンプリングに適している。</li>
+<li>双一次補間 (Bilinear interpolation): 元のラスタから 4 つの最近接セルを加重平均して、ターゲットのセルに割り当てる (Figure <a href="geometry-operations.html#fig:bilinear">5.16</a>)。これは、連続したラスタに適した最も高速な方法である。</li>
+<li>三次補間 (Cubic interpolation): 3 次多項式関数を適用し、出力セルの値を決定するために、元のラスタの16個の最近接セルの値を使用する。連続したラスタに使用され、双一次補間の結果より滑らかなサーフェスになるが、より計算量が多くなる。</li>
+<li>三次スプライン補間 (Cubic spline interpolation): 出力セルを決定するために元のラスタの 16 個の最近接セルの値を使用するが、結果を導き出すために三次スプライン補間 (区分的 3 次多項式関数) を適用する。連続したラスタに使用される。</li>
+<li>ランチョスリサンプリング (Lanczos windowed sinc resampling): 出力セルの値を決定するために、元のラスタの 36 個の最近接セルの値を使用する。連続的なラスタに使用される。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
+この方法の詳細な説明は、&lt;a href="https://gis.stackexchange.com/a/14361/20955" class="uri"&gt;https://gis.stackexchange.com/a/14361/20955&lt;/a&gt;。&lt;/p&gt;'><sup>26</sup></a>
+</li>
+</ul>
+<p>上記の説明では、<u>最近傍</u>リサンプリングのみがカテゴリラスタに適しており、連続ラスタにはすべてのメソッドが (異なるアウトカムで) 使用できることが強調されている。
+さらに、連続した方式を採用するごとに、処理時間が長くなる。
+さらに、リサンプリングは関連するセルの統計値 (最小値や最頻値など) を用いることもできる、</p>
+<p>リサンプリングを適用するために、<strong>terra</strong> パッケージは、<code><a href="https://rspatial.github.io/terra/reference/resample.html">resample()</a></code> 関数を提供する。
+入力ラスタ (<code>x</code>)、目的の空間特性を持つラスタ (<code>y</code>)、リサンプリング方法 (<code>method</code>) を受け付ける。</p>
+<p><code><a href="https://rspatial.github.io/terra/reference/resample.html">resample()</a></code> 関数の動作を確認するために、対象となる空間特性を持つラスタが必要である。
+この例では、<code>target_rast</code> を作成するが、すでに存在するラスタオブジェクトを使用することが多いだろう。</p>
+<div class="sourceCode" id="cb195"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">target_rast</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">794650</span>, xmax <span class="op">=</span> <span class="fl">798250</span>, </span>
+<span>                   ymin <span class="op">=</span> <span class="fl">8931750</span>, ymax <span class="op">=</span> <span class="fl">8935350</span>,</span>
+<span>                   resolution <span class="op">=</span> <span class="fl">300</span>, crs <span class="op">=</span> <span class="st">"EPSG:32717"</span><span class="op">)</span></span></code></pre></div>
+<p>次に、2 つのラスタオブジェクトを最初の 2 つの引数として与え、上で説明したリサンプリングメソッドのうちの 1 つを提供する必要がある。</p>
+<div class="sourceCode" id="cb196"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">dem_resampl</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">dem</span>, y <span class="op">=</span> <span class="va">target_rast</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span></code></pre></div>
+<p>Figure <a href="geometry-operations.html#fig:resampl">5.18</a> は、<code>dem</code> オブジェクトについて、異なるリサンプリング手法を比較したものである。</p>
+<div class="figure" style="text-align: center">
+<span style="display:block;" id="fig:resampl"></span>
+<img src="figures/resampl-1.png" alt="ラスタのオリジナルと 5 種類のリサンプリング手法の視覚的比較。" width="100%"><p class="caption">
+FIGURE 5.18: ラスタのオリジナルと 5 種類のリサンプリング手法の視覚的比較。
+</p>
+</div>
+<p><code><a href="https://rspatial.github.io/terra/reference/resample.html">resample()</a></code> 関数には、さらに、<code>sum</code>、<code>min</code>、<code>q1</code>、<code>med</code>、<code>q3</code>、<code>max</code>、<code>average</code>、<code>mode</code>、<code>rms</code> などのリサンプリング手法も用意されている。
+これらはすべて、NA でないすべてのグリッドセルの値に基づいて所定の統計量を計算するものである。
+例えば、<code>sum</code> は、各ラスタセルが空間的に広範な変数 (例えば人数) を表す場合に有効である。
+<code>sum</code> を使用した効果として、リサンプルされたラスタは元のラスタと同じサンプル総数を持つはずである。</p>
+<p>
+Section <a href="reproj-geo-data.html#reproj-ras">7.8</a> で見るように、ラスタの再投影はリサンプリングの特殊なケースで、対象ラスタが元のラスタと異なる CRS を持つ場合に行われる。</p>
+
+<div class="rmdnote">
+<p><strong>terra</strong> のジオメトリ操作はユーザーフレンドリーで、かなり高速であり、大きなラスタオブジェクトでも動作する。
+しかし、広範なラスタや多くのラスタファイルに対して、<strong>terra</strong> が最も効率的でない場合もあり、代替手段を検討する必要がある。</p>
+<p>最も確立された選択肢は、GDAL ライブラリである。
+これは、以下のようないくつかのユーティリティ関数を含んでる。</p>
+<ul>
+<li>
+<code>gdalinfo</code> - ラスタファイルの解像度、CRS、バウンディングボックスなど、さまざまな情報を一覧表示</li>
+<li>
+<code>gdal_translate</code> - ラスタデータを異なるファイル形式間で変換</li>
+<li>
+<code>gdal_rasterize</code> - ベクタデータからラスタファイルへの変換</li>
+<li>
+<code>gdalwarp</code> - ラスタのモザイク処理、リサンプリング、切り取り、再投影が可能</li>
+</ul>
+上記のすべての関数は C++ で書かれているが、<strong>gdalUtilities</strong> パッケージを使用して R で呼び出すことができる (Section <a href="gis.html#gdal">10.6</a> 参照)。
+GDAL の関数はすべてラスタファイルのパスを入力として受け取り、その出力をラスタファイルとして返す (例えば、 <code>gdalUtilities::gdal_translate("my_file.tif", "new_file.tif", t_srs = "EPSG:4326")</code>)。
+これは、入力として <code>SpatRaster</code> オブジェクトを想定している <strong>terra</strong> のアプローチとは大きく異なる。
+</div>
+</div>
+</div>
+<div id="演習-3" class="section level2" number="5.4">
+<h2>
+<span class="header-section-number">5.4</span> 演習<a class="anchor" aria-label="anchor" href="#%E6%BC%94%E7%BF%92-3"><i class="fas fa-link"></i></a>
+</h2>
+<p>E1. <code>nz</code> データセットの簡略版を生成してプロットしなさい。
+<code>ms_simplify()</code> の <code>keep</code> (0.5 から 0.00005 の範囲) と <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify()</a></code> の <code>dTolerance</code> (100 から 100,000) の値を変えて実験しなさい。</p>
+<ul>
+<li>各メソッドで結果の形が崩れ始め、New Zealand を認識できなくなるのはどの値からか？</li>
+<li>発展: <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify()</a></code> の結果のジオメトリ型は、<code>ms_simplify()</code> のジオメトリ型と何が違うか？また、どのように解決できるか？</li>
+</ul>
+<p>E2. 空間データ操作の章の最初の演習で、Canterbury 地方には New Zealand の 101 の高地のうち 70 地点があることがわかった。
+<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer()</a></code>を使用して、Canterbury から 100 km 以内にある <code>nz_height</code> の点はいくつあるか？</p>
+<p>E3. New Zealand の地理的重心を求めなさい。
+Canterburyの地理的重心からの距離は？</p>
+<p>E4. ほとんどの世界地図は北を向いている。
+オブジェクト <code>world</code> のジオメトリの反射 (この章では触れないアフィン変換の 1 つ) によって、南を上にしたワールドマップを作ることができる。
+そのコードを書きなさい。
+ヒント: この変換には、本章の <code>rotation()</code> 関数を使うことができる。
+ボーナス: あなたの国の逆さ地図を作ってみなさい。</p>
+<p>E5. Section <a href="https://r.geocompx.org/geometry-operations.html#subsetting-and-clipping">5.2.6</a> のコードを実行しなさい。そのセクションで作成したオブジェクトを参照して、<code>x</code> <strong>と</strong> <code>y</code> に含まれる <code>p</code> の点の部分集合を作成しなさい。</p>
+<ul>
+<li>基本サブセット演算子を使用する。</li>
+<li>
+<code><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_intersection()</a></code>で作成した中間オブジェクトを使用する。</li>
+</ul>
+<p>E6. アメリカの州の境界線の長さをメートル単位で計算しなさい。
+どの州の境界線が最も長く、どの州の境界線が最も短いか。
+ヒント: <code>st_length</code> 関数は <code>LINESTRING</code> または <code>MULTILINESTRING</code> 形状の長さを計算する。</p>
+<p>E7. srtm.tif ファイルを R で読み込みなさい (<code>srtm = rast(system.file("raster/srtm.tif", package = "spDataLarge"))</code>)。
+このラスタの解像度は 0.00083 * 0.00083度。
+<strong>terra</strong> パッケージで利用可能なすべてのメソッドを使用して、その解像度を 0.01 * 0.01度に変更しなさい。
+結果を視覚化しなさい。
+リサンプリング方法の結果の違いは何があるか?</p>
+
+</div>
+</div>
+
+  <div class="chapter-nav">
+<div class="prev"><a href="spatial-operations.html"><span class="header-section-number">4</span> 空間データ操作</a></div>
+<div class="next"><a href="raster-vector.html"><span class="header-section-number">6</span> ラスタとベクタの相互作用</a></div>
+</div></main><div class="col-md-3 col-lg-2 d-none d-md-block sidebar sidebar-chapter">
+    <h2>Second Edition</h2>
+    <!--<p>Now is a great time to provide feedback</p>-->
+        <ul class="list-unstyled">
+<!--<li><a href="https://forms.gle/nq9RmbxJyZXQgc948">Provide feedback (5 min)</a></li>--><li><a href="https://geocompx.org/">Visit the geocompx website 🌐</a></li>
+          <li><a href="https://r.geocompx.org/#reproducibility">Install updated packages 💾</a></li>
+          <li><a href="https://github.com/geocompx/geocompr/issues">Open an issue <i class="fas fa-question"></i></a></li>
+          <li><a href="https://discord.gg/PMztXYgNxp">Chat on Discord <i class="fab fa-discord"></i></a></li>
+          <li><a href="https://r.geocompx.org/solutions/">Check exercise solutions <i class="fa fa-check"></i></a></li>
+          <li><a href="https://supportukrainenow.org/">Support Ukraine 🇺🇦
+</a></li>
+          <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
+        </ul>
+<hr>
+<nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
+      <ul class="nav navbar-nav">
+<li><a class="nav-link" href="#geometry-operations"><span class="header-section-number">5</span> ジオメトリ演算</a></li>
+<li><a class="nav-link" href="#prerequisites-05">必須パッケージ</a></li>
+<li><a class="nav-link" href="#introduction-05"><span class="header-section-number">5.1</span> イントロダクション</a></li>
+<li>
+<a class="nav-link" href="#geo-vec"><span class="header-section-number">5.2</span> ベクタデータに対するジオメトリ操作</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#simplification"><span class="header-section-number">5.2.1</span> 簡略化</a></li>
+<li><a class="nav-link" href="#centroids"><span class="header-section-number">5.2.2</span> 重心</a></li>
+<li><a class="nav-link" href="#buffers"><span class="header-section-number">5.2.3</span> バッファ</a></li>
+<li><a class="nav-link" href="#affine-transformations"><span class="header-section-number">5.2.4</span> アフィン変換</a></li>
+<li><a class="nav-link" href="#clipping"><span class="header-section-number">5.2.5</span> 切り取り (clip)</a></li>
+<li><a class="nav-link" href="#%E9%83%A8%E5%88%86%E9%9B%86%E5%90%88%E3%81%A8%E5%88%87%E3%82%8A%E5%8F%96%E3%82%8A-clip"><span class="header-section-number">5.2.6</span> 部分集合と切り取り (clip)</a></li>
+<li><a class="nav-link" href="#geometry-unions"><span class="header-section-number">5.2.7</span> ジオメトリ結合</a></li>
+<li><a class="nav-link" href="#type-trans"><span class="header-section-number">5.2.8</span> ジオメトリ型の変換</a></li>
+</ul>
+</li>
+<li>
+<a class="nav-link" href="#geo-ras"><span class="header-section-number">5.3</span> ラスタデータに対するジオメトリ操作</a><ul class="nav navbar-nav">
+<li><a class="nav-link" href="#geometric-intersections"><span class="header-section-number">5.3.1</span> ジオメトリ交差</a></li>
+<li><a class="nav-link" href="#extent-and-origin"><span class="header-section-number">5.3.2</span> 範囲と原点</a></li>
+<li><a class="nav-link" href="#aggregation-and-disaggregation"><span class="header-section-number">5.3.3</span> 低解像度化と高解像度化</a></li>
+<li><a class="nav-link" href="#resampling"><span class="header-section-number">5.3.4</span> リサンプリング</a></li>
+</ul>
+</li>
+<li><a class="nav-link" href="#%E6%BC%94%E7%BF%92-3"><span class="header-section-number">5.4</span> 演習</a></li>
+</ul>
+
+      <div class="book-extra">
+        <ul class="list-unstyled">
+<li><a id="book-source" href="https://github.com/geocompx/geocompr/blob/main/05-geometry-operations-ja.Rmd">View source <i class="fab fa-github"></i></a></li>
+          <li><a id="book-edit" href="https://github.com/geocompx/geocompr/edit/main/05-geometry-operations-ja.Rmd">Edit this page <i class="fab fa-github"></i></a></li>
+        </ul>
+</div>
+    </nav>
+</div>
+
+</div>
+</div> <!-- .container -->
+
+<footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+  </div>
+
+  <div class="col-12 col-md-6 mt-3">
+    <p>This book was built by the <a class="text-light" href="https://bookdown.org">bookdown</a> R package.</p>
+  </div>
+
+</div></div>
+</footer><!-- dynamically load mathjax for compatibility with self-contained --><script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script><script type="text/x-mathjax-config">const popovers = document.querySelectorAll('a.footnote-ref[data-toggle="popover"]');
+for (let popover of popovers) {
+  const div = document.createElement('div');
+  div.setAttribute('style', 'position: absolute; top: 0, left:0; width:0, height:0, overflow: hidden; visibility: hidden;');
+  div.innerHTML = popover.getAttribute('data-content');
+
+  var has_math = div.querySelector("span.math");
+  if (has_math) {
+    document.body.appendChild(div);
+    MathJax.Hub.Queue(["Typeset", MathJax.Hub, div]);
+    MathJax.Hub.Queue(function() {
+      popover.setAttribute('data-content', div.innerHTML);
+      document.body.removeChild(div);
+    })
+  }
+}
+</script>
+</body>
+</html>
