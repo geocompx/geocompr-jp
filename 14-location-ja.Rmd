@@ -296,7 +296,7 @@ metro_names = metro_names$city |>
 ]
 
 このコードを実行する前に、 のデータをダウンロードするデータの大きさが約 2 GB となることに注意しよう。
-時間とリソースを節約するために、`shops` という名前の出力を **spDataLarge** に入れてある。
+時間とリソースを節約するために、`shops` という名前の出力を **spDataLarge** に格納してある。
 自分の環境で利用できるようにするには、**spDataLarge** パッケージがロードされていることを確認するか、`data("shops", package = "spDataLarge")` を実行してみよう。
 
 ```{r 14-location-20, eval=FALSE, message=FALSE}
@@ -394,15 +394,15 @@ reclass = reclass[[names(reclass) != "pop"]] |>
   c(poi)
 ```
 
-他のデータサイエンス・プロジェクトと同様、これまでのところ、データの検索と「整理」が全体の作業負荷の多くを占めている。
-きれいなデータであれば、最後のステップであるすべてのラスタ\index{らすた@ラスタ}のレイヤを合計して最終的なスコアを計算することも、1行のコードで実現できる。
+他のデータサイエンス・プロジェクトと同様、データの検索と「整頓」が全体の作業負荷の多くを占めている。
+きれいなデータであれば、最後のステップであるすべてのラスタ\index{らすた@ラスタ}のレイヤを合計して最終的なスコアを計算することも、1 行のコードで実現できる。
 
 ```{r 14-location-28}
 # 合計点を計算
 result = sum(reclass)
 ```
 
-例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値かもしれない (Figure \@ref(fig:bikeshop-berlin) ; `code/14-location-jm.R` も参照)。
+例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値だろう (Figure \@ref(fig:bikeshop-berlin) ; `code/14-location-jm.R` も参照)。
 
 ```{r bikeshop-berlin, echo=FALSE, eval=TRUE, fig.cap="ベルリンにおける自転車店の仮想調査に従った適切なエリア (スコア> 9のラスタセル)。", fig.scap="Suitable areas for bike stores.", warning=FALSE}
 if (knitr::is_latex_output()) {
@@ -425,7 +425,7 @@ if (knitr::is_latex_output()) {
 }
 ```
 
-## ディスカッションと次のステップ  {#discussion-and-next-steps}
+## 考察と次のステップ  {#discussion-and-next-steps}
 
 今回紹介したアプローチは、GIS\index{GIS} の規範的な使い方の典型的な例である [@longley_geographic_2015]。
 調査データと専門家による知識・仮定 (大都市圏の定義、クラス間隔の定義、最終的なスコア閾値の定義) を組み合わせている。
@@ -435,7 +435,7 @@ if (knitr::is_latex_output()) {
 - 最終的なスコアの算出には均等なウェイトを用いたが、世帯規模など他の要因も、女性の割合や平均年齢と同様に重要である可能性がある。
 - 全ての地理的目標物\index{ちりてきもくひょうぶつ@地理的目標物}  を使用したが、DIY、ハードウェア、自転車、釣り、ハンティング、バイク、アウトドア、スポーツショップなど、自転車販売店に関連するもののみ (ショップ値の範囲は [OSM Wiki](https://wiki.openstreetmap.org/wiki/Map_Features#Shop) で確認可能)にすると、より洗練された結果を得ることができたかもしれない
 - 解像度の高いデータを使うと、出力が向上する場合がある (演習参照) 
-- 限られた変数のみを使用し、[INSPIRE geoportal](https://inspire-geoportal.ec.europa.eu/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section \@ref(retrieving-data) も参照のこと)。
+- 限られた変数のみを使用した。[INSPIRE geoportal](https://inspire-geoportal.ec.europa.eu/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section \@ref(retrieving-data) も参照のこと)。
 - 男性比率と単身世帯の関係などの相互作用は考慮されていない。
 
 つまり、この分析は多方面に拡張することができる。
