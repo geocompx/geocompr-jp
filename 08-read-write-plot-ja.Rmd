@@ -595,7 +595,7 @@ Chapter \@ref(gis) で紹介するように、地理データは地理ソフト�
 これらの標準は、メタデータカタログを通じて扱われる空間データインフラで広く使用されている。
 
 地理メタデータは **geometa** で管理することができる。**geometa** は ISO/OGC 標準に従って地理メタデータの書き込み、読み込み、検証ができるパッケージである。
-**geometa** は、ISO 19110 (Feature catalogue)、ISO 19115-1 および 19115-2 (Geographic metadata for vector and gridded/imagery datasets)、ISO 19119 (geographic metadata for service)、ISO 19136 (Geographic Markup Language) など、地理メタデータ情報に関するさまざまな国際標準をすでにサポートしており、ISO/TS 19139 (XML) 技術仕様を使ってRから地理メタデータを読み込んだり、検証したり、書き込んだりする方法を提供しています。
+**geometa** は、ISO 19110 (Feature catalogue)、ISO 19115-1 および 19115-2 (Geographic metadata for vector and gridded/imagery datasets)、ISO 19119 (geographic metadata for service)、ISO 19136 (Geographic Markup Language) など、地理メタデータ情報に関するさまざまな国際標準をすでにサポートしており、ISO/TS 19139 (XML) と  ISO 19115-3 技術仕様を使って R から地理メタデータを読み込んだり、検証したり、書き込んだりする方法を提供している。
 <!-- 規格の複雑さと網羅性、そしてそれらを使用するために必要な高度な知識に対処するために、[geoflow](https://github.com/r-geoflow/geoflow) のような補完的なパッケージが、メタデータの管理を容易にし、自動化するために構築されている。 -->
 地理メタデータは、**geometa** で以下のように作成することができ、メタデータファイルを作成して保存する。
 

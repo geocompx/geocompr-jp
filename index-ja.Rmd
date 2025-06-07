@@ -45,10 +45,15 @@ if (is_html) {
 
 ここは、地理データの解析、可視化、モデリングに関する書籍 *Geocomputation with R* のオンラインホーム (日本語版) です。
 
-<a href="https://www.routledge.com/9781138304512"><img src="images/cover.png" width="250" height="375" alt="The geocompr book cover" align="right" style="margin: 0 1em 0 1em" /></a>
+<a href="https://www.routledge.com/9781138304512"><img src="images/cover2.png" width="250" height="375" alt="The geocompr book cover" align="right" style="margin: 0 1em 0 1em" /></a>
   
-**注**: 本書の原著初版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されています。
-[CRC Press](https://www.routledge.com/9781138304512) または [Amazon](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/) で購入できます。また、**初版** は、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) で保存されています。
+
+本書 (原著) は、[CRC Press](https://www.routledge.com/9781032248882)または [Amazon](https://www.amazon.com/Geocomputation-Chapman-Hall-Robin-Lovelace-dp-1032248882/dp/1032248882) から購入することができます。
+
+<!-- **注**: 本書の原著初版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されています。
+[CRC Press](https://www.routledge.com/9781138304512) または [Amazon](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/) で購入できます。また、**初版** は、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) で保存されています。 -->
+
+初版のアーカイブは、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) にてホストされています。
 
 本書は、Free and Open Source Software for Geospatial ([FOSS4G](https://foss4g.org/)) の活動に触発されているおり、本書の基盤となるコードと解説はオープンであり、内容の再現性、透明性、アクセス性を保証しています。
 [GitHub](https://github.com/geocompx/geocompr) でソースコードを公開しているため、誰でも課題 (Issue) を開いたり、新しいコンテンツや誤植の修正に貢献することでプロジェクトに関わり、みんなのために役立てることができます。

@@ -37,7 +37,7 @@ OS 固有のインストールについては [rtask.thinkr.fr](https://rtask.th
 install.packages("sf")
 install.packages("terra")
 install.packages("spData")
-install.packages("spDataLarge", repos = "https://nowosad.r-universe.dev")
+install.packages("spDataLarge", repos = "https://geocompr.r-universe.dev")
 ```
 
 ```{r, eval=FALSE, echo=FALSE, message=FALSE, results='hide'}
@@ -281,8 +281,8 @@ Section \@ref(sf) は、シンプルフィーチャオブジェクトが、特�
 以下、実際の例を紹介する (地理ベクタデータの読み方については Section \@ref(iovec) を参照)。
 
 ```{r, message=FALSE}
-world_dfr = st_read(system.file("shapes/world.shp", package = "spData"))
-world_tbl = read_sf(system.file("shapes/world.shp", package = "spData"))
+world_dfr = st_read(system.file("shapes/world.gpkg", package = "spData"))
+world_tbl = read_sf(system.file("shapes/world.gpkg", package = "spData"))
 class(world_dfr)
 class(world_tbl)
 ```

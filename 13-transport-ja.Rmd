@@ -540,7 +540,7 @@ Section \@ref(vector-attribute-subsetting) で述べるように、**dplyr** の
 
 ```{r 13-transport-18, message=FALSE}
 routes_short = route(l = desire_lines_short, route_fun = route_osrm,
-                     osrm.profile = "bike")
+                     osrm.profile = "car")
 ```
 
 出力は `routes_short` で、(少なくとも OSRM ルート検索エンジンによれば) 自転車利用に適したトランスポートネットワーク\index{ねっとわーく@ネットワーク} 上のルートを表す `sf` オブジェクトで、各希望線に対して一つずつ出力される。

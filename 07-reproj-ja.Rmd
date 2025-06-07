@@ -207,7 +207,7 @@ st_is_longlat(london_geo)
 ## 投影データおよび非投影データに対する幾何学操作  {#geom-proj}
 
 **sf** version 1.0.0 より、R は緯度経度 CRS を持って入るベクタデータセットに対する機能が大幅に強化された。この機能強化は、Section \@ref(s2) で取り上げた S2 <u>球面ジオメトリエンジン</u>によるものである。
-Figure \@ref(fig:s2geos) で示すように、**sf** は、CRS 種別に応じて GEOS\index{GEOS} または S2\index{S2} を使い分ける (デフォルトは S2)。
+Figure \@ref(fig:s2geos) で示すように、**sf** は、CRS 種別に応じて GEOS\index{GEOS} または S2\index{S2} を使い分ける (デフォルトは S2)。^[`st_area()` 関数は例外。`sf_use_s2()` がオフの時、地理的 CRS データの面積計算には、**lwgeom** の `st_geod_area()` 関数を使用する。]
 座標投影系のデータと CRS がないデータの場合、常に GEOS が使われる。地理データではデフォルトで S2 が使われるが、無効化したい場合は `sf::sf_use_s2(FALSE)` とする。
 
 ```{r s2geos, fig.cap="入力データの CRS に依存する sf パッケージのジオメトリ操作の動作。", echo=FALSE}
