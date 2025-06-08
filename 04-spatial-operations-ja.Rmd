@@ -148,11 +148,11 @@ waldo::compare(canterbury_height2, canterbury_height4)
 この時点で、(行名以外は) 同じバージョンの `canterbury_height` が 3 つある。1 つは `[` 演算子を用いて作成し、もう 1 つは中間選択オブジェクトを介して作成し、最後は **sf** の便利な関数 `st_filter()` を用いて作成した。
 <!-- RL: commented out for now as old. Todo: if we ever update that vignette uncomment the next line. -->
 <!-- To explore spatial subsetting in more detail, see the supplementary vignettes on `subsetting` and [`tidyverse-pitfalls`](https://geocompr.github.io/geocompkg/articles/) on the [geocompkg website](https://geocompr.github.io/geocompkg/articles/). -->
-次のセクションでは、二つのフィーチャが空間的に関連しているかどうかを識別するために使用できる、二項述語としても知られている、さまざまなタイプの空間的関係性を探る。
+次のセクションでは、二つのフィーチャが空間的に関連しているかどうかを識別する、さまざまな種類の空間関係を探る。二項述語とも言う。
 
 ### 位相関係  {#topological-relations}
 
-位相関係\index{いそうかんけい@位相関係}は、オブジェクト間の空間的な関係を表す。
+位相関係\index{いそうかんけい@位相関係}は、オブジェクト間の空間関係を表す。
 「二項位相関係」 (binary topological relationships) とは、2 次元以上の点 (一般的には点、線、ポリゴン) の順序集合で定義される 2 つの物体間の空間関係について論理的に記述したもの (答えは `TRUE` か `FALSE` しかない) である [@egenhofer_mathematical_1990]。
 このように言うと、かなり抽象的に聞こえるだろうが、実際、位相関係の定義と分類は、1966年に初めて書籍として出版された数学的基礎に基づいている [@spanier_algebraic_1995]。 代数的位相幾何学の分野は2000年以降も続いている [@dieck_algebraic_2008]。
 
