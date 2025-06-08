@@ -67,13 +67,13 @@ library(spDataLarge)
 ## 入力データを整頓  {#tidy-the-input-data}
 
 ドイツ政府は、1 km または 100 m の解像度でグリッド化された国勢調査データを提供している。
-次のコードは、1 km のデータをダウンロードし、解凍し、読み込むものである。
+次のコードは、1 km のデータをダウンロード、解凍、読み込むものである。
 
 
 ``` r
 download.file("https://tinyurl.com/ybtpkwxz", 
               destfile = "census.zip", mode = "wb")
-unzip("census.zip") # unzip the files
+unzip("census.zip") # ファイルを解凍
 census_de = readr::read_csv2(list.files(pattern = "Gitter.csv"))
 ```
 
@@ -84,9 +84,9 @@ census_de = readr::read_csv2(list.files(pattern = "Gitter.csv"))
 data("census_de", package = "spDataLarge")
 ```
 
-`census_de` オブジェクトは、ドイツ全土の 30 万以上のグリッドセルについて、13 の変数を含むデータフレームである。
+`census_de` オブジェクトは、ドイツ全土の 30 万以上のグリッドセルのデータフレームで、変数が 13 ある。
 これからの作業では、東経 (`x`) と北緯 (`y`)、住民数 (人口 `pop`)、平均年齢 (`mean_age`)、女性の割合 (`women`)、平均世帯人員 (`hh_size`) だけが必要である。
-これらの変数を、以下のコードチャンクのように選択し、ドイツ語から英語に名前が変更する。その結果は Table \@ref(tab:census-desc) に要約した。 
+以下のコードチャンクではこれらの必要な変数のみを選択する。なお、この際に変数名をドイツ語から英語に変更する。その結果は Table \@ref(tab:census-desc) に要約した。 
 さらに `mutate_all()` で、値 `-1` と `-9` (不明を意味する) を `NA` に変換する。
 
 
@@ -129,7 +129,7 @@ input_ras = rast(input_tidy, type = "xyz", crs = "EPSG:3035")
 ``` r
 input_ras
 #> class       : SpatRaster 
-#> dimensions  : 868, 642, 4  (nrow, ncol, nlyr)
+#> size        : 868, 642, 4  (nrow, ncol, nlyr)
 #> resolution  : 1000, 1000  (x, y)
 #> extent      : 4031000, 4673000, 2684000, 3552000  (xmin, xmax, ymin, ymax)
 #> coord. ref. : ETRS89-extended / LAEA Europe (EPSG:3035) 
@@ -139,7 +139,7 @@ input_ras
 #> max values  :   6,     5,        5,       5
 ```
 
-\BeginKnitrBlock{rmdnote}<div class="rmdnote">なお、ここでは等面積投影 (EPSG:3035; Lambert Equal Area Europe)、つまり各グリッドセルが同じ面積 (ここでは 1000 * 1000 平方メートル) を持つ投影 CRS\index{CRS!projected} を使用している。
+\BeginKnitrBlock{rmdnote}<div class="rmdnote">なお、ここでは等面積投影 (EPSG:3035; Lambert Equal Area Europe)を使用している。これは、各グリッドセルが同じ面積 (ここでは 1000 * 1000 平方メートル) を持つ投影 CRS\index{CRS!projected} である。
 主に格子点あたりの住民数や女性比率などの密度を用いているので、「リンゴとオレンジの比較」を避けるために、各セルの面積が同じであることが最も重要である。
 グリッドセル面積が極方向に減少し続ける地理的 CRS\index{CRS!geographic} には注意が必要 (Section \@ref(crs-intro) と Chapter \@ref(reproj-geo-data) も参照)。</div>\EndKnitrBlock{rmdnote}
 
@@ -280,8 +280,8 @@ Table: (\#tab:metro-names)逆ジオコーディングの結果
 
 
 
-全体として、私たちは `City` 列が大都市名 (Table \@ref(tab:metro-names)) として機能していることに満足している。例外は、Wülfrath が Düsseldorf の大領域に属していることで ある。
-したがって、Wülfrath を Düsseldorf (Figure \@ref(fig:metro-areas)) に置き換える。
+`City` 列が大都市名 (Table \@ref(tab:metro-names)) となっているので、おおむね成功と言えるだろう。例外は、Velbert である。より広域の Düsseldorf の方が適切だろう。
+したがって、Velbert を Düsseldorf (Figure \@ref(fig:metro-areas)) に置き換える。
 ウムラウト `ü` は、例えば `opq()` を使って大都市圏のバウンディングボックスを決定する場合 (後述)、後々トラブルになる可能性があるため、これも変換しておく。
 
 
@@ -296,8 +296,8 @@ metro_names = metro_names$city |>
 
 \index{ちりてきもくひょうぶつ@地理的目標物}
 **osmdata**\index{osmdata (package)} パッケージは、OSM\index{OpenStreetMap} データへの使いやすいアクセスを提供する (Section \@ref(retrieving-data) も参照)。
-ドイツ全土の店舗をダウンロードするのではなく、定義された大都市圏にクエリを限定することで、計算負荷を軽減し、関心のあるエリアのみの店舗位置を提供している。
-この後のコードチャンクは、以下のようないくつかの関数を用いてこれを行う。
+ドイツ全土の店舗をダウンロードするのではなく、定義された大都市圏にクエリを限定しよう。こうすることで計算負荷を軽減し、目標地域に限定して店舗位置を提供する。
+下のコードチャンクでは、以下のようないくつかの関数を用いてこれを行う。
 
 - `map()`\index{るーぷしょり@ループ処理!map}: (`lapply()`\index{るーぷしょり@ループ処理!lapply} の **tidyverse** 相当)。これは、OSM \index{OpenStreetMap} クエリ関数 `opq()` (Section \@ref(retrieving-data) 参照) のバウンディングボックス\index{ばうんでぃんぐぼっくす@バウンディングボックス}を定義する、8 つの大都市名すべてを繰り返し処理
 - `add_osm_feature()`: キー値が `shop` の OSM\index{OpenStreetMap} 要素を指定する (共通のキー:値のペアの一覧は [wiki.openstreetmap.org](https://wiki.openstreetmap.org/wiki/Map_Features) を参照)
@@ -305,8 +305,8 @@ metro_names = metro_names$city |>
 - `while()`\index{るーぷしょり@ループ処理!while}: ダウンロードに失敗すると、さらに 2 回ダウンロードを試みる^[OSM-download は 1 回目で失敗することもあるようである
 ]
 
-このコードを実行する前に: 約 2 GB のデータをダウンロードすることを考慮してみよう。
-時間とリソースを節約するために、`shops` という名前の出力を **spDataLarge** に入れてある。
+このコードを実行する前に、 のデータをダウンロードするデータの大きさが約 2 GB となることに注意しよう。
+時間とリソースを節約するために、`shops` という名前の出力を **spDataLarge** に格納してある。
 自分の環境で利用できるようにするには、**spDataLarge** パッケージがロードされていることを確認するか、`data("shops", package = "spDataLarge")` を実行してみよう。
 
 
@@ -407,8 +407,8 @@ reclass = reclass[[names(reclass) != "pop"]] |>
   c(poi)
 ```
 
-他のデータサイエンス・プロジェクトと同様、これまでのところ、データの検索と「整理」が全体の作業負荷の多くを占めている。
-きれいなデータであれば、最後のステップであるすべてのラスタ\index{らすた@ラスタ}のレイヤを合計して最終的なスコアを計算することも、1行のコードで実現できる。
+他のデータサイエンス・プロジェクトと同様、データの検索と「整頓」が全体の作業負荷の多くを占めている。
+きれいなデータであれば、最後のステップであるすべてのラスタ\index{らすた@ラスタ}のレイヤを合計して最終的なスコアを計算することも、1 行のコードで実現できる。
 
 
 ``` r
@@ -416,7 +416,7 @@ reclass = reclass[[names(reclass) != "pop"]] |>
 result = sum(reclass)
 ```
 
-例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値かもしれない (Figure \@ref(fig:bikeshop-berlin) ; `code/14-location-jm.R` も参照)。
+例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値だろう (Figure \@ref(fig:bikeshop-berlin) ; `code/14-location-jm.R` も参照)。
 
 <div class="figure" style="text-align: center">
 
@@ -428,7 +428,7 @@ result = sum(reclass)
 <p class="caption">(\#fig:bikeshop-berlin)ベルリンにおける自転車店の仮想調査に従った適切なエリア (スコア> 9のラスタセル)。</p>
 </div>
 
-## ディスカッションと次のステップ  {#discussion-and-next-steps}
+## 考察と次のステップ  {#discussion-and-next-steps}
 
 今回紹介したアプローチは、GIS\index{GIS} の規範的な使い方の典型的な例である [@longley_geographic_2015]。
 調査データと専門家による知識・仮定 (大都市圏の定義、クラス間隔の定義、最終的なスコア閾値の定義) を組み合わせている。
@@ -438,7 +438,7 @@ result = sum(reclass)
 - 最終的なスコアの算出には均等なウェイトを用いたが、世帯規模など他の要因も、女性の割合や平均年齢と同様に重要である可能性がある。
 - 全ての地理的目標物\index{ちりてきもくひょうぶつ@地理的目標物}  を使用したが、DIY、ハードウェア、自転車、釣り、ハンティング、バイク、アウトドア、スポーツショップなど、自転車販売店に関連するもののみ (ショップ値の範囲は [OSM Wiki](https://wiki.openstreetmap.org/wiki/Map_Features#Shop) で確認可能)にすると、より洗練された結果を得ることができたかもしれない
 - 解像度の高いデータを使うと、出力が向上する場合がある (演習参照) 
-- 限られた変数のみを使用し、[INSPIRE geoportal](https://inspire-geoportal.ec.europa.eu/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section \@ref(retrieving-data) も参照のこと)。
+- 限られた変数のみを使用した。[INSPIRE geoportal](https://inspire-geoportal.ec.europa.eu/) や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section \@ref(retrieving-data) も参照のこと)。
 - 男性比率と単身世帯の関係などの相互作用は考慮されていない。
 
 つまり、この分析は多方面に拡張することができる。

@@ -253,7 +253,7 @@ st_is_longlat(london_geo)
 ## 投影データおよび非投影データに対する幾何学操作  {#geom-proj}
 
 **sf** version 1.0.0 より、R は緯度経度 CRS を持って入るベクタデータセットに対する機能が大幅に強化された。この機能強化は、Section \@ref(s2) で取り上げた S2 <u>球面ジオメトリエンジン</u>によるものである。
-Figure \@ref(fig:s2geos) で示すように、**sf** は、CRS 種別に応じて GEOS\index{GEOS} または S2\index{S2} を使い分ける (デフォルトは S2)。
+Figure \@ref(fig:s2geos) で示すように、**sf** は、CRS 種別に応じて GEOS\index{GEOS} または S2\index{S2} を使い分ける (デフォルトは S2)。^[`st_area()` 関数は例外。`sf_use_s2()` がオフの時、地理的 CRS データの面積計算には、**lwgeom** の `st_geod_area()` 関数を使用する。]
 座標投影系のデータと CRS がないデータの場合、常に GEOS が使われる。地理データではデフォルトで S2 が使われるが、無効化したい場合は `sf::sf_use_s2(FALSE)` とする。
 
 <div class="figure" style="text-align: center">
@@ -345,15 +345,6 @@ london_buff_projected = st_buffer(london_proj, 100000)
 先に作成した CRS を<u>持つ</u> 3 つの `london_buff*` オブジェクト (`london_buff_s2`、`london_buff_lonlat`、`london_buff_projected`) の形状を Figure \@ref(fig:crs-buf) に示す。
 
 
-
-
-```
-#> 
-#> Attaching package: 'tmap'
-#> The following object is masked from 'package:datasets':
-#> 
-#>     rivers
-```
 
 <div class="figure" style="text-align: center">
 <img src="figures/crs-buf-1.png" alt="London 周辺のバッファで、S2 球面幾何エンジンを用いて作成した緯度経度データ (左)、投影データ (中)、球面幾何を用いない緯度経度データ (右) の結果を示している。左のプロットは、投影されていないデータを sf でバッファ作成した結果を示しており、デフォルトで Google の S2 spherical geometry engine を max_cells を 1000 に設定して呼び出している (細線)。太い「ブロック状の」線は、max_cells を 100 に設定して同じ操作を行った結果を示している。" width="100%" />

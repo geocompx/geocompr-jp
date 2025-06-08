@@ -7,7 +7,7 @@
 <title>Chapter 8 地理データI/O | Geocomputation with R</title>
 <meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
 <meta name="description" content="必須パッケージ この章では、以下のパッケージが必要である。 library(sf) library(terra) library(dplyr) library(spData)  8.1 イントロダクション この章では、地理データの読み書きの方法について説明する。 地理データ入力 (Input) はジオコンピューテーションに不可欠である。...">
-<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta name="generator" content="bookdown 0.43 with bs4_book()">
 <meta property="og:title" content="Chapter 8 地理データI/O | Geocomputation with R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="http://124.219.182.167/geo/read-write.html">
@@ -19,10 +19,10 @@
 <meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
-<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.10/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.9.0/transition.js"></script><script src="libs/bs3compat-0.9.0/tabs.js"></script><script src="libs/bs3compat-0.9.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 8 地理データI/O | Geocomputation with R">
 <meta name="citation_author" content="Robin Lovelace">
 <meta name="citation_author" content="Jakub Nowosad">
@@ -112,7 +112,7 @@
 <h2>必須パッケージ<a class="anchor" aria-label="anchor" href="#prerequisites"><i class="fas fa-link"></i></a>
 </h2>
 <p>この章では、以下のパッケージが必要である。</p>
-<div class="sourceCode" id="cb260"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb265"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
@@ -146,7 +146,7 @@ Section <a href="read-write.html#retrieving-data">8.5</a> では、様々な<u>�
 今日、ファイル形式の多様性は困惑するほどある。しかし、1960年代には、ハーバード大学で空間解析のための最初の広く配布されたプログラム (<a href="https://news.harvard.edu/gazette/story/2011/10/the-invention-of-gis/">SYMAP</a>) などの初期の GIS ソフトウェアが開発された。それ以降、多くの統合と標準化が行われてきた <span class="citation">(<a href="references.html#ref-coppock_history_1991">Coppock and Rhind 1991</a>)</span>。</p>
 <p>
 GDAL (Geospatial Data Abstraction Library、「グードル」と発音する。「グー」の goo の oo 部分は、Object Oeirneted を表す) は、2000年のリリース以来、地理ファイル形式間の非互換性に関連する多くの問題を解決した。
-GDAL は、多くのラスタおよびベクタデータフォーマットの読み書きのための統一された高性能なインタフェースを提供する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Chapter &lt;a href="geometry-operations.html#geometry-operations"&gt;5&lt;/a&gt; で解説する通り、GDAL には、ラスタのモザイク処理、リサンプリング、クロッピング、再投影などを可能にするユーティリティ関数群もある。&lt;/p&gt;'><sup>39</sup></a>
+GDAL は、多くのラスタおよびベクタデータフォーマットの読み書きのための統一された高性能なインタフェースを提供する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Chapter &lt;a href="geometry-operations.html#geometry-operations"&gt;5&lt;/a&gt; で解説する通り、GDAL には、ラスタのモザイク処理、リサンプリング、クロッピング、再投影などを可能にするユーティリティ関数群もある。&lt;/p&gt;'><sup>40</sup></a>
 GRASS、ArcGIS、QGIS など、多くのオープンおよびプロプライエタリな GIS プログラムは、GUI の背後に GDAL を使用して、地理データを取り込み、適切な形式で出力するという足回りの作業を行なっている。</p>
 <p>GDAL は、200 以上のベクタおよびラスタデータフォーマットへのアクセスを提供する。
 Table <a href="read-write.html#tab:formats">8.1</a> では、よく使われる空間ファイル形式についての基本情報を紹介している。</p>
@@ -257,7 +257,7 @@ OGC が推奨するオープンなファイル形式は、プロプライエタ�
 1990 年代初頭に開発されたもので、多くの制約がある。
 まず、少なくとも 3 つのファイルで構成されるマルチファイル形式であること。
 255 列までしかサポートしておらず、列名は 10 文字まで、ファイルサイズは 2 GB までと制限されている。
-さらに、ESRI Shapefile は、ポリゴンと複合ポリゴンの区別ができないなど、可能なすべてのジオメトリタイプをサポートしていない。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;ESRI Shapefile の制限と可能な代替ファイル形式については、&lt;a href="http://switchfromshapefile.org/" class="uri"&gt;http://switchfromshapefile.org/&lt;/a&gt; 参照。&lt;/p&gt;'><sup>40</sup></a>
+さらに、ESRI Shapefile は、ポリゴンと複合ポリゴンの区別ができないなど、可能なすべてのジオメトリタイプをサポートしていない。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;ESRI Shapefile の制限と可能な代替ファイル形式については、&lt;a href="http://switchfromshapefile.org/" class="uri"&gt;http://switchfromshapefile.org/&lt;/a&gt; 参照。&lt;/p&gt;'><sup>41</sup></a>
 このような制約があるにもかかわらず、長い間、有力な代替手段が見つかっていなかった。
 最近では、<a href="https://www.geopackage.org/">GeoPackage</a> が登場し、ESRI Shapefile に取って代わろうとしている。
 Geopackage は、地理空間情報を交換するためのフォーマットで、OGC 規格の一つである。
@@ -287,7 +287,7 @@ LiDAR 点群を格納するための LAS、LAZ 形式、多次元配列を格納
 <p><code><a href="https://r-spatial.github.io/sf/reference/st_read.html">sf::read_sf()</a></code> (ベクタデータの読み込みに使うメイン関数) や <code><a href="https://rspatial.github.io/terra/reference/rast.html">terra::rast()</a></code> (ラスタデータの読み込みに使うメイン関数) などのコマンドを実行すると、ファイルからデータを読み込むイベントの連鎖が無言で開始される。
 さらに、多くの R パッケージは、サンプルデータを提供していたり (たとえば、これまでにも使ってきた <code><a href="https://jakubnowosad.com/spData/reference/world.html">spData::world</a></code>)、あるいはさまざまなデータソースからデータを取得する関数を提供している。
 これらはすべて、R にデータをロードするか、より正確には、ワークスペースにオブジェクトを割り当てる。
-すなわち、オブジェクトが R にインポートされると、これは RAM に保存され<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;例外として、&lt;strong&gt;terra&lt;/strong&gt; の &lt;code&gt;SpatRaster&lt;/code&gt; オブジェクト (実際のデータの C++ ポインタ) や、データベース接続がある。たとえば、Section &lt;a href="gis.html#postgis"&gt;10.7&lt;/a&gt; で説明するように、&lt;code&gt;dplyr::collect()&lt;/code&gt; などでメモリにインポートされる。&lt;/p&gt;'><sup>41</sup></a>、<code><a href="https://rdrr.io/r/base/ls.html">ls()</a></code> で一覧を表示することができ (あるいは開発環境の ‘Environment’ に表示され)、R セッション中の <a href="http://adv-r.had.co.nz/Environments.html"><code>.GlobalEnv</code></a> からアクセスできる。</p>
+すなわち、オブジェクトが R にインポートされると、これは RAM に保存され<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;例外として、&lt;strong&gt;terra&lt;/strong&gt; の &lt;code&gt;SpatRaster&lt;/code&gt; オブジェクト (実際のデータの C++ ポインタ) や、データベース接続がある。たとえば、Section &lt;a href="gis.html#postgis"&gt;10.7&lt;/a&gt; で説明するように、&lt;code&gt;dplyr::collect()&lt;/code&gt; などでメモリにインポートされる。&lt;/p&gt;'><sup>42</sup></a>、<code><a href="https://rdrr.io/r/base/ls.html">ls()</a></code> で一覧を表示することができ (あるいは開発環境の ‘Environment’ に表示され)、R セッション中の <a href="http://adv-r.had.co.nz/Environments.html"><code>.GlobalEnv</code></a> からアクセスできる。</p>
 <div id="iovec" class="section level3" number="8.3.1">
 <h3>
 <span class="header-section-number">8.3.1</span> ベクタデータ<a class="anchor" aria-label="anchor" href="#iovec"><i class="fas fa-link"></i></a>
@@ -466,7 +466,7 @@ TRUE
 </table></div>
 <p>以下のコマンドは、コンピュータにインストールされた GDAL の最初の 3 つのドライバを報告し (結果はインストールされた GDAL のバージョンによって異なる場合がある)、それらのフィーチャの要約を表示する。
 なお、大半のドライバはデータの書き込みが可能であるが (87 種類中 51 種類)、ベクタデータに加えてラスタデータを効率的に表現できるフォーマットは 16 種類しかない (詳しくは <code>?st_drivers()</code>)。</p>
-<div class="sourceCode" id="cb261"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb266"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sf_drivers</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_drivers.html">st_drivers</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html">head</a></span><span class="op">(</span><span class="va">sf_drivers</span>, n <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">sf_drivers</span><span class="op">[</span><span class="op">-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span><span class="op">)</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
@@ -474,7 +474,7 @@ TRUE
 テキスト文字列の内容は、ドライバによって異なる可能性がある。
 多くの場合、ESRI Shapefile (<code>.shp</code>) や <code>GeoPackage</code> 形式 (<code>.gpkg</code>) と同様に、<code>dsn</code> はファイル名となる。
 <code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> は、ファイルの拡張子からドライバを推測する (下の例は、<code>.gpkg</code> の場合)。 (訳注: 日本語データを含むファイルは、文字エンコーディングを指定しないと文字化けを起こす。ほとんどの場合、CP932 を使用しているので、<code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> に引数 <code>options = "ENCODING=CP932"</code> を設定するとよい。なお、国土数値情報の近年のファイルは UTF-8 を採用していることもある。)</p>
-<div class="sourceCode" id="cb262"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb267"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">f</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.gpkg"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span></span>
 <span><span class="va">world</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">f</span><span class="op">)</span></span></code></pre></div>
 <p>ドライバによっては、<code>dsn</code> は、フォルダ名、データベースのアクセス認証情報、または GeoJSON 文字列表現として提供されることがある (詳細は、<code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> のヘルプページの例を参照)。</p>
@@ -485,7 +485,7 @@ TRUE
 1 つ目は、<code>query</code> の引数に関連して、<a href="https://gdal.org/user/ogr_sql_dialect.html">OGR SQL query text</a> でデータのどの部分を読み取るかを指定できるようにしたものである。
 以下の例では、タンザニアのみのデータを抽出している (Figure <a href="read-write.html#fig:readsfquery">8.1</a>A)。
 これは、<code>"world"</code> のレイヤから <code>name_long</code> が <code>"Tanzania"</code> と等しいすべての列 (<code>SELECT *</code>) を取得すると指定することで実現する。</p>
-<div class="sourceCode" id="cb263"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb268"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tanzania</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">f</span>, query <span class="op">=</span> <span class="st">'SELECT * FROM world WHERE name_long = "Tanzania"'</span><span class="op">)</span></span></code></pre></div>
 <p>利用可能な列の名前がわからない場合、<code>'SELECT * FROM world WHERE FID = 1'</code> でデータの 1 行だけを読み込むのが良い方法である。
 <code>FID</code> は<u>フィーチャ ID</u>を表し、多くの場合行番号であるが、その値は使用するファイル形式に依存する。
@@ -494,12 +494,12 @@ TRUE
 この引数は、データを抽出したい研究領域を表すよく知られたテキストを想定している。
 タンザニアの国境線 50,000 m と交差するポリゴンをファイルから読み込む。
 そのためには、(a) バッファを作成する (Section <a href="geometry-operations.html#buffers">5.2.3</a>)、(b) <code><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry()</a></code> で <code>sf</code> バッファオブジェクトを <code>sfc</code> ジオメトリオブジェクトに変換する、(c) <code><a href="https://r-spatial.github.io/sf/reference/st_as_text.html">st_as_text()</a></code> でジオメトリを WKT に変換する、のいずれかの方法で「フィルタ」を準備する必要がある。</p>
-<div class="sourceCode" id="cb264"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb269"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tanzania_buf</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="va">tanzania</span>, <span class="fl">50000</span><span class="op">)</span></span>
 <span><span class="va">tanzania_buf_geom</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">tanzania_buf</span><span class="op">)</span></span>
 <span><span class="va">tanzania_buf_wkt</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_text.html">st_as_text</a></span><span class="op">(</span><span class="va">tanzania_buf_geom</span><span class="op">)</span></span></code></pre></div>
 <p>では、この「フィルタ」を <code>wkt_filter</code> の引数で適用してみよう。</p>
-<div class="sourceCode" id="cb265"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb270"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">tanzania_neigh</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">f</span>, wkt_filter <span class="op">=</span> <span class="va">tanzania_buf_wkt</span><span class="op">)</span></span></code></pre></div>
 <p>Figure <a href="read-write.html#fig:readsfquery">8.1</a> :B に示すように、この結果はタンザニアとその 50 km バッファ内のすべての国を含めている。</p>
 <div class="figure" style="text-align: center">
@@ -509,13 +509,13 @@ FIGURE 8.1: (A) クエリと (B) wkt フィルタを用いて、ベクタデー�
 </p>
 </div>
 <p>当然ながら、一部のオプションは特定のドライバに固有のものである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
-対応するベクタフォーマットとオプションの一覧は、&lt;a href="http://gdal.org/ogr_formats.html" class="uri"&gt;http://gdal.org/ogr_formats.html&lt;/a&gt; に記載されている。&lt;/p&gt;'><sup>42</sup></a>
+対応するベクタフォーマットとオプションの一覧は、&lt;a href="http://gdal.org/ogr_formats.html" class="uri"&gt;http://gdal.org/ogr_formats.html&lt;/a&gt; に記載されている。&lt;/p&gt;'><sup>43</sup></a>
 例えば、表計算ソフトのフォーマット (<code>.csv</code>) に保存された座標を考えてみよう。
 このようなファイルを空間オブジェクトとして読み込むには、当然、座標を表す列の名前 (以下の例では、<code>X</code> と <code>Y</code>) を指定しなければならない。
 これは、<code>options</code> パラメータを設定することで行うことができる。
 可能なオプションについては、対応する GDAL ドライバの説明の「オープンオプション」セクションを参照。
 カンマ区切り値 (csv) 形式は、<a href="https://gdal.org/drv_csv.html" class="uri">https://gdal.org/drv_csv.html</a>。</p>
-<div class="sourceCode" id="cb266"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb271"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cycle_hire_txt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"misc/cycle_hire_xy.csv"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span></span>
 <span><span class="va">cycle_hire_xy</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">cycle_hire_txt</span>,</span>
 <span>  options <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"X_POSSIBLE_NAMES=X"</span>, <span class="st">"Y_POSSIBLE_NAMES=Y"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -523,7 +523,7 @@ FIGURE 8.1: (A) クエリと (B) wkt フィルタを用いて、ベクタデー�
 Well-known text (WKT)、well-known binary (WKB)、GeoJSON 形式がその例である。
 例えば、<code>world_wkt.csv</code> のファイルには、世界の国々のポリゴンを表す <code>WKT</code> という列がある。
 このことを示すために、今回も <code>options</code> パラメータを使用する。</p>
-<div class="sourceCode" id="cb267"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb272"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">world_txt</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"misc/world_wkt.csv"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span></span>
 <span><span class="va">world_wkt</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">world_txt</span>, options <span class="op">=</span> <span class="st">"GEOM_POSSIBLE_NAMES=WKT"</span><span class="op">)</span></span></code></pre></div>
 
@@ -539,7 +539,7 @@ KML ファイルは、地理情報を XML 形式で格納している。これ�
 このファイルには、複数のレイヤが含まれている。
 <code><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers()</a></code> は、利用可能なすべてのレイヤを表示する。
 <code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> の <code>layer</code> パラメータの助けを借りて最初のレイヤ <code>Placemarks</code> を選択する。</p>
-<div class="sourceCode" id="cb268"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb273"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">u</span> <span class="op">=</span> <span class="st">"https://developers.google.com/kml/documentation/KML_Samples.kml"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="va">u</span>, <span class="st">"KML_Samples.kml"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_layers.html">st_layers</a></span><span class="op">(</span><span class="st">"KML_Samples.kml"</span><span class="op">)</span></span>
@@ -561,11 +561,11 @@ KML ファイルは、地理情報を XML 形式で格納している。これ�
 <p>
 ラスタデータは、ベクタデータと同様に多くのファイル形式があり、中にはマルチレイヤファイルをサポートするものもある。
 <strong>terra</strong> の <code><a href="https://rspatial.github.io/terra/reference/rast.html">rast()</a></code> コマンドは、レイヤが 1 つだけのファイルが提供された場合、1 つのレイヤで読み込む。</p>
-<div class="sourceCode" id="cb269"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb274"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">raster_filepath</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/srtm.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span>
 <span><span class="va">single_layer</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">raster_filepath</span><span class="op">)</span></span></code></pre></div>
 <p>また、マルチレイヤファイルを読み込む場合にも有効である。</p>
-<div class="sourceCode" id="cb270"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb275"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">multilayer_filepath</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/landsat.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span>
 <span><span class="va">multilayer_rast</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">multilayer_filepath</span><span class="op">)</span></span></code></pre></div>
 <p>
@@ -575,13 +575,13 @@ KML ファイルは、地理情報を XML 形式で格納している。これ�
 試しに、2000年から2012年までの 500 m 解像度での全球の月別積雪確率に接続してみよう。
 12月の積雪確率は、COG (Cloud Optimized GeoTIFF) ファイル (Section <a href="read-write.html#file-formats">8.2</a>) として、<a href="https://zenodo.org/record/5774954/files/clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif">zenodo.org</a> に保存されている。
 オンラインファイルを読むには、そのURLと <code>/vsicurl/</code> プレフィックスを指定するだけである。</p>
-<div class="sourceCode" id="cb271"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb276"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">myurl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"/vsicurl/https://zenodo.org/record/5774954/files/"</span>,</span>
 <span>               <span class="st">"clm_snow.prob_esacci.dec_p.90_500m_s0..0cm_2000..2012_v2.0.tif"</span><span class="op">)</span></span>
 <span><span class="va">snow</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">myurl</span><span class="op">)</span></span>
 <span><span class="va">snow</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 35849, 86400, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; size        : 35849, 86400, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 0.00417, 0.00417  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : -180, 180, -62, 87.4  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : lon/lat WGS 84 (EPSG:4326) </span></span>
@@ -592,7 +592,7 @@ KML ファイルは、地理情報を XML 形式で格納している。これ�
 その値は、何らかの値に基づく操作 (例えば、<code><a href="https://rspatial.github.io/terra/reference/crop.html">crop()</a></code> や <code><a href="https://rspatial.github.io/terra/reference/extract.html">extract()</a></code>) を適用した場合に読み取られる。
 これにより、ファイル全体をダウンロードすることなく、データのごく一部だけを読み出すこともできるようになった。
 例えば、レイキャビクの座標を指定し、<code><a href="https://rspatial.github.io/terra/reference/extract.html">extract()</a></code> 関数を適用すると、12 月の積雪確率 (70%) を求めることができる。</p>
-<div class="sourceCode" id="cb272"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb277"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rey</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>lon <span class="op">=</span> <span class="op">-</span><span class="fl">21.94</span>, lat <span class="op">=</span> <span class="fl">64.15</span><span class="op">)</span></span>
 <span><span class="va">snow_rey</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html">extract</a></span><span class="op">(</span><span class="va">snow</span>, <span class="va">rey</span><span class="op">)</span></span>
 <span><span class="va">snow_rey</span></span>
@@ -624,18 +624,18 @@ KML ファイルは、地理情報を XML 形式で格納している。これ�
 <code>.geojson</code>、<code>.shp</code>、<code>.gpkg</code> などの最も一般的なものを含む、広範囲の地理ベクタファイル形式に <strong>sf</strong> オブジェクトを書き込むことができる。
 ファイル名から、<code><a href="https://r-spatial.github.io/sf/reference/st_write.html">write_sf()</a></code> が自動的に使用するドライバを決定する。
 また、書き込み速度はドライバに依存する。</p>
-<div class="sourceCode" id="cb273"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb278"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html">write_sf</a></span><span class="op">(</span>obj <span class="op">=</span> <span class="va">world</span>, dsn <span class="op">=</span> <span class="st">"world.gpkg"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>注意</strong>: 同じデータソースに再度書き込もうとすると、この機能はファイルを上書きしてしまう。</p>
-<div class="sourceCode" id="cb274"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb279"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html">write_sf</a></span><span class="op">(</span>obj <span class="op">=</span> <span class="va">world</span>, dsn <span class="op">=</span> <span class="st">"world.gpkg"</span><span class="op">)</span></span></code></pre></div>
 <p>ファイルを上書きする代わりに、引数 <code>layer</code> でファイルに新しいレイヤを追加することができる。
 これは、GeoPackage を含むいくつかの空間フォーマットでサポートされている。</p>
-<div class="sourceCode" id="cb275"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb280"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html">write_sf</a></span><span class="op">(</span>obj <span class="op">=</span> <span class="va">world</span>, dsn <span class="op">=</span> <span class="st">"world_many_layers.gpkg"</span>, layer <span class="op">=</span> <span class="st">"second_layer"</span><span class="op">)</span></span></code></pre></div>
 <p>また、<code><a href="https://r-spatial.github.io/sf/reference/st_write.html">write_sf()</a></code> と同等である、<code><a href="https://r-spatial.github.io/sf/reference/st_write.html">st_write()</a></code> を使用することもできる。
 ただし、デフォルトの挙動は異なる。異なる点は、ファイルを上書きしない (上書きしようとするとエラーを返す)、書き込まれたファイル形式とオブジェクトの短い要約を表示する、などである。</p>
-<div class="sourceCode" id="cb276"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb281"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html">st_write</a></span><span class="op">(</span>obj <span class="op">=</span> <span class="va">world</span>, dsn <span class="op">=</span> <span class="st">"world2.gpkg"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Writing layer `world2' to data source `world2.gpkg' using driver `GPKG'</span></span>
 <span><span class="co">#&gt; Writing 177 features with 10 fields and geometry type Multi Polygon.</span></span></code></pre></div>
@@ -643,7 +643,7 @@ KML ファイルは、地理情報を XML 形式で格納している。これ�
 そのひとつが、空間データをテキストファイルに書き出すことである。
 これは、<code>layer_options</code> の中に <code>GEOMETRY</code> を指定することで可能である。
 単純な点データセットの場合は <code>AS_XY</code> (座標のための新しい列を2つ作成する)、より複雑な空間データの場合は <code>AS_WKT</code> (空間オブジェクトのよく知られたテキスト表現を含む新しい列を1つ作成する) のいずれかになる。</p>
-<div class="sourceCode" id="cb277"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb282"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html">write_sf</a></span><span class="op">(</span><span class="va">cycle_hire_xy</span>, <span class="st">"cycle_hire_xy.csv"</span>, layer_options <span class="op">=</span> <span class="st">"GEOMETRY=AS_XY"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_write.html">write_sf</a></span><span class="op">(</span><span class="va">world_wkt</span>, <span class="st">"world_wkt.csv"</span>, layer_options <span class="op">=</span> <span class="st">"GEOMETRY=AS_WKT"</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -656,7 +656,7 @@ KML ファイルは、地理情報を XML 形式で格納している。これ�
 この関数は、出力データ型とファイル形式に関する入力を期待するが、選択されたファイル形式に固有の GDAL オプションも受け付ける (詳しくは <code><a href="https://rspatial.github.io/terra/reference/writeRaster.html">?writeRaster</a></code> を参照)。</p>
 <p>
 ラスタを保存する際、<strong>terra</strong> パッケージは以下の 7 つのデータ形式を提供する: INT1U、INT2S、INT2U、INT4S、INT4U、FLT4S、FLT8S。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
-R は 32 ビット符号なし整数をサポートしていないため、INT4U の使用は推奨されていない。&lt;/p&gt;"><sup>43</sup></a> データ型は、ディスクに書き込まれるラスタオブジェクトのビット表現を決定する (Table <a href="read-write.html#tab:datatypes">8.5</a>)。
+R は 32 ビット符号なし整数をサポートしていないため、INT4U の使用は推奨されていない。&lt;/p&gt;"><sup>44</sup></a> データ型は、ディスクに書き込まれるラスタオブジェクトのビット表現を決定する (Table <a href="read-write.html#tab:datatypes">8.5</a>)。
 どのデータ型を使用するかは、ラスタオブジェクトの値の範囲による。
 データ型が表現できる値が多いほど、ディスク上のファイルサイズは大きくなる。
 符号なし整数 (INT1U、INT2U、INT4U) はカテゴリデータに適しており、浮動小数点数 (FLT4S、FLT8S) は通常連続データを表す。
@@ -711,17 +711,17 @@ R は 32 ビット符号なし整数をサポートしていないため、INT4U
 </table></div>
 <p>デフォルトでは、出力ファイル形式はファイル名から導かれる。
 ファイル名を <code>*.tif</code> とすると、以下のように GeoTIFF ファイルが作成される。</p>
-<div class="sourceCode" id="cb278"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/writeRaster.html">writeRaster</a></span><span class="op">(</span><span class="va">single_layer</span>, filename <span class="op">=</span> <span class="st">"my_raster.tif"</span>, datatype <span class="op">=</span> <span class="st">"INT2U"</span><span class="op">)</span></span></code></pre></div>
 <p>ラスタファイル形式によっては、追加オプションがあり、<code><a href="https://rspatial.github.io/terra/reference/writeRaster.html">writeRaster()</a></code> の <code>options</code> 引数に <a href="https://gdal.org/formats_list.html">GDAL parameters</a> を与えることで設定できる。
 GeoTIFF ファイルは、デフォルトで <strong>terra</strong> で記述され、LZW 圧縮が施されている <code>gdal = c("COMPRESS=LZW")</code>。
 圧縮を変更したり無効にしたりするには、この引数を変更する必要がある。</p>
-<div class="sourceCode" id="cb279"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/writeRaster.html">writeRaster</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">single_layer</span>, filename <span class="op">=</span> <span class="st">"my_raster.tif"</span>,</span>
 <span>            gdal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"COMPRESS=NONE"</span><span class="op">)</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>
 さらに、<code>filetype = "COG"</code> のオプションでラスタオブジェクトを COG (Cloud Optimized GeoTIFF, Section <a href="read-write.html#file-formats">8.2</a> ) として保存することができる。</p>
-<div class="sourceCode" id="cb280"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/writeRaster.html">writeRaster</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">single_layer</span>, filename <span class="op">=</span> <span class="st">"my_raster.tif"</span>,</span>
 <span>            filetype <span class="op">=</span> <span class="st">"COG"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>GeoTIFF 形式の圧縮については、Paul Ramsey の <a href="https://blog.cleverelephant.ca/2015/02/geotiff-compression-for-dummies.html">GeoTIFF 圧縮についてのブログ</a> に包括的に書かれている。</p>
@@ -732,7 +732,7 @@ GeoTIFF ファイルは、デフォルトで <strong>terra</strong> で記述さ
 <span class="header-section-number">8.5</span> オープンデータの取得<a class="anchor" aria-label="anchor" href="#retrieving-data"><i class="fas fa-link"></i></a>
 </h2>
 <p>
-インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;例えば、自由に使える地理データの長いサイト一覧が &lt;a href="https://freegisdata.rtwilson.com/"&gt;https://freegisdata.rtwilson.com/&lt;/a&gt; にある。&lt;/p&gt;'><sup>44</sup></a>
+インターネット上には地理データが膨大かつ増え続け、その多くは無料でアクセス・利用することができる (ただし、提供者のクレジットを適切に表示することが必要)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;例えば、自由に使える地理データの長いサイト一覧が &lt;a href="https://freegisdata.rtwilson.com/"&gt;https://freegisdata.rtwilson.com/&lt;/a&gt; にある。&lt;/p&gt;'><sup>45</sup></a>
 同じデータセットにアクセスする場所が複数あるという意味で、ある意味、データは<u>多すぎる</u>くらいにある。
 一部のデータセットは品質が低い。
 そこで、最初に最も重要な情報源をいくつか紹介する。
@@ -744,9 +744,9 @@ GeoTIFF ファイルは、デフォルトで <strong>terra</strong> で記述さ
 <p>ジオポータルは、ほとんどの場合空間的および時間的範囲などの特性に基づいてデータセットを照会できるグラフィカルなインターフェースを提供している。米国地質調査所の <a href="https://earthexplorer.usgs.gov/">EarthExplorer</a> はその代表例である。
 ブラウザ上でインタラクティブにデータセットを<u>探索</u>することは、利用可能なレイヤを理解する上で効果的な方法である。
 しかし、データの<u>ダウンロード</u>は、再現性と効率性の観点から、コードで行うのがベストである。
-ダウンロードは、主に URL や API を経由して、様々な手法でコマンドラインから開始することができる (例: <a href="https://dataspace.copernicus.eu/analyse/apis">Copernicus APIs</a> を参照)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Section &lt;a href="gis.html#staccog"&gt;10.8.1&lt;/a&gt; に、STAC-API を使用して Sentinel-2 データをダウンロードする例を示している。&lt;/p&gt;'><sup>45</sup></a>
+ダウンロードは、主に URL や API を経由して、様々な手法でコマンドラインから開始することができる (例: <a href="https://dataspace.copernicus.eu/analyse/apis">Copernicus APIs</a> を参照)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;Section &lt;a href="gis.html#staccog"&gt;10.8.1&lt;/a&gt; に、STAC-API を使用して Sentinel-2 データをダウンロードする例を示している。&lt;/p&gt;'><sup>46</sup></a>
 静的 URL にホストされているファイルは、<code><a href="https://rdrr.io/r/utils/download.file.html">download.file()</a></code> でダウンロードすることができる。以下のコードは、<a href="https://doi.pangaea.de/10.1594/PANGAEA.868349">pangaea.de</a> から米国の国立公園のデータにアクセスする例である。</p>
-<div class="sourceCode" id="cb281"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span>url <span class="op">=</span> <span class="st">"https://irma.nps.gov/DataStore/DownloadFile/673366"</span>,</span>
 <span>              destfile <span class="op">=</span> <span class="st">"nps_boundary.zip"</span>,</span>
 <span>              mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span>
@@ -843,15 +843,15 @@ rnoaa
 この他、<strong>tidycensus</strong>、<strong>tigris</strong> (USA)、<strong>cancensus</strong> (Canada)、<strong>eurostat</strong>、<strong>giscoR</strong> (European Union) あるいは <strong>idbr</strong> (international databases) など、様々な社会人口統計を取得する R パッケージが大量に存在している。<a href="https://walker-data.com/census-r/">Analyzing US Census Data</a> <span class="citation">(<a href="references.html#ref-walker_analyzing_2022">Walker 2022</a>)</span> には、こうしたデータを分析する方法がいくつか例示されている。
 同様に、<strong>bcdata</strong> (Province of British Columbia)、<strong>geobr</strong> (Brazil)、<strong>RCzechia</strong> (Czech Republic)、<strong>rgugik</strong> (Poland) など、様々な地域や国の空間データにアクセスできる R パッケージが存在する。</p>
 <p>各データパッケージは、データにアクセスするためのコードの書き方がそれぞれ異なる。
-Table <a href="read-write.html#tab:datapackages">8.6</a> の 3 つのパッケージについて、違いを確認できるようにデータを取得するコードチャンクを示す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;R 専用パッケージを使用したデータダウンロードの他の例は、以下を参照。 &lt;a href="https://rspatialdata.github.io/" class="uri"&gt;https://rspatialdata.github.io/&lt;/a&gt;&lt;/p&gt;'><sup>46</sup></a>
+Table <a href="read-write.html#tab:datapackages">8.6</a> の 3 つのパッケージについて、違いを確認できるようにデータを取得するコードチャンクを示す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;R 専用パッケージを使用したデータダウンロードの他の例は、以下を参照。 &lt;a href="https://rspatialdata.github.io/" class="uri"&gt;https://rspatialdata.github.io/&lt;/a&gt;&lt;/p&gt;'><sup>47</sup></a>
 まず、国の境界線はよく使うので、<strong>rnaturalearth</strong> パッケージ <span class="citation">(<a href="references.html#ref-R-rnaturalearth">Massicotte and South 2023</a>)</span> の <code><a href="https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html">ne_countries()</a></code> 関数を用いて、以下のようにアクセスしてみよう。</p>
-<div class="sourceCode" id="cb282"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rnaturalearth/">rnaturalearth</a></span><span class="op">)</span></span>
 <span><span class="va">usa_sf</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html">ne_countries</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"United States of America"</span>, returnclass <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span></span></code></pre></div>
 <p>国境データは、<strong>geodata</strong>、<strong>giscoR</strong>、<strong>rgeoboundaries</strong> などでも得られる。</p>
 <p>2 つ目の例は、<strong>geodata</strong> パッケージを使用して、10 分の空間分解能 (赤道では約 18.5 km) で全球の月別降水量の合計を含む一連のラスタをダウンロードしてみよう <span class="citation">(<a href="references.html#ref-R-geodata">Hijmans 2023a</a>)</span>。
 その結果、<code>SpatRaster</code> クラスのマルチレイヤオブジェクトが生成される。</p>
-<div class="sourceCode" id="cb283"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">geodata</span><span class="op">)</span></span>
 <span><span class="va">worldclim_prec</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/geodata/man/worldclim.html">worldclim_global</a></span><span class="op">(</span><span class="st">"prec"</span>, res <span class="op">=</span> <span class="fl">10</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">worldclim_prec</span><span class="op">)</span></span></code></pre></div>
@@ -859,7 +859,7 @@ Table <a href="read-write.html#tab:datapackages">8.6</a> の 3 つのパッケ�
 以下のコードチャンクに示すように、クエリは関数 <code><a href="https://docs.ropensci.org/osmdata/reference/opq.html">opq()</a></code> (OpenStreetMap query の略) で始まり、最初の引数は bounding box、またはつまり境界線を表すテキスト文字列 (この場合はリーズ市) である。
 その結果は、どの OSM 要素 (この場合は公園) に興味があるかを選択する関数に渡され、<u>key-value ペア</u>で表される。
 次に、これらのデータは関数 <code><a href="https://docs.ropensci.org/osmdata/reference/osmdata_sf.html">osmdata_sf()</a></code> に渡され、データのダウンロードと <code>sf</code> オブジェクトのリストへの変換が行われる (詳しくは <code><a href="https://docs.ropensci.org/osmdata/articles/osmdata.html">vignette('osmdata')</a></code> を参照)。</p>
-<div class="sourceCode" id="cb284"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/osmdata/">osmdata</a></span><span class="op">)</span></span>
 <span><span class="va">parks</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/osmdata/reference/opq.html">opq</a></span><span class="op">(</span>bbox <span class="op">=</span> <span class="st">"leeds uk"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://docs.ropensci.org/osmdata/reference/add_osm_feature.html">add_osm_feature</a></span><span class="op">(</span>key <span class="op">=</span> <span class="st">"leisure"</span>, value <span class="op">=</span> <span class="st">"park"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -873,8 +873,8 @@ OSM データの活用例については、Chapter <a href="gis.html#gis">10</a>
 <p>パッケージにデータセットが組み込まれていることがある。
 この場合、アクセス方法は 4 つある。パッケージをアタッチする方法 (パッケージが <strong>spData</strong> のように ‘lazy loading’ を使用している場合) は <code>data(dataset, package = mypackage)</code>、データセットを参照する方法は <code>mypackage::dataset</code>、生のデータファイルを参照する方法は <code>system.file(filepath, package = mypackage)</code> とする。
 次のコードは、<code>world</code> データセット (親パッケージを <code><a href="https://jakubnowosad.com/spData/">library(spData)</a></code> にアタッチしてロード済み) を使って、後者の2つのオプションを説明している。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
-R パッケージによるデータインポートの詳細については、&lt;span class="citation"&gt;Gillespie and Lovelace (&lt;a href="references.html#ref-gillespie_efficient_2016"&gt;2016&lt;/a&gt;)&lt;/span&gt; の Section 5.5 および Section 5.6 を参照。&lt;/p&gt;'><sup>47</sup></a></p>
-<div class="sourceCode" id="cb285"><pre class="downlit sourceCode r">
+R パッケージによるデータインポートの詳細については、&lt;span class="citation"&gt;Gillespie and Lovelace (&lt;a href="references.html#ref-gillespie_efficient_2016"&gt;2016&lt;/a&gt;)&lt;/span&gt; の Section 5.5 および Section 5.6 を参照。&lt;/p&gt;'><sup>48</sup></a></p>
+<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">world2</span> <span class="op">=</span> <span class="fu">spData</span><span class="fu">::</span><span class="va"><a href="https://jakubnowosad.com/spData/reference/world.html">world</a></span></span>
 <span><span class="va">world3</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.gpkg"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>最後の例、<code>system.file("shapes/world.gpkg", package = "spData")</code> は、<strong>spData</strong> パッケージの <code>"shapes/"</code> フォルダ内に格納されている <code>world.gpkg</code> ファイルへのパスを返す。</p>
@@ -886,13 +886,13 @@ R にはジオコーディングのためのパッケージがいくつかある
 <strong>tidygeocoder</strong> のメイン関数は <code>geocode</code> で、アドレスを持つデータフレームを受け取り、<code>"lat"</code> と <code>"long"</code> として座標を追加する。
 また、この関数は <code>method</code> の引数でジオコーディングサービスを選択することができ、多くの追加パラメータを持つ。</p>
 <p>このパッケージを使って、London の Soho 地区のビルにある John Snow (訳注: 疫学的手法を導入しコレラの原因、感染経路を初めて特定した医師) の青い銘板の座標を検索してみよう。</p>
-<div class="sourceCode" id="cb286"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jessecambon.github.io/tidygeocoder/">tidygeocoder</a></span><span class="op">)</span></span>
 <span><span class="va">geo_df</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>address <span class="op">=</span> <span class="st">"54 Frith St, London W1D 4SJ, UK"</span><span class="op">)</span></span>
 <span><span class="va">geo_df</span> <span class="op">=</span> <span class="fu"><a href="https://jessecambon.github.io/tidygeocoder/reference/geocode.html">geocode</a></span><span class="op">(</span><span class="va">geo_df</span>, <span class="va">address</span>, method <span class="op">=</span> <span class="st">"osm"</span><span class="op">)</span></span>
 <span><span class="va">geo_df</span></span></code></pre></div>
 <p>得られたデータフレームは、<code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf()</a></code> を用いて <code>sf</code> オブジェクトに変換することができる。</p>
-<div class="sourceCode" id="cb287"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">geo_sf</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="va">geo_df</span>, coords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"long"</span>, <span class="st">"lat"</span><span class="op">)</span>, crs <span class="op">=</span> <span class="st">"EPSG:4326"</span><span class="op">)</span></span></code></pre></div>
 <p>また、<strong>tidygeocoder</strong> は、一組の座標に基づいて一連の情報 (名前、住所など) を取得するために使用される逆ジオコーディングと呼ばれる逆の処理を実行することもできる。
 Chapter <a href="gis.html#gis">10</a> で紹介するように、地理データは地理ソフトのブリッジから R にインポートすることもできる。</p>
@@ -905,10 +905,10 @@ Chapter <a href="gis.html#gis">10</a> で紹介するように、地理データ
 メタデータはデータセットを FAIR (Findable, Accessible, Interoperable, Reusable) にするためのもので、ISO/OGC 標準、特に ISO 19115 標準とその基礎となるスキーマによって定義されている。
 これらの標準は、メタデータカタログを通じて扱われる空間データインフラで広く使用されている。</p>
 <p>地理メタデータは <strong>geometa</strong> で管理することができる。<strong>geometa</strong> は ISO/OGC 標準に従って地理メタデータの書き込み、読み込み、検証ができるパッケージである。
-<strong>geometa</strong> は、ISO 19110 (Feature catalogue)、ISO 19115-1 および 19115-2 (Geographic metadata for vector and gridded/imagery datasets)、ISO 19119 (geographic metadata for service)、ISO 19136 (Geographic Markup Language) など、地理メタデータ情報に関するさまざまな国際標準をすでにサポートしており、ISO/TS 19139 (XML) 技術仕様を使ってRから地理メタデータを読み込んだり、検証したり、書き込んだりする方法を提供しています。
+<strong>geometa</strong> は、ISO 19110 (Feature catalogue)、ISO 19115-1 および 19115-2 (Geographic metadata for vector and gridded/imagery datasets)、ISO 19119 (geographic metadata for service)、ISO 19136 (Geographic Markup Language) など、地理メタデータ情報に関するさまざまな国際標準をすでにサポートしており、ISO/TS 19139 (XML) と ISO 19115-3 技術仕様を使って R から地理メタデータを読み込んだり、検証したり、書き込んだりする方法を提供している。
 <!-- 規格の複雑さと網羅性、そしてそれらを使用するために必要な高度な知識に対処するために、[geoflow](https://github.com/r-geoflow/geoflow) のような補完的なパッケージが、メタデータの管理を容易にし、自動化するために構築されている。 -->
 地理メタデータは、<strong>geometa</strong> で以下のように作成することができ、メタデータファイルを作成して保存する。</p>
-<div class="sourceCode" id="cb288"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eblondel/geometa/wiki">geometa</a></span><span class="op">)</span></span>
 <span><span class="co"># メタデータを作成</span></span>
 <span><span class="va">md</span> <span class="op">=</span> <span class="va">ISOMetadata</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span><span class="op">)</span></span>
@@ -946,7 +946,7 @@ Web Feature Service (WFS) や Web Map Tile Service (WMTS) は、タイルのよ�
 <p>まず、<strong>httr</strong> パッケージを使った例で、ウェブサービスがどのように機能するかを理解しよう。
 最も基本的なものの 1 つが <code>getCapabilities</code> であり、以下の <strong>httr</strong> 関数 <code><a href="https://httr.r-lib.org/reference/GET.html">GET()</a></code> と <code><a href="https://httr.r-lib.org/reference/modify_url.html">modify_url()</a></code> で示されている。
 以下のコードチャンクは、API のクエリを作成しデータ取得する方法を示している。この場合、国連食糧農業機関 (Food and Agriculture Organization, UN-FAO) が運営するサービスの機能を確認することができる。</p>
-<div class="sourceCode" id="cb289"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://httr.r-lib.org/">httr</a></span><span class="op">)</span></span>
 <span><span class="va">base_url</span> <span class="op">=</span> <span class="st">"https://www.fao.org"</span></span>
 <span><span class="va">endpoint</span> <span class="op">=</span> <span class="st">"/fishery/geoserver/wfs"</span></span>
@@ -958,7 +958,7 @@ Web Feature Service (WFS) や Web Map Tile Service (WMTS) は、タイルのよ�
 リクエストの結果を、<strong>httr</strong> パッケージで定義されたクラス <code>response</code> のオブジェクト <code>res</code> に保存し、URL を含むリクエストの情報を含むリストとなる。
 <code>browseURL(res$url)</code> を実行するとわかるように、結果はブラウザで直接読むこともできる。
 リクエストの内容を抽出する一つの方法として、次のようなものがある。</p>
-<div class="sourceCode" id="cb290"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">txt</span> <span class="op">=</span> <span class="fu"><a href="https://httr.r-lib.org/reference/content.html">content</a></span><span class="op">(</span><span class="va">res</span>, <span class="st">"text"</span><span class="op">)</span></span>
 <span><span class="va">xml</span> <span class="op">=</span> <span class="fu">xml2</span><span class="fu">::</span><span class="fu"><a href="http://xml2.r-lib.org/reference/read_xml.html">read_xml</a></span><span class="op">(</span><span class="va">txt</span><span class="op">)</span></span>
 <span><span class="va">xml</span></span>
@@ -969,7 +969,7 @@ Web Feature Service (WFS) や Web Map Tile Service (WMTS) は、タイルのよ�
 <p>WFS サービスからデータをダウンロードするには、<code>GetFeature</code> リクエストと特定の <code>typeName</code> (以下のコードチャンクに示す) が必要である。</p>
 <p>利用できる名称は、アクセスする Web 機能サービスによって異なる。
 <code>GetCapabilities</code> ウェブ技術を使ってプログラムで抽出することもでき、 <span class="citation">(<a href="references.html#ref-nolan_xml_2014">Nolan and Lang 2014</a>)</span>、ブラウザで出力された内容を手動でスクロールさせることもできる。</p>
-<div class="sourceCode" id="cb291"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2</a></span><span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span></span>
 <span><span class="va">qf</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>request <span class="op">=</span> <span class="st">"GetFeature"</span>, typeName <span class="op">=</span> <span class="st">"fifao:FAO_MAJOR"</span><span class="op">)</span></span>
@@ -986,7 +986,7 @@ OGC のサービスカバレッジは <a href="https://github.com/eblondel/ows4R
 <p>上記の例に基づいて、このパッケージで <code>getCapabilities</code> と <code>getFeatures</code> の操作を実行する方法を以下のコードに示す。
 <strong>ows4R</strong> パッケージはクライアントの原理に依存している。
 OWSサービス (WFS など) と対話するために、以下のようにクライアントを作成する。</p>
-<div class="sourceCode" id="cb292"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb297"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eblondel/ows4R">ows4R</a></span><span class="op">)</span></span>
 <span><span class="va">WFS</span> <span class="op">=</span> <span class="va">WFSClient</span><span class="op">$</span><span class="fu">new</span><span class="op">(</span></span>
 <span>  url <span class="op">=</span> <span class="st">"https://www.fao.org/fishery/geoserver/wfs"</span>,</span>
@@ -994,7 +994,7 @@ OWSサービス (WFS など) と対話するために、以下のようにクラ
 <span>  logger <span class="op">=</span> <span class="st">"INFO"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>例えば、<code>getCapabilities</code> や <code>getFeatures</code> などである。</p>
-<div class="sourceCode" id="cb293"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb298"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/eblondel/ows4R">ows4R</a></span><span class="op">)</span></span>
 <span><span class="va">caps</span> <span class="op">=</span> <span class="va">WFS</span><span class="op">$</span><span class="fu">getCapabilities</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">features</span> <span class="op">=</span> <span class="va">WFS</span><span class="op">$</span><span class="fu">getFeatures</span><span class="op">(</span><span class="st">"fifao:FAO_MAJOR"</span><span class="op">)</span></span></code></pre></div>
@@ -1009,7 +1009,7 @@ OWSサービス (WFS など) と対話するために、以下のようにクラ
 <p>
 R は、多くの静的および対話的なグラフィックス形式をサポートしている。
 静的プロットを保存する最も一般的な方法は、例えばグラフィックデバイスを開き、プロットを作成し、それを閉じることである。</p>
-<div class="sourceCode" id="cb294"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb299"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/grDevices/png.html">png</a></span><span class="op">(</span>filename <span class="op">=</span> <span class="st">"lifeExp.png"</span>, width <span class="op">=</span> <span class="fl">500</span>, height <span class="op">=</span> <span class="fl">350</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">world</span><span class="op">[</span><span class="st">"lifeExp"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/grDevices/dev.html">dev.off</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -1019,12 +1019,12 @@ R は、多くの静的および対話的なグラフィックス形式をサポ
 さらに、いくつかのグラフィックパッケージは、グラフィック出力を保存するための独自の関数を提供している。
 例えば、<strong>tmap</strong> パッケージには、<code><a href="https://r-tmap.github.io/tmap/reference/tmap_save.html">tmap_save()</a></code> という関数がある。
 オブジェクト名と新規ファイルへのファイルパスを指定することで、<code>tmap</code> オブジェクトをさまざまなグラフィックフォーマットまたは HTML ファイルに保存することができる。</p>
-<div class="sourceCode" id="cb295"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb300"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap">tmap</a></span><span class="op">)</span></span>
 <span><span class="va">tmap_obj</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"lifeExp"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_save.html">tmap_save</a></span><span class="op">(</span><span class="va">tmap_obj</span>, filename <span class="op">=</span> <span class="st">"lifeExp_tmap.png"</span><span class="op">)</span></span></code></pre></div>
 <p>一方、<strong>mapview</strong> パッケージで作成したインタラクティブ地図は、<code><a href="https://rdrr.io/pkg/mapview/man/mapshot.html">mapshot2()</a></code> 関数を使用して HTML ファイルまたは画像として保存することができる。</p>
-<div class="sourceCode" id="cb296"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb301"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/mapview">mapview</a></span><span class="op">)</span></span>
 <span><span class="va">mapview_obj</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">world</span>, zcol <span class="op">=</span> <span class="st">"lifeExp"</span>, legend <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapshot.html">mapshot2</a></span><span class="op">(</span><span class="va">mapview_obj</span>, url <span class="op">=</span> <span class="st">"my_interactive_map.html"</span><span class="op">)</span></span></code></pre></div>
@@ -1067,7 +1067,8 @@ R は、多くの静的および対話的なグラフィックス形式をサポ
 </a></li>
           <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
         </ul>
-<hr>
+<div class="LECTURE_IN_JAPANESE" style="border:solid 1px;border-color:#be1558;background:#fbcbc9"><a href="https://peatix.com/group/16401222" target="_blank">2025年4月頃より、レクチャーを計画しています。Peatix でフォローしてください。</a></div>
+        <hr>
 <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#read-write"><span class="header-section-number">8</span> 地理データI/O</a></li>
@@ -1109,7 +1110,7 @@ R は、多くの静的および対話的なグラフィックス形式をサポ
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-08.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

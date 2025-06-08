@@ -7,7 +7,7 @@
 <title>Chapter 4 空間データ操作 | Geocomputation with R</title>
 <meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
 <meta name="description" content="必須パッケージ この章では、Chapter 3 で使用したものと同じパッケージが必要である。 library(sf) library(terra) library(dplyr) library(spData)  4.1 イントロダクション ジオコンピュテーションにおいて、ベクタデータセット間の空間結合やラスタデータセットのローカルおよびフォーカル演算などの空間演算は重要な要素である。...">
-<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta name="generator" content="bookdown 0.43 with bs4_book()">
 <meta property="og:title" content="Chapter 4 空間データ操作 | Geocomputation with R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="http://124.219.182.167/geo/spatial-operations.html">
@@ -19,10 +19,10 @@
 <meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
-<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.10/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.9.0/transition.js"></script><script src="libs/bs3compat-0.9.0/tabs.js"></script><script src="libs/bs3compat-0.9.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 4 空間データ操作 | Geocomputation with R">
 <meta name="citation_author" content="Robin Lovelace">
 <meta name="citation_author" content="Jakub Nowosad">
@@ -222,13 +222,13 @@ FIGURE 4.1: 赤い三角形はNew Zealand の 101 の High Point を表し、中
 <p>この時点で、(行名以外は) 同じバージョンの <code>canterbury_height</code> が 3 つある。1 つは <code>[</code> 演算子を用いて作成し、もう 1 つは中間選択オブジェクトを介して作成し、最後は <strong>sf</strong> の便利な関数 <code><a href="https://r-spatial.github.io/sf/reference/st_join.html">st_filter()</a></code> を用いて作成した。
 <!-- RL: commented out for now as old. Todo: if we ever update that vignette uncomment the next line. -->
 <!-- To explore spatial subsetting in more detail, see the supplementary vignettes on `subsetting` and [`tidyverse-pitfalls`](https://geocompr.github.io/geocompkg/articles/) on the [geocompkg website](https://geocompr.github.io/geocompkg/articles/). -->
-次のセクションでは、二つのフィーチャが空間的に関連しているかどうかを識別するために使用できる、二項述語としても知られている、さまざまなタイプの空間的関係性を探る。</p>
+次のセクションでは、二つのフィーチャが空間的に関連しているかどうかを識別する、さまざまな種類の空間関係を探る。二項述語とも言う。</p>
 </div>
 <div id="topological-relations" class="section level3" number="4.2.2">
 <h3>
 <span class="header-section-number">4.2.2</span> 位相関係<a class="anchor" aria-label="anchor" href="#topological-relations"><i class="fas fa-link"></i></a>
 </h3>
-<p>位相関係は、オブジェクト間の空間的な関係を表す。
+<p>位相関係は、オブジェクト間の空間関係を表す。
 「二項位相関係」 (binary topological relationships) とは、2 次元以上の点 (一般的には点、線、ポリゴン) の順序集合で定義される 2 つの物体間の空間関係について論理的に記述したもの (答えは <code>TRUE</code> か <code>FALSE</code> しかない) である <span class="citation">(<a href="references.html#ref-egenhofer_mathematical_1990">Egenhofer and Herring 1990</a>)</span>。
 このように言うと、かなり抽象的に聞こえるだろうが、実際、位相関係の定義と分類は、1966年に初めて書籍として出版された数学的基礎に基づいている <span class="citation">(<a href="references.html#ref-spanier_algebraic_1995">Spanier 1995</a>)</span>。 代数的位相幾何学の分野は2000年以降も続いている <span class="citation">(<a href="references.html#ref-dieck_algebraic_2008">Dieck 2008</a>)</span>。</p>
 <p>位相関係は数学的な起源を持つが、一般的な空間的関係をテストするためによく使われる関数を視覚化することで、直感的に理解することが可能である。
@@ -435,6 +435,7 @@ Figure <a href="spatial-operations.html#fig:relations">4.2</a> に示す関係 (
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">grid</span>, col <span class="op">=</span> <span class="va">grid_sf</span><span class="op">$</span><span class="va">queens</span><span class="op">)</span></span>
 <span><span class="va">grid_sf</span><span class="op">$</span><span class="va">rooks</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lengths.html">lengths</a></span><span class="op">(</span><span class="fu">st_rook</span><span class="op">(</span><span class="va">grid</span>, <span class="va">grid</span><span class="op">[</span><span class="fl">5</span><span class="op">]</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">grid</span>, col <span class="op">=</span> <span class="va">grid_sf</span><span class="op">$</span><span class="va">rooks</span><span class="op">)</span></span></code></pre></div>
+<pre><code>#&gt; [v3-&gt;v4] `tm_layout()`: use text.fontfamily instead of fontfamily</code></pre>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:queens"></span>
 <img src="figures/queens-1.png" alt="9つの形状を持つグリッドの中央の正方形に対する「クイーン」 (左) と「ルーク」 (右) の関係を見つけるためのカスタムバイナリ空間述語のデモ。" width="100%"><p class="caption">
@@ -455,7 +456,7 @@ FIGURE 4.5: 9つの形状を持つグリッドの中央の正方形に対する�
 <p>例として、地球上にランダムに分布する 10 個の点があり、そのうちの陸地にある点はどの国のものかを調べたいとする。
 このアイデアを<a href="https://github.com/geocompx/geocompr/blob/main/code/04-spatial-join.R">再現可能な例</a>として実装することで、地理データを扱うスキルが身に付き、空間結合がどのように機能するかを知ることができる。
 まず、地表にランダムに散らばる点を作ることから始めよう。</p>
-<div class="sourceCode" id="cb129"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">2018</span><span class="op">)</span> <span class="co"># 再現できるように seed を設定</span></span>
 <span><span class="op">(</span><span class="va">bb</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span><span class="op">)</span> <span class="co"># 世界の境界</span></span>
 <span><span class="co">#&gt;   xmin   ymin   xmax   ymax </span></span>
@@ -470,7 +471,7 @@ FIGURE 4.5: 9つの形状を持つグリッドの中央の正方形に対する�
 空間結合は、以下のコードチャンクに示すように、<code><a href="https://r-spatial.github.io/sf/reference/st_join.html">st_join()</a></code> で実装されている。
 出力は、<code>random_joined</code> のオブジェクトで、Figure <a href="spatial-operations.html#fig:spatial-join">4.6</a> (左下) に図示されている。
 結合データセットを作成する前に、空間部分集合を用いて、ランダムな点を含む国だけを含む <code>world_random</code> を作成し、結合データセットで返される国名の数が4であることを検証している ( Figure <a href="spatial-operations.html#fig:spatial-join">4.6</a> 右上)。</p>
-<div class="sourceCode" id="cb130"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">world_random</span> <span class="op">=</span> <span class="va">world</span><span class="op">[</span><span class="va">random_points</span>, <span class="op">]</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">world_random</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 4</span></span>
@@ -494,11 +495,11 @@ FIGURE 4.6: 空間結合の図解。ソースワールドオブジェクト (右
 すでに <strong>spData</strong> パッケージに含まれているデータセット <code>cycle_hire</code> と <code>cycle_hire_osm</code> が良い例となる。
 これらをプロットすると、Figure <a href="spatial-operations.html#fig:cycle-hire">4.7</a> に示すように、しばしば密接に関連しているが、接触していないことがわかる。このベースバージョンは、以下のコードで作成される。
 </p>
-<div class="sourceCode" id="cb131"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">cycle_hire</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">cycle_hire_osm</span><span class="op">)</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, pch <span class="op">=</span> <span class="fl">3</span>, col <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span></code></pre></div>
 <p>以下のように、同じ点であるかどうかを、<code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects()</a></code> を使って確認することができる。</p>
-<div class="sourceCode" id="cb132"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_intersects</a></span><span class="op">(</span><span class="va">cycle_hire</span>, <span class="va">cycle_hire_osm</span>, sparse <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
@@ -512,7 +513,7 @@ FIGURE 4.7: 公式データ (青) とOpenStreetMapのデータ (赤) に基づ�
 このとき、オーバーラップしない結合が必要である。
 最も簡単な方法は、トポロジカル演算子 <code><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_is_within_distance()</a></code> を使用することである。これは、下の例で 20 m で示している。
 距離は、球面幾何エンジン S2 を使っていれば、非投影座標系 (例えば WGS84 の緯度経度) であってもメートル法を使うことができる。これは、 <strong>sf</strong> のデフォルトである (Section <a href="spatial-class.html#s2">2.2.9</a> 参照)。</p>
-<div class="sourceCode" id="cb133"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sel</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_pred.html">st_is_within_distance</a></span><span class="op">(</span><span class="va">cycle_hire</span>, <span class="va">cycle_hire_osm</span>, </span>
 <span>                            dist <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html">set_units</a></span><span class="op">(</span><span class="fl">20</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lengths.html">lengths</a></span><span class="op">(</span><span class="va">sel</span><span class="op">)</span> <span class="op">&gt;</span> <span class="fl">0</span><span class="op">)</span></span>
@@ -521,7 +522,7 @@ FIGURE 4.7: 公式データ (青) とOpenStreetMapのデータ (赤) に基づ�
 <p>これは、ターゲットオブジェクト <code>cycle_hire</code> の中に、閾値距離 <code>cycle_hire_osm</code> 内に 438 個の点があることを示している。
 それぞれの <code>cycle_hire_osm</code> ポイントに関連する<u>値</u>を取得する方法は？
 解答は再び <code><a href="https://r-spatial.github.io/sf/reference/st_join.html">st_join()</a></code> だが、引数 <code>dist</code> を追加する (20 m 以下に設定)。</p>
-<div class="sourceCode" id="cb134"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_join.html">st_join</a></span><span class="op">(</span><span class="va">cycle_hire</span>, <span class="va">cycle_hire_osm</span>, <span class="va">st_is_within_distance</span>, </span>
 <span>            dist <span class="op">=</span> <span class="fu">units</span><span class="fu">::</span><span class="fu"><a href="https://r-quantities.github.io/units/reference/units.html">set_units</a></span><span class="op">(</span><span class="fl">20</span>, <span class="st">"m"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">cycle_hire</span><span class="op">)</span></span>
@@ -531,14 +532,14 @@ FIGURE 4.7: 公式データ (青) とOpenStreetMapのデータ (赤) に基づ�
 <p>結合結果の行数がターゲットより多いことに注意。
 これは、<code>cycle_hire</code> の一部のサイクルレンタル・ステーションが、<code>cycle_hire_osm</code> で複数のマッチングを行っているためである。
 Chapter <a href="attr.html#attr">3</a> で学習した集約方法を用いると、重なった点の値を集約して平均値を返し、対象と同じ行数を持つオブジェクトが得られる。</p>
-<div class="sourceCode" id="cb135"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">=</span> <span class="va">z</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>capacity <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html">mean</a></span><span class="op">(</span><span class="va">capacity</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">z</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">cycle_hire</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
 <p>近くのステーションの収容台数は、ソース <code>cycle_hire_osm</code> のデータの収容台数のプロットとこの新しいオブジェクトの結果を比較することで検証できる (プロットは表示していない)。</p>
-<div class="sourceCode" id="cb136"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">cycle_hire_osm</span><span class="op">[</span><span class="st">"capacity"</span><span class="op">]</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">z</span><span class="op">[</span><span class="st">"capacity"</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>この結合の結果、単純なフィーチャの属性データは空間演算で変更されたが、各フィーチャに関連するジオメトリは変更されていない。</p>
@@ -553,7 +554,7 @@ Section <a href="attr.html#vector-attribute-aggregation">3.2.3</a> は、<code><
 <code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> <code>group_by() |&gt; summarize()</code> </p>
 <p>New Zealand の例に戻って、各地域の高所の平均的な高さを求めよう。ソース (この場合は <code>y</code> または <code>nz</code>) のジオメトリが、ターゲットオブジェクト (<code>x</code> または <code>nz_height</code>) の値がどのようにグループ化されるかを定義する。
 これは、Base R の <code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code> メソッドで 1 行のコードで書くことができる。</p>
-<div class="sourceCode" id="cb137"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_agg</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">nz_height</span>, by <span class="op">=</span> <span class="va">nz</span>, FUN <span class="op">=</span> <span class="va">mean</span><span class="op">)</span></span></code></pre></div>
 <p>前のコマンドの結果は、 (空間) 集約オブジェクト (<code>nz</code>) と同じジオメトリを持つ <code>sf</code> オブジェクトである。これは、コマンド <code>identical(st_geometry(nz), st_geometry(nz_agg))</code> で確認することができる。
 先の操作の結果を Figure <a href="spatial-operations.html#fig:spatial-aggregation">4.8</a> に示す。これは、New Zealand の16の地域それぞれにおける <code>nz_height</code> のフィーチャの平均値を示している。
@@ -564,7 +565,7 @@ Section <a href="attr.html#vector-attribute-aggregation">3.2.3</a> は、<code><
 FIGURE 4.8: New Zealand の各地域の上位 101 の高さの平均値。
 </p>
 </div>
-<div class="sourceCode" id="cb138"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_agg2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_join.html">st_join</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">nz</span>, y <span class="op">=</span> <span class="va">nz_height</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">Name</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span>elevation <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/summarize-generics.html">mean</a></span><span class="op">(</span><span class="va">elevation</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -595,7 +596,7 @@ FIGURE 4.9: 大きな凝集帯 (半透明の青い枠) に対して、一致す�
 基礎となる 9 つの空間ポリゴンの値を、<code>aggregating_zones</code> の 2 つのポリゴンにどのように移せばいいのだろうか？</p>
 <p>このための最も簡単で有用な方法は、<u>面積加重</u>空間補間で、<code>incongruent</code> オブジェクトから <code>aggregating_zones</code> の新しい列に、重なり合う面積に比例して値を転送する。入力と出力のフィーチャの空間交差が大きければ大きいほど、対応する値も大きくなる。
 これは、以下のコードチャンクに示すように、<code><a href="https://r-spatial.github.io/sf/reference/interpolate_aw.html">st_interpolate_aw()</a></code> で実装されている。</p>
-<div class="sourceCode" id="cb139"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">iv</span> <span class="op">=</span> <span class="va">incongruent</span><span class="op">[</span><span class="st">"value"</span><span class="op">]</span> <span class="co"># 転送する値だけを残す</span></span>
 <span><span class="va">agg_aw</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/interpolate_aw.html">st_interpolate_aw</a></span><span class="op">(</span><span class="va">iv</span>, <span class="va">aggregating_zones</span>, extensive <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Warning in st_interpolate_aw.sf(iv, aggregating_zones, extensive = TRUE):</span></span>
@@ -613,7 +614,7 @@ FIGURE 4.9: 大きな凝集帯 (半透明の青い枠) に対して、一致す�
 </h2>
 <p>このセクションでは、ラスタデータセットを操作するためのさまざまな基本メソッドを紹介した Section <a href="attr.html#manipulating-raster-objects">3.3</a> をベースに、より高度で明示的な空間ラスタ操作を実演する。また、Section <a href="attr.html#manipulating-raster-objects">3.3</a> で手動で作成したオブジェクト <code>elev</code> と <code>grain</code> を使用する。
 これらのデータセットは、読者の便宜を図るため <strong>spData</strong> パッケージにも含まれている。</p>
-<div class="sourceCode" id="cb140"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/elev.tif"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">grain</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/grain.tif"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div id="spatial-raster-subsetting" class="section level3" number="4.3.1">
@@ -626,13 +627,13 @@ FIGURE 4.9: 大きな凝集帯 (半透明の青い枠) に対して、一致す�
 別の方法として、<code><a href="https://rspatial.github.io/terra/reference/extract.html">terra::extract()</a></code> (注意: <strong>tidyverse</strong> の中にも <code><a href="https://rspatial.github.io/terra/reference/extract.html">extract()</a></code> という関数がある) を使って値を抽出することができる。
 以下に、座標 0.1, 0.1 に位置する点を覆うセルの値を求める方法を示す。
 </p>
-<div class="sourceCode" id="cb141"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">id</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/xyCellFrom.html">cellFromXY</a></span><span class="op">(</span><span class="va">elev</span>, xy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">elev</span><span class="op">[</span><span class="va">id</span><span class="op">]</span></span>
 <span><span class="co"># the same as</span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html">extract</a></span><span class="op">(</span><span class="va">elev</span>, <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.1</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>ラスタオブジェクトは、以下のコードのように、別のラスタオブジェクトの内部に部分集合することもできる。</p>
-<div class="sourceCode" id="cb142"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clip</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">0.9</span>, xmax <span class="op">=</span> <span class="fl">1.8</span>, ymin <span class="op">=</span> <span class="op">-</span><span class="fl">0.45</span>, ymax <span class="op">=</span> <span class="fl">0.45</span>,</span>
 <span>            resolution <span class="op">=</span> <span class="fl">0.3</span>, vals <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">9</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">elev</span><span class="op">[</span><span class="va">clip</span><span class="op">]</span></span>
@@ -648,27 +649,27 @@ FIGURE 4.10: 元のラスタ (左)、ラスタマスク (中)、ラスタをマ�
 <p>上記の例では、特定のセルの値を返したが、多くの場合、ラスタデータセットの部分集合操作による空間出力が必要である。
 これは、<code>[</code> 演算子で、<code>drop</code> を <code>FALSE</code> に設定して行うことができる。
 以下のコードは、<code>elev</code> の先頭行の 2 つのセル、つまり最初の 2 行をラスタオブジェクトとして返す (出力の最初の 2 行のみ表示)。</p>
-<div class="sourceCode" id="cb143"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>    <span class="co"># spatial subsetting with cell IDs</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
 <span><span class="co">#&gt; dimensions  : 1, 2, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; ...</span></span></code></pre></div>
 <p>空間部分集合のもう一つの一般的な使用例は、<code>logical</code> (または <code>NA</code>) 値のラスタを使用して、同じ範囲と解像度の別のラスタをマスクする場合である (Figure <a href="spatial-operations.html#fig:raster-subset">4.10</a> に図示)。
 この場合、<code>[</code>、<code><a href="https://rspatial.github.io/terra/reference/mask.html">mask()</a></code> 関数を使用することができる (結果は示していない)。</p>
-<div class="sourceCode" id="cb144"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ラスタのマスクを作成</span></span>
 <span><span class="va">rmask</span> <span class="op">=</span> <span class="va">elev</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html">values</a></span><span class="op">(</span><span class="va">rmask</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sample.html">sample</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="cn">NA</span>, <span class="cn">TRUE</span><span class="op">)</span>, <span class="fl">36</span>, replace <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>上記のコードでは、<code>rmask</code> というマスクオブジェクトを作成し、<code>NA</code> と <code>TRUE</code> にランダムな値を割り当てている。
 次に、<code>elev</code> のうち、<code>TRUE</code> となる値を <code>rmask</code> に保持したい。
 つまり、<code>elev</code> を <code>rmask</code> でマスクしたい。</p>
-<div class="sourceCode" id="cb145"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 空間的に部分集合を作成</span></span>
 <span><span class="va">elev</span><span class="op">[</span><span class="va">rmask</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span>     <span class="co"># [ operator を使用</span></span>
 <span><span class="co"># mask も使うことができる</span></span>
 <span><span class="co"># mask(elev, rmask)</span></span></code></pre></div>
 <p>上記の方法は、一部の値 (例えば、間違っていると予想される値) を NA に置き換えるために使用することも可能である。</p>
-<div class="sourceCode" id="cb146"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span><span class="op">[</span><span class="va">elev</span> <span class="op">&lt;</span> <span class="fl">20</span><span class="op">]</span> <span class="op">=</span> <span class="cn">NA</span></span></code></pre></div>
 <p>これらの操作は、実際のところ、2 つのラスタをセル単位で比較するローカルの論理操作である。
 次のサブセクションでは、これらの操作と関連する操作についてより詳しく説明する。</p>
@@ -714,7 +715,7 @@ FIGURE 4.10: 元のラスタ (左)、ラスタマスク (中)、ラスタをマ�
 これには、ラスタからの値の加算や減算、ラスタの二乗や乗算が含まれる。
 ラスタ代数では、特定の値 (下の例では 5) より大きいラスタセルをすべて見つけるなどの論理演算も可能である。
 <strong>terra</strong> パッケージは、以下のように、これらすべての操作に対応している (Figure <a href="spatial-operations.html#fig:04-local-operations">4.11</a>)。</p>
-<div class="sourceCode" id="cb147"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">+</span> <span class="va">elev</span></span>
 <span><span class="va">elev</span><span class="op">^</span><span class="fl">2</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Log.html">log</a></span><span class="op">(</span><span class="va">elev</span><span class="op">)</span></span>
@@ -728,7 +729,7 @@ FIGURE 4.11: elev ラスタオブジェクトのさまざまなローカル操�
 <p>ローカル演算のもう一つの良い例は、デジタル標高モデルを低標高 (クラス 1)、中標高 (クラス 2)、高標高 (クラス 3) にグループ化するように、数値の間隔をグループに分類することである。
 <code><a href="https://rspatial.github.io/terra/reference/classify.html">classify()</a></code> コマンドを使って、まず再分類行列を作る必要がある。ここで、最初の列はクラスの下限、2 番目の列は上限に対応する。
 3 列目は、1 列目と 2 列目で指定した範囲の新しい値を表している。</p>
-<div class="sourceCode" id="cb148"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rcl</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">12</span>, <span class="fl">1</span>, <span class="fl">12</span>, <span class="fl">24</span>, <span class="fl">2</span>, <span class="fl">24</span>, <span class="fl">36</span>, <span class="fl">3</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">rcl</span></span>
 <span><span class="co">#&gt;      [,1] [,2] [,3]</span></span>
@@ -736,7 +737,7 @@ FIGURE 4.11: elev ラスタオブジェクトのさまざまなローカル操�
 <span><span class="co">#&gt; [2,]   12   24    2</span></span>
 <span><span class="co">#&gt; [3,]   24   36    3</span></span></code></pre></div>
 <p>ここでは、0～12、12～24、24～36 の範囲のラスタ値をそれぞれ 1、2、3 に<u>再分類</u>している。</p>
-<div class="sourceCode" id="cb149"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">recl</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/classify.html">classify</a></span><span class="op">(</span><span class="va">elev</span>, rcl <span class="op">=</span> <span class="va">rcl</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="https://rspatial.github.io/terra/reference/classify.html">classify()</a></code> 関数は、カテゴリ別ラスタのクラス数を減らしたい場合にも使用できる。
 Chapter <a href="location.html#location">14</a> では、いくつかの追加的な再分類を実施する予定である。</p>
@@ -756,21 +757,21 @@ NDVI&amp;= \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}\\
 \end{split}
 \]</span></p>
 <p>Zion 国立公園のマルチスペクトル衛星ファイルについて、NDVI を計算してみよう。</p>
-<div class="sourceCode" id="cb150"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">multi_raster_file</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/landsat.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span>
 <span><span class="va">multi_rast</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">multi_raster_file</span><span class="op">)</span></span></code></pre></div>
 <p>ラスタオブジェクトは、Landsat 8 からの青、緑、赤、近赤外 (NIR) の 4 つの衛星バンドを持っている。
 重要なのは、Landsat レベル 2 のプロダクトはディスクスペースを節約するために整数として保存されているため、計算を行う前に浮動小数点数に変換する必要があるということだ。
 そのためには、スケーリング係数 (0.0000275) を適用し、元の値にオフセット (-0.2) を加える必要がある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;詳細は &lt;a href="https://www.usgs.gov/faqs/how-do-i-use-a-scale-factor-landsat-level-2-science-products" class="uri"&gt;https://www.usgs.gov/faqs/how-do-i-use-a-scale-factor-landsat-level-2-science-products&lt;/a&gt; 。&lt;/p&gt;'><sup>21</sup></a></p>
-<div class="sourceCode" id="cb151"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">multi_rast</span> <span class="op">=</span> <span class="op">(</span><span class="va">multi_rast</span> <span class="op">*</span> <span class="fl">0.0000275</span><span class="op">)</span> <span class="op">-</span> <span class="fl">0.2</span></span></code></pre></div>
 <p>適切な値は 0 から 1 の範囲になければならない。
 実際には範囲外のデータがあるが、その原因はおそらく雲やその他の大気の影響によるものだと思われる。
 以下の通り、負値を 0 に置き換える。</p>
-<div class="sourceCode" id="cb152"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">multi_rast</span><span class="op">[</span><span class="va">multi_rast</span> <span class="op">&lt;</span> <span class="fl">0</span><span class="op">]</span> <span class="op">=</span> <span class="fl">0</span></span></code></pre></div>
 <p>次のステップは、NDVI の計算式を R の関数に実装することである。</p>
-<div class="sourceCode" id="cb153"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ndvi_fun</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">nir</span>, <span class="va">red</span><span class="op">)</span><span class="op">{</span></span>
 <span>  <span class="op">(</span><span class="va">nir</span> <span class="op">-</span> <span class="va">red</span><span class="op">)</span> <span class="op">/</span> <span class="op">(</span><span class="va">nir</span> <span class="op">+</span> <span class="va">red</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
@@ -778,7 +779,7 @@ NDVI&amp;= \frac{\text{NIR} - \text{Red}}{\text{NIR} + \text{Red}}\\
 <code><a href="https://rspatial.github.io/terra/reference/lapp.html">lapp()</a></code> の <code>fun</code> 引数として使用することができる。
 この関数が想定するのは 2 つのバンド (元のラスタの 4 つではない) であり、それらは NIR、赤の順である必要があることを覚えておく必要がある。
 そのため、入力ラスタを部分集合し、計算を行う前に <code>multi_rast [[c(4, 3)] ]</code> で部分集合してから計算を行う。</p>
-<div class="sourceCode" id="cb154"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ndvi_rast</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/lapp.html">lapp</a></span><span class="op">(</span><span class="va">multi_rast</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span><span class="op">]</span>, fun <span class="op">=</span> <span class="va">ndvi_fun</span><span class="op">)</span></span></code></pre></div>
 <p>その結果を右図 (Figure <a href="spatial-operations.html#fig:04-ndvi">4.12</a> ) に示すように、同じ領域の RGB 画像 (同図の左図) と比較することができる。
 これにより、NDVI 値が最も大きいのは北部の密林地帯、最も低いのは北部の湖と雪山の尾根に関連していることがわかる。</p>
@@ -807,7 +808,7 @@ FIGURE 4.12: Zion 国立公園の衛星ファイルの例で計算された RGB 
 移動窓の形状を <code>matrix</code> で定義する。その値は重みに対応する (以下のコードチャンクの <code>w</code> パラメータを参照)。
 次に、<code>fun</code> パラメータで、この近傍領域に適用したい関数を指定することができる。
 ここでは、最小値を選んでいるが、<code><a href="https://rdrr.io/r/base/sum.html">sum()</a></code>、<code><a href="https://rspatial.github.io/terra/reference/summarize-generics.html">mean()</a></code>、<code><a href="https://rdrr.io/r/stats/cor.html">var()</a></code> など、他の要約関数も使用可能である。</p>
-<div class="sourceCode" id="cb155"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">r_focal</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/focal.html">focal</a></span><span class="op">(</span><span class="va">elev</span>, w <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fl">1</span>, nrow <span class="op">=</span> <span class="fl">3</span>, ncol <span class="op">=</span> <span class="fl">3</span><span class="op">)</span>, fun <span class="op">=</span> <span class="va">min</span><span class="op">)</span></span></code></pre></div>
 <p><code>main()</code> 関数は、プロセス中の NA を削除すべきか (<code>na.rm = TRUE</code>)、しないか (<code>na.rm = FALSE</code> こちらがデフォルト) などの追加引数も受け付ける。</p>
 <div class="figure" style="text-align: center">
@@ -842,7 +843,7 @@ Chapter <a href="gis.html#gis">10</a> は、このような GIS 機能を R 内�
 最後に、ゾーン操作の結果は、ゾーンごとにグループ化された要約表となる。このため、この操作は、GIS の世界では<u>ゾーン統計</u>とも呼ばれる。
 これは、デフォルトでラスタオブジェクトを返すフォーカルオペレーションとは対照的である。</u></p>
 <p>次のコードチャンクは、<code><a href="https://rspatial.github.io/terra/reference/zonal.html">zonal()</a></code> 関数を使用して、各粒度クラスに関連する平均標高を計算する。</p>
-<div class="sourceCode" id="cb156"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">z</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/zonal.html">zonal</a></span><span class="op">(</span><span class="va">elev</span>, <span class="va">grain</span>, fun <span class="op">=</span> <span class="st">"mean"</span><span class="op">)</span></span>
 <span><span class="va">z</span></span>
 <span><span class="co">#&gt;   grain elev</span></span>
@@ -893,7 +894,7 @@ NDVI を計算し (Section <a href="spatial-operations.html#local-operations">4.
 これは例えば、デジタル標高データで可能である。
 以下のコードでは、まずオーストリアとスイスの Shuttle Radar Topography Mission (SRTM) 標高データをダウンロードする (国番号については、<strong>geodata</strong> 関数 <code>country_codes()</code> を参照)。
 第二段階では、2 つのラスタを 1 つに統合する。</p>
-<div class="sourceCode" id="cb157"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">aut</span> <span class="op">=</span> <span class="fu">geodata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/geodata/man/elevation.html">elevation_30s</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"AUT"</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">ch</span> <span class="op">=</span> <span class="fu">geodata</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/geodata/man/elevation.html">elevation_30s</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"CHE"</span>, path <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">aut_ch</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/merge.html">merge</a></span><span class="op">(</span><span class="va">aut</span>, <span class="va">ch</span><span class="op">)</span></span></code></pre></div>
@@ -910,7 +911,7 @@ NDVI を計算し (Section <a href="spatial-operations.html#local-operations">4.
 <h2>
 <span class="header-section-number">4.4</span> 演習<a class="anchor" aria-label="anchor" href="#%E6%BC%94%E7%BF%92-2"><i class="fas fa-link"></i></a>
 </h2>
-<div class="sourceCode" id="cb158"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb159"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span></code></pre></div>
@@ -964,7 +965,8 @@ Canterbury 地方には、これらの高地がいくつあるだろうか？</p
 </a></li>
           <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
         </ul>
-<hr>
+<div class="LECTURE_IN_JAPANESE" style="border:solid 1px;border-color:#be1558;background:#fbcbc9"><a href="https://peatix.com/group/16401222" target="_blank">2025年4月頃より、レクチャーを計画しています。Peatix でフォローしてください。</a></div>
+        <hr>
 <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#spatial-operations"><span class="header-section-number">4</span> 空間データ操作</a></li>
@@ -1012,7 +1014,7 @@ Canterbury 地方には、これらの高地がいくつあるだろうか？</p
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-08.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

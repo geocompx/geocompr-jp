@@ -7,7 +7,7 @@
 <title>Chapter 11 スクリプト、アルゴリズム、関数 | Geocomputation with R</title>
 <meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
 <meta name="description" content="必須パッケージ この章では、主に Base R を使用するため、必要なソフトウェアは最小限である。 これから開発するアルゴリズムの結果を確認するために sf パッケージだけを使用する。 Chapter 2 で紹介した地理クラスと、それを使ってさまざまな入力ファイル形式を表現する方法 (Chapter 8 参照) について理解していることを前提にしている。  11.1 イントロダクション...">
-<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta name="generator" content="bookdown 0.43 with bs4_book()">
 <meta property="og:title" content="Chapter 11 スクリプト、アルゴリズム、関数 | Geocomputation with R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="http://124.219.182.167/geo/algorithms.html">
@@ -19,10 +19,10 @@
 <meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
-<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.10/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.9.0/transition.js"></script><script src="libs/bs3compat-0.9.0/tabs.js"></script><script src="libs/bs3compat-0.9.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 11 スクリプト、アルゴリズム、関数 | Geocomputation with R">
 <meta name="citation_author" content="Robin Lovelace">
 <meta name="citation_author" content="Jakub Nowosad">
@@ -155,17 +155,17 @@ Chapter <a href="geometry-operations.html#geometry-operations">5</a> で、重�
 R スクリプトは一般に、<code>.R</code> 拡張子で保存され、実行内容を反映した名前が付けられる。
 例として、この本のリポジトリの <code>code</code> フォルダに格納されているスクリプトファイル <a href="https://github.com/geocompx/geocompr/tree/main/code/11-hello.R"><code>11-hello.R</code></a> がある。
 <code>11-hello.R</code> は、次の 2 行のコードが含まれているだけの簡単なスクリプトで、そのうち 1 行はコメントである。</p>
-<div class="sourceCode" id="cb397"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb402"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Aim: provide a minimal R script</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="st">"Hello geocompr"</span><span class="op">)</span></span></code></pre></div>
 <p>このスクリプトの中身は、とりたててスゴいものではないが、「スクリプトは複雑である必要はない」という点を示している。
 保存されたスクリプトは、<code><a href="https://rdrr.io/r/base/source.html">source()</a></code> を使って、その全体を呼び出したり、実行したりすることができる。
 このコマンドの出力から、コメント行は無視され、<code><a href="https://rdrr.io/r/base/print.html">print()</a></code> コマンドが実行されることがわかる。</p>
-<div class="sourceCode" id="cb398"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb403"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"code/11-hello.R"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "Hello geocompr"</span></span></code></pre></div>
 <p>以下のように <code>bash</code> や <code>PowerShell</code> などのシステムコマンドラインシェルから R スクリプトを呼び出すこともできる。</p>
-<div class="sourceCode" id="cb399"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb399-1"><a href="algorithms.html#cb399-1" tabindex="-1"></a><span class="ex">Rscript</span> code/11-hello.R</span></code></pre></div>
+<div class="sourceCode" id="cb404"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb404-1"><a href="algorithms.html#cb404-1" tabindex="-1"></a><span class="ex">Rscript</span> code/11-hello.R</span></code></pre></div>
 <p><code>RScript</code> 実行可能ファイルが <a href="https://www.reddit.com/r/Rlanguage/comments/zaovly/is_anybody_able_to_run_a_r_script_in_powershell/">設定</a>されていれば、システムのシェルで <code>Hello geocompr</code> と表示される。
 スクリプトファイルに何を書くべきで何を書くべきではないかについて厳密なルールがあるわけではない。壊れた再現性のないコードになることもよくあるので、テストが必要である。
 有効な R を含まないコード行は、エラーを防ぐため、行頭に <code>#</code> を追加してコメントアウトする必要がある。<code>11-hello.R</code> スクリプトの 1 行目を参照。
@@ -176,7 +176,7 @@ R スクリプトは一般に、<code>.R</code> 拡張子で保存され、実�
 これは、例えば、RStudio で、「折りたたみ可能な」コードセクションの見出しを作成するショートカット <code>Ctrl+Shift+R</code> を使って行うことができる</li>
 <li>特に、スクリプトは再現可能であるべきである。どんなコンピュータでも動作する自己完結型のスクリプトは、調子の良い日に自分のコンピュータでしか動作しないスクリプトよりも有用である。
 これには、必要なパッケージを最初に添付し、データを永続的なソース (信頼できるウェブサイトなど) から読み込み、前のステップが実行されたことを確認することが含まれる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
-前のステップは、コメントまたは &lt;code&gt;if(!exists("x")) source("x.R")&lt;/code&gt; のような if 文で参照できる (オブジェクト &lt;code&gt;x&lt;/code&gt; が見つからない場合、スクリプトファイル &lt;code&gt;x.R&lt;/code&gt; を実行する)。&lt;/p&gt;'><sup>78</sup></a>
+前のステップは、コメントまたは &lt;code&gt;if(!exists("x")) source("x.R")&lt;/code&gt; のような if 文で参照できる (オブジェクト &lt;code&gt;x&lt;/code&gt; が見つからない場合、スクリプトファイル &lt;code&gt;x.R&lt;/code&gt; を実行する)。&lt;/p&gt;'><sup>79</sup></a>
 </li>
 </ul>
 <p>パッケージ化しないかいぎり R スクリプトで再現性を強制するのは難しいが、それを助けるツールはある。
@@ -203,7 +203,7 @@ GIS ソフトウェアの依存は、Chaptger <a href="gis.html#gis">10</a> で�
 <p>「保守的」プログラミング技術と適切なエラーメッセージは、要件が満たされていない時に依存性を確認し、ユーザと対話する時間を節約する。
 R では <code>if ()</code> で表される If 文を使用し、特定の条件が揃った時のみにメッセージを送ったりコードを実行するようにコードを書く。
 以下のコード例は、特定のファイルがない場合にユーザにメッセージを送る (訳註: メッセージに日本語を使わないことを推奨する。)。</p>
-<div class="sourceCode" id="cb400"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb405"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/files.html">file.exists</a></span><span class="op">(</span><span class="st">"required_geo_data.gpkg"</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"No file, required_geo_data.gpkg is missing!"</span><span class="op">)</span></span>
 <span><span class="op">}</span> </span>
@@ -211,7 +211,7 @@ R では <code>if ()</code> で表される If 文を使用し、特定の条件
 <p>このスクリプトが行う作業は、以下の再現例で示されている。このスクリプトは、<code>poly_mat</code> という、長さ 9 単位の辺を持つ正方形 (この意味は次のセクションで明らかになる) という前提条件のオブジェクトに対して動作する。
 この例では、インターネットに接続していることを前提に、<code><a href="https://rdrr.io/r/base/source.html">source()</a></code> が URL (ここでは短縮版を使用) で動作することを示している。
 そうでない場合は、<a href="https://github.com/geocompx/geocompr">github.com/geocompx/geocompr</a> からダウンロードできる <code>geocompr</code> フォルダのルートディレクトリから R を実行していると仮定して、<code>source("code/11-centroid-alg.R")</code> で同じスクリプトを呼び出すことができる。</p>
-<div class="sourceCode" id="cb401"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb406"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poly_mat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span></span>
 <span>  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">9</span>, <span class="fl">9</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>  y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">9</span>, <span class="fl">9</span>, <span class="fl">0</span><span class="op">)</span></span>
@@ -253,14 +253,14 @@ R では <code>if ()</code> で表される If 文を使用し、特定の条件
 このアルゴリズムは、180°以上の内角を持たない<u>凸ポリゴン</u>に対してのみ動作し、星形は使用できない (パッケージの <strong>decido</strong> と <strong>sfdct</strong> は外部ライブラリを使用して非凸ポリゴンを三角測量できる。<a href="https://geocompx.org/">geocompx.org</a> の <a href="https://geocompx.github.io/geocompkg/articles/algorithm.html">algorithm</a> vignetteに示されている。)。</p>
 <p>ポリゴンの最も単純なデータ構造は、x と y の座標の行列で、各行はポリゴンの境界を順にたどる頂点を表し、最初と最後の行は同一である <span class="citation">(<a href="references.html#ref-wise_gis_2001">Wise 2001</a>)</span>。
 今回は、<em>GIS Algorithms</em> <span class="citation">(<a href="references.html#ref-xiao_gis_2016">Xiao 2016</a> Python コードは <a href="https://github.com/gisalgs/geom">github.com/gisalgs</a> を参照)</span> の例を参考に、Figure <a href="algorithms.html#fig:polymat">11.2</a> に示すように、5 つの頂点を持つポリゴンを Base R で作成する。</p>
-<div class="sourceCode" id="cb403"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb408"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># ポリゴンを表現する行列を作成</span></span>
 <span><span class="va">x_coords</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">20</span>, <span class="fl">12</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">10</span><span class="op">)</span></span>
 <span><span class="va">y_coords</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">10</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span><span class="va">poly_mat</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">x_coords</span>, <span class="va">y_coords</span><span class="op">)</span></span></code></pre></div>
 <p>これで、例となるデータセットができたので、上記のステップ 1 に着手する準備が整った。
 以下のコードでは、1 つの三角形 (<code>T1</code>) を作成して、この方法を示している。また、 <a href="https://math.stackexchange.com/a/1702606">数式</a> <span class="math inline">\(1/3(a + b + c)\)</span> (<span class="math inline">\(a\)</span> から <span class="math inline">\(c\)</span> は三角形の頂点を表す座標) に基づいて重心を計算するステップ 2 も示している。</p>
-<div class="sourceCode" id="cb404"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb409"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 原点を作成:</span></span>
 <span><span class="va">Origin</span> <span class="op">=</span> <span class="va">poly_mat</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span></span>
 <span><span class="co"># 三角形の行列を作成:</span></span>
@@ -279,7 +279,7 @@ FIGURE 11.2: ポリゴン重心計算問題。
 \]</span></p>
 <p>ここで、<span class="math inline">\(A\)</span> から <span class="math inline">\(C\)</span> は三角形 <code>T1</code> の 3 点、<span class="math inline">\(x\)</span> と <span class="math inline">\(y\)</span> は x と y の次元を指す。
 この式を、三角形の行列表現のデータを扱う R コードに翻訳すると、次のようになる (関数 <code><a href="https://rdrr.io/r/base/MathFun.html">abs()</a></code> は、正の結果を保証する)。</p>
-<div class="sourceCode" id="cb405"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb410"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 行列 T1 で表される三角形の面積を計算</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span><span class="va">T1</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="va">T1</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">-</span> <span class="va">T1</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="va">T1</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="va">T1</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">-</span> <span class="va">T1</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -288,14 +288,14 @@ FIGURE 11.2: ポリゴン重心計算問題。
 <p>このコードチャンクは正しい結果を出力する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
 この結果は、以下の式で確認することができる (ベースが水平であると仮定している)。
 面積は、ベース幅×高さの半分となる。&lt;span class="math inline"&gt;\(A = B * H / 2\)&lt;/span&gt;.
-この場合、&lt;span class="math inline"&gt;\(10 * 10 / 2 = 50\)&lt;/span&gt;.&lt;/p&gt;'><sup>79</sup></a>
+この場合、&lt;span class="math inline"&gt;\(10 * 10 / 2 = 50\)&lt;/span&gt;.&lt;/p&gt;'><sup>80</sup></a>
 このコードは不格好で、別の三角行列で実行する場合、再入力しなければならない点が問題である。
 より一般化するために、このコードを Section <a href="algorithms.html#functions">11.4</a> で関数に変換する方法を見てみよう。</p>
 <p>ステップ 4 では、ステップ 2 と 3 を 1 つの三角形だけでなく、すべての三角形に対して行う必要がある (上の例)。
 このため、ポリゴンを表すすべての三角形を作成するための<u>イテレーション</u> (繰り返し) が必要である。Figure <a href="algorithms.html#fig:polycent">11.3</a> に示す。
 <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> と <code><a href="https://rdrr.io/r/base/lapply.html">vapply()</a></code> が各三角形の反復処理に使われているのは、Base R で簡潔な解が得られるからである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
-&lt;code&gt;vapply()&lt;/code&gt; のドキュメントについては &lt;code&gt;?lapply&lt;/code&gt; を参照。イテレーションについては Chapter &lt;a href="location.html#location"&gt;14&lt;/a&gt; を参照。&lt;/p&gt;'><sup>80</sup></a></p>
-<div class="sourceCode" id="cb406"><pre class="downlit sourceCode r">
+&lt;code&gt;vapply()&lt;/code&gt; のドキュメントについては &lt;code&gt;?lapply&lt;/code&gt; を参照。イテレーションについては Chapter &lt;a href="location.html#location"&gt;14&lt;/a&gt; を参照。&lt;/p&gt;'><sup>81</sup></a></p>
+<div class="sourceCode" id="cb411"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">i</span> <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">poly_mat</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="va">T_all</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">lapply</a></span><span class="op">(</span><span class="va">i</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">rbind</a></span><span class="op">(</span><span class="va">Origin</span>, <span class="va">poly_mat</span><span class="op">[</span><span class="va">x</span><span class="op">:</span><span class="op">(</span><span class="va">x</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span>, <span class="op">]</span>, <span class="va">Origin</span><span class="op">)</span></span>
@@ -319,7 +319,7 @@ FIGURE 11.3: 複数の三角による繰り返し重心アルゴリズム。繰�
 アルゴリズムとスクリプトの関連性を示すために、このセクションの内容を凝縮して <code>11-centroid-alg.R</code> とした。
 Section <a href="algorithms.html#scripts">11.2</a> の最後で、このスクリプトが正方形の重心を計算する方法を見た。
 アルゴリズムを<u>スクリプト</u>化することの素晴らしい点は、新しい <code>poly_mat</code> オブジェクト上で動作することである (<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid()</a></code> を参照してこれらの結果を検証するには、以下の演習を参照)。</p>
-<div class="sourceCode" id="cb407"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb412"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"code/11-centroid-alg.R"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "The area is: 245"</span></span>
 <span><span class="co">#&gt; [1] "The coordinates of the centroid are: 8.83, 9.22"</span></span></code></pre></div>
@@ -335,7 +335,7 @@ Section <a href="algorithms.html#scripts">11.2</a> の最後で、このスク�
 この経験は、GEOS や CGAL (計算幾何学アルゴリズムライブラリ, Computational Geometry Algorithms Library) など、高速に動作し、かつ幅広い入力ジオメトリタイプに対応する低レベル地理ライブラリの理解につながるはずである。
 このようなライブラリのオープンソース化の大きな利点は、そのソースコードが、研究、理解、(技術と自信があれば) 改変のために容易に利用できることである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
 CGAL の関数 &lt;code&gt;CGAL::centroid()&lt;/code&gt; は、&lt;a href="https://doc.cgal.org/latest/Kernel_23/group__centroid__grp.html" class="uri"&gt;https://doc.cgal.org/latest/Kernel_23/group__centroid__grp.html&lt;/a&gt; で説明しているように、実際には 7 つのサブ関数で構成されており、幅広い入力データ型に対応できるようになっているが、私たちが作成したソリューションは特定の入力データ型にのみ対応する。
-GEOS の関数 &lt;code&gt;Centroid::getCentroid()&lt;/code&gt; の基礎となるソースコードは、&lt;a href="https://github.com/libgeos/geos/search?q=getCentroid" class="uri"&gt;https://github.com/libgeos/geos/search?q=getCentroid&lt;/a&gt; で見ることができる。&lt;/p&gt;'><sup>81</sup></a></p>
+GEOS の関数 &lt;code&gt;Centroid::getCentroid()&lt;/code&gt; の基礎となるソースコードは、&lt;a href="https://github.com/libgeos/geos/search?q=getCentroid" class="uri"&gt;https://github.com/libgeos/geos/search?q=getCentroid&lt;/a&gt; で見ることができる。&lt;/p&gt;'><sup>82</sup></a></p>
 </div>
 <div id="functions" class="section level2" number="11.4">
 <h2>
@@ -345,20 +345,20 @@ GEOS の関数 &lt;code&gt;Centroid::getCentroid()&lt;/code&gt; の基礎とな�
 しかし、関数は、「レシピ」そのものではなく、特定のプログラミング言語での実装を指している。
 R では、関数はそれ自体がオブジェクトであり、モジュール方式で作成したり結合したりすることができる。
 例えば、重心生成アルゴリズムのステップ 2 を引き受ける関数を以下のように作成することができる。</p>
-<div class="sourceCode" id="cb408"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb413"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t_centroid</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="op">+</span> <span class="va">x</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span> <span class="op">+</span> <span class="va">x</span><span class="op">[</span><span class="fl">3</span>, <span class="op">]</span><span class="op">)</span> <span class="op">/</span> <span class="fl">3</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>上記の例では、<a href="https://adv-r.hadley.nz/functions.html">関数</a>の 2 つの重要な構成要素を示している。(1) 関数の中身 (<em>body</em>) は、中括弧内のコードで、関数が入力に対して何をするかを定義する。 (2) 引数 (<em>argument</em>) は 、関数が扱う引数のリスト。この場合は <code>x</code> である (3 番目の重要なコンポーネント、環境はこのセクションの範囲外)。
 デフォルトでは、関数は最後に計算したオブジェクトを返す (<code>t_centroid()</code> の場合は重心の座標)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
-また、関数の本文に &lt;code&gt;return(output)&lt;/code&gt; を追加することで、関数の出力を明示的に設定することができる。 &lt;code&gt;output&lt;/code&gt; は返すべき結果である。&lt;/p&gt;"><sup>82</sup></a></p>
+また、関数の本文に &lt;code&gt;return(output)&lt;/code&gt; を追加することで、関数の出力を明示的に設定することができる。 &lt;code&gt;output&lt;/code&gt; は返すべき結果である。&lt;/p&gt;"><sup>83</sup></a></p>
 <p>この関数は、前のセクションのポリゴンの例から最初の三角形の面積を計算する以下のコマンドのように、渡した入力に対して動作する (Figure <a href="algorithms.html#fig:polycent">11.3</a> を参照)。</p>
-<div class="sourceCode" id="cb409"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb414"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">t_centroid</span><span class="op">(</span><span class="va">T1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; x_coords y_coords </span></span>
 <span><span class="co">#&gt;     14.0     11.7</span></span></code></pre></div>
 <p>また、三角形の面積を計算する関数を作成することができる。ここでは、<code>t_area()</code> と名付ける。</p>
-<div class="sourceCode" id="cb410"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb415"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t_area</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html">abs</a></span><span class="op">(</span></span>
 <span>    <span class="va">x</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">-</span> <span class="va">x</span><span class="op">[</span><span class="fl">3</span>, <span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">+</span></span>
@@ -369,11 +369,11 @@ R では、関数はそれ自体がオブジェクトであり、モジュール
 <p>なお、この関数を作成した後は、1 行のコードで三角形の面積を計算できるようになり、冗長なコードの重複を避けることができる。
 関数は、コードを一般化するためのメカニズムである。
 新たに作成した関数 <code>t_area()</code> は、これまで使ってきた「三角行列」データ構造と同じ寸法を持つと仮定した任意のオブジェクト <code>x</code> を受け取り、その面積を返すもので、<code>T1</code> で図示すると次のようになる。</p>
-<div class="sourceCode" id="cb411"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb416"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">t_area</span><span class="op">(</span><span class="va">T1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 85</span></span></code></pre></div>
 <p>関数を使って、高さ 1、底辺 3 の新しい三角行列の面積を求めることで、その一般化可能性を検証することができる。</p>
-<div class="sourceCode" id="cb412"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb417"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">t_new</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">0</span><span class="op">)</span>,</span>
 <span>              y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu">t_area</span><span class="op">(</span><span class="va">t_new</span><span class="op">)</span></span>
@@ -383,8 +383,8 @@ R では、関数はそれ自体がオブジェクトであり、モジュール
 出力が何であるかが分かっていれば、ある関数を別の関数の構成要素として利用することができる。
 したがって、関数 <code>t_centroid()</code> と <code>t_area()</code> は、スクリプト <code>11-centroid-alg.R</code> というより大きな関数のサブコンポーネントとして使うことができる。このスクリプトは、任意の凸ポリゴンの面積を計算する。
 以下のコードでは、凸ポリゴンに対する <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">sf::st_centroid()</a></code> の動作を模倣する関数 <code>poly_centroid()</code> を作成している。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
-なお、作成した関数は、&lt;code&gt;lapply()&lt;/code&gt; と &lt;code&gt;vapply()&lt;/code&gt; の関数呼び出しで繰り返し呼び出されている。&lt;/p&gt;"><sup>83</sup></a></p>
-<div class="sourceCode" id="cb413"><pre class="downlit sourceCode r">
+なお、作成した関数は、&lt;code&gt;lapply()&lt;/code&gt; と &lt;code&gt;vapply()&lt;/code&gt; の関数呼び出しで繰り返し呼び出されている。&lt;/p&gt;"><sup>84</sup></a></p>
+<div class="sourceCode" id="cb418"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poly_centroid</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">poly_mat</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">Origin</span> <span class="op">=</span> <span class="va">poly_mat</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span> <span class="co"># create a point representing the origin</span></span>
 <span>  <span class="va">i</span> <span class="op">=</span> <span class="fl">2</span><span class="op">:</span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">poly_mat</span><span class="op">)</span> <span class="op">-</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -394,18 +394,18 @@ R では、関数はそれ自体がオブジェクトであり、モジュール
 <span>  <span class="va">A</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html">vapply</a></span><span class="op">(</span><span class="va">T_all</span>, <span class="va">t_area</span>, FUN.VALUE <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/double.html">double</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/weighted.mean.html">weighted.mean</a></span><span class="op">(</span><span class="va">C</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span>, <span class="va">A</span><span class="op">)</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/weighted.mean.html">weighted.mean</a></span><span class="op">(</span><span class="va">C</span><span class="op">[</span>, <span class="fl">2</span><span class="op">]</span>, <span class="va">A</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<div class="sourceCode" id="cb414"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb419"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">poly_centroid</span><span class="op">(</span><span class="va">poly_mat</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 8.83 9.22</span></span></code></pre></div>
 <p><code>poly_centroid()</code> などの関数はさらに拡張して、さまざまなタイプの出力を提供することができる。
 例えば、結果をクラス <code>sfg</code> のオブジェクトとして返すには、結果を返す前に、「ラッパー」関数を用いて <code>poly_centroid()</code> の出力を変更することができる。</p>
-<div class="sourceCode" id="cb415"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb420"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poly_centroid_sfg</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">centroid_coords</span> <span class="op">=</span> <span class="fu">poly_centroid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
 <span>  <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_point</a></span><span class="op">(</span><span class="va">centroid_coords</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
 <p>以下のように、<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">sf::st_centroid()</a></code> からの出力と同じであることが確認できる。</p>
-<div class="sourceCode" id="cb416"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb421"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">poly_sfc</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_polygon</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="va">poly_mat</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/identical.html">identical</a></span><span class="op">(</span><span class="fu">poly_centroid_sfg</span><span class="op">(</span><span class="va">poly_mat</span><span class="op">)</span>, <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">poly_sfc</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] TRUE</span></span></code></pre></div>
@@ -503,7 +503,8 @@ R では、関数はそれ自体がオブジェクトであり、モジュール
 </a></li>
           <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
         </ul>
-<hr>
+<div class="LECTURE_IN_JAPANESE" style="border:solid 1px;border-color:#be1558;background:#fbcbc9"><a href="https://peatix.com/group/16401222" target="_blank">2025年4月頃より、レクチャーを計画しています。Peatix でフォローしてください。</a></div>
+        <hr>
 <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#algorithms"><span class="header-section-number">11</span> スクリプト、アルゴリズム、関数</a></li>
@@ -531,7 +532,7 @@ R では、関数はそれ自体がオブジェクトであり、モジュール
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-08.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

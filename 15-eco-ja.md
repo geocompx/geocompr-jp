@@ -466,7 +466,8 @@ autotuner_rf$tuning_result
 ``` r
 # 最適なハイパーパラメータの組み合わせで予測
 autotuner_rf$predict(task)
-#> <PredictionRegr> for 84 observations:
+#> 
+#> ── <PredictionRegr> for 84 observations: ───────────────────────────────────────
 #>  row_ids  truth response
 #>        1 -1.084   -1.176
 #>        2 -0.975   -1.176

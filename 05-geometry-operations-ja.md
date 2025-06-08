@@ -117,6 +117,11 @@ us_states_simp3 = smoothr::smooth(us_states, method = "ksmooth", smoothness = 6)
 最後に、元のデータセットと 2 つの簡易版を視覚的に比較してみよう。
 Figure \@ref(fig:us-simp) で、Douglas-Peucker (`st_simplify`)、Visvalingam (`ms_simplify`)、Gaussian kernel 回帰 (`smooth(method=ksmooth`) アルゴリズムの出力に違いがあることがわかる。
 
+
+```
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+```
+
 <div class="figure" style="text-align: center">
 <img src="figures/us-simp-1.png" alt="ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。" width="100%" />
 <p class="caption">(\#fig:us-simp)ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。</p>
@@ -178,6 +183,12 @@ Figure \@ref(fig:buffs) は、セーヌ川と支流を囲む様々な大きさ�
 ``` r
 seine_buff_5km = st_buffer(seine, dist = 5000)
 seine_buff_50km = st_buffer(seine, dist = 50000)
+```
+
+
+```
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
 ```
 
 <div class="figure" style="text-align: center">
@@ -271,6 +282,13 @@ rotation = function(a){
 
 ``` r
 nz_rotate = (nz_sfc - nz_centroid_sfc) * rotation(30) + nz_centroid_sfc
+```
+
+
+```
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
 ```
 
 <div class="figure" style="text-align: center">
@@ -714,6 +732,12 @@ dem = rast(system.file("raster/dem.tif", package = "spDataLarge"))
 dem_agg = aggregate(dem, fact = 5, fun = mean)
 ```
 
+
+```
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+```
+
 <div class="figure" style="text-align: center">
 <img src="figures/aggregate-example-1.png" alt="オリジナル (左) と 集計後 (右)。" width="100%" />
 <p class="caption">(\#fig:aggregate-example)オリジナル (左) と 集計後 (右)。</p>
@@ -809,6 +833,15 @@ dem_resampl = resample(dem, y = target_rast, method = "bilinear")
 ```
 
 Figure \@ref(fig:resampl) は、`dem` オブジェクトについて、異なるリサンプリング手法を比較したものである。
+
+
+```
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+```
 
 <div class="figure" style="text-align: center">
 <img src="figures/resampl-1.png" alt="ラスタのオリジナルと 5 種類のリサンプリング手法の視覚的比較。" width="100%" />

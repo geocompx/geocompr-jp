@@ -7,7 +7,7 @@
 <title>Chapter 10 GIS ソフトウェアへのブリッジ | Geocomputation with R</title>
 <meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
 <meta name="description" content="必須パッケージ 本章では、QGIS、SAGA、GRASS GIS がインストールされていること、および以下のパッケージが添付されていることを条件とする。 library(sf) library(terra) library(qgisprocess) library(Rsagacmd) library(rgrass) library(rstac) library(gdalcubes) ...">
-<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta name="generator" content="bookdown 0.43 with bs4_book()">
 <meta property="og:title" content="Chapter 10 GIS ソフトウェアへのブリッジ | Geocomputation with R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="http://124.219.182.167/geo/gis.html">
@@ -19,10 +19,10 @@
 <meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
-<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.10/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.9.0/transition.js"></script><script src="libs/bs3compat-0.9.0/tabs.js"></script><script src="libs/bs3compat-0.9.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 10 GIS ソフトウェアへのブリッジ | Geocomputation with R">
 <meta name="citation_author" content="Robin Lovelace">
 <meta name="citation_author" content="Jakub Nowosad">
@@ -114,12 +114,12 @@
 <ul>
 <li>本章では、QGIS、SAGA、GRASS GIS がインストールされていること、および以下のパッケージが添付されていることを条件とする。</li>
 </ul>
-<div class="sourceCode" id="cb347"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb352"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/qgisprocess/">qgisprocess</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stevenpawley.github.io/Rsagacmd/">Rsagacmd</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rsbivand.github.io/rgrass/">rgrass</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://osgeo.github.io/rgrass/">rgrass</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://brazil-data-cube.github.io/rstac/">rstac</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/appelmar/gdalcubes">gdalcubes</a></span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -154,7 +154,7 @@ GRASS GIS は、CLI をベースとしながらも GUI がある GIS の良い�
 <p>一方、GUI ベースの GIS システムにも有利な点がある。</p>
 <ul>
 <li>学習曲線が「浅い」ので、新しい言語を何時間も学ぶことなく、地理データを探索し、可視化することができる</li>
-<li>トレース、スナップ、トポロジーツールなど、「デジタイジング」 (新しいベクタデータセットの作成) のための優れたサポートを提供する<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;strong&gt;mapedit&lt;/strong&gt; パッケージは、R から開いたブラウザウィンドウでフィーチャを素早く編集することができるが、専門的で大規模な地図作成のデジタイズはできない。&lt;/p&gt;"><sup>56</sup></a>
+<li>トレース、スナップ、トポロジーツールなど、「デジタイジング」 (新しいベクタデータセットの作成) のための優れたサポートを提供する<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;strong&gt;mapedit&lt;/strong&gt; パッケージは、R から開いたブラウザウィンドウでフィーチャを素早く編集することができるが、専門的で大規模な地図作成のデジタイズはできない。&lt;/p&gt;"><sup>57</sup></a>
 </li>
 <li>地上基準点によるジオリファレンス (georeference、ラスタ画像と既存地図とのマッチング)、オルソ補正 (orthorectification) が可能である</li>
 <li>立体視マッピング (LiDAR、Structure from Motion など) に対応する</li>
@@ -229,17 +229,17 @@ QGIS は、統一されたインターフェースで、QGIS 自身のジオア�
 Docker をインストールしており、十分な実行環境のある方は、以下のコマンドで <strong>qgisprocess</strong> および関連プラグインを実行できる (<a href="https://github.com/geocompx/docker">geocompx/docker</a> リポジトリを参照)。</p>
 <p><code>docker run -e DISABLE_AUTH=true -p 8786:8787 ghcr.io/geocompx/docker:qgis</code></p>
 </div>
-<div class="sourceCode" id="cb348"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb353"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/qgisprocess/">qgisprocess</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Attempting to load the cache ... Success!</span></span>
 <span><span class="co">#&gt; QGIS version: 3.30.3-'s-Hertogenbosch</span></span>
 <span><span class="co">#&gt; ...</span></span></code></pre></div>
-<p>このパッケージは、QGIS のインストールを自動的に検出しようとし、検出できない場合は警告を発する。 <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;検出プロセスの詳細は、&lt;code&gt;qgis_configure()&lt;/code&gt; を実行すると表示される。&lt;/p&gt;"><sup>57</sup></a>
+<p>このパッケージは、QGIS のインストールを自動的に検出しようとし、検出できない場合は警告を発する。 <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;検出プロセスの詳細は、&lt;code&gt;qgis_configure()&lt;/code&gt; を実行すると表示される。&lt;/p&gt;"><sup>58</sup></a>
 設定に失敗した場合の解決策としては、<code>options(qgisprocess.path = "path/to/your_qgis_process")</code>、環境変数 <code>R_QGISPROCESS_PATH</code> を設定する方法が考えられる。
 上記の方法は、複数の QGIS がインストールされており、どれを使うかを決めたい場合にも使える。
 詳細については、<strong>qgisprocess</strong> <a href="https://r-spatial.github.io/qgisprocess/articles/qgisprocess.html">‘getting started’ vignette</a> を参照。
 次に、どのプラグイン (異なるソフトウェアを意味する) が自分のコンピュータで利用できるかを調べてみよう。</p>
-<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_plugins</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 4 × 2</span></span>
 <span><span class="co">#&gt;   name                    enabled</span></span>
@@ -250,13 +250,13 @@ Docker をインストールしており、十分な実行環境のある方は�
 <span><span class="co">#&gt; 4 processing_saga_nextgen FALSE</span></span></code></pre></div>
 <p>プラグイン GRASS GIS (<code>grassprovider</code>) と SAGA (<code>processing_saga_nextgen</code>) が存在しているが、有効になっていないことがわかる。
 この二つは本章の後半で使用するので、有効化しよう。</p>
-<div class="sourceCode" id="cb350"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb355"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_enable_plugins.html">qgis_enable_plugins</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"grassprovider"</span>, <span class="st">"processing_saga_nextgen"</span><span class="op">)</span>, </span>
 <span>                    quiet <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>SAGA のほかにも、QGIS Python プラグイン Processing Saga NextGen をインストールしておく必要がある。
 このプラグインは、<a href="https://docs.qgis.org/latest/en/docs/training_manual/qgis_plugins/fetching_plugins.html">プラグインの管理とインストール</a> あるいは、Python パッケージの <a href="https://github.com/3liz/qgis-plugin-manager">qgis-plugin-manager</a> (Linux の場合) からインストールすることができる。</p>
 <p><code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_providers()</a></code> で、ソフトウェアの名称と対応するジオアルゴリズム数の一覧を表示する。</p>
-<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb356"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_providers</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 7 × 3</span></span>
 <span><span class="co">#&gt;   provider provider_title    algorithm_count</span></span>
@@ -281,7 +281,7 @@ Docker をインストールしており、十分な実行環境のある方は�
 この 2 つのオブジェクトを統合して、すべての境界線と関連する属性を含む 1 つのオブジェクトにすることが目標である。
 Section <a href="spatial-operations.html#incongruent">4.2.8</a> (Figure <a href="gis.html#fig:uniondata">10.1</a>) でも見た不整合なポリゴンを再び利用する。
 どちらのポリゴンデータセットも <strong>spData</strong> パッケージで提供されており、その両方に地理的な CRS を使用したい (Chapter <a href="reproj-geo-data.html#reproj-geo-data">7</a> も参照)。</p>
-<div class="sourceCode" id="cb352"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb357"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"incongruent"</span>, <span class="st">"aggregating_zones"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span></span>
 <span><span class="va">incongr_wgs</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">incongruent</span>, <span class="st">"EPSG:4326"</span><span class="op">)</span></span>
 <span><span class="va">aggzone_wgs</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">aggregating_zones</span>, <span class="st">"EPSG:4326"</span><span class="op">)</span></span></code></pre></div>
@@ -293,13 +293,13 @@ FIGURE 10.1: 二つの単位: 不一致 (黒い線) と集合ゾーン (赤い�
 </div>
 <p>最初に、二つのベクタをマージ (merge) するアルゴリズムを探そう。
 <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_algorithms()</a></code> 関数は、利用可能なアルゴリズムをすべて表示する。
-この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。&lt;/p&gt;"><sup>58</sup></a></p>
-<div class="sourceCode" id="cb353"><pre class="downlit sourceCode r">
+この関数は、利用可能なすべてのプロバイダと、それらが含むアルゴリズムを含むデータフレームを返す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;したがって、予想されるプロバイダが表示されない場合は、まだ外部の GIS ソフトウェアをインストールする必要があると思われる。&lt;/p&gt;"><sup>59</sup></a></p>
+<div class="sourceCode" id="cb358"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 出力は表示せず</span></span>
 <span><span class="va">qgis_algo</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_algorithms</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_search_algorithms.html">qgis_search_algorithms()</a></code> 関数は、アルゴリズムを探すために使うことができる。
 関数の短い説明文に “union”という単語が含まれていると仮定すると、以下のコードを実行して、興味のあるアルゴリズムを見つけることができる。</p>
-<div class="sourceCode" id="cb354"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb359"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_search_algorithms.html">qgis_search_algorithms</a></span><span class="op">(</span><span class="st">"union"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 2 × 5</span></span>
 <span><span class="co">#&gt;   provider provider_title    group          algorithm         algorithm_title </span></span>
@@ -308,10 +308,10 @@ FIGURE 10.1: 二つの単位: 不一致 (黒い線) と集合ゾーン (赤い�
 <span><span class="co">#&gt; 2 native   QGIS (native c++) Vector overlay native:union      Union  </span></span></code></pre></div>
 <p>上記のリストにあるアルゴリズムの 1 つ <code>"native:union"</code> は、探している機能の可能性が高そうである。
 次のステップとしては、このアルゴリズムが何をするのか、どう使えばいいのかを調べよう。
-<code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help()</a></code> は、アルゴリズムが何をし、引数や出力についての要約を返す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;code&gt;qgis_get_description()&lt;/code&gt;、&lt;code&gt;qgis_get_argument_specs()&lt;/code&gt;、&lt;code&gt;qgis_get_output_specss()&lt;/code&gt; それぞれからの情報の一部のみ示す。&lt;/p&gt;"><sup>59</sup></a>
+<code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help()</a></code> は、アルゴリズムが何をし、引数や出力についての要約を返す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;code&gt;qgis_get_description()&lt;/code&gt;、&lt;code&gt;qgis_get_argument_specs()&lt;/code&gt;、&lt;code&gt;qgis_get_output_specss()&lt;/code&gt; それぞれからの情報の一部のみ示す。&lt;/p&gt;"><sup>60</sup></a>
 これによって、出力が長くなる。
 以下のコマンドは、各行に <code>"native:union"</code> が必要とする引数を表すデータフレームを返し、各列は名前、説明、種類、デフォルト値、とりうる値を示す。</p>
-<div class="sourceCode" id="cb355"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb360"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">alg</span> <span class="op">=</span> <span class="st">"native:union"</span></span>
 <span><span class="va">union_arguments</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_get_argument_specs</a></span><span class="op">(</span><span class="va">alg</span><span class="op">)</span></span>
 <span><span class="va">union_arguments</span></span>
@@ -341,7 +341,7 @@ FIGURE 10.1: 二つの単位: 不一致 (黒い線) と集合ゾーン (赤い�
 今回のケースでは、<code>INPUT</code>、<code>OVERLAY</code>、<code>OUTPUT</code> の 3 つの引数が重要だと思われる。
 最初の <code>INPUT</code> は、主なベクタオブジェクト <code>incongr_wgs</code> であり、2 番目の <code>OVERLAY</code> は、<code>aggzone_wgs</code> である。
 最後の引数、<code>OUTPUT</code> は出力ファイル名だが、指定されていない場合、<strong>qgisprocess</strong> は自動的に <code><a href="https://rdrr.io/r/base/tempfile.html">tempdir()</a></code> に一時ファイルを作成する。</p>
-<div class="sourceCode" id="cb356"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb361"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">union</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm</a></span><span class="op">(</span><span class="va">alg</span>,</span>
 <span>  INPUT <span class="op">=</span> <span class="va">incongr_wgs</span>, OVERLAY <span class="op">=</span> <span class="va">aggzone_wgs</span></span>
 <span><span class="op">)</span></span>
@@ -350,7 +350,7 @@ FIGURE 10.1: 二つの単位: 不一致 (黒い線) と集合ゾーン (赤い�
 <p>上記のコードを実行すると、2 つの入力オブジェクトが一時的な .gpkg ファイルに保存され、選択されたアルゴリズムがそれらに実行され、一時的な .gpkg ファイルが出力として返される。
 <strong>qgisprocess</strong> パッケージは、<code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm()</a></code> の結果を、この場合は出力ファイルへのパスを含むリストとして保存する。
 このファイルを R に読み戻すには、<code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> (例, <code>union_sf = read_sf(union[[1]])</code> を使うか、<code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf()</a></code> を使って直接読み込むことができる。</p>
-<div class="sourceCode" id="cb357"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb362"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">union_sf</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="va">union</span><span class="op">)</span></span></code></pre></div>
 <p>QGIS の和集合 (union) の操作は、2 つの入力レイヤの交差 (intersect) と対称差 (symmetrical difference) を用いて、2 つの入力レイヤを 1 つのレイヤにマージすることに注意 (ちなみに、これは GRASS GIS と SAGA で結合操作をするときのデフォルトでもある)。
 これは <code>st_union(incongr_wgs, aggzone_wgs)</code> とは<strong>違う</strong> (演習参照)!</p>
@@ -359,7 +359,7 @@ FIGURE 10.1: 二つの単位: 不一致 (黒い線) と集合ゾーン (赤い�
 こうした誤差によってできたものは、スライバー (sliver) ポリゴンと呼ばれている (Figure <a href="gis.html#fig:sliver">10.2</a> の左側のパネルにある赤い色のポリゴンを参照)。
 スライバーを識別する一つの方法として、面積が比較的非常に小さいポリゴン、ここでは例えば 25,000 m<sup>2</sup> を見つけ、次にそれを削除する。
 適切なアルゴリズムを探そう。</p>
-<div class="sourceCode" id="cb358"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb363"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_search_algorithms.html">qgis_search_algorithms</a></span><span class="op">(</span><span class="st">"clean"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 5</span></span>
 <span><span class="co">#&gt;   provider provider_title group        algorithm      algorithm_title</span></span>
@@ -374,12 +374,12 @@ QGIS の GRASS GIS provider は、QGIS version 3.34 まで <code>grass7</code> �
 よって、QGIS バージョンが古い場合、<code>grass</code> ではなく <code>grass7</code> とする。
 </div>
 <p>前のステップと同様に、このアルゴリズムのヘルプを見るところから始めよう。</p>
-<div class="sourceCode" id="cb359"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb364"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help</a></span><span class="op">(</span><span class="st">"grass:v.clean"</span><span class="op">)</span></span></code></pre></div>
-<p>ここでは出力を省略した。実際のヘルプテキストはかなり長く、多くの引数を含んでいる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;また、QGIS の引数とは異なり、小文字になる。&lt;/p&gt;"><sup>60</sup></a>
+<p>ここでは出力を省略した。実際のヘルプテキストはかなり長く、多くの引数を含んでいる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;また、QGIS の引数とは異なり、小文字になる。&lt;/p&gt;"><sup>61</sup></a>
 これは、<code>v.clean</code> がマルチツールであり、さまざまな種類のジオメトリをクリーニングし、さまざまな種類のトポロジー問題を解決することができることがある。
 この例では、いくつかの引数に絞って説明するが、<code>v.clean</code> の機能については、 <a href="https://grass.osgeo.org/grass-stable/manuals/v.clean.html">アルゴリズムのドキュメント</a>を勧める。</p>
-<div class="sourceCode" id="cb360"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb365"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_get_argument_specs</a></span><span class="op">(</span><span class="st">"grass:v.clean"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">name</span>, <span class="va">description</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_head</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
@@ -391,14 +391,14 @@ QGIS の GRASS GIS provider は、QGIS version 3.34 まで <code>grass7</code> �
 <span><span class="co">#&gt; 3 tool      Cleaning tool</span></span>
 <span><span class="co">#&gt; 4 threshold Threshold (comma separated for each tool)</span></span></code></pre></div>
 <p>このアルゴリズムの主な引数は <code>input</code> で、これはベクタオブジェクトである。
-次に tool の選択であるが、これはクリーニングの方法である。 <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;複数のツールを選択することもできる。この場合、順番に実行される。&lt;/p&gt;"><sup>61</sup></a>
+次に tool の選択であるが、これはクリーニングの方法である。 <a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;複数のツールを選択することもできる。この場合、順番に実行される。&lt;/p&gt;"><sup>62</sup></a>
 <code>v.clean</code> には、重複した形状の削除、線間の微小角度の削除、微小領域の削除など、12 種類のツールが存在する。
 今回は、後者のツール、<code>rmarea</code> を解説する。
 いくつかのツール (<code>rmarea</code> を含む) は、追加の引数 <code>threshold</code> を必要とし、その動作は選択されたツールに依存する。
 この場合、<code>rmarea</code> ツールは、<code>threshold</code> で与えられた値より小さいか等しい領域をすべて削除する。
 なお、入力レイヤの空間参照系によらず単位は平方メートルである。</p>
 <p>このアルゴリズムを実行し、その出力を新しい <code>sf</code> オブジェクト <code>clean_sf</code> に変換してみよう。</p>
-<div class="sourceCode" id="cb361"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb366"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clean</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm</a></span><span class="op">(</span><span class="st">"grass7:v.clean"</span>,</span>
 <span>  input <span class="op">=</span> <span class="va">union_sf</span>,</span>
 <span>  tool <span class="op">=</span> <span class="st">"rmarea"</span>, threshold <span class="op">=</span> <span class="fl">25000</span></span>
@@ -422,7 +422,7 @@ DEM は、衛星航法、水流モデル、表面分析、可視化など、さ�
 例えば、様々な地形パラメータは、地滑りの予測に役立つ (Chapter <a href="spatial-cv.html#spatial-cv">12</a> 参照)。</p>
 <p>このセクションでは、<code>dem.tif</code> を使用することにする。これは、Mongón 調査地域のデジタル標高モデルである (Land Process Distributed Active Archive Center からダウンロード、<code><a href="https://rdrr.io/pkg/spDataLarge/man/dem.tif.html">?dem.tif</a></code> も参照)。
 解像度は約 30 m × 30 m で、投影型 CRS を使用している。</p>
-<div class="sourceCode" id="cb362"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb367"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/qgisprocess/">qgisprocess</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
 <span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/dem.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -430,7 +430,7 @@ DEM は、衛星航法、水流モデル、表面分析、可視化など、さ�
 とはいえ、GIS は、地形の特性に関する機能が他にもたくさんあり、文脈によってはより適しているものもある。
 例えば、地形湿潤指数 (Topologic Wetness Index, TWI) は、水文・生物学的プロセスの研究に有用であることがわかっている <span class="citation">(<a href="references.html#ref-sorensen_calculation_2006">Sørensen, Zinko, and Seibert 2006</a>)</span>。
 このインデックスのアルゴリズムリストを、<code>"wetness"</code> というキーワードで検索してみよう。</p>
-<div class="sourceCode" id="cb363"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb368"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_search_algorithms.html">qgis_search_algorithms</a></span><span class="op">(</span><span class="st">"wetness"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">provider_title</span>, <span class="va">algorithm</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/headtail.html">head</a></span><span class="op">(</span><span class="fl">2</span><span class="op">)</span></span>
@@ -439,19 +439,19 @@ DEM は、衛星航法、水流モデル、表面分析、可視化など、さ�
 <span><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;</span></span>
 <span><span class="co">#&gt; 1 SAGA Next Gen  sagang:sagawetnessindex</span></span>
 <span><span class="co">#&gt; 2 SAGA Next Gen  sagang:topographicwetnessindexonestep</span></span></code></pre></div>
-<p>上記のコードの出力は、目的のアルゴリズムが SAGA ソフトウェアに存在することを示唆するものである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;TWI は、GRASS GIS 関数 &lt;code&gt;r.topidx&lt;/code&gt; でも計算可能。&lt;/p&gt;"><sup>62</sup></a>
+<p>上記のコードの出力は、目的のアルゴリズムが SAGA ソフトウェアに存在することを示唆するものである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;TWI は、GRASS GIS 関数 &lt;code&gt;r.topidx&lt;/code&gt; でも計算可能。&lt;/p&gt;"><sup>63</sup></a>
 SAGA はハイブリッド GIS であるが、主にラスタ処理、ここでは特にデジタル標高モデル (土壌特性、地形属性、気候パラメータ) に重点を置いている。
 したがって、SAGA は大規模な (高解像度の) ラスタデータセットの高速処理に特に優れている <span class="citation">(<a href="references.html#ref-conrad_system_2015">Conrad et al. 2015</a>)</span>。</p>
 <p><code>"sagang:sagawetnessindex"</code> アルゴリズムは、実際には修正された TWI であり、谷底に位置するセルに対してより現実的な土壌水分ポテンシャルをもたらすものである <span class="citation">(<a href="references.html#ref-bohner_spatial_2006">Böhner and Selige 2006</a>)</span>。</p>
-<div class="sourceCode" id="cb364"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb369"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help</a></span><span class="op">(</span><span class="st">"sagang:sagawetnessindex"</span><span class="op">)</span></span></code></pre></div>
 <p>ここでは、デフォルトの引数を使用する。
 与える引数は、入力となる <code>DEM</code> だけである。
-このアルゴリズムを使う際は、パラメータ値が研究の目的にあっているか確認する必要がある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;&lt;code&gt;"sagang:sagawetnessindex"&lt;/code&gt; の追加引数は、&lt;a href="https://gis.stackexchange.com/a/323454/20955" class="uri"&gt;https://gis.stackexchange.com/a/323454/20955&lt;/a&gt; で詳しく解説されている。&lt;/p&gt;'><sup>63</sup></a></p>
+このアルゴリズムを使う際は、パラメータ値が研究の目的にあっているか確認する必要がある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;&lt;code&gt;"sagang:sagawetnessindex"&lt;/code&gt; の追加引数は、&lt;a href="https://gis.stackexchange.com/a/323454/20955" class="uri"&gt;https://gis.stackexchange.com/a/323454/20955&lt;/a&gt; で詳しく解説されている。&lt;/p&gt;'><sup>64</sup></a></p>
 <p>QGIS から SAGA アルゴリズムを使う前に、デフォルトのラスタ形式を <code>.tif</code> から、SAGA のデフォルトの <code>.sdat</code> に変更しておこう。
 これで、指定しなければ保存形式は <code>.sdat</code> となる。
 ソフトウェア (SAGA, GDAL) のバージョンによっては必要はないが、SAGA のラスタに関する問題を未然に防ぐことができる。</p>
-<div class="sourceCode" id="cb365"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb370"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>qgisprocess.tmp_raster_ext <span class="op">=</span> <span class="st">".sdat"</span><span class="op">)</span></span>
 <span><span class="va">dem_wetness</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm</a></span><span class="op">(</span><span class="st">"sagang:sagawetnessindex"</span>,</span>
 <span>  DEM <span class="op">=</span> <span class="va">dem</span></span>
@@ -459,7 +459,7 @@ SAGA はハイブリッド GIS であるが、主にラスタ処理、ここで�
 <p><code>"sagang:sagawetnessindex"</code> は、集水域、集水勾配、修正集水域、地形湿潤指数という 4 つのラスタを返す。<code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_as_terra.html">qgis_as_terra()</a></code> 関数で出力名を指定することで、選択した出力を読み出すことができる。
 選択された出力は、<code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_as_terra.html">qgis_as_terra()</a></code> 関数に出力名を与えることで読むことができる。
 QGIS から SAGA を使う作業は終わったので、デフォルト形式を <code>.tif</code> に戻す。</p>
-<div class="sourceCode" id="cb366"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb371"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dem_wetness_twi</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_as_terra.html">qgis_as_terra</a></span><span class="op">(</span><span class="va">dem_wetness</span><span class="op">$</span><span class="va">TWI</span><span class="op">)</span></span>
 <span><span class="co"># plot(dem_wetness_twi)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/options.html">options</a></span><span class="op">(</span>qgisprocess.tmp_raster_ext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span></span></code></pre></div>
@@ -468,7 +468,7 @@ QGIS から SAGA を使う作業は終わったので、デフォルト形式を
 <p>また、デジタル標高モデルからの情報は、例えばジオモルフォン (geomorphon) に分類することができる。地形は、斜面、尾根、谷などの地形を表す 10 のクラスからなる地形学的表現型である <span class="citation">(<a href="references.html#ref-jasiewicz_geomorphons_2013">Jasiewicz and Stepinski 2013</a>)</span>。
 これらの表現型は、地滑りしやすさ、生態系サービス、人間の移動性、デジタル土壌マッピングなど、多くの研究で利用されている。</p>
 <p>ジオモルフォンのアルゴリズムのオリジナルの実装は GRASS GIS で作成され、<strong>qgisprocess</strong> のリストで <code>"grass:r.geomorphon"</code> として見つけることができる。</p>
-<div class="sourceCode" id="cb367"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb372"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_search_algorithms.html">qgis_search_algorithms</a></span><span class="op">(</span><span class="st">"geomorphon"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "grass:r.geomorphon" "sagang:geomorphons" </span></span>
 <span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help</a></span><span class="op">(</span><span class="st">"grass:r.geomorphon"</span><span class="op">)</span></span>
@@ -476,14 +476,14 @@ QGIS から SAGA を使う作業は終わったので、デフォルト形式を
 <p>ジオモルフォンの計算には、入力 DEM (<code>elevation</code>) が必要で、オプションの引数でカスタマイズすることができる。
 フラグ <code>search</code> は視線距離を計算する長さ、および <code>-m</code> は検索値を (セル数ではなく) メートル単位で提供することを指定する。
 追加論点の詳細は、原著論文と <a href="https://grass.osgeo.org/grass78/manuals/r.geomorphon.html">GRASS GIS documentation</a> に記載されている。</p>
-<div class="sourceCode" id="cb368"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb373"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dem_geomorph</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm</a></span><span class="op">(</span><span class="st">"grass7:r.geomorphon"</span>,</span>
 <span>  elevation <span class="op">=</span> <span class="va">dem</span>,</span>
 <span>  `-m` <span class="op">=</span> <span class="cn">TRUE</span>, search <span class="op">=</span> <span class="fl">120</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>出力される <code>dem_geomorph$forms</code> は、10 個のカテゴリからなるラスタファイルで、それぞれが地形形状を表している。
 これを <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_as_terra.html">qgis_as_terra()</a></code> で R に読み込んで可視化したり (Figure <a href="gis.html#fig:qgis-raster-map">10.3</a> 右図)、その後の計算で使うことができる。</p>
-<div class="sourceCode" id="cb369"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb374"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dem_geomorph_terra</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_as_terra.html">qgis_as_terra</a></span><span class="op">(</span><span class="va">dem_geomorph</span><span class="op">$</span><span class="va">forms</span><span class="op">)</span></span></code></pre></div>
 <p>興味深いことに、Figure <a href="gis.html#fig:qgis-raster-map">10.3</a> に示すように、いくつかの地形と TWI 値の間にはつながりがある。
 TWI 値が最も大きいのは谷や窪地であり、最も小さいのは予想通り尾根であった。</p>
@@ -502,18 +502,18 @@ FIGURE 10.3: 研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) 
 <p>System for Automated Geoscientific Analyses (SAGA; Table <a href="gis.html#tab:gis-comp">10.1</a>) は、コマンドラインインタフェース (Windows では <code>saga_cmd.exe</code>、Linux では単に <code>saga_cmd</code>) を介して SAGA モジュールを実行する可能性を提供する (<a href="https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/">SAGA wiki on modules</a> を参照)。
 また、Python インターフェース (SAGA Python API) も用意されている。
 <strong>Rsagacmd</strong> は、前者を使って R 内で SAGA を実行している。</p>
-<p>この Section では、<strong>Rsagacmd</strong> を使用して、SAGA の seeded region growing アルゴリズムを使って、2000年9月の Peru の Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure <a href="gis.html#fig:sagasegments">10.4</a> 左図)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;リモートセンシング画像から NDVI を算出する方法については、Section &lt;a href="spatial-operations.html#local-operations"&gt;4.3.3&lt;/a&gt; を参照。&lt;/p&gt;'><sup>64</sup></a></p>
-<div class="sourceCode" id="cb370"><pre class="downlit sourceCode r">
+<p>この Section では、<strong>Rsagacmd</strong> を使用して、SAGA の seeded region growing アルゴリズムを使って、2000年9月の Peru の Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure <a href="gis.html#fig:sagasegments">10.4</a> 左図)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;リモートセンシング画像から NDVI を算出する方法については、Section &lt;a href="spatial-operations.html#local-operations"&gt;4.3.3&lt;/a&gt; を参照。&lt;/p&gt;'><sup>65</sup></a></p>
+<div class="sourceCode" id="cb375"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ndvi</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/ndvi.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>Rsagacmd</strong> を始めるには、<code><a href="https://stevenpawley.github.io/Rsagacmd/reference/saga_gis.html">saga_gis()</a></code> 関数を実行する必要がある。
 この関数は主に 2 つの目的がある。</p>
 <ul>
-<li>有効な SAGA ライブラリやツールへのリンクを含む新しいオブジェクトを動的に作成すること<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;つまり、SAGA バージョンによってう使用できるライブラリが変わる。&lt;/p&gt;"><sup>65</sup></a>
+<li>有効な SAGA ライブラリやツールへのリンクを含む新しいオブジェクトを動的に作成すること<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;つまり、SAGA バージョンによってう使用できるライブラリが変わる。&lt;/p&gt;"><sup>66</sup></a>
 </li>
 <li>
 <code>raster_backend</code> (ラスタデータを扱う際に用いる R パッケージ)、<code>vector_backend</code> (ベクタデータを扱う際に用いる R パッケージ)、<code>cores</code> (処理に用いる CPU コアの最大数、デフォルトは all) など、一般的なパッケージオプションを設定すること</li>
 </ul>
-<div class="sourceCode" id="cb371"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb376"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://stevenpawley.github.io/Rsagacmd/">Rsagacmd</a></span><span class="op">)</span></span>
 <span><span class="va">saga</span> <span class="op">=</span> <span class="fu"><a href="https://stevenpawley.github.io/Rsagacmd/reference/saga_gis.html">saga_gis</a></span><span class="op">(</span>raster_backend <span class="op">=</span> <span class="st">"terra"</span>, vector_backend <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span></span></code></pre></div>
 <p>この <code>saga</code> オブジェクトは、利用可能なすべての SAGA ツールへの接続を含んでいる。
@@ -522,24 +522,24 @@ FIGURE 10.3: 研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) 
 <p>シード領域拡大アルゴリズムは，主に 2 つのステップで動作する <span class="citation">(<a href="references.html#ref-adams_seeded_1994">Adams and Bischof 1994</a>; <a href="references.html#ref-bohner_image_2006">Böhner, Selige, and Ringeler 2006</a>)</span>。
 まず、指定されたサイズのローカルウィンドウにおいて、最も分散の小さいセルを見つけることで、初期セル (seed) が生成される。
 次に、領域成長アルゴリズムを用いて、seed の近傍画素をマージし、均質な領域を作成する。</p>
-<div class="sourceCode" id="cb372"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb377"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sg</span> <span class="op">=</span> <span class="va">saga</span><span class="op">$</span><span class="va">imagery_segmentation</span><span class="op">$</span><span class="va">seed_generation</span></span></code></pre></div>
 <p>上記の例では、まず <code>imagery_segmentation</code> ライブラリを示し、次にその <code>seed_generation</code> ツールを使用した。
-また、次のステップでツールのコード全体を再入力しないように、<code>sg</code> オブジェクトに割り当てる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;ツールの詳細は &lt;a href="https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_2.html" class="uri"&gt;https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_2.html&lt;/a&gt; を参照&lt;/p&gt;'><sup>66</sup></a>
+また、次のステップでツールのコード全体を再入力しないように、<code>sg</code> オブジェクトに割り当てる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;ツールの詳細は &lt;a href="https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_2.html" class="uri"&gt;https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_2.html&lt;/a&gt; を参照&lt;/p&gt;'><sup>67</sup></a>
 <code>sg</code> と入力することで、ツールの簡単な概要と、パラメータ、説明、およびデフォルトのデータフレームが表示される。
 また、<code>tidy(sg)</code> を使用すると、パラメータのテーブルだけを取り出すことができる。
 <code>seed_generation</code> ツールは、引数にラスタデータ (<code>features</code>) を必要とする。また、初期ポリゴンのサイズを指定する <code>band_width</code> などの追加パラメータを提供することができる。</p>
-<div class="sourceCode" id="cb373"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb378"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ndvi_seeds</span> <span class="op">=</span> <span class="fu">sg</span><span class="op">(</span><span class="va">ndvi</span>, band_width <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="co">#plot(ndvi_seeds$seed_grid)</span></span></code></pre></div>
 <p>この出力は、3 つのオブジェクトからなるリストである。<code>variance</code> は局所分散のラスタマップ、 <code>seed_grid</code> は生成されたシードを含むラスタマップ、<code>seed_points</code> は生成されたシードを含む空間ベクタオブジェクトである。</p>
-<p>つぎの SAGA ツールとして <code>seeded_region_growing</code> を紹介しよう。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;詳細は &lt;a href="https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html" class="uri"&gt;https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html&lt;/a&gt; を参照&lt;/p&gt;'><sup>67</sup></a>
+<p>つぎの SAGA ツールとして <code>seeded_region_growing</code> を紹介しよう。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;詳細は &lt;a href="https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html" class="uri"&gt;https://saga-gis.sourceforge.io/saga_tool_doc/8.3.0/imagery_segmentation_3.html&lt;/a&gt; を参照&lt;/p&gt;'><sup>68</sup></a>
 <code>seed_region_growing</code> ツールは、前のステップで計算した <code>seed_grid</code> と <code>ndvi</code> ラスタオブジェクトの 2 つの入力を必要とする。
 さらに、入力フィーチャを標準化するための <code>normalize</code> や <code>neighbour</code> (4 または 8-neighborhood)、 <code>method</code> などのパラメータを指定することができる。
 最後のパラメータには、<code>0</code> または <code>1</code> を指定することができる (ラスタセルの値とその位置に基づいて領域を成長させるか、値のみを成長させるか)。
 このメソッドの詳細な説明は、 <span class="citation">Böhner, Selige, and Ringeler (<a href="references.html#ref-bohner_image_2006">2006</a>)</span> を参照。</p>
 <p>ここでは、<code>method</code> を <code>1</code> に変更するだけである。つまり、出力される地域は、NDVI 値の類似性に基づいてのみ作成されることを意味する。</p>
-<div class="sourceCode" id="cb374"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb379"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">srg</span> <span class="op">=</span> <span class="va">saga</span><span class="op">$</span><span class="va">imagery_segmentation</span><span class="op">$</span><span class="va">seeded_region_growing</span></span>
 <span><span class="va">ndvi_srg</span> <span class="op">=</span> <span class="fu">srg</span><span class="op">(</span><span class="va">ndvi_seeds</span><span class="op">$</span><span class="va">seed_grid</span>, <span class="va">ndvi</span>, method <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">ndvi_srg</span><span class="op">$</span><span class="va">segments</span><span class="op">)</span></span></code></pre></div>
@@ -547,7 +547,7 @@ FIGURE 10.3: 研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) 
 <code>similarity</code> オブジェクトは、シードと他のセルとの類似性を示すラスタであり、<code>table</code> は入力シードに関する情報を格納したデータフレームである。
 最後に、<code>ndvi_srg$segments</code> は、結果として得られた領域 (Figure <a href="gis.html#fig:sagasegments">10.4</a> 右図) を表すラスタである。
 これをポリゴンに変換するには、<code><a href="https://rspatial.github.io/terra/reference/as.polygons.html">as.polygons()</a></code> と <code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf()</a></code> を使用する (Section <a href="raster-vector.html#spatial-vectorization">6.5</a>)。</p>
-<div class="sourceCode" id="cb375"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb380"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ndvi_segments</span> <span class="op">=</span> <span class="va">ndvi_srg</span><span class="op">$</span><span class="va">segments</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.polygons.html">as.polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -594,14 +594,14 @@ GRASS GIS 空間データベースシステムの詳細は、<span class="citati
 幸いなことに、この想像を絶する時間のごく一部で実行できる、巧妙でほぼ最適なソリューションがある。
 GRASS GIS は、これらの解決策の一つを提供する (詳細は、 <a href="https://grass.osgeo.org/grass-stable/manuals/v.net.salesman.html">v.net.salesman</a>を参照)。
 今回の使用例では、ロンドンの街角にある最初の 25 レンタルサイクルのステーション (顧客の代わり) 間の最短経路を見つけたい (最初の自転車ステーションは、巡回セールスマンの自宅に相当すると仮定する)。</p>
-<div class="sourceCode" id="cb376"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb381"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"cycle_hire"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span></span>
 <span><span class="va">points</span> <span class="op">=</span> <span class="va">cycle_hire</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">25</span>, <span class="op">]</span></span></code></pre></div>
 <p>レンタルサイクルのステーションのデータの他に、この地域の道路網が必要である。
 <strong>osmdata</strong> パッケージで OpenStreetMap から ダウンロードすることができる (Section <a href="read-write.html#retrieving-data">8.5</a> も参照)。
 そのために、道路網のクエリ (OSM 言語では “highway” とラベル付けされている) を <code>points</code> のバウンディングボックス に制限し、対応するデータを <code>sf</code> オブジェクトとして読み込む。
-<code><a href="https://docs.ropensci.org/osmdata/reference/osmdata_sf.html">osmdata_sf()</a></code> は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連 ID のみを保持する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;読者のために、 &lt;code&gt;london_streets&lt;/code&gt; は、&lt;code&gt;data("london_streets", package = "spDataLarge")&lt;/code&gt; で使用できるようにしてある。&lt;/p&gt;'><sup>68</sup></a></p>
-<div class="sourceCode" id="cb377"><pre class="downlit sourceCode r">
+<code><a href="https://docs.ropensci.org/osmdata/reference/osmdata_sf.html">osmdata_sf()</a></code> は、複数の空間オブジェクト (点、線、ポリゴンなど) を含むリストを返すが、ここでは線オブジェクトとその関連 ID のみを保持する。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;読者のために、 &lt;code&gt;london_streets&lt;/code&gt; は、&lt;code&gt;data("london_streets", package = "spDataLarge")&lt;/code&gt; で使用できるようにしてある。&lt;/p&gt;'><sup>69</sup></a></p>
+<div class="sourceCode" id="cb382"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/osmdata/">osmdata</a></span><span class="op">)</span></span>
 <span><span class="va">b_box</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">points</span><span class="op">)</span></span>
 <span><span class="va">london_streets</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/osmdata/reference/opq.html">opq</a></span><span class="op">(</span><span class="va">b_box</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -616,25 +616,25 @@ GRASS GIS は、これらの解決策の一つを提供する (詳細は、 <a h
 ここでは <code>ver_select</code> を <code>TRUE</code> に設定しているので、見つかった GRASS GIS-installation の中から対話的に一つを選択することができる。
 もし、インストールが一つしかない場合は、<code>linkGRASS()</code> が自動的にそれを選択する。
 次に、<code>linkGRASS()</code> は、GRASS GIS への接続を確立する。</p>
-<div class="sourceCode" id="cb378"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rsbivand.github.io/rgrass/">rgrass</a></span><span class="op">)</span></span>
+<div class="sourceCode" id="cb383"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://osgeo.github.io/rgrass/">rgrass</a></span><span class="op">)</span></span>
 <span><span class="fu">link2GI</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/link2GI/reference/linkGRASS.html">linkGRASS</a></span><span class="op">(</span><span class="va">london_streets</span>, ver_select <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>GRASS GIS のジオアルゴリズムを使用する前に、GRASS GIS の空間データベースにデータを追加する必要がある。
-幸いなことに、便利な関数 <code><a href="https://rsbivand.github.io/rgrass/reference/readVECT.html">write_VECT()</a></code> がこれを代行してくれる。
-(ラスタデータには <code><a href="https://rsbivand.github.io/rgrass/reference/readRAST.html">write_RAST()</a></code> を使用する。)
+幸いなことに、便利な関数 <code><a href="https://osgeo.github.io/rgrass/reference/read_VECT.html">write_VECT()</a></code> がこれを代行してくれる。
+(ラスタデータには <code><a href="https://osgeo.github.io/rgrass/reference/read_RAST.html">write_RAST()</a></code> を使用する。)
 この例では、最初の属性列のみを使用して、道路と自転車レンタル点データを追加し、GRASS GIS で <code>london_streets</code> と <code>points</code> という名前を付けている。</p>
-<div class="sourceCode" id="cb379"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readVECT.html">write_VECT</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html">vect</a></span><span class="op">(</span><span class="va">london_streets</span><span class="op">)</span>, vname <span class="op">=</span> <span class="st">"london_streets"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readVECT.html">write_VECT</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html">vect</a></span><span class="op">(</span><span class="va">points</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>, vname <span class="op">=</span> <span class="st">"points"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb384"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://osgeo.github.io/rgrass/reference/read_VECT.html">write_VECT</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html">vect</a></span><span class="op">(</span><span class="va">london_streets</span><span class="op">)</span>, vname <span class="op">=</span> <span class="st">"london_streets"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://osgeo.github.io/rgrass/reference/read_VECT.html">write_VECT</a></span><span class="op">(</span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html">vect</a></span><span class="op">(</span><span class="va">points</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span>, vname <span class="op">=</span> <span class="st">"points"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>rgrass</strong> パッケージは、入力と出力が <strong>terra</strong> オブジェクトであることを想定している。
-したがって、<code><a href="https://rsbivand.github.io/rgrass/reference/readVECT.html">write_VECT()</a></code> を使用するためには、<code><a href="https://rspatial.github.io/terra/reference/vect.html">vect()</a></code> 関数を使用して <code>sf</code> 空間ベクタを <strong>terra</strong> の <code>SpatVector</code> に変換する必要がある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;R における空間クラスの変換については (Conversions between different spatial classes in R)[&lt;a href="https://geocompx.org/post/2021/spatial-classes-conversion/" class="uri"&gt;https://geocompx.org/post/2021/spatial-classes-conversion/&lt;/a&gt;] というブログと、
-(Coercion between object formats)[&lt;a href="https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html" class="uri"&gt;https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html&lt;/a&gt;] vignette を参照。&lt;/p&gt;'><sup>69</sup></a></p>
+したがって、<code><a href="https://osgeo.github.io/rgrass/reference/read_VECT.html">write_VECT()</a></code> を使用するためには、<code><a href="https://rspatial.github.io/terra/reference/vect.html">vect()</a></code> 関数を使用して <code>sf</code> 空間ベクタを <strong>terra</strong> の <code>SpatVector</code> に変換する必要がある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;R における空間クラスの変換については (Conversions between different spatial classes in R)[&lt;a href="https://geocompx.org/post/2021/spatial-classes-conversion/" class="uri"&gt;https://geocompx.org/post/2021/spatial-classes-conversion/&lt;/a&gt;] というブログと、
+(Coercion between object formats)[&lt;a href="https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html" class="uri"&gt;https://CRAN.R-project.org/package=rgrass/vignettes/coerce.html&lt;/a&gt;] vignette を参照。&lt;/p&gt;'><sup>70</sup></a></p>
 <p>現在、両方のデータセットが GRASS GIS のデータベースに存在している。
 ネットワークの解析を行うには、トポロジカルクリーンな道路ネットワークが必要である。
 GRASS GIS の <code>"v.clean"</code> は、重複、小角、ダングルの除去などを行う。
 ここでは、後続のルート検索アルゴリズムが実際に交差点で右折または左折できるように、各交差点で改行し、その出力を <code>streets_clean</code> という名前の GRASS GIS オブジェクトに保存している。</p>
-<div class="sourceCode" id="cb380"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html">execGRASS</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb385"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://osgeo.github.io/rgrass/reference/execGRASS.html">execGRASS</a></span><span class="op">(</span></span>
 <span>  cmd <span class="op">=</span> <span class="st">"v.clean"</span>, input <span class="op">=</span> <span class="st">"london_streets"</span>, output <span class="op">=</span> <span class="st">"streets_clean"</span>,</span>
 <span>  tool <span class="op">=</span> <span class="st">"break"</span>, flags <span class="op">=</span> <span class="st">"overwrite"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -647,8 +647,8 @@ GRASS GIS モジュールの引数やフラグについて学ぶには、<code>h
 しかし、それらの間の最短経路を見つけるために、それらを最も近い道路セグメントに接続する必要がある。
 <code>"v.net"</code>のconnect-operatorはまさにこれを行う。
 その出力を <code>streets_points_con</code> に保存する。</p>
-<div class="sourceCode" id="cb381"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html">execGRASS</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb386"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://osgeo.github.io/rgrass/reference/execGRASS.html">execGRASS</a></span><span class="op">(</span></span>
 <span>  cmd <span class="op">=</span> <span class="st">"v.net"</span>, input <span class="op">=</span> <span class="st">"streets_clean"</span>, output <span class="op">=</span> <span class="st">"streets_points_con"</span>,</span>
 <span>  points <span class="op">=</span> <span class="st">"points"</span>, operation <span class="op">=</span> <span class="st">"connect"</span>, threshold <span class="op">=</span> <span class="fl">0.001</span>,</span>
 <span>  flags <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"overwrite"</span>, <span class="st">"c"</span><span class="op">)</span></span>
@@ -658,15 +658,15 @@ GRASS GIS モジュールの引数やフラグについて学ぶには、<code>h
 この範囲は、最短ルートを計算するためのポイントを表している。
 ここでは、すべての自転車ステーション間の経路を計算したいので、<code>1-25</code> に設定しておく。
 巡回セールスマンアルゴリズムの GRASS GIS ヘルプページを参照するには、<code>execGRASS("g.manual", entry = "v.net.salesman")</code> を実行する。</p>
-<div class="sourceCode" id="cb382"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/execGRASS.html">execGRASS</a></span><span class="op">(</span></span>
+<div class="sourceCode" id="cb387"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://osgeo.github.io/rgrass/reference/execGRASS.html">execGRASS</a></span><span class="op">(</span></span>
 <span>  cmd <span class="op">=</span> <span class="st">"v.net.salesman"</span>, input <span class="op">=</span> <span class="st">"streets_points_con"</span>,</span>
 <span>  output <span class="op">=</span> <span class="st">"shortest_route"</span>, center_cats <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span><span class="op">(</span><span class="st">"1-"</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">points</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  flags <span class="op">=</span> <span class="st">"overwrite"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>結果を見るには、結果を R に入れ、ジオメトリのみ保持した <code>sf</code> オブジェクトに変換する。これを <strong>mapview</strong> で可視化する (Figure <a href="gis.html#fig:grass-mapview">10.5</a> と Section <a href="adv-map.html#interactive-maps">9.4</a>)。</p>
-<div class="sourceCode" id="cb383"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">route</span> <span class="op">=</span> <span class="fu"><a href="https://rsbivand.github.io/rgrass/reference/readVECT.html">read_VECT</a></span><span class="op">(</span><span class="st">"shortest_route"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<div class="sourceCode" id="cb388"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">route</span> <span class="op">=</span> <span class="fu"><a href="https://osgeo.github.io/rgrass/reference/read_VECT.html">read_VECT</a></span><span class="op">(</span><span class="st">"shortest_route"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu">mapview</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">route</span><span class="op">)</span> <span class="op">+</span> <span class="va">points</span></span></code></pre></div>
@@ -711,7 +711,7 @@ QGIS は、複数の GIS ソフトウェアパッケージへの統一インタ�
 したがって、SAGA と GRASS GIS の関数一式を使用するには、<strong>RSAGA</strong> と <strong>rgrass</strong> 以外は使わない方が良い。
 また、ジオデータベースを用いてシミュレーションを行いたい場合 <span class="citation">(<a href="references.html#ref-krug_clearing_2010">Krug, Roura-Pascual, and Richardson 2010</a>)</span>、<strong>qgisprocess</strong> が、呼び出しごとに常に新しい GRASS GIS セッションを開始するので、<strong>rgrass</strong> を直接使用してみよう。
 最後に、地形データ、空間データベース管理機能 (マルチユーザーアクセスなど) が必要な場合は、GRASS GIS の利用を勧める。</p>
-<p>なお、スクリプティング・インターフェースを持つ GIS ソフトウェアパッケージは以下のように数多くあるが、これらを利用できる専用の R パッケージはない: gvSig、OpenJump、Orfeo Toolbox。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;注記: &lt;strong&gt;link2GI&lt;/strong&gt; は Orfeo Toolbox を部分的に統合しており、&lt;strong&gt;qgisprocess&lt;/strong&gt; から Orfeo Toolbox アルゴリズムへアクセスすることもできる。TauDEM は R パッケージの &lt;strong&gt;traudem&lt;/strong&gt; からアクセスできる。&lt;/p&gt;"><sup>70</sup></a></p>
+<p>なお、スクリプティング・インターフェースを持つ GIS ソフトウェアパッケージは以下のように数多くあるが、これらを利用できる専用の R パッケージはない: gvSig、OpenJump、Orfeo Toolbox。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;注記: &lt;strong&gt;link2GI&lt;/strong&gt; は Orfeo Toolbox を部分的に統合しており、&lt;strong&gt;qgisprocess&lt;/strong&gt; から Orfeo Toolbox アルゴリズムへアクセスすることもできる。TauDEM は R パッケージの &lt;strong&gt;traudem&lt;/strong&gt; からアクセスできる。&lt;/p&gt;"><sup>71</sup></a></p>
 </div>
 <div id="gdal" class="section level2" number="10.6">
 <h2>
@@ -724,12 +724,12 @@ GDAL は非常に効果的なので、ほとんどの GIS プログラムは、�
 GDAL はコマンドラインツールであるため、R からは <code><a href="https://rdrr.io/r/base/system.html">system()</a></code> コマンドからアクセスすることができる。</p>
 <p>以下のコードは、この機能を実現するものである。
 <code>linkGDAL()</code> は、GDAL が動作しているコンピュータを検索し、実行ファイルの場所を PATH 変数に追加して、GDAL を呼び出せるようにする (Windows で通常必要になる)。</p>
-<div class="sourceCode" id="cb384"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb389"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">link2GI</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/link2GI/reference/linkGDAL.html">linkGDAL</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>これで、<code><a href="https://rdrr.io/r/base/system.html">system()</a></code> 関数を使用して、任意の GDAL ツールを呼び出すことができる。
 例えば、<code>ogrinfo</code> は、ベクタデータセットのメタデータを提供する。
 ここでは、このツールに 2 つのフラグを追加して呼び出する。 <code>-al</code> は全レイヤの全フィーチャをリストアップし、<code>-so</code> は要約のみを取得する (完全なジオメトリのリストではない)。</p>
-<div class="sourceCode" id="cb385"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb390"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">our_filepath</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.gpkg"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span></span>
 <span><span class="va">cmd</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="st">"ogrinfo -al -so"</span>, <span class="va">our_filepath</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/system.html">system</a></span><span class="op">(</span><span class="va">cmd</span><span class="op">)</span></span>
@@ -760,7 +760,7 @@ GDAL はコマンドラインツールであるため、R からは <code><a hre
 TauDEM (<a href="http://hydrology.usu.edu/taudem" class="uri">http://hydrology.usu.edu/taudem</a>) や Orfeo Toolbox (<a href="https://www.orfeo-toolbox.org/" class="uri">https://www.orfeo-toolbox.org/</a>) は、コマンドラインインタフェースを提供する空間データ処理ライブラリ/プログラムである。上記の例は、R を介してシステムのコマンドラインからこれらのライブラリにアクセスする方法である。
 これは、新しい R パッケージという形で、これらのライブラリへの適切なインタフェースを作成するための出発点となる可能性がある。</p>
 <p>しかし、新しいブリッジを作成するプロジェクトに飛び込む前に、既存の R パッケージのパワーと、<code><a href="https://rdrr.io/r/base/system.html">system()</a></code> の呼び出しがプラットフォームに依存しない (一部のコンピュータで失敗する) 可能性があることを認識しておくことが重要である。
-一方、<strong>sf</strong> は GDAL、GEOS、PROJ が提供するパワーのほとんどを <strong>Rcpp</strong> が提供する R/C++ インターフェースを介して R にもたらし、<code><a href="https://rdrr.io/r/base/system.html">system()</a></code> の呼び出しを回避している。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;strong&gt;vapour&lt;/strong&gt; と &lt;strong&gt;gdalraster&lt;/strong&gt; は、GDAL への低レベルインターフェースを提供している。&lt;/p&gt;"><sup>71</sup></a></p>
+一方、<strong>sf</strong> は GDAL、GEOS、PROJ が提供するパワーのほとんどを <strong>Rcpp</strong> が提供する R/C++ インターフェースを介して R にもたらし、<code><a href="https://rdrr.io/r/base/system.html">system()</a></code> の呼び出しを回避している。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;strong&gt;vapour&lt;/strong&gt; と &lt;strong&gt;gdalraster&lt;/strong&gt; は、GDAL への低レベルインターフェースを提供している。&lt;/p&gt;"><sup>72</sup></a></p>
 </div>
 <div id="postgis" class="section level2" number="10.7">
 <h2>
@@ -772,17 +772,17 @@ TauDEM (<a href="http://hydrology.usu.edu/taudem" class="uri">http://hydrology.u
 地理的なデータセットはすぐに大きくなったり、乱雑になったりする傾向があるため、この機能は便利である。
 データベースは、空間および非空間フィールドに基づく大規模なデータセットの保存とクエリを効率的に行うことができ、マルチユーザーアクセスとトポロジーのサポートを提供する。</p>
 <p>最も重要なオープンソースの空間データベースは PostGIS である <span class="citation">(<a href="references.html#ref-obe_postgis_2015">Obe and Hsu 2015</a>)</span>。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;
-SQLite/SpatiaLite も確かに重要であるが、GRASS GIS はバックグラウンドで SQLite を使っているので、暗黙のうちにこの方法をすでに導入している (Section &lt;a href="gis.html#grass"&gt;10.4&lt;/a&gt; を参照)。&lt;/p&gt;'><sup>72</sup></a>
+SQLite/SpatiaLite も確かに重要であるが、GRASS GIS はバックグラウンドで SQLite を使っているので、暗黙のうちにこの方法をすでに導入している (Section &lt;a href="gis.html#grass"&gt;10.4&lt;/a&gt; を参照)。&lt;/p&gt;'><sup>73</sup></a>
 PostGIS のような空間 DBMS への R ブリッジは重要で、数ギガバイトの地理データを RAM にロードすることなく、R セッションをクラッシュさせる可能性があるような巨大なデータストアにアクセスできる。
 このセクションの残りの部分では、<em>PostGIS in Action, Second Edition</em> の “Hello real world” に基づいて、R から PostGIS を呼び出す方法を紹介する <span class="citation">(<a href="references.html#ref-obe_postgis_2015">Obe and Hsu 2015</a>)</span>。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
-この例の使用を許可してくださった Manning Publications、Regina Obe、Leo Hsu に感謝する。&lt;/p&gt;"><sup>73</sup></a></p>
+この例の使用を許可してくださった Manning Publications、Regina Obe、Leo Hsu に感謝する。&lt;/p&gt;"><sup>74</sup></a></p>
 <p>QGIS Cloud (<a href="https://qgiscloud.com/" class="uri">https://qgiscloud.com/</a>) にある PostgreSQL/PostGIS データベースにアクセスしているため、この後のコードはインターネット接続している必要がある。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
 QGIS Cloud は、地理データや地図をクラウド上に保存することができる。
 バックグラウンドでは、QGIS Server と PostgreSQL/PostGIS を使用している。
 こうすることで、読者はローカルマシンに PostgreSQL/PostGIS をインストールすることなく、PostGIS の例を追うことができるのである。
-この例をホストしている QGIS Cloud チームに感謝する。&lt;/p&gt;"><sup>74</sup></a>
+この例をホストしている QGIS Cloud チームに感謝する。&lt;/p&gt;"><sup>75</sup></a>
 最初のステップは、データベース名、ホスト名、およびユーザー情報を指定して、データベースへの接続を作成することである。</p>
-<div class="sourceCode" id="cb386"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb391"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/tomoakin/RPostgreSQL">RPostgreSQL</a></span><span class="op">)</span></span>
 <span><span class="va">conn</span> <span class="op">=</span> <span class="fu"><a href="https://dbi.r-dbi.org/reference/dbConnect.html">dbConnect</a></span><span class="op">(</span></span>
 <span>  drv <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/RPostgreSQL/man/PostgreSQL.html">PostgreSQL</a></span><span class="op">(</span><span class="op">)</span>,</span>
@@ -793,7 +793,7 @@ QGIS Cloud は、地理データや地図をクラウド上に保存すること
 データを保存することはない。</p>
 <p>多くの場合、最初の質問は「データベースからどのテーブルが見つかるか」である。
 これには、<code><a href="https://dbi.r-dbi.org/reference/dbListTables.html">dbListTables()</a></code> で次のように答えることができる。</p>
-<div class="sourceCode" id="cb387"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb392"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbListTables.html">dbListTables</a></span><span class="op">(</span><span class="va">conn</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "spatial_ref_sys" "topology"        "layer"           "restaurants"</span></span>
 <span><span class="co">#&gt; [5] "highways"</span></span></code></pre></div>
@@ -801,7 +801,7 @@ QGIS Cloud は、地理データや地図をクラウド上に保存すること
 ここでは、<code>restaurants</code> と <code>highways</code> のテーブルのみを対象としている。
 前者は米国内のファストフード店の位置を、後者は米国の主要な高速道路を表している。
 テーブルで利用可能な属性について調べるには、<code>dbListFields</code> を実行する。</p>
-<div class="sourceCode" id="cb388"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb393"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dbi.r-dbi.org/reference/dbListFields.html">dbListFields</a></span><span class="op">(</span><span class="va">conn</span>, <span class="st">"highways"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "qc_id"        "wkb_geometry" "gid"          "feature"</span></span>
 <span><span class="co">#&gt; [5] "name"         "state"</span></span></code></pre></div>
@@ -810,7 +810,7 @@ QGIS Cloud は、地理データや地図をクラウド上に保存すること
 最初のクエリは、<code>highways</code> テーブルから Maryland 州 (<code>MD</code>) の <code>US Route 1</code> を選択する。
 なお、<code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> は、データベースへのオープンな接続とクエリが提供されれば、データベースから地理データを読み込むことができる。
 さらに、<code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> は、どの列がジオメトリを表すかを知る必要がある (ここでは、<code>wkb_geometry</code>)。</p>
-<div class="sourceCode" id="cb389"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb394"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">query</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span></span>
 <span>  <span class="st">"SELECT *"</span>,</span>
 <span>  <span class="st">"FROM highways"</span>,</span>
@@ -820,7 +820,7 @@ QGIS Cloud は、地理データや地図をクラウド上に保存すること
 <p>この結果、<code>MULTILINESTRING</code> 型の <code>us_route</code> という名前の <strong>sf</strong> オブジェクトが生成される。</p>
 <p>また、前述したように、非空間的な質クエリだけでなく、空間的な性質をもとにデータセットをクエリすることも可能である。
 これを示すために、次の例では選択した高速道路 (Figure <a href="gis.html#fig:postgis">10.6</a>) の周囲に 35 km (35,000 m) のバッファを追加している。</p>
-<div class="sourceCode" id="cb390"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb395"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">query</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span></span>
 <span>  <span class="st">"SELECT ST_Union(ST_Buffer(wkb_geometry, 35000))::geometry"</span>,</span>
 <span>  <span class="st">"FROM highways"</span>,</span>
@@ -830,9 +830,9 @@ QGIS Cloud は、地理データや地図をクラウド上に保存すること
 <p>なお、これはおそらく読者がすでに知っている (<code>ST_Union()</code>、<code>ST_Buffer()</code>) を使った空間クエリであった。
 また、<strong>sf</strong> パッケージにも同名のものがあるが、こちらは小文字になっている (<code><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union()</a></code>、<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer()</a></code>)。
 実際、<strong>sf</strong> パッケージの関数名は、PostGIS の命名規則にほぼ従っている。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
-接頭語 &lt;code&gt;st&lt;/code&gt; は、空間／時間を意味する。&lt;/p&gt;"><sup>75</sup></a></p>
+接頭語 &lt;code&gt;st&lt;/code&gt; は、空間／時間を意味する。&lt;/p&gt;"><sup>76</sup></a></p>
 <p>最後のクエリは、35 km のバッファゾーン (Figure <a href="gis.html#fig:postgis">10.6</a>) 内にあるすべてのハーディーズレストラン (<code>HDE</code>) を検索する。</p>
-<div class="sourceCode" id="cb391"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb396"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">query</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span></span>
 <span>  <span class="st">"SELECT *"</span>,</span>
 <span>  <span class="st">"FROM restaurants r"</span>,</span>
@@ -848,8 +848,8 @@ QGIS Cloud は、地理データや地図をクラウド上に保存すること
 <span><span class="va">hardees</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="va">conn</span>, query <span class="op">=</span> <span class="va">query</span><span class="op">)</span></span></code></pre></div>
 <p>空間 SQL クエリの詳細な説明は <span class="citation">Obe and Hsu (<a href="references.html#ref-obe_postgis_2015">2015</a>)</span> を参照。
 最後に、次のようにデータベース接続を閉じるのがよい方法である。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
-QGIS Cloud (無料版) では同時接続が 10 件までしかできないため、ここで接続を終了することが重要。&lt;/p&gt;"><sup>76</sup></a></p>
-<div class="sourceCode" id="cb392"><pre class="downlit sourceCode r">
+QGIS Cloud (無料版) では同時接続が 10 件までしかできないため、ここで接続を終了することが重要。&lt;/p&gt;"><sup>77</sup></a></p>
+<div class="sourceCode" id="cb397"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">RPostgreSQL</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/RPostgreSQL/man/postgresqlSupport.html">postgresqlCloseConnection</a></span><span class="op">(</span><span class="va">conn</span><span class="op">)</span></span></code></pre></div>
 <pre><code>#&gt; 
 #&gt; ── tmap v3 code detected ───────────────────────────────────────────────────────
@@ -894,7 +894,7 @@ STAC-API は、単純な静的カタログ記述の他に、カタログのア�
 R では、<strong>rstac</strong> パッケージ <span class="citation">(<a href="references.html#ref-simoes_rstac_2021">Simoes, Souza, et al. 2021</a>)</span> が STAC-API エンドポイントに接続し、アイテムを検索することができる。
 以下の例では、<a href="https://registry.opendata.aws/sentinel-2-l2a-cogs">Sentinel-2 Cloud-Optimized GeoTIFF (COG) dataset on Amazon Web Services</a> から、事前に定義した関心領域と時間に交差するすべての画像を要求している。
 結果は、見つかったすべての画像とそのメタデータ (雲量など)、および AWS 上の実際のファイルを指す URL を含んでいる。</p>
-<div class="sourceCode" id="cb394"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb399"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://brazil-data-cube.github.io/rstac/">rstac</a></span><span class="op">)</span></span>
 <span><span class="co"># Sentinel-2 データの STAC-API endpoint に接続し、</span></span>
 <span><span class="co"># AOI と交差する画像を検索</span></span>
@@ -912,7 +912,7 @@ R では、<strong>rstac</strong> パッケージ <span class="citation">(<a hre
 <p>領域が大きい時、要求された画像を扱うのはまだ比較的困難である。それらは異なる地図投影を使用することがあり、空間的に重なることがあり、空間解像度はしばしばスペクトルバンドに依存する。
 <strong>gdalcubes</strong> パッケージ <span class="citation">(<a href="references.html#ref-appel_gdalcubes_2019">Appel and Pebesma 2019</a>)</span> は、個々の画像から抽象化し、画像コレクションを 4 次元データキューブとして作成し処理するために使用することができる。</p>
 <p>以下のコードは、前回の STAC-API 検索で返された Sentinel-2 画像から、低解像度 (250 m) の最大 NDVI コンポジットを作成する最小限の例を示している。</p>
-<div class="sourceCode" id="cb395"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb400"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/appelmar/gdalcubes">gdalcubes</a></span><span class="op">)</span></span>
 <span><span class="co"># クラウドカバーで画像をフィルタし、画像コレクションを生成</span></span>
 <span><span class="va">cloud_filter</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
@@ -933,7 +933,7 @@ R では、<strong>rstac</strong> パッケージ <span class="citation">(<a hre
 <p>クラウドカバーによる画像のフィルタリングを行うために、画像コレクションを作成する際に各 STAC 結果アイテムに適用されるプロパティフィルタ関数を提供している。
 この関数は、画像の利用可能なメタデータを入力リストとして受け取り、関数がTRUEを返す画像のみを考慮するような単一の論理値を返す。
 この場合、10% 以上のクラウドカバーがある画像は無視する。
-詳しくは、こちらの <a href="https://appelmar.github.io/ogh2021/tutorial.html">OpenGeoHub サマースクール 2021 で発表したチュートリアル</a>を参照。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;STAC を扱う別のパッケージとして、&lt;strong&gt;rsi&lt;/strong&gt; がある。これは、指定した時間と位置の STAC 空間データを取得する。&lt;/p&gt;"><sup>77</sup></a></p>
+詳しくは、こちらの <a href="https://appelmar.github.io/ogh2021/tutorial.html">OpenGeoHub サマースクール 2021 で発表したチュートリアル</a>を参照。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;STAC を扱う別のパッケージとして、&lt;strong&gt;rsi&lt;/strong&gt; がある。これは、指定した時間と位置の STAC 空間データを取得する。&lt;/p&gt;"><sup>78</sup></a></p>
 <p>STAC、COGs、データキューブ を組み合わせて、衛星画像の (大規模) コレクションをクラウド上で解析するクラウドネイティブワークフローを形成する.
 これらのツールは、例えば、大規模な地球観測データの土地利用や土地被覆の分類を可能にする <strong>sits</strong> パッケージのバックボーンを既に形成している。
 このパッケージは、クラウドサービスで利用可能な画像コレクションから EO データキューブを構築し、様々な機械学習と真相学習アルゴリズムを用いてデータキューブの土地分類を実行するものである。
@@ -951,12 +951,12 @@ R では、<strong>rstac</strong> パッケージ <span class="citation">(<a hre
 その後、ユーザーは画像コレクションのロード、プロセスの適用と連鎖、ジョブの送信、結果の探索とプロットを行うことができる。</p>
 <p>以下のコードは、<a href="https://openeo.cloud/">openEO platform backend</a> に接続し、利用可能なデータセット、プロセス、出力フォーマットを要求し、Sentinel-2 データから最大 NDVI 画像を計算するプロセスグラフを定義し、最後にバックエンドにログインした後にグラフを実行する。
 openEO プラットフォームのバックエンドには無料版があり、既存の機関やインターネットフォームのアカウントから登録することが可能である。</p>
-<div class="sourceCode" id="cb396"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Open-EO/openeo-r-client">openeo</a></span><span class="op">)</span></span>
-<span><span class="va">con</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/openeo/man/connect.html">connect</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://openeo.cloud"</span><span class="op">)</span></span>
-<span><span class="va">p</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/openeo/man/processes.html">processes</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 利用可能なプロセスをロード</span></span>
-<span><span class="va">collections</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/openeo/man/list_collections.html">list_collections</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 利用可能なコレクションをロード</span></span>
-<span><span class="va">formats</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/openeo/man/list_file_formats.html">list_file_formats</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 利用可能な出力フォーマットをロード</span></span>
+<div class="sourceCode" id="cb401"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://open-eo.github.io/openeo-r-client/">openeo</a></span><span class="op">)</span></span>
+<span><span class="va">con</span> <span class="op">=</span> <span class="fu"><a href="https://open-eo.github.io/openeo-r-client/reference/connect.html">connect</a></span><span class="op">(</span>host <span class="op">=</span> <span class="st">"https://openeo.cloud"</span><span class="op">)</span></span>
+<span><span class="va">p</span> <span class="op">=</span> <span class="fu"><a href="https://open-eo.github.io/openeo-r-client/reference/processes.html">processes</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 利用可能なプロセスをロード</span></span>
+<span><span class="va">collections</span> <span class="op">=</span> <span class="fu"><a href="https://open-eo.github.io/openeo-r-client/reference/list_collections.html">list_collections</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 利用可能なコレクションをロード</span></span>
+<span><span class="va">formats</span> <span class="op">=</span> <span class="fu"><a href="https://open-eo.github.io/openeo-r-client/reference/list_file_formats.html">list_file_formats</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># 利用可能な出力フォーマットをロード</span></span>
 <span><span class="co"># Sentinel-2 コレクションをロード</span></span>
 <span><span class="va">s2</span> <span class="op">=</span> <span class="va">p</span><span class="op">$</span><span class="fu">load_collection</span><span class="op">(</span>id <span class="op">=</span> <span class="st">"SENTINEL2_L2A"</span>,</span>
 <span>                       spatial_extent <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>west <span class="op">=</span> <span class="fl">7.5</span>, east <span class="op">=</span> <span class="fl">8.5</span>,</span>
@@ -976,10 +976,10 @@ openEO プラットフォームのバックエンドには無料版があり、�
 <span><span class="co"># GeoTIFF で出力</span></span>
 <span><span class="va">result</span> <span class="op">=</span> <span class="va">p</span><span class="op">$</span><span class="fu">save_result</span><span class="op">(</span><span class="va">reduce_max</span>, <span class="va">formats</span><span class="op">$</span><span class="va">output</span><span class="op">$</span><span class="va">GTiff</span><span class="op">)</span></span>
 <span><span class="co"># ログイン https://docs.openeo.cloud/getting-started/r/#authentication 参照</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/openeo/man/login.html">login</a></span><span class="op">(</span>login_type <span class="op">=</span> <span class="st">"oidc"</span>, provider <span class="op">=</span> <span class="st">"egi"</span>, </span>
+<span><span class="fu"><a href="https://open-eo.github.io/openeo-r-client/reference/login.html">login</a></span><span class="op">(</span>login_type <span class="op">=</span> <span class="st">"oidc"</span>, provider <span class="op">=</span> <span class="st">"egi"</span>, </span>
 <span>      config <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>client_id <span class="op">=</span> <span class="st">"..."</span>, secret <span class="op">=</span> <span class="st">"..."</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># プロセスを実行</span></span>
-<span><span class="fu"><a href="https://rdrr.io/pkg/openeo/man/compute_result.html">compute_result</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">result</span>, output_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://open-eo.github.io/openeo-r-client/reference/compute_result.html">compute_result</a></span><span class="op">(</span>graph <span class="op">=</span> <span class="va">result</span>, output_file <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempfile</a></span><span class="op">(</span>fileext <span class="op">=</span> <span class="st">".tif"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div id="演習-8" class="section level2" number="10.9">
@@ -1029,7 +1029,8 @@ openEO プラットフォームのバックエンドには無料版があり、�
 </a></li>
           <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
         </ul>
-<hr>
+<div class="LECTURE_IN_JAPANESE" style="border:solid 1px;border-color:#be1558;background:#fbcbc9"><a href="https://peatix.com/group/16401222" target="_blank">2025年4月頃より、レクチャーを計画しています。Peatix でフォローしてください。</a></div>
+        <hr>
 <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#gis"><span class="header-section-number">10</span> GIS ソフトウェアへのブリッジ</a></li>
@@ -1070,7 +1071,7 @@ openEO プラットフォームのバックエンドには無料版があり、�
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-08.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

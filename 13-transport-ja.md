@@ -509,7 +509,7 @@ Section \@ref(vector-attribute-subsetting) で述べるように、**dplyr** の
 
 ``` r
 routes_short = route(l = desire_lines_short, route_fun = route_osrm,
-                     osrm.profile = "bike")
+                     osrm.profile = "car")
 ```
 
 出力は `routes_short` で、(少なくとも OSRM ルート検索エンジンによれば) 自転車利用に適したトランスポートネットワーク\index{ねっとわーく@ネットワーク} 上のルートを表す `sf` オブジェクトで、各希望線に対して一つずつ出力される。
@@ -568,7 +568,7 @@ routes_short_scenario = routes_short |>
   mutate(bicycle = bicycle + car_driver * uptake,
          car_driver = car_driver * (1 - uptake))
 sum(routes_short_scenario$bicycle) - sum(routes_short$bicycle)
-#> [1] 3848
+#> [1] 3255
 ```
 
 約 4,000 のトリップが車から自転車に切り替わるというシナリオを作成したので、この更新されたモデル化された自転車利用活動がどこで行われるかをモデル化することができるようになった。
@@ -657,6 +657,7 @@ tm_shape(zones_od) +
            lwd.legend = tm_legend(title = "自転車トリップ数 (modeled, one direction)"),
            col = "darkgreen", col_alpha = 0.75) +
   tm_scalebar() + tm_layout(fontfamily = "HiraginoSans-W3")
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
 ```
 
 <div class="figure" style="text-align: center">

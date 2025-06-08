@@ -1,7 +1,7 @@
 --- 
 title: 'Geocomputation with R'
 author: 'Robin Lovelace, Jakub Nowosad, Jannes Muenchow'
-date: '2024-12-01'
+date: '2025-06-08'
 site: bookdown::bookdown_site
 output: bookdown::bs4_book
 documentclass: krantz
@@ -28,15 +28,15 @@ url: http://124.219.182.167/geo/
 
 ここは、地理データの解析、可視化、モデリングに関する書籍 *Geocomputation with R* のオンラインホーム (日本語版) です。
 
-<a href="https://www.routledge.com/9781032248882"><img src="images/cover2.png" width="250" height="375" alt="The geocompr ed2 book cover" align="right" style="margin: 0 1em 0 1em" /></a>
+<a href="https://www.routledge.com/9781138304512"><img src="images/cover2.png" width="250" height="375" alt="The geocompr book cover" align="right" style="margin: 0 1em 0 1em" /></a>
+  
 
+本書 (原著) は、[CRC Press](https://www.routledge.com/9781032248882)または [Amazon](https://www.amazon.com/Geocomputation-Chapman-Hall-Robin-Lovelace-dp-1032248882/dp/1032248882) から購入することができます。
 
+<!-- **注**: 本書の原著初版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されています。
+[CRC Press](https://www.routledge.com/9781138304512) または [Amazon](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/) で購入できます。また、**初版** は、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) で保存されています。 -->
 
-
-**注**: 本書の原著第 1 版は CRC プレス社の [R Series](https://www.routledge.com/Chapman--HallCRC-The-R-Series/book-series/CRCTHERSER) で出版されています。
-[CRC Press](https://www.routledge.com/9781138304512) または [Amazon](https://www.amazon.com/Geocomputation-R-Robin-Lovelace-dp-0367670577/dp/0367670577/) で購入できます。
-
-また、**第 1 版** は、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/).で保存されています。
+初版のアーカイブは、[bookdown.org](https://bookdown.org/robinlovelace/geocompr/) にてホストされています。
 
 本書は、Free and Open Source Software for Geospatial ([FOSS4G](https://foss4g.org/)) の活動に触発されているおり、本書の基盤となるコードと解説はオープンであり、内容の再現性、透明性、アクセス性を保証しています。
 [GitHub](https://github.com/geocompx/geocompr) でソースコードを公開しているため、誰でも課題 (Issue) を開いたり、新しいコンテンツや誤植の修正に貢献することでプロジェクトに関わり、みんなのために役立てることができます。
@@ -49,7 +49,7 @@ url: http://124.219.182.167/geo/
 
 [![Actions](https://github.com/geocompx/geocompr/workflows/Render/badge.svg)](https://github.com/geocompx/geocompr/actions)
 
-This version of the book was built on GH Actions on 2024-12-01.
+This version of the book was built on GH Actions on 2025-06-08.
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />本書は、<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> ライセンスで提供。
 

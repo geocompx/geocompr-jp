@@ -7,7 +7,7 @@
 <title>Chapter 14 商圏分析 | Geocomputation with R</title>
 <meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
 <meta name="description" content="必須パッケージ この章では、以下のパッケージが必要である (revgeo もインストールしておく必要がある)。 library(sf) library(dplyr) library(purrr) library(terra) library(osmdata) library(spDataLarge) 必要なデータは順次ダウンロードする...">
-<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta name="generator" content="bookdown 0.43 with bs4_book()">
 <meta property="og:title" content="Chapter 14 商圏分析 | Geocomputation with R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="http://124.219.182.167/geo/location.html">
@@ -19,10 +19,10 @@
 <meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
-<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.10/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.9.0/transition.js"></script><script src="libs/bs3compat-0.9.0/tabs.js"></script><script src="libs/bs3compat-0.9.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 14 商圏分析 | Geocomputation with R">
 <meta name="citation_author" content="Robin Lovelace">
 <meta name="citation_author" content="Jakub Nowosad">
@@ -114,7 +114,7 @@
 <ul>
 <li>この章では、以下のパッケージが必要である (<strong>revgeo</strong> もインストールしておく必要がある)。</li>
 </ul>
-<div class="sourceCode" id="cb469"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb474"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/">purrr</a></span><span class="op">)</span></span>
@@ -178,20 +178,20 @@
 <span class="header-section-number">14.3</span> 入力データを整頓<a class="anchor" aria-label="anchor" href="#tidy-the-input-data"><i class="fas fa-link"></i></a>
 </h2>
 <p>ドイツ政府は、1 km または 100 m の解像度でグリッド化された国勢調査データを提供している。
-次のコードは、1 km のデータをダウンロードし、解凍し、読み込むものである。</p>
-<div class="sourceCode" id="cb470"><pre class="downlit sourceCode r">
+次のコードは、1 km のデータをダウンロード、解凍、読み込むものである。</p>
+<div class="sourceCode" id="cb475"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">"https://tinyurl.com/ybtpkwxz"</span>, </span>
 <span>              destfile <span class="op">=</span> <span class="st">"census.zip"</span>, mode <span class="op">=</span> <span class="st">"wb"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span><span class="op">(</span><span class="st">"census.zip"</span><span class="op">)</span> <span class="co"># unzip the files</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/unzip.html">unzip</a></span><span class="op">(</span><span class="st">"census.zip"</span><span class="op">)</span> <span class="co"># ファイルを解凍</span></span>
 <span><span class="va">census_de</span> <span class="op">=</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv2</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/list.files.html">list.files</a></span><span class="op">(</span>pattern <span class="op">=</span> <span class="st">"Gitter.csv"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>なお、<code>census_de</code> は <strong>spDataLarge</strong> パッケージ (<code>data("census_de", package = "spDataLarge"</code>) からも入手可能である。</p>
-<div class="sourceCode" id="cb471"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb476"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"census_de"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span></code></pre></div>
-<p><code>census_de</code> オブジェクトは、ドイツ全土の 30 万以上のグリッドセルについて、13 の変数を含むデータフレームである。
+<p><code>census_de</code> オブジェクトは、ドイツ全土の 30 万以上のグリッドセルのデータフレームで、変数が 13 ある。
 これからの作業では、東経 (<code>x</code>) と北緯 (<code>y</code>)、住民数 (人口 <code>pop</code>)、平均年齢 (<code>mean_age</code>)、女性の割合 (<code>women</code>)、平均世帯人員 (<code>hh_size</code>) だけが必要である。
-これらの変数を、以下のコードチャンクのように選択し、ドイツ語から英語に名前が変更する。その結果は Table <a href="location.html#tab:census-desc">14.1</a> に要約した。
+以下のコードチャンクではこれらの必要な変数のみを選択する。なお、この際に変数名をドイツ語から英語に変更する。その結果は Table <a href="location.html#tab:census-desc">14.1</a> に要約した。
 さらに <code><a href="https://dplyr.tidyverse.org/reference/mutate_all.html">mutate_all()</a></code> で、値 <code>-1</code> と <code>-9</code> (不明を意味する) を <code>NA</code> に変換する。</p>
-<div class="sourceCode" id="cb472"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb477"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># pop = population, hh_size = household size</span></span>
 <span><span class="va">input</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">census_de</span>, x <span class="op">=</span> <span class="va">x_mp_1km</span>, y <span class="op">=</span> <span class="va">y_mp_1km</span>, pop <span class="op">=</span> <span class="va">Einwohner</span>,</span>
 <span>                      women <span class="op">=</span> <span class="va">Frauen_A</span>, mean_age <span class="op">=</span> <span class="va">Alter_D</span>, hh_size <span class="op">=</span> <span class="va">HHGroesse_D</span><span class="op">)</span></span>
@@ -261,12 +261,12 @@
 <p>前処理を行った後、<code><a href="https://rspatial.github.io/terra/reference/rast.html">rast()</a></code> 関数で <code>SpatRaster</code> に変換することができる (Section <a href="spatial-class.html#raster-classes">2.3.4</a> と <a href="attr.html#raster-subsetting">3.3.1</a> を参照)。
 <code>type</code> 引数を <code>xyz</code>とすると、入力データの <code>x</code> and <code>y</code> 列は通常グリッドの座標に対応する。
 残りの列 (ここでは <code>pop</code>、<code>women</code>、<code>mean_age</code>、<code>hh_size</code>) は、ラスタレイヤの値として使うことができる (Figure <a href="location.html#fig:census-stack">14.1</a>; GitHub リポジトリの <code>code/14-location-figures.R</code> も参照)。</p>
-<div class="sourceCode" id="cb473"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb478"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input_ras</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">input_tidy</span>, type <span class="op">=</span> <span class="st">"xyz"</span>, crs <span class="op">=</span> <span class="st">"EPSG:3035"</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb474"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb479"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">input_ras</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 868, 642, 4  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; size        : 868, 642, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 1000, 1000  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 4031000, 4673000, 2684000, 3552000  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : ETRS89-extended / LAEA Europe (EPSG:3035) </span></span>
@@ -276,7 +276,7 @@
 <span><span class="co">#&gt; max values  :   6,     5,        5,       5</span></span></code></pre></div>
 
 <div class="rmdnote">
-なお、ここでは等面積投影 (EPSG:3035; Lambert Equal Area Europe)、つまり各グリッドセルが同じ面積 (ここでは 1000 * 1000 平方メートル) を持つ投影 CRS を使用している。
+なお、ここでは等面積投影 (EPSG:3035; Lambert Equal Area Europe)を使用している。これは、各グリッドセルが同じ面積 (ここでは 1000 * 1000 平方メートル) を持つ投影 CRS である。
 主に格子点あたりの住民数や女性比率などの密度を用いているので、「リンゴとオレンジの比較」を避けるために、各セルの面積が同じであることが最も重要である。
 グリッドセル面積が極方向に減少し続ける地理的 CRS には注意が必要 (Section <a href="spatial-class.html#crs-intro">2.4</a> と Chapter <a href="reproj-geo-data.html#reproj-geo-data">7</a> も参照)。
 </div>
@@ -291,13 +291,13 @@ FIGURE 14.1: グリッド化した2011年ドイツ国勢調査 (クラスの内�
 ラスタセルは、値 1 (「クラス 1」のセルが 3～250 人の住民を含む) の場合は 127 人、値 2 (250～500人の住民を含む) の場合は 375 人と仮定される (Table <a href="location.html#tab:census-desc">14.1</a> を参照)。
 これらのセルには 8,000 人以上の人が含まれているため、「クラス 6」のセル値には 8,000 人の住民が選ばれた。
 もちろん、これは真の母集団の近似値であり、正確な値ではない。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
-この再分類の段階で生じる潜在的な誤差については、演習で検討する。&lt;/p&gt;"><sup>97</sup></a>
+この再分類の段階で生じる潜在的な誤差については、演習で検討する。&lt;/p&gt;"><sup>98</sup></a>
 しかし、大都市圏を定義するには十分なレベルである (Section <a href="location.html#define-metropolitan-areas">14.5</a> 参照)。</p>
 <p>総人口の絶対推計を表す変数 <code>pop</code> とは対照的に、残りの変数は、調査で使用されたウェイトに対応するウェイトに分類し直した。
 例えば、変数 <code>women</code> のクラス 1 は、人口の 0～40% が女性である地域を表す。
 は、ターゲット層が男性であるため、比較的高いウェイトである 3 に分類し直した。
 同様に、若年層や単身世帯の割合が高い層は、高いウェイトを持つように分類し直した。</p>
-<div class="sourceCode" id="cb475"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb480"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">rcl_pop</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">127</span>, <span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">375</span>, <span class="fl">3</span>, <span class="fl">3</span>, <span class="fl">1250</span>, </span>
 <span>                   <span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3000</span>, <span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">6000</span>, <span class="fl">6</span>, <span class="fl">6</span>, <span class="fl">8000</span><span class="op">)</span>, </span>
 <span>                 ncol <span class="op">=</span> <span class="fl">3</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -311,13 +311,13 @@ FIGURE 14.1: グリッド化した2011年ドイツ国勢調査 (クラスの内�
 例えば、最初の要素はどちらの場合も母集団に対応する。
 その後、<code>for</code>-loop、再分類行列を対応するラスタレイヤに適用する。
 最後に、以下のコードで、<code>reclass</code> のレイヤが <code>input_ras</code> のレイヤと同じ名前であることを確認する。</p>
-<div class="sourceCode" id="cb476"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb481"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reclass</span> <span class="op">=</span> <span class="va">input_ras</span></span>
 <span><span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nlyr</a></span><span class="op">(</span><span class="va">reclass</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">reclass</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/classify.html">classify</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">reclass</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, rcl <span class="op">=</span> <span class="va">rcl</span><span class="op">[[</span><span class="va">i</span><span class="op">]</span><span class="op">]</span>, right <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span>
 <span><span class="op">}</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">reclass</span><span class="op">)</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">input_ras</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb477"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb482"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">reclass</span> <span class="co"># 出力は一部省略</span></span>
 <span><span class="co">#&gt; ...</span></span>
 <span><span class="co">#&gt; names       :  pop, women, mean_age, hh_size </span></span>
@@ -331,7 +331,7 @@ FIGURE 14.1: グリッド化した2011年ドイツ国勢調査 (クラスの内�
 <p>大都市圏とは、50 万人以上が住む 20 km<sup>2</sup> のピクセルと定義している。
 この粗い解像度のピクセルは、Section <a href="geometry-operations.html#aggregation-and-disaggregation">5.3.3</a> で紹介したように、<code><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate()</a></code>、速やかに作成することができる。
 以下のコマンドは、引数 <code>fact = 20</code>、結果の解像度を 20 倍にしている (元のラスタの解像度が 1 km<sup>2</sup> であったことを思い出そう)。</p>
-<div class="sourceCode" id="cb478"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb483"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop_agg</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">reclass</span><span class="op">$</span><span class="va">pop</span>, fact <span class="op">=</span> <span class="fl">20</span>, fun <span class="op">=</span> <span class="va">sum</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">pop_agg</span><span class="op">)</span></span>
 <span><span class="co">#&gt;       pop         </span></span>
@@ -343,14 +343,14 @@ FIGURE 14.1: グリッド化した2011年ドイツ国勢調査 (クラスの内�
 <span><span class="co">#&gt;  Max.   :1204870  </span></span>
 <span><span class="co">#&gt;  NA's   :447</span></span></code></pre></div>
 <p>次のステージでは、50 万人以上のセルだけを残す。</p>
-<div class="sourceCode" id="cb479"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb484"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pop_agg</span> <span class="op">=</span> <span class="va">pop_agg</span><span class="op">[</span><span class="va">pop_agg</span> <span class="op">&gt;</span> <span class="fl">500000</span>, drop <span class="op">=</span> <span class="cn">FALSE</span><span class="op">]</span> </span></code></pre></div>
 <p>これをプロットすると、8 つの大都市圏 (Figure <a href="location.html#fig:metro-areas">14.2</a>) が見えてくる。
 各領域は、1 つ以上のラスタセルで構成される。
 1 つの地域に属するすべてのセルを結合できればコマンドは、
 <strong>terra</strong> の <code><a href="https://rspatial.github.io/terra/reference/patches.html">patches()</a></code> である。
 その後、<code><a href="https://rspatial.github.io/terra/reference/as.polygons.html">as.polygons()</a></code> でラスタオブジェクトを空間ポリゴンに変換し、<code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf()</a></code> で <code>sf</code>. オブジェクトに変換する。</p>
-<div class="sourceCode" id="cb480"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb485"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">metros</span> <span class="op">=</span> <span class="va">pop_agg</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/patches.html">patches</a></span><span class="op">(</span>directions <span class="op">=</span> <span class="fl">8</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.polygons.html">as.polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -367,9 +367,9 @@ FIGURE 14.2: 人口ラスタ (分解能20km)、大都市圏 (金色のポリゴ�
 これは、<strong>tmaptools</strong> パッケージの <code>rev_geocode_OSM()</code> 関数が期待するものとまったく同じである。
 さらに <code>as.data.frame</code> を <code>TRUE</code> に設定すると、通りの名前、家の番号、都市名など、場所を示すいくつかの列を持つ <code>data.frame</code> が返される。
 しかし、ここでは都市の名前にのみ関心がある。</p>
-<div class="sourceCode" id="cb481"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb486"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">metro_names</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_centroid</a></span><span class="op">(</span><span class="va">metros</span>, of_largest_polygon <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">tmaptools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tmaptools/man/rev_geocode_OSM.html">rev_geocode_OSM</a></span><span class="op">(</span>as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">tmaptools</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmaptools/reference/rev_geocode_OSM.html">rev_geocode_OSM</a></span><span class="op">(</span>as.data.frame <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">city</span>, <span class="va">town</span>, <span class="va">state</span><span class="op">)</span></span>
 <span><span class="co"># 小さい都市は town の列で返される。すべての名前を1つの列にするため、</span></span>
 <span><span class="co"># NA である場合に備えて、町の名前を市の列に移動させる。</span></span>
@@ -417,10 +417,10 @@ FIGURE 14.2: 人口ラスタ (分解能20km)、大都市圏 (金色のポリゴ�
 </tr>
 </tbody>
 </table></div>
-<p>全体として、私たちは <code>City</code> 列が大都市名 (Table <a href="location.html#tab:metro-names">14.2</a>) として機能していることに満足している。例外は、Wülfrath が Düsseldorf の大領域に属していることで ある。
-したがって、Wülfrath を Düsseldorf (Figure <a href="location.html#fig:metro-areas">14.2</a>) に置き換える。
+<p><code>City</code> 列が大都市名 (Table <a href="location.html#tab:metro-names">14.2</a>) となっているので、おおむね成功と言えるだろう。例外は、Velbert である。より広域の Düsseldorf の方が適切だろう。
+したがって、Velbert を Düsseldorf (Figure <a href="location.html#fig:metro-areas">14.2</a>) に置き換える。
 ウムラウト <code>ü</code> は、例えば <code><a href="https://docs.ropensci.org/osmdata/reference/opq.html">opq()</a></code> を使って大都市圏のバウンディングボックスを決定する場合 (後述)、後々トラブルになる可能性があるため、これも変換しておく。</p>
-<div class="sourceCode" id="cb482"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb487"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">metro_names</span> <span class="op">=</span> <span class="va">metro_names</span><span class="op">$</span><span class="va">city</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="op">(</span>\<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="va">x</span> <span class="op">==</span> <span class="st">"Velbert"</span>, <span class="st">"Düsseldorf"</span>, <span class="va">x</span><span class="op">)</span><span class="op">)</span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -432,8 +432,8 @@ FIGURE 14.2: 人口ラスタ (分解能20km)、大都市圏 (金色のポリゴ�
 </h2>
 <p>
 <strong>osmdata</strong> パッケージは、OSM データへの使いやすいアクセスを提供する (Section <a href="read-write.html#retrieving-data">8.5</a> も参照)。
-ドイツ全土の店舗をダウンロードするのではなく、定義された大都市圏にクエリを限定することで、計算負荷を軽減し、関心のあるエリアのみの店舗位置を提供している。
-この後のコードチャンクは、以下のようないくつかの関数を用いてこれを行う。</p>
+ドイツ全土の店舗をダウンロードするのではなく、定義された大都市圏にクエリを限定しよう。こうすることで計算負荷を軽減し、目標地域に限定して店舗位置を提供する。
+下のコードチャンクでは、以下のようないくつかの関数を用いてこれを行う。</p>
 <ul>
 <li>
 <code><a href="https://purrr.tidyverse.org/reference/map.html">map()</a></code>: (<code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> の <strong>tidyverse</strong> 相当)。これは、OSM クエリ関数 <code><a href="https://docs.ropensci.org/osmdata/reference/opq.html">opq()</a></code> (Section <a href="read-write.html#retrieving-data">8.5</a> 参照) のバウンディングボックスを定義する、8 つの大都市名すべてを繰り返し処理</li>
@@ -442,13 +442,13 @@ FIGURE 14.2: 人口ラスタ (分解能20km)、大都市圏 (金色のポリゴ�
 <li>
 <code><a href="https://docs.ropensci.org/osmdata/reference/osmdata_sf.html">osmdata_sf()</a></code>: これは OSM データを空間オブジェクト (クラス <code>sf</code>) に変換</li>
 <li>
-<code>while()</code>: ダウンロードに失敗すると、さらに 2 回ダウンロードを試みる<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;OSM-download は 1 回目で失敗することもあるようである&lt;/p&gt;"><sup>98</sup></a>
+<code>while()</code>: ダウンロードに失敗すると、さらに 2 回ダウンロードを試みる<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;OSM-download は 1 回目で失敗することもあるようである&lt;/p&gt;"><sup>99</sup></a>
 </li>
 </ul>
-<p>このコードを実行する前に: 約 2 GB のデータをダウンロードすることを考慮してみよう。
-時間とリソースを節約するために、<code>shops</code> という名前の出力を <strong>spDataLarge</strong> に入れてある。
+<p>このコードを実行する前に、 のデータをダウンロードするデータの大きさが約 2 GB となることに注意しよう。
+時間とリソースを節約するために、<code>shops</code> という名前の出力を <strong>spDataLarge</strong> に格納してある。
 自分の環境で利用できるようにするには、<strong>spDataLarge</strong> パッケージがロードされていることを確認するか、<code>data("shops", package = "spDataLarge")</code> を実行してみよう。</p>
-<div class="sourceCode" id="cb483"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb488"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">shops</span> <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">metro_names</span>, <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"Downloading shops of: "</span>, <span class="va">x</span>, <span class="st">"\n"</span><span class="op">)</span></span>
 <span>  <span class="co"># サーバに時間を与える</span></span>
@@ -468,26 +468,26 @@ FIGURE 14.2: 人口ラスタ (分解能20km)、大都市圏 (金色のポリゴ�
 <p>定義された大都市圏に店舗がないことはまずありえない。
 次の <code>if</code> の条件は、各地域に少なくとも 1 つの店舗があるかどうかをチェックするだけである。
 その場合は、該当する地域の店舗を再度ダウンロードすることを勧める。</p>
-<div class="sourceCode" id="cb484"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb489"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 各都道府県のダウンロードショップがあるかどうかの確認</span></span>
 <span><span class="va">ind</span> <span class="op">=</span> <span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html">map</a></span><span class="op">(</span><span class="va">shops</span>, <span class="va">nrow</span><span class="op">)</span> <span class="op">==</span> <span class="fl">0</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/any.html">any</a></span><span class="op">(</span><span class="va">ind</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/message.html">message</a></span><span class="op">(</span><span class="st">"There are/is still (a) metropolitan area/s without any features:\n"</span>,</span>
 <span>          <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste</a></span><span class="op">(</span><span class="va">metro_names</span><span class="op">[</span><span class="va">ind</span><span class="op">]</span>, collapse <span class="op">=</span> <span class="st">", "</span><span class="op">)</span>, <span class="st">"\nPlease fix it!"</span><span class="op">)</span></span>
 <span><span class="op">}</span></span></code></pre></div>
-<p>各リストの要素 (<code>sf</code> データフレーム) が同じ列を持っていることを確認するために<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;OSM contributors はデータを集めるときに同じように細心の注意を払っているわけではないので、これは絶対ではない。&lt;/p&gt;"><sup>99</sup></a> <code>osm_id</code> と <code>shop</code> 列だけを残し、さらに <code>map_dfr</code> ループを使って全ての店舗を一つの大きな <code>sf</code> オブジェクトに統合する。</p>
-<div class="sourceCode" id="cb485"><pre class="downlit sourceCode r">
+<p>各リストの要素 (<code>sf</code> データフレーム) が同じ列を持っていることを確認するために<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;OSM contributors はデータを集めるときに同じように細心の注意を払っているわけではないので、これは絶対ではない。&lt;/p&gt;"><sup>100</sup></a> <code>osm_id</code> と <code>shop</code> 列だけを残し、さらに <code>map_dfr</code> ループを使って全ての店舗を一つの大きな <code>sf</code> オブジェクトに統合する。</p>
+<div class="sourceCode" id="cb490"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 特定の列のみを選択</span></span>
 <span><span class="va">shops</span> <span class="op">=</span> <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_dfr</a></span><span class="op">(</span><span class="va">shops</span>, <span class="va">select</span>, <span class="va">osm_id</span>, <span class="va">shop</span><span class="op">)</span></span></code></pre></div>
 <p>注: <code>shops</code> は、以下のように <code>spDataLarge</code> パッケージから取得する。</p>
-<div class="sourceCode" id="cb486"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb491"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"shops"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span></code></pre></div>
 <p>最後に、空間点オブジェクトをラスタに変換する (Section <a href="raster-vector.html#rasterization">6.4</a> 参照)。
 <code>sf</code> オブジェクト <code>shops</code> は、<code>reclass</code> オブジェクトと同じパラメータ (寸法、解像度、CRS) を持つラスタに変換される。
 重要なのは、ここで <code><a href="https://rdrr.io/r/base/length.html">length()</a></code> 関数を用いて、各セルのショップ数を算出していることである。</p>
 <p>そのため、後続のコードチャンクの結果は、店舗密度 (店舗/km<sup>2</sup>) の推定値となる。
 <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform()</a></code> は、両入力の CRS が一致するように、<code><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize()</a></code> の前に使用される。</p>
-<div class="sourceCode" id="cb487"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb492"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">shops</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">shops</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">reclass</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># POI ラスタを作成</span></span>
 <span><span class="va">poi</span> <span class="op">=</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">shops</span>, y <span class="op">=</span> <span class="va">reclass</span>, field <span class="op">=</span> <span class="st">"osm_id"</span>, fun <span class="op">=</span> <span class="st">"length"</span><span class="op">)</span></span></code></pre></div>
@@ -495,7 +495,7 @@ FIGURE 14.2: 人口ラスタ (分解能20km)、大都市圏 (金色のポリゴ�
 クラス間隔の定義は、ある程度恣意的に行われる。
 均等割、分位割、固定値などを使用することができる。
 ここでは、クラス内分散を最小化する Fisher-Jenks 自然分類法を選択し、その結果を再分類行列の入力とする。</p>
-<div class="sourceCode" id="cb488"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb493"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 再分類化行列を作成</span></span>
 <span><span class="va">int</span> <span class="op">=</span> <span class="fu">classInt</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/classInt/reference/classIntervals.html">classIntervals</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/values.html">values</a></span><span class="op">(</span><span class="va">poi</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">4</span>, style <span class="op">=</span> <span class="st">"fisher"</span><span class="op">)</span></span>
 <span><span class="va">int</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/math-generics.html">round</a></span><span class="op">(</span><span class="va">int</span><span class="op">$</span><span class="va">brks</span><span class="op">)</span></span>
@@ -515,16 +515,16 @@ FIGURE 14.2: 人口ラスタ (分解能20km)、大都市圏 (金色のポリゴ�
 まず、大都市圏、つまりドイツの他の地域に比べて人口密度が平均的に高い地域はすでに定義されている。
 第二に、特定のキャッチメントエリア内に多くの潜在顧客がいることは有利であるが、数が多いだけでは、実際には望ましいターゲットグループを表していない可能性がある。
 例えば、高層マンションは人口密度が高い地域であるが、高価なサイクル部品の購買力が高いとは限らない。</p>
-<div class="sourceCode" id="cb489"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb494"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 人口ラスタを削除し、poi ラスタを追加</span></span>
 <span><span class="va">reclass</span> <span class="op">=</span> <span class="va">reclass</span><span class="op">[[</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">reclass</span><span class="op">)</span> <span class="op">!=</span> <span class="st">"pop"</span><span class="op">]</span><span class="op">]</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">poi</span><span class="op">)</span></span></code></pre></div>
-<p>他のデータサイエンス・プロジェクトと同様、これまでのところ、データの検索と「整理」が全体の作業負荷の多くを占めている。
-きれいなデータであれば、最後のステップであるすべてのラスタのレイヤを合計して最終的なスコアを計算することも、1行のコードで実現できる。</p>
-<div class="sourceCode" id="cb490"><pre class="downlit sourceCode r">
+<p>他のデータサイエンス・プロジェクトと同様、データの検索と「整頓」が全体の作業負荷の多くを占めている。
+きれいなデータであれば、最後のステップであるすべてのラスタのレイヤを合計して最終的なスコアを計算することも、1 行のコードで実現できる。</p>
+<div class="sourceCode" id="cb495"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># 合計点を計算</span></span>
 <span><span class="va">result</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">reclass</span><span class="op">)</span></span></code></pre></div>
-<p>例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値かもしれない (Figure <a href="location.html#fig:bikeshop-berlin">14.3</a> ; <code>code/14-location-jm.R</code> も参照)。</p>
+<p>例えば、9 以上のスコアは、自転車ショップを配置できるラスタセルを示す適切な閾値だろう (Figure <a href="location.html#fig:bikeshop-berlin">14.3</a> ; <code>code/14-location-jm.R</code> も参照)。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:bikeshop-berlin"></span>
 <div class="leaflet html-widget html-fill-item" id="htmlwidget-841de324d41155df19a0" style="width:100%;height:389.34px;"></div>
@@ -535,7 +535,7 @@ FIGURE 14.3: ベルリンにおける自転車店の仮想調査に従った適�
 </div>
 <div id="discussion-and-next-steps" class="section level2" number="14.8">
 <h2>
-<span class="header-section-number">14.8</span> ディスカッションと次のステップ<a class="anchor" aria-label="anchor" href="#discussion-and-next-steps"><i class="fas fa-link"></i></a>
+<span class="header-section-number">14.8</span> 考察と次のステップ<a class="anchor" aria-label="anchor" href="#discussion-and-next-steps"><i class="fas fa-link"></i></a>
 </h2>
 <p>今回紹介したアプローチは、GIS の規範的な使い方の典型的な例である <span class="citation">(<a href="references.html#ref-longley_geographic_2015">Longley 2015</a>)</span>。
 調査データと専門家による知識・仮定 (大都市圏の定義、クラス間隔の定義、最終的なスコア閾値の定義) を組み合わせている。
@@ -545,7 +545,7 @@ FIGURE 14.3: ベルリンにおける自転車店の仮想調査に従った適�
 <li>最終的なスコアの算出には均等なウェイトを用いたが、世帯規模など他の要因も、女性の割合や平均年齢と同様に重要である可能性がある。</li>
 <li>全ての地理的目標物 を使用したが、DIY、ハードウェア、自転車、釣り、ハンティング、バイク、アウトドア、スポーツショップなど、自転車販売店に関連するもののみ (ショップ値の範囲は <a href="https://wiki.openstreetmap.org/wiki/Map_Features#Shop">OSM Wiki</a> で確認可能)にすると、より洗練された結果を得ることができたかもしれない</li>
 <li>解像度の高いデータを使うと、出力が向上する場合がある (演習参照)</li>
-<li>限られた変数のみを使用し、<a href="https://inspire-geoportal.ec.europa.eu/">INSPIRE geoportal</a> や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section <a href="read-write.html#retrieving-data">8.5</a> も参照のこと)。</li>
+<li>限られた変数のみを使用した。<a href="https://inspire-geoportal.ec.europa.eu/">INSPIRE geoportal</a> や OpenStreetMap のサイクリングロードのデータなど、他の情報源からのデータは分析を豊かにするかもしれない (Section <a href="read-write.html#retrieving-data">8.5</a> も参照のこと)。</li>
 <li>男性比率と単身世帯の関係などの相互作用は考慮されていない。</li>
 </ul>
 <p>つまり、この分析は多方面に拡張することができる。
@@ -570,7 +570,7 @@ FIGURE 14.3: ベルリンにおける自転車店の仮想調査に従った適�
 解凍したファイルのサイズは 1.23 GB である。
 このファイルを R に読み込むには、<code><a href="https://readr.tidyverse.org/reference/read_delim.html">readr::read_csv</a></code>を使うことができる。
 16 GB の RAM を搭載したパソコンで 30 秒かかる。
-<code><a href="https://rdrr.io/pkg/data.table/man/fread.html">data.table::fread()</a></code> はさらに速く、<code><a href="https://rdrr.io/pkg/data.table/man/data.table.html">data.table()</a></code> クラスのオブジェクトを返す。
+<code><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html">data.table::fread()</a></code> はさらに速く、<code><a href="https://rdatatable.gitlab.io/data.table/reference/data.table.html">data.table()</a></code> クラスのオブジェクトを返す。
 <code><a href="https://tibble.tidyverse.org/reference/as_tibble.html">dplyr::as_tibble()</a></code> を使用して、それを tibble に変換しなさい。
 住民ラスタを作成し、セル解像度 1 km に集約し、クラスの平均値を用いて作成した住民ラスタ (<code>inh</code>) との差を比較しなさい。</p>
 <p>E2. 仮に、自転車店が主に高齢者に電動自転車を販売していたとしよう。
@@ -595,7 +595,8 @@ FIGURE 14.3: ベルリンにおける自転車店の仮想調査に従った適�
 </a></li>
           <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
         </ul>
-<hr>
+<div class="LECTURE_IN_JAPANESE" style="border:solid 1px;border-color:#be1558;background:#fbcbc9"><a href="https://peatix.com/group/16401222" target="_blank">2025年4月頃より、レクチャーを計画しています。Peatix でフォローしてください。</a></div>
+        <hr>
 <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#location"><span class="header-section-number">14</span> 商圏分析</a></li>
@@ -607,7 +608,7 @@ FIGURE 14.3: ベルリンにおける自転車店の仮想調査に従った適�
 <li><a class="nav-link" href="#define-metropolitan-areas"><span class="header-section-number">14.5</span> 大都市圏を定義</a></li>
 <li><a class="nav-link" href="#points-of-interest"><span class="header-section-number">14.6</span> 地理的目標物</a></li>
 <li><a class="nav-link" href="#identify-suitable-locations"><span class="header-section-number">14.7</span> 適当な場所を特定</a></li>
-<li><a class="nav-link" href="#discussion-and-next-steps"><span class="header-section-number">14.8</span> ディスカッションと次のステップ</a></li>
+<li><a class="nav-link" href="#discussion-and-next-steps"><span class="header-section-number">14.8</span> 考察と次のステップ</a></li>
 <li><a class="nav-link" href="#%E6%BC%94%E7%BF%92-10"><span class="header-section-number">14.9</span> 演習</a></li>
 </ul>
 
@@ -626,7 +627,7 @@ FIGURE 14.3: ベルリンにおける自転車店の仮想調査に従った適�
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-08.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

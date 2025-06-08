@@ -7,7 +7,7 @@
 <title>Chapter 2 地理データと R | Geocomputation with R</title>
 <meta name="author" content="Robin Lovelace, Jakub Nowosad, Jannes Muenchow">
 <meta name="description" content="必須パッケージ この章から実際の作業がはじまるので、ソフトウェアが必要となる。 まず、最新版の R (R 4.3.2 またはそれ以降のバージョン) がインストールされているコンピュータを用意しよう。 文章を読むだけでなく、各章のコードを実行して、ジオコンピュテーションのスキルを身につけることを勧める。 R...">
-<meta name="generator" content="bookdown 0.41 with bs4_book()">
+<meta name="generator" content="bookdown 0.43 with bs4_book()">
 <meta property="og:title" content="Chapter 2 地理データと R | Geocomputation with R">
 <meta property="og:type" content="book">
 <meta property="og:url" content="http://124.219.182.167/geo/spatial-class.html">
@@ -19,10 +19,10 @@
 <meta name="twitter:image" content="http://124.219.182.167/geo/images/cover2.png">
 <!-- JS --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://kit.fontawesome.com/6ecbd6c532.js" crossorigin="anonymous"></script><script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="libs/bootstrap-4.6.0/bootstrap.min.css" rel="stylesheet">
-<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Roboto_Mono-0.4.9/font.css" rel="stylesheet">
-<link href="libs/Montserrat-0.4.9/font.css" rel="stylesheet">
-<script src="libs/bs3compat-0.8.0/transition.js"></script><script src="libs/bs3compat-0.8.0/tabs.js"></script><script src="libs/bs3compat-0.8.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
+<script src="libs/bootstrap-4.6.0/bootstrap.bundle.min.js"></script><link href="libs/Lato-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Roboto_Mono-0.4.10/font.css" rel="stylesheet">
+<link href="libs/Montserrat-0.4.10/font.css" rel="stylesheet">
+<script src="libs/bs3compat-0.9.0/transition.js"></script><script src="libs/bs3compat-0.9.0/tabs.js"></script><script src="libs/bs3compat-0.9.0/bs3compat.js"></script><link href="libs/bs4_book-1.0.0/bs4_book.css" rel="stylesheet">
 <script src="libs/bs4_book-1.0.0/bs4_book.js"></script><meta name="citation_title" content="Chapter 2 地理データと R | Geocomputation with R">
 <meta name="citation_author" content="Robin Lovelace">
 <meta name="citation_author" content="Jakub Nowosad">
@@ -134,7 +134,7 @@ OS 固有のインストールについては <a href="https://rtask.thinkr.fr/i
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sf"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"terra"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"spData"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"spDataLarge"</span>, repos <span class="op">=</span> <span class="st">"https://nowosad.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"spDataLarge"</span>, repos <span class="op">=</span> <span class="st">"https://geocompr.r-universe.dev"</span><span class="op">)</span></span></code></pre></div>
 <p>本書の第 I 部を再現するために必要なパッケージは、コマンド <code>remotes::install_github("geocompx/geocompkg")</code> でインストールできる。
 このコマンドは、<strong>remotes</strong> パッケージの関数 <code>install_packages()</code> を使用して、GitHub コードホスティング、バージョン、およびコラボレーション プラットフォームでホストされているソース コードをインストールする。
 以下のコマンドを実行すると、本書全体を再現するために必要な<strong>すべて</strong>の依存関係がインストールされる (警告: 数分かかる場合がある)。 <code>remotes::install_github("geocompx/geocompkg", dependencies = TRUE)</code></p>
@@ -307,9 +307,11 @@ FIGURE 2.3: sf パッケージを用いた世界の地図で、各属性ごと�
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -180 ymin: -18.3 xmax: 180 ymax: -0.95</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="co">#&gt;   iso_a2 name_long continent                           geom</span></span>
-<span><span class="co">#&gt; 1     FJ      Fiji   Oceania MULTIPOLYGON (((-180 -16.6,...</span></span>
-<span><span class="co">#&gt; 2     TZ  Tanzania    Africa MULTIPOLYGON (((33.9 -0.95,...</span></span></code></pre></div>
+<span><span class="co">#&gt; # A data frame: 2 × 4</span></span>
+<span><span class="co">#&gt;   iso_a2 name_long continent                                                geom</span></span>
+<span><span class="co">#&gt; * &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;                                      &lt;MULTIPOLYGON [°]&gt;</span></span>
+<span><span class="co">#&gt; 1 FJ     Fiji      Oceania   (((-180 -16.6, -180 -16.5, -180 -16, -180 -16.1, -…</span></span>
+<span><span class="co">#&gt; 2 TZ     Tanzania  Africa    (((33.9 -0.95, 31.9 -1.03, 30.8 -1.01, 30.4 -1.13,…</span></span></code></pre></div>
 <p>「シンプル」であるべきクラスシステムにしては、かなり複雑に見えるだろう。
 しかし、このように物事を整理し、ベクタ地理データセットを扱うのに <strong>sf</strong> を使うには、それなりの理由がある。</p>
 <p><strong>sf</strong> パッケージがサポートする各ジオメトリ型について説明する前に、<code>sf</code> オブジェクトの構成要素を理解するために基本に立ち返ってみよう。
@@ -352,15 +354,15 @@ Section <a href="spatial-class.html#sf">2.2.5</a> は、シンプルフィーチ
 関数 <code><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read()</a></code> は、Base R の <code>data.frame</code> に格納された属性を返すだけである (長いメッセージを表示する。以下のコードチャンクには表示していない。)。一方、<code><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf()</a></code> は、データを <strong>tidyverse</strong> の <code>tibble</code> として返し、表示は少ない。
 以下、実際の例を紹介する (地理ベクタデータの読み方については Section <a href="read-write.html#iovec">8.3.1</a> を参照)。</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">world_dfr</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.shp"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">world_dfr</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.gpkg"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Reading layer `world' from data source </span></span>
-<span><span class="co">#&gt;   `/usr/local/lib/R/site-library/spData/shapes/world.shp' using driver `ESRI Shapefile'</span></span>
+<span><span class="co">#&gt;   `/usr/local/lib/R/site-library/spData/shapes/world.gpkg' using driver `GPKG'</span></span>
 <span><span class="co">#&gt; Simple feature collection with 177 features and 10 fields</span></span>
 <span><span class="co">#&gt; Geometry type: MULTIPOLYGON</span></span>
 <span><span class="co">#&gt; Dimension:     XY</span></span>
 <span><span class="co">#&gt; Bounding box:  xmin: -180 ymin: -89.9 xmax: 180 ymax: 83.6</span></span>
 <span><span class="co">#&gt; Geodetic CRS:  WGS 84</span></span>
-<span><span class="va">world_tbl</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.shp"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">world_tbl</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"shapes/world.gpkg"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world_dfr</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "sf"         "data.frame"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">world_tbl</span><span class="op">)</span></span>
@@ -856,7 +858,7 @@ FIGURE 2.12: S2 ジオメトリエンジンをオフにした場合の結果の�
 値は、数値またはカテゴリ (Figure <a href="spatial-class.html#fig:raster-intro-plot">2.13</a>:C) である。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:raster-intro-plot"></span>
-<img src="figures/raster-intro-plot-1.png" alt="ラスタデータの種類" width="100%"><p class="caption">
+<img src="figures/raster-intro-plot-1.png" alt="ラスタデータの種類" width="100%"><img src="figures/raster-intro-plot-2.png" alt="ラスタデータの種類" width="100%"><p class="caption">
 FIGURE 2.13: ラスタデータの種類
 </p>
 </div>
@@ -921,7 +923,7 @@ Section <a href="intro.html#history-of-r-spatial">1.6</a> にあるように、�
 <div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">my_rast</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 457, 465, 1  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; size        : 457, 465, 1  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 0.000833, 0.000833  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : -113, -113, 37.1, 37.5  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : lon/lat WGS 84 (EPSG:4326) </span></span>
@@ -992,7 +994,7 @@ R でラスタオブジェクトを作成する最も簡単な方法は、ディ
 <span><span class="va">multi_rast</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">multi_raster_file</span><span class="op">)</span></span>
 <span><span class="va">multi_rast</span></span>
 <span><span class="co">#&gt; class       : SpatRaster </span></span>
-<span><span class="co">#&gt; dimensions  : 1428, 1128, 4  (nrow, ncol, nlyr)</span></span>
+<span><span class="co">#&gt; size        : 1428, 1128, 4  (nrow, ncol, nlyr)</span></span>
 <span><span class="co">#&gt; resolution  : 30, 30  (x, y)</span></span>
 <span><span class="co">#&gt; extent      : 301905, 335745, 4111245, 4154085  (xmin, xmax, ymin, ymax)</span></span>
 <span><span class="co">#&gt; coord. ref. : WGS 84 / UTM zone 12N (EPSG:32612) </span></span>
@@ -1200,7 +1202,8 @@ luxembourg の例で言えば、単位が明記されていないままだと、
 </a></li>
           <li><a href="https://donate.stripe.com/4gweWl94Q9E35AQ6oo">Support this project 💸</a></li>
         </ul>
-<hr>
+<div class="LECTURE_IN_JAPANESE" style="border:solid 1px;border-color:#be1558;background:#fbcbc9"><a href="https://peatix.com/group/16401222" target="_blank">2025年4月頃より、レクチャーを計画しています。Peatix でフォローしてください。</a></div>
+        <hr>
 <nav id="toc" data-toggle="toc" aria-label="On this page"><h2>On this page</h2>
       <ul class="nav navbar-nav">
 <li><a class="nav-link" href="#spatial-class"><span class="header-section-number">2</span> 地理データと R</a></li>
@@ -1252,7 +1255,7 @@ luxembourg の例で言えば、単位が明記されていないままだと、
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2024-12-01.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-08.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

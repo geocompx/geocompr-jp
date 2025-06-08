@@ -34,7 +34,7 @@ OS 固有のインストールについては [rtask.thinkr.fr](https://rtask.th
 install.packages("sf")
 install.packages("terra")
 install.packages("spData")
-install.packages("spDataLarge", repos = "https://nowosad.r-universe.dev")
+install.packages("spDataLarge", repos = "https://geocompr.r-universe.dev")
 ```
 
 
@@ -248,9 +248,11 @@ world_mini
 #> Dimension:     XY
 #> Bounding box:  xmin: -180 ymin: -18.3 xmax: 180 ymax: -0.95
 #> Geodetic CRS:  WGS 84
-#>   iso_a2 name_long continent                           geom
-#> 1     FJ      Fiji   Oceania MULTIPOLYGON (((-180 -16.6,...
-#> 2     TZ  Tanzania    Africa MULTIPOLYGON (((33.9 -0.95,...
+#> # A data frame: 2 × 4
+#>   iso_a2 name_long continent                                                geom
+#> * <chr>  <chr>     <chr>                                      <MULTIPOLYGON [°]>
+#> 1 FJ     Fiji      Oceania   (((-180 -16.6, -180 -16.5, -180 -16, -180 -16.1, -…
+#> 2 TZ     Tanzania  Africa    (((33.9 -0.95, 31.9 -1.03, 30.8 -1.01, 30.4 -1.13,…
 ```
 
 「シンプル」であるべきクラスシステムにしては、かなり複雑に見えるだろう。
@@ -294,15 +296,15 @@ Section \@ref(sf) は、シンプルフィーチャオブジェクトが、特�
 
 
 ``` r
-world_dfr = st_read(system.file("shapes/world.shp", package = "spData"))
+world_dfr = st_read(system.file("shapes/world.gpkg", package = "spData"))
 #> Reading layer `world' from data source 
-#>   `/usr/local/lib/R/site-library/spData/shapes/world.shp' using driver `ESRI Shapefile'
+#>   `/usr/local/lib/R/site-library/spData/shapes/world.gpkg' using driver `GPKG'
 #> Simple feature collection with 177 features and 10 fields
 #> Geometry type: MULTIPOLYGON
 #> Dimension:     XY
 #> Bounding box:  xmin: -180 ymin: -89.9 xmax: 180 ymax: 83.6
 #> Geodetic CRS:  WGS 84
-world_tbl = read_sf(system.file("shapes/world.shp", package = "spData"))
+world_tbl = read_sf(system.file("shapes/world.gpkg", package = "spData"))
 class(world_dfr)
 #> [1] "sf"         "data.frame"
 class(world_tbl)
@@ -908,7 +910,7 @@ $$
 値は、数値またはカテゴリ (Figure \@ref(fig:raster-intro-plot):C) である。
 
 <div class="figure" style="text-align: center">
-<img src="figures/raster-intro-plot-1.png" alt="ラスタデータの種類" width="100%" />
+<img src="figures/raster-intro-plot-1.png" alt="ラスタデータの種類" width="100%" /><img src="figures/raster-intro-plot-2.png" alt="ラスタデータの種類" width="100%" />
 <p class="caption">(\#fig:raster-intro-plot)ラスタデータの種類</p>
 </div>
 
@@ -981,7 +983,7 @@ class(my_rast)
 ``` r
 my_rast
 #> class       : SpatRaster 
-#> dimensions  : 457, 465, 1  (nrow, ncol, nlyr)
+#> size        : 457, 465, 1  (nrow, ncol, nlyr)
 #> resolution  : 0.000833, 0.000833  (x, y)
 #> extent      : -113, -113, 37.1, 37.5  (xmin, xmax, ymin, ymax)
 #> coord. ref. : lon/lat WGS 84 (EPSG:4326) 
@@ -1061,7 +1063,7 @@ multi_raster_file = system.file("raster/landsat.tif", package = "spDataLarge")
 multi_rast = rast(multi_raster_file)
 multi_rast
 #> class       : SpatRaster 
-#> dimensions  : 1428, 1128, 4  (nrow, ncol, nlyr)
+#> size        : 1428, 1128, 4  (nrow, ncol, nlyr)
 #> resolution  : 30, 30  (x, y)
 #> extent      : 301905, 335745, 4111245, 4154085  (xmin, xmax, ymin, ymax)
 #> coord. ref. : WGS 84 / UTM zone 12N (EPSG:32612) 
