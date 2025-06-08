@@ -17,7 +17,7 @@ graphics: yes
 description: "Geocomputation with R は、オープンソースソフトウェアを使って地理データを分析、視覚化、モデル化するために書かれた。本書は、強力なデータ処理、可視化、地理空間機能を持つ統計プログラミング言語である R をベースにしている。本書は、科学的、社会的、環境的な意味合いを含む、地理データに現れるさまざまな問題に取り組むための知識とスキルを身につけることができる。地理情報システム (Geographic Information Systems, GIS) のユーザーで、データサイエンスのための強力なオープンソース言語での専門分野の知識の応用に興味がある人、R のユーザーで空間データを扱うスキルの拡張に興味がある人など、さまざまな立場の人が本書に興味を持つだろう。"
 github-repo: "geocompx/geocompr-ja"
 cover-image: "images/cover2.png"
-url: http://124.219.182.167/geo/
+url: https://r.geocompx.org/jp/
 ---
 
 
@@ -44,12 +44,12 @@ url: http://124.219.182.167/geo/
 [![](https://img.shields.io/github/stars/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr)
 [![](https://img.shields.io/github/contributors/geocompx/geocompr?style=for-the-badge)](https://github.com/geocompx/geocompr/graphs/contributors)
 
-本書のオンライン版は、[r.geocompx.org](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されています。(訳注: 日本語版は、[https://babayoshihiko.ddns.net/geo](https://babayoshihiko.ddns.net/geo) と[http://124.219.182.167/geo/](http://124.219.182.167/geo/)でホストされている。)
+本書のオンライン版は、[r.geocompx.org](https://r.geocompx.org) でホストされ、[GitHub Actions](https://github.com/geocompx/geocompr/actions) によって最新版が維持されています。(訳注: 日本語版は、[https://r.geocompx.org/jp/](https://r.geocompx.org/jp/) でホストされている。)
 現在の「ビルド状況」は以下の通りです。
 
-[![Actions](https://github.com/geocompx/geocompr/workflows/Render/badge.svg)](https://github.com/geocompx/geocompr/actions)
+[![Actions](https://github.com/geocompx/geocompr-jp/workflows/Render/badge.svg)](https://github.com/geocompx/geocompr-jp/actions)
 
-This version of the book was built on GH Actions on 2025-06-08.
+本書 (日本語版) は、2025-06-08 にビルドされました。
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />本書は、<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> ライセンスで提供。
 
@@ -157,13 +157,13 @@ Roger Bivand
 
 # 序文 (第 2 版) {- #forward-2nd-edition}
 
-Writing books about open source data science software that constantly changes in uncontrolled ways is a brave undertaking: it feels like running a race while someone else constantly moves the finish line. This second edition of _Geocomputation with R_ is timely: it not only catches up with many recent changes, but also embraces new R packages, and new topical developments in the computing landscape.  It now includes a chapter on raster-vector interactions, discussing the package **terra** which is replacing package **raster** for raster (and vector) data processing. It also keeps up with the **tmap** package for creating high quality maps, which is completing a full rewrite cycle.
+オープンソースのデータサイエンスソフトウェアは制御不能な方法で常に変化し続けており、このテーマで書籍を書くことは、勇気ある挑戦です。それは、誰かが常にゴールラインを移動させ続ける中でレースを走るようなものです。この『Geocomputation with R』の第 2 版は、まさに適切なタイミングで出版されました。本書は、最近の多くの変更に対応するだけでなく、新しい R パッケージや計算環境における新たな動向も取り入れています。 本書には、ラスタとベクタの相互作用に関する章が追加され、ラスタ (およびベクタ) データ処理でパッケージ **raster** に代わる **terra** パッケージについて解説しています。また、高品質な地図作成のための **tmap** パッケージについても、バージョンアップが完了した最新状況に対応しています。
 
-Besides updating the contents of this book, the authors have also been very active in helping to streamline and focus those changes in software by extensively testing it, helping improve it, writing issues and pull requests on GitHub, sharing benchmark results, and helping to improve software documentation.
+著者は、本書の内容を更新するだけでなく、ソフトウェアの変更を効率化し、焦点を絞るため、広範なテストを実施し、改善を支援し、GitHub で Issue や Pull Request を投稿し、ベンチマーク結果を共有し、ソフトウェアのドキュメント改善にも貢献してきました。
 
-The first edition of this book has been a great success. It was the first book to popularize spatial analysis with the **sf** package and **tidyverse**. Its enthusiastic tone reached a wide audience, and helped people at various levels of experience solving new problems and moving to their next level.  Being available entirely freely online in addition to the printed volume gave it a large reach, and enabled users to try out the presented methodology on their own datasets. In addition to that, the authors have encouraged the readership to reach out by ways of GitHub issues, social media posts, and discussions in a discord channel. This has led to 75 people contributing to the book's source code in one way or the other, including several providing longer reviews or contributing full sections, including on Cloud-optimized GeoTIFFs, STAC and openEO; the **sfheaders** package; OGC APIs and metadata; and the `CycleHire` shiny app. on Discord, it has led to lively and spontaneous discussions in threads that include topics ranging from highly technical to "look what I built".
+本書の初版は大きな成功を収めました。これは、**sf** パッケージと**tidyverse** を使用して空間分析を普及させた最初の書籍でした。その熱意は幅広い読者に届き、多様な経験レベルの人が新たな問題解決に取り組み、次の段階へ進むのを支援しました。 印刷版に加え、オンラインで完全に無料で利用可能だったため、広い範囲の人々に届き、提示された手法を自身のデータセットで試すことができました。さらに、著者は GitHub の Issue、ソーシャルメディアの投稿、Discord チャネルでの議論を通じて連絡を取るよう促してきました。これにより、75 人が何らかの形で書籍のソースコードに貢献し、そのうち数人は詳細なレビューを提供したり、Cloud-optimized GeoTIFFs、STAC、openEO に関するセクションを執筆したり、**sfheaders** パッケージ、OGC APIとメタデータ、`CycleHire` Shiny アプリなどに関するセクションを執筆しました。Discord では、高度な技術的な話題から「私が作ったものを見てください」といった内容まで、多様なトピックを含むスレッドで活発で即興的な議論が展開されました。
 
-Beyond this, the authors have initiated the companion volume _Geocomputation with Python_, stressing that geocomputation happens with data science languages, and is by no means restricted to one of them. Geocomputation is on the rise, and as part of fostering a growing geocomputation community, writing books like this one is indispensable.
+さらに、著者は『Geocomputation with Python』という関連書籍の執筆を開始しています。ジオコンピューテーションはデータサイエンス言語を用いて行われるものであり、決して特定の言語に限定されるものではないと強調しています。ジオコンピューテーションは急速に発展しており、成長するジオコンピューテーションコミュニティの育成の一環として、このような書籍の執筆は不可欠です。
 
 Edzer Pebesma
 
