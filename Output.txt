@@ -1,0 +1,31 @@
+PDF Output
+
+_output.yaml
+
+bookdown::epub_book: default
+rmdja::pdf_book_ja:
+  keep_tex: true
+  keep_md: true
+  includes:
+    in_header:  preamble.tex
+    after_body: after_body.tex
+
+## Create PDF using {TinyTex}
+
+tinytex::tlmgr_update()
+tinytex::tlmgr_install("bibtex")
+
+## 
+
+Remove _book, _tex folders.
+
+bookdown::render_book("index.Rmd", output_format = "rmdja::pdf_book_ja")
+
+This may cause an error, but creates *.tex file.
+
+LATEX=/Users/baba/Library/TinyTeX/bin/universal-darwin//platex -kanji=utf8 -shell-escape
+BIBTEX=/Users/baba/Library/TinyTeX/bin/universal-darwin/bibtex
+DVIPDFMX=/Users/baba/Library/TinyTeX/bin/universal-darwin/dvipdfmx -r 300 -vv -z 9 
+
+$(LATEX) geocompr2-ja.tex && $(BIBTEX) geocompr2-ja
+$(LATEX) geocompr2-ja.tex && $(LATEX) geocompr2-ja.tex && $(DVIPDFMX) geocompr2-ja.dvi
