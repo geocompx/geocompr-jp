@@ -1,7 +1,7 @@
 --- 
 title: 'Geocomputation with R'
 author: 'Robin Lovelace, Jakub Nowosad, Jannes Muenchow'
-date: '2025-06-08'
+date: '2025-06-10'
 site: bookdown::bookdown_site
 output: bookdown::bs4_book
 documentclass: krantz
@@ -49,7 +49,7 @@ url: https://r.geocompx.org/jp/
 
 [![Actions](https://github.com/geocompx/geocompr-jp/workflows/Render/badge.svg)](https://github.com/geocompx/geocompr-jp/actions)
 
-本書 (日本語版) は、2025-06-08 にビルドされました。
+本書 (日本語版) は、2025-06-10 にビルドされました。
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />本書は、<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> ライセンスで提供。
 

@@ -135,7 +135,7 @@ CRAN よりも頻繁に更新されている <a href="https://r-universe.dev/">r
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span> <span class="co"># 動的地図</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span> <span class="co"># tidyverse データ可視化パッケージ</span></span></code></pre></div>
 <ul>
-<li>Section <a href="spatial-operations.html#spatial-ras">4.3</a> については、以下の二つのデータセットを読み込む必要がある。</li>
+<li>Section <a href="spatial-operations.html#spatial-ras">4.3</a> で紹介した二つのデータセットを読み込む必要がある。</li>
 </ul>
 <div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_elev</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/nz_elev.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -144,11 +144,11 @@ CRAN よりも頻繁に更新されている <a href="https://r-universe.dev/">r
 <h2>
 <span class="header-section-number">9.1</span> イントロダクション<a class="anchor" aria-label="anchor" href="#introduction-09"><i class="fas fa-link"></i></a>
 </h2>
-<p>地理学的研究の満足度と重要性は、その結果を伝えることにある。
-地図作成は、コミュニケーションと細部への注意、そして創造力を必要とする古来の技術である。
+<p>地理学的研究は、その結果を伝えることで満足度と重要性が高まる。
+地図作成あるいは地図学は、コミュニケーションと細部への注意、そして創造力を必要とする古来の技術である。
 R における静的地図は、Section <a href="spatial-class.html#basic-map">2.2.3</a> で見たように、<code><a href="https://rspatial.github.io/terra/reference/plot.html">plot()</a></code> 関数を使えば簡単にできる。
 R の基本メソッドを使って高度な地図を作成することも可能ではある <span class="citation">(<a href="references.html#ref-murrell_r_2016">Murrell 2016</a>)</span>。
-しかし、この章の焦点は、専用の地図作成パッケージを使った地図作成にある。
+しかし、この章の焦点は、地図作成専用のパッケージを使った地図作成にある。
 新しいスキルを身につけるには、1 つの分野の知識を深めてから手を広げていくことが大切である。
 地図の作成も例外ではない。そのため、この章では多くのパッケージを表面的にではなく、1 つのパッケージ (<strong>tmap</strong>) を深く掘り下げて説明する。</p>
 <p>地図作成は、楽しくてクリエイティブなだけでなく、実用的にも重要な役割を担っている。
@@ -237,7 +237,7 @@ FIGURE 9.1: New Zealand の形状を <strong>tmap</strong> 関数で塗りつぶ
 <li>
 <code><a href="https://r-tmap.github.io/tmap/reference/tm_text.html">tm_text()</a></code>: (複合) 点、(複合) 線、(複合) ポリゴンのテキスト</li>
 </ul>
-<p>Figure <a href="adv-map.html#fig:tmshape">9.1</a> の右側のパネルでは、塗りつぶし (fill) レイヤ<u>の上に</u>境界 (borders) を重ねた結果を示す。</p>
+<p>Figure <a href="adv-map.html#fig:tmshape">9.1</a> の右側のパネルでは、塗りつぶし (fill) レイヤ<u>の上に</u>境界 (borders) を重ねた結果を示している。</p>
 
 <div class="rmdnote">
 <code><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm()</a></code> (<strong>q</strong>uick <strong>t</strong>hematic <strong>m</strong>aps) は、主題図を簡単に作成する関数である。
@@ -252,7 +252,7 @@ FIGURE 9.1: New Zealand の形状を <strong>tmap</strong> 関数で塗りつぶ
 <span class="header-section-number">9.2.2</span> 地図オブジェクト<a class="anchor" aria-label="anchor" href="#map-obj"><i class="fas fa-link"></i></a>
 </h3>
 <p><strong>tmap</strong> の便利な点は、地図を表す<u>オブジェクト</u>を格納できることである。
-以下のコードは、Figure <a href="adv-map.html#fig:tmshape">9.1</a> の最後のプロットをクラス <code>tmap</code> のオブジェクトとして保存することでこれを示している (<code>tm_fill() + tm_borders()</code> を単一の関数に凝縮した <code><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons()</a></code> の使用に注意してみよう)。</p>
+以下のコードは、Figure <a href="adv-map.html#fig:tmshape">9.1</a> の最後のプロットをクラス <code>tmap</code> のオブジェクトとして保存することでこれを示している (<code><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons()</a></code> 関数は、<code>tm_fill() + tm_borders()</code> を単一の関数に凝縮したもの)。</p>
 <div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_nz</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">map_nz</span><span class="op">)</span></span>
@@ -300,10 +300,10 @@ FIGURE 9.2: Figure 9.1 の最終地図にレイヤを追加した地図。
 <p>
 前節のプロットは、<strong>tmap</strong> のデフォルトの美観セッティングを示してきた。
 <code><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill()</a></code> と <code><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">tm_symbols()</a></code> のレイヤには灰色の影を使用し、<code><a href="https://r-tmap.github.io/tmap/reference/tm_lines.html">tm_lines()</a></code> で作成した線を表現するために、連続した黒い線を使用する。
-もちろん、これらのデフォルト値やその他の美観はオーバーライドすることができる。
-このセクションの目的は、その方法を示すことである。</p>
+もちろん、これらのデフォルト値やその他の美観は上書きすることができる。
+このセクションでは、その方法を示していく。</p>
 <p>地図の美観には、大きく分けて「データによって変化するもの」と「一定であるもの」がある。
-ヘルパー関数 <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> を使って変数の美観を表現する <strong>ggplot2</strong> とは異なり、 <strong>tmap</strong> はレイヤの種別に応じた美観の引数を直接受け付ける。</p>
+<strong>ggplot2</strong> ではヘルパー関数 <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> を使って変数の美観を表現するが、<strong>tmap</strong> はレイヤの種別に応じた美観の引数を直接受け付ける。</p>
 <ul>
 <li>
 <code>fill</code>: ポリゴンの塗りつぶし色</li>
@@ -338,13 +338,13 @@ FIGURE 9.3: よく使われる塗りつぶしや枠線の美観を固定値に�
 </p>
 </div>
 <p>Base R のプロットと同様に、美観を定義する引数もまた、様々な値を受け取ることができる。
-以下の Base R コード (Figure <a href="adv-map.html#fig:tmcol">9.4</a> の左のパネルを生成) とは異なり、<strong>tmap</strong> 美観引数は数値ベクタを受け付けない。</p>
+ただし、Base R コード (Figure <a href="adv-map.html#fig:tmcol">9.4</a> の左のパネルを生成) とは異なり、<strong>tmap</strong> 美観引数は数値ベクトルを受け付けない。</p>
 <div class="sourceCode" id="cb313"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span>, col <span class="op">=</span> <span class="va">nz</span><span class="op">$</span><span class="va">Land_area</span><span class="op">)</span>  <span class="co"># 成功</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nz</span><span class="op">$</span><span class="va">Land_area</span><span class="op">)</span> <span class="co"># 失敗</span></span>
 <span><span class="co">#&gt; Error: palette should be a character value</span></span></code></pre></div>
-<p>代わりに、<code>fill</code> (および、ラインレイヤのための <code>lwd</code>、ポイントレイヤのための <code>size</code> など、異なることがある他の美観) は、プロットされるジオメトリに関連する属性を指定する文字列を必要とする。
-したがって、次のように望ましい結果を得ることができる (Figure <a href="adv-map.html#fig:tmcol">9.4</a> 右図)。</p>
+<p><code>fill</code> (線レイヤの場合は <code>lwd</code>、点レイヤの場合は <code>size</code> など) は、プロットされるジオメトリに関連する属性を、数値ベクトルではなく文字列を渡す必要がある。
+次のようにすると望ましい結果を得ることができる (Figure <a href="adv-map.html#fig:tmcol">9.4</a> 右図)。</p>
 <div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Land_area"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
@@ -356,7 +356,7 @@ FIGURE 9.4: 数値色フィールドの Base (左) と <strong>tmap</strong> (�
 <p>視覚化の変数には、<code>.scale</code>、<code>.legend</code>、<code>.free</code> という文字列を後ろにつけた 3 つの追加引数がある。
 例えば、<code><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill()</a></code> には <code>fill</code>、<code>fill.scale</code>、<code>fill.legend</code>、<code>fill.free</code> といった引数がある。
 <code>.scale</code> 引数は、地図と凡例での表示方法を指定し (Section <a href="adv-map.html#scales">9.2.4</a>)、<code>.legend</code> はタイトル、方向、位置を指定する (Section <a href="adv-map.html#legends">9.2.5</a>)。
-<code>.free</code> 引数は、多くのファセットをもつ地図で、ファセットによって縮尺や凡例が変わる場合などに使用する。</p>
+<code>.free</code> 引数は、多くのファセットをもつ地図で、ファセットによってスケールや凡例が変わる場合などに使用する。</p>
 </div>
 <div id="scales" class="section level3" number="9.2.4">
 <h3>
@@ -400,7 +400,7 @@ FIGURE 9.5: 色設定。結果は (左から) デフォルト設定、手動区�
 例えば、<code>values</code> は、<code>fill.scale</code> or <code>col.scale</code> に対しては色のベクトル、パレット名、<code>size.scale</code> に対しては大きさのベクトル、<code>shape.scale</code> に対してはシンボルのベクトルを期待する。
 </div>
 <p>
-<code>tm_scale_</code> から始まる関数ファミリーを使うことで縮尺をカスタマイズすることもできる。
+<code>tm_scale_</code> から始まる関数ファミリーでスケールをカスタマイズすることもできる。
 最も重要なものは、<code><a href="https://r-tmap.github.io/tmap/reference/tm_scale_intervals.html">tm_scale_intervals()</a></code>、<code><a href="https://r-tmap.github.io/tmap/reference/tm_scale_continuous.html">tm_scale_continuous()</a></code>、<code><a href="https://r-tmap.github.io/tmap/reference/tm_scale_categorical.html">tm_scale_categorical()</a></code> である。</p>
 <p>
 <code><a href="https://r-tmap.github.io/tmap/reference/tm_scale_intervals.html">tm_scale_intervals()</a></code> 関数は、入力データ値を間隔セットに分割する。
@@ -445,7 +445,7 @@ FIGURE 9.7: <strong>tmap</strong> における連続スケールとカテゴリ�
 入力データに応じた色パレットなどの美観に関わるデフォルト<code>値</code>は、<code>tmap_options() で確認することができる。 例として、</code>tmap_options()$values.var` を実行してみよう。
 </div>
 <p>
-色パレットは大きく分けて、カテゴリ、連続、発散の三種類ある (Figure <a href="adv-map.html#fig:colpal">9.8</a>)。目的に応じてこの三種類を使い分ける。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
+色パレットは大きく分けて、カテゴリ、連続、発散 (分岐) の三種類がある (Figure <a href="adv-map.html#fig:colpal">9.8</a>)。目的に応じてこの三種類を使い分ける。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
 第四の色パレットとして二変量 (bivariate) がある。
 これは、地図上の二つの変数の関係を代表する。&lt;/p&gt;"><sup>50</sup></a>
 カテゴリパレットは、区別しやすい色で構成されており、州名や土地被覆クラスなど、特定の順序を持たないカテゴリデータに最適である。
@@ -480,7 +480,7 @@ FIGURE 9.8: カテゴリ、連続色、発散のパレットの例。
 また、情報を効果的に伝えるために、色パレットは分かりやすいものが望ましい。
 どの数値が低く、どの数値が高いかが明確で、色も徐々に変化することが望ましい。
 第二に、色の変化は、多くの人がアクセスできるものでなければならない。
-そのため、色弱者用のパレットをできるだけ多く使うことが大切である。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;code&gt;cols4all::c4a_gui()&lt;/code&gt; の “Color Blind Friendliness” パネルの “Color vision” オプションを参照。&lt;/p&gt;"><sup>52</sup></a></p>
+そのため、可能な限り色弱者用のパレットを使うことが大切である。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;code&gt;cols4all::c4a_gui()&lt;/code&gt; の “Color Blind Friendliness” パネルの “Color vision” オプションを参照。&lt;/p&gt;"><sup>52</sup></a></p>
 </div>
 <div id="legends" class="section level3" number="9.2.5">
 <h3>
@@ -548,15 +548,14 @@ FIGURE 9.9: 方位記号とスケールバーを追加した地図。
 FIGURE 9.10: レイアウトオプションは、(左から) scale、bg.color、frame の各引数で指定。
 </p>
 </div>
-<p><code><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout()</a></code> の他の引数は、地図が配置されるキャンバスとの関係で、地図の多くの側面を制御する。
+<p><code><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout()</a></code> の引数は、キャンバス内で地図がどのように配置されるかを制御する。
 ここでは、便利なレイアウト設定をご紹介する (一部、Figure <a href="adv-map.html#fig:layout2">9.11</a>)。</p>
 <ul>
 <li>
 <code>inner.margin</code> と <code>outer.margin</code> はマージンを設定</li>
 <li>
-<code>fontface</code> で制御されるフォント設定と <code>fontfamily</code>
-</li>
-<li>凡例設定には、<code>legend.show</code> (凡例を表示すかどうか)、<code>legend.only</code> (地図を省略するか)、<code>legend.outside</code> (凡例を地図の外に出すか) などの二値オプションや、<code>legend.position</code> ですべて設定</li>
+<code>fontface</code> で制御されるフォント設定と <code>fontfamily</code> (訳註: macOS では文字化けを fontfamily = “HiraginoSans-W3” とすることで回避できる)</li>
+<li>凡例設定は、<code>legend.show</code> (凡例を表示すかどうか)、<code>legend.only</code> (地図を省略するか)、<code>legend.outside</code> (凡例を地図の外に出すか) などの二値オプションで設定するか、あるいは <code>legend.position</code> ですべて設定</li>
 <li>図郭の幅 (<code>frame.lwd</code>) と二重線 (<code>frame.double.line</code>) を許可するオプション</li>
 <li>
 <code>sepia.intensity</code> (地図のセピア度合) と <code>saturation</code> (色・グレースケール) を制御する色設定</li>
@@ -573,9 +572,9 @@ FIGURE 9.11: 選択したレイアウトオプション。
 <span class="header-section-number">9.2.7</span> ファセット地図<a class="anchor" aria-label="anchor" href="#faceted-maps"><i class="fas fa-link"></i></a>
 </h3>
 <p>
-ファセット地図は「スモール・マルチプル」とも呼ばれ、多数の地図を横に並べ、時には縦に重ねて構成する <span class="citation">(<a href="references.html#ref-meulemans_small_2017">Meulemans et al. 2017</a>)</span>。
+ファセット地図は「スモール・マルチプル」とも呼ばれ、多数の地図を横または縦に重ねて構成する <span class="citation">(<a href="references.html#ref-meulemans_small_2017">Meulemans et al. 2017</a>)</span>。
 ファセットは、空間的な関係が時間などの別の変数に対してどのように変化するかを視覚化することができる。
-例えば、集落の人口の変化を、各パネルが特定の時点の人口を表すファセット地図で表現することができる。
+例えば、集落の人口の変化を表現する場合、特定の時点の人口のパネルを並べたファセット地図で表現することができる。
 時間の次元は、色などの別の<u>視覚化に関する変数</u>で表現できる。
 しかし、これは複数のポイントが重なるため、地図が乱雑になる危険性がある (都市は移動しない！)。</p>
 <p>ファセット地図では、一つのジオメトリ・データの属性データのそれぞれの列に対して一つのファセットとなる (<code>sf</code> オブジェクトのデフォルトのプロット方法、Chapter <a href="spatial-class.html#spatial-class">2</a> を参照)。
@@ -750,9 +749,9 @@ FIGURE 9.15: 1950年から2030年までの、国連による人口予測に基�
 次のコマンドは、Figure <a href="adv-map.html#fig:urban-animated">9.15</a> に示されたアニメーションを作成する。ただし、いくつかの要素が欠けているので、演習で追加する。</p>
 <div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_animation.html">tmap_animation</a></span><span class="op">(</span><span class="va">urb_anim</span>, filename <span class="op">=</span> <span class="st">"urb_anim.gif"</span>, delay <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></code></pre></div>
-<p>地図アニメーションの威力を示すもう一つの例が、Figure <a href="adv-map.html#fig:animus">9.16</a> にある。
+<p>地図アニメーションの威力を示すもう一つの例が、Figure <a href="adv-map.html#fig:animus">9.16</a> である。
 これは、アメリカにおける州の発達を示すもので、最初は東部で形成され、その後徐々に西部へ、最後は内陸部へと発展していった。
-この地図を再現するためのコードは、本書の GitHub リポジトリのスクリプト <code>code/09-usboundaries.R</code> に記載されている。</p>
+この地図を再現するためのコードは、本書の GitHub リポジトリのスクリプト <code>code/09-usboundaries.R</code> にある。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:animus"></span>
 <img src="https://user-images.githubusercontent.com/1825120/38543030-5794b6f0-3c9b-11e8-9da9-10ec1f3ea726.gif" alt="米国における人口増加、州形成、境界線の変化を示す地図アニメーション (1790-2010年)。アニメーション版は r.geocompx.org でオンライン公開。" width="100%"><p class="caption">
@@ -823,7 +822,7 @@ FIGURE 9.19: <strong>mapview</strong> の動作イメージ図。
 データセットを複数のレイヤに「バースト」する機能や、<code>+</code> の後に地理的オブジェクトの名前を付けて複数のレイヤを追加する機能など、高度な制御を提供する。
 さらに、属性の自動的な色付けも可能である (引数 <code>zcol</code>)。
 要するに、データドリブンの <strong>leaflet</strong> API と考えることができる (<strong>leaflet</strong> については後述する)。
-<strong>mapview</strong> は常に空間オブジェクト (<code>sf</code> と <code>SpatRaster</code>) を最初の引数として期待することから、パイプ式の末尾でうまく機能する。
+<strong>mapview</strong> は常に空間オブジェクト (<code>sf</code> と <code>SpatRaster</code>) を最初の引数として期待することから、パイプで繋げてもうまく機能する。
 次の例では、<strong>sf</strong> を使って直線とポリゴンを交差させ、<strong>mapview</strong> (Figure <a href="adv-map.html#fig:mapview2">9.20</a>) で可視化する場合を考えてみよう。</p>
 <div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/mapview">mapview</a></span><span class="op">)</span></span>
@@ -1056,95 +1055,62 @@ FIGURE 9.26: ggplot2 のみ (左) と ggplot2 と ggspatial (右) で生成し�
 特定の種類の地図作成パッケージ (次の段落) を取り上げる前に、すでに取り上げた汎用の地図作成パッケージの代替品 (Table <a href="adv-map.html#tab:map-gpkg">9.1</a>) について考えてみる価値がある。</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:map-gpkg">TABLE 9.1: </span><span id="tab:map-gpkg">TABLE 9.2: </span>汎用の地図作成パッケージ
-</caption>
-<thead><tr>
-<th style="text-align:left;">
-Package
-</th>
-<th style="text-align:left;">
-Title
-</th>
+<span id="tab:map-gpkg">TABLE 9.1: </span>汎用の地図作成パッケージ</caption>
+<colgroup>
+<col width="11%">
+<col width="88%">
+</colgroup>
+<thead><tr class="header">
+<th align="left">Package</th>
+<th align="left">Title</th>
 </tr></thead>
 <tbody>
-<tr>
-<td style="text-align:left;">
-ggplot2
-</td>
-<td style="text-align:left;width: 9cm; ">
-グラフィックの文法を使って、エレガントなデータビジュアライゼーションを作成する |
-</td>
+<tr class="odd">
+<td align="left">ggplot2</td>
+<td align="left">グラフィックの文法を使って、エレガントなデータビジュアライゼーションを作成する</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-googleway
-</td>
-<td style="text-align:left;width: 9cm; ">
-Google Maps API にアクセスし、データの取得と地図のプロットを行う |
-</td>
+<tr class="even">
+<td align="left">googleway</td>
+<td align="left">Google Maps API にアクセスし、データの取得と地図のプロットを行う</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-ggspatial
-</td>
-<td style="text-align:left;width: 9cm; ">
-ggplot2 用の空間データフレームワーク |
-</td>
+<tr class="odd">
+<td align="left">ggspatial</td>
+<td align="left">ggplot2 用の空間データフレームワーク</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-leaflet
-</td>
-<td style="text-align:left;width: 9cm; ">
-JavaScript ‘Leaflet’ ライブラリを使ったインタラクティブウェブ地図を作成 |
-</td>
+<tr class="even">
+<td align="left">leaflet</td>
+<td align="left">JavaScript ‘Leaflet’ ライブラリを使ったインタラクティブウェブ地図を作成</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-mapview
-</td>
-<td style="text-align:left;width: 9cm; ">
-R で空間データをインタラクティブに表示 |
-</td>
+<tr class="odd">
+<td align="left">mapview</td>
+<td align="left">R で空間データをインタラクティブに表示</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-plotly
-</td>
-<td style="text-align:left;width: 9cm; ">
-‘plotly.js’ からインタラクティブなウェブ画像を作成 |
-</td>
+<tr class="even">
+<td align="left">plotly</td>
+<td align="left">‘plotly.js’ からインタラクティブなウェブ画像を作成</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-rasterVis
-</td>
-<td style="text-align:left;width: 9cm; ">
-ラスタデータの可視化方法 |
-</td>
+<tr class="odd">
+<td align="left">rasterVis</td>
+<td align="left">ラスタデータの可視化方法</td>
 </tr>
-<tr>
-<td style="text-align:left;">
-tmap
-</td>
-<td style="text-align:left;width: 9cm; ">
-主題図 |
-</td>
+<tr class="even">
+<td align="left">tmap</td>
+<td align="left">主題図</td>
 </tr>
 </tbody>
 </table></div>
 <p>Table <a href="adv-map.html#tab:map-gpkg">9.1</a> は、さまざまな地図作成パッケージが利用可能であることを示しており、この表に記載されていないものも多数ある。
 特に注目すべきは <strong>mapsf</strong> で、コロプレス図、比例シンボル地図、フロー地図など、さまざまな地理的視覚化を生成することができる。
 これらは、<a href="https://cran.r-project.org/package=mapsf/vignettes/mapsf.html"><code>mapsf</code></a> vignette に記載されている。</p>
-<p>Table <a href="adv-map.html#tab:map-spkg">9.3</a> に示すように、いくつかのパッケージは、特定の地図タイプに焦点を当てている。
-地理空間を歪めたカルトグラムの作成、ラインマップの作成、ポリゴンの正六角形グリッドへの変換、複雑なデータを地理的トポロジーを表すグリッド上に可視化し、３次元表現をするパッケージである。</p>
+<p>Table <a href="adv-map.html#tab:map-spkg">9.2</a> に示すように、いくつかのパッケージは、特定の地図タイプに焦点を当てている。
+地理空間を歪めたカルトグラムの作成、ラインマップの作成、ポリゴンの正六角形グリッドへの変換、複雑なデータを地理的トポロジーを表すグリッド上に可視化し、3 次元表現をするパッケージである。</p>
 <pre><code>#&gt; Warning: One or more parsing issues, call `problems()` on your data frame for details,
 #&gt; e.g.:
 #&gt;   dat &lt;- vroom(...)
 #&gt;   problems(dat)</code></pre>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:map-spkg">TABLE 9.3: </span>特定の目的のための地図作成パッケージとその関連する指標。</caption>
+<span id="tab:map-spkg">TABLE 9.2: </span>特定の目的のための地図作成パッケージとその関連する指標。</caption>
 <thead><tr class="header">
 <th align="left">Package</th>
 <th align="left">Title</th>
@@ -1342,7 +1308,7 @@ FIGURE 9.28: 非連続領域カルトグラム (左) と円面積カルトグラ
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-08.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-10.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

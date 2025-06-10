@@ -35,7 +35,7 @@ library(leaflet) # 動的地図
 library(ggplot2) # tidyverse データ可視化パッケージ
 ```
 
-- Section \@ref(spatial-ras) については、以下の二つのデータセットを読み込む必要がある。
+- Section \@ref(spatial-ras) で紹介した二つのデータセットを読み込む必要がある。
 
 
 ``` r
@@ -44,11 +44,11 @@ nz_elev = rast(system.file("raster/nz_elev.tif", package = "spDataLarge"))
 
 ## イントロダクション  {#introduction-09}
 
-地理学的研究の満足度と重要性は、その結果を伝えることにある。
-地図作成は、コミュニケーションと細部への注意、そして創造力を必要とする古来の技術である。\index{ちずせいさく@地図作成}
+地理学的研究は、その結果を伝えることで満足度と重要性が高まる。
+地図作成あるいは地図学は、コミュニケーションと細部への注意、そして創造力を必要とする古来の技術である。\index{ちずせいさく@地図作成}
 R における静的地図は、Section \@ref(basic-map) で見たように、`plot()` 関数を使えば簡単にできる。
 R の基本メソッドを使って高度な地図を作成することも可能ではある [@murrell_r_2016]。
-しかし、この章の焦点は、専用の地図作成パッケージを使った地図作成にある。
+しかし、この章の焦点は、地図作成専用のパッケージを使った地図作成にある。
 新しいスキルを身につけるには、1 つの分野の知識を深めてから手を広げていくことが大切である。
 地図の作成も例外ではない。そのため、この章では多くのパッケージを表面的にではなく、1 つのパッケージ (**tmap**) を深く掘り下げて説明する。
 
@@ -135,7 +135,7 @@ tm_shape(nz) +
 - `tm_raster()`: ラスタデータの色付きのセル (３レイヤのあるラスタには `tm_rgb()` もある)
 - `tm_text()`: (複合) 点、(複合) 線、(複合) ポリゴンのテキスト
 
-Figure \@ref(fig:tmshape) の右側のパネルでは、塗りつぶし (fill) レイヤ<u>の上に</u>境界 (borders) を重ねた結果を示す。
+Figure \@ref(fig:tmshape) の右側のパネルでは、塗りつぶし (fill) レイヤ<u>の上に</u>境界 (borders) を重ねた結果を示している。
 
 \BeginKnitrBlock{rmdnote}<div class="rmdnote">`qtm()` (**q**uick **t**hematic **m**aps) は、主題図を簡単に作成する関数である。
 簡潔で、多くの場合、良いデフォルトの可視化を提供する。
@@ -146,7 +146,7 @@ Figure \@ref(fig:tmshape) の右側のパネルでは、塗りつぶし (fill) �
 ### 地図オブジェクト  {#map-obj}
 
 **tmap** の便利な点は、地図を表す<u>オブジェクト</u>を格納できることである。
-以下のコードは、Figure \@ref(fig:tmshape) の最後のプロットをクラス `tmap` のオブジェクトとして保存することでこれを示している (`tm_fill() + tm_borders()` を単一の関数に凝縮した `tm_polygons()` の使用に注意してみよう)。
+以下のコードは、Figure \@ref(fig:tmshape) の最後のプロットをクラス `tmap` のオブジェクトとして保存することでこれを示している (`tm_polygons()` 関数は、`tm_fill() + tm_borders()` を単一の関数に凝縮したもの)。
 
 
 ``` r
@@ -213,11 +213,11 @@ tmap_arrange(map_nz1, map_nz2, map_nz3)
 \index{ちずさくせい@地図作成!かしかのへんすう@可視化の変数}
 前節のプロットは、**tmap** のデフォルトの美観セッティングを示してきた。
 `tm_fill()` と `tm_symbols()` のレイヤには灰色の影を使用し、`tm_lines()` で作成した線を表現するために、連続した黒い線を使用する。
-もちろん、これらのデフォルト値やその他の美観はオーバーライドすることができる。
-このセクションの目的は、その方法を示すことである。
+もちろん、これらのデフォルト値やその他の美観は上書きすることができる。
+このセクションでは、その方法を示していく。
 
 地図の美観には、大きく分けて「データによって変化するもの」と「一定であるもの」がある。
-ヘルパー関数 `aes()` を使って変数の美観を表現する **ggplot2** とは異なり、 **tmap** はレイヤの種別に応じた美観の引数を直接受け付ける。
+**ggplot2** ではヘルパー関数 `aes()` を使って変数の美観を表現するが、**tmap** はレイヤの種別に応じた美観の引数を直接受け付ける。
 
 - `fill`: ポリゴンの塗りつぶし色
 - `col`: ポリゴン境界線、線、点、ラスタの色
@@ -251,7 +251,7 @@ tmap_arrange(ma1, ma2, ma3, ma4, ma5, ma6)
 </div>
 
 Base R のプロットと同様に、美観を定義する引数もまた、様々な値を受け取ることができる。
-以下の Base R コード (Figure \@ref(fig:tmcol) の左のパネルを生成) とは異なり、**tmap** 美観引数は数値ベクタを受け付けない。
+ただし、Base R コード (Figure \@ref(fig:tmcol) の左のパネルを生成) とは異なり、**tmap** 美観引数は数値ベクトルを受け付けない。
 
 
 ``` r
@@ -260,8 +260,8 @@ tm_shape(nz) + tm_fill(fill = nz$Land_area) # 失敗
 #> Error: palette should be a character value
 ```
 
-代わりに、`fill` (および、ラインレイヤのための `lwd`、ポイントレイヤのための `size` など、異なることがある他の美観) は、プロットされるジオメトリに関連する属性を指定する文字列を必要とする。
-したがって、次のように望ましい結果を得ることができる (Figure \@ref(fig:tmcol) 右図)。
+`fill` (線レイヤの場合は `lwd`、点レイヤの場合は `size` など) は、プロットされるジオメトリに関連する属性を、数値ベクトルではなく文字列を渡す必要がある。
+次のようにすると望ましい結果を得ることができる (Figure \@ref(fig:tmcol) 右図)。
 
 
 ``` r
@@ -276,7 +276,7 @@ tm_shape(nz) + tm_fill(fill = "Land_area")
 視覚化の変数には、`.scale`、`.legend`、`.free` という文字列を後ろにつけた 3 つの追加引数がある。
 例えば、`tm_fill()` には `fill`、`fill.scale`、`fill.legend`、`fill.free` といった引数がある。
 `.scale` 引数は、地図と凡例での表示方法を指定し (Section \@ref(scales))、`.legend` はタイトル、方向、位置を指定する (Section \@ref(legends))。
-`.free` 引数は、多くのファセットをもつ地図で、ファセットによって縮尺や凡例が変わる場合などに使用する。
+`.free` 引数は、多くのファセットをもつ地図で、ファセットによってスケールや凡例が変わる場合などに使用する。
 
 ### スケール (scale)  {#scales}
 
@@ -315,7 +315,7 @@ tm_shape(nz) + tm_polygons(fill = "Median_income",
 例えば、`values` は、`fill.scale` or `col.scale` に対しては色のベクトル、パレット名、`size.scale` に対しては大きさのベクトル、`shape.scale` に対してはシンボルのベクトルを期待する。</div>\EndKnitrBlock{rmdnote}
 
 \index{tmap (package)!break}
-`tm_scale_` から始まる関数ファミリーを使うことで縮尺をカスタマイズすることもできる。
+`tm_scale_` から始まる関数ファミリーでスケールをカスタマイズすることもできる。
 最も重要なものは、`tm_scale_intervals()`、`tm_scale_continuous()`、`tm_scale_categorical()` である。
 
 
@@ -358,7 +358,7 @@ tm_shape(nz) + tm_polygons(fill = "Median_income",
 例として、`tmap_options()$values.var` を実行してみよう。</div>\EndKnitrBlock{rmdnote}
 
 \index{いろぱれっと@色パレット}
-色パレット\index{ちずさくせい@地図作成!いろぱれっと@色パレット}は大きく分けて、カテゴリ、連続、発散の三種類ある (Figure \@ref(fig:colpal))。目的に応じてこの三種類を使い分ける。^[
+色パレット\index{ちずさくせい@地図作成!いろぱれっと@色パレット}は大きく分けて、カテゴリ、連続、発散 (分岐) の三種類がある (Figure \@ref(fig:colpal))。目的に応じてこの三種類を使い分ける。^[
 第四の色パレットとして二変量 (bivariate) がある。
 これは、地図上の二つの変数の関係を代表する。
 ]
@@ -402,7 +402,7 @@ tm_shape(nz) +
 また、情報を効果的に伝えるために、色パレットは分かりやすいものが望ましい。
 どの数値が低く、どの数値が高いかが明確で、色も徐々に変化することが望ましい。
 第二に、色の変化は、多くの人がアクセスできるものでなければならない。
-そのため、色弱者用のパレットをできるだけ多く使うことが大切である。^[`cols4all::c4a_gui()` の "Color Blind Friendliness" パネルの "Color vision" オプションを参照。] 
+そのため、可能な限り色弱者用のパレットを使うことが大切である。^[`cols4all::c4a_gui()` の "Color Blind Friendliness" パネルの "Color vision" オプションを参照。] 
 
 ### 凡例  {#legends}
 
@@ -481,12 +481,12 @@ map_nz + tm_layout(frame = FALSE)
 <p class="caption">(\#fig:layout1)レイアウトオプションは、(左から) scale、bg.color、frame の各引数で指定。</p>
 </div>
 
-`tm_layout()` の他の引数は、地図が配置されるキャンバスとの関係で、地図の多くの側面を制御する。
+`tm_layout()` の引数は、キャンバス内で地図がどのように配置されるかを制御する。
 ここでは、便利なレイアウト設定をご紹介する (一部、Figure \@ref(fig:layout2))。
 
 - `inner.margin` と `outer.margin` はマージンを設定
-- `fontface` で制御されるフォント設定と `fontfamily` 
-- 凡例設定には、`legend.show` (凡例を表示すかどうか)、`legend.only` (地図を省略するか)、`legend.outside` (凡例を地図の外に出すか) などの二値オプションや、`legend.position` ですべて設定
+- `fontface` で制御されるフォント設定と `fontfamily` (訳註: macOS では文字化けを fontfamily = "HiraginoSans-W3" とすることで回避できる)
+- 凡例設定は、`legend.show` (凡例を表示すかどうか)、`legend.only` (地図を省略するか)、`legend.outside` (凡例を地図の外に出すか) などの二値オプションで設定するか、あるいは `legend.position` ですべて設定
 - 図郭の幅 (`frame.lwd`) と二重線 (`frame.double.line`) を許可するオプション
 - `sepia.intensity` (地図のセピア度合) と `saturation` (色・グレースケール) を制御する色設定
 
@@ -499,9 +499,9 @@ map_nz + tm_layout(frame = FALSE)
 
 \index{ちずさくせい@地図作成!ふぁせっとちず@ファセット地図}
 \index{tmap (package)!ふぁせっとちず@ファセット地図}
-ファセット地図は「スモール・マルチプル」とも呼ばれ、多数の地図を横に並べ、時には縦に重ねて構成する [@meulemans_small_2017]。
+ファセット地図は「スモール・マルチプル」とも呼ばれ、多数の地図を横または縦に重ねて構成する [@meulemans_small_2017]。
 ファセットは、空間的な関係が時間などの別の変数に対してどのように変化するかを視覚化することができる。
-例えば、集落の人口の変化を、各パネルが特定の時点の人口を表すファセット地図で表現することができる。
+例えば、集落の人口の変化を表現する場合、特定の時点の人口のパネルを並べたファセット地図で表現することができる。
 時間の次元は、色などの別の<u>視覚化に関する変数</u>で表現できる。
 しかし、これは複数のポイントが重なるため、地図が乱雑になる危険性がある (都市は移動しない！)。
 
@@ -727,9 +727,9 @@ urb_anim = tm_shape(world) + tm_polygons() +
 tmap_animation(urb_anim, filename = "urb_anim.gif", delay = 25)
 ```
 
-地図アニメーションの威力を示すもう一つの例が、Figure \@ref(fig:animus) にある。
+地図アニメーションの威力を示すもう一つの例が、Figure \@ref(fig:animus) である。
 これは、アメリカにおける州の発達を示すもので、最初は東部で形成され、その後徐々に西部へ、最後は内陸部へと発展していった。
-この地図を再現するためのコードは、本書の GitHub リポジトリのスクリプト `code/09-usboundaries.R` に記載されている。
+この地図を再現するためのコードは、本書の GitHub リポジトリのスクリプト `code/09-usboundaries.R` にある。
 
 
 
@@ -817,7 +817,7 @@ mapview::mapview(nz)
 データセットを複数のレイヤに「バースト」する機能や、`+` の後に地理的オブジェクトの名前を付けて複数のレイヤを追加する機能など、高度な制御を提供する。 
 さらに、属性の自動的な色付けも可能である (引数 `zcol`)。
 要するに、データドリブンの **leaflet** API\index{API} と考えることができる (**leaflet** については後述する)。
-**mapview** は常に空間オブジェクト (`sf` と `SpatRaster`) を最初の引数として期待することから、パイプ式の末尾でうまく機能する。 
+**mapview** は常に空間オブジェクト (`sf` と `SpatRaster`) を最初の引数として期待することから、パイプで繋げてもうまく機能する。 
 次の例では、**sf** を使って直線とポリゴンを交差させ、**mapview** (Figure \@ref(fig:mapview2)) で可視化する場合を考えてみよう。
 
 
@@ -1081,49 +1081,20 @@ ggplot() +
 最初に **sf**、**terra**、**ggplot2** パッケージを使った地図作成を取り上げたのは、これらのパッケージが非常に柔軟で、様々な静的地図を作成することが可能であることがある。
 特定の種類の地図作成パッケージ (次の段落) を取り上げる前に、すでに取り上げた汎用の地図作成パッケージの代替品 (Table \@ref(tab:map-gpkg)) について考えてみる価値がある。
 
-<table>
-<caption>(\#tab:map-gpkg)(\#tab:map-gpkg)汎用の地図作成パッケージ</caption>
- <thead>
-  <tr>
-   <th style="text-align:left;"> Package </th>
-   <th style="text-align:left;"> Title </th>
-  </tr>
- </thead>
-<tbody>
-  <tr>
-   <td style="text-align:left;"> ggplot2 </td>
-   <td style="text-align:left;width: 9cm; "> グラフィックの文法を使って、エレガントなデータビジュアライゼーションを作成する | </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> googleway </td>
-   <td style="text-align:left;width: 9cm; "> Google Maps API にアクセスし、データの取得と地図のプロットを行う               | </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> ggspatial </td>
-   <td style="text-align:left;width: 9cm; "> ggplot2 用の空間データフレームワーク                                           | </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> leaflet </td>
-   <td style="text-align:left;width: 9cm; "> JavaScript 'Leaflet' ライブラリを使ったインタラクティブウェブ地図を作成        | </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> mapview </td>
-   <td style="text-align:left;width: 9cm; "> R で空間データをインタラクティブに表示                                         | </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> plotly </td>
-   <td style="text-align:left;width: 9cm; "> 'plotly.js' からインタラクティブなウェブ画像を作成                             | </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> rasterVis </td>
-   <td style="text-align:left;width: 9cm; "> ラスタデータの可視化方法                                                       | </td>
-  </tr>
-  <tr>
-   <td style="text-align:left;"> tmap </td>
-   <td style="text-align:left;width: 9cm; "> 主題図                                                                         | </td>
-  </tr>
-</tbody>
-</table>
+
+
+Table: (\#tab:map-gpkg)汎用の地図作成パッケージ
+
+|Package   |Title                                                                          |
+|:---------|:------------------------------------------------------------------------------|
+|ggplot2   |グラフィックの文法を使って、エレガントなデータビジュアライゼーションを作成する |
+|googleway |Google Maps API にアクセスし、データの取得と地図のプロットを行う               |
+|ggspatial |ggplot2 用の空間データフレームワーク                                           |
+|leaflet   |JavaScript 'Leaflet' ライブラリを使ったインタラクティブウェブ地図を作成        |
+|mapview   |R で空間データをインタラクティブに表示                                         |
+|plotly    |'plotly.js' からインタラクティブなウェブ画像を作成                             |
+|rasterVis |ラスタデータの可視化方法                                                       |
+|tmap      |主題図                                                                         |
 
 
 
@@ -1132,7 +1103,7 @@ Table \@ref(tab:map-gpkg) は、さまざまな地図作成パッケージが利
 これらは、[`mapsf`](https://cran.r-project.org/package=mapsf/vignettes/mapsf.html)\index{mapsf (package)} vignette に記載されている。
 
 Table \@ref(tab:map-spkg) に示すように、いくつかのパッケージは、特定の地図タイプに焦点を当てている。
-地理空間を歪めたカルトグラムの作成、ラインマップの作成、ポリゴンの正六角形グリッドへの変換、複雑なデータを地理的トポロジーを表すグリッド上に可視化し、３次元表現をするパッケージである。
+地理空間を歪めたカルトグラムの作成、ラインマップの作成、ポリゴンの正六角形グリッドへの変換、複雑なデータを地理的トポロジーを表すグリッド上に可視化し、3 次元表現をするパッケージである。
 
 
 ```
