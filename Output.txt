@@ -15,6 +15,8 @@ rmdja::pdf_book_ja:
 tinytex::tlmgr_update()
 tinytex::tlmgr_install("bibtex")
 
+! Package biblatex Error: Style 'apalike' not found.
+
 ## 
 
 Remove _book, _tex folders.
@@ -29,3 +31,20 @@ DVIPDFMX=/Users/baba/Library/TinyTeX/bin/universal-darwin/dvipdfmx -r 300 -vv -z
 
 $(LATEX) geocompr2-ja.tex && $(BIBTEX) geocompr2-ja
 $(LATEX) geocompr2-ja.tex && $(LATEX) geocompr2-ja.tex && $(DVIPDFMX) geocompr2-ja.dvi
+
+/Users/baba/Library/TinyTeX/bin/universal-darwin//platex -kanji=utf8 -shell-escape geocompr2-ja.tex && /Users/baba/Library/TinyTeX/bin/universal-darwin/bibtex geocompr2-ja
+/Users/baba/Library/TinyTeX/bin/universal-darwin//platex -kanji=utf8 -shell-escape geocompr2-ja.tex && /Users/baba/Library/TinyTeX/bin/universal-darwin//platex -kanji=utf8 -shell-escape geocompr2-ja.tex && /Users/baba/Library/TinyTeX/bin/universal-darwin/dvipdfmx -r 300 -vv -z 9  geocompr2-ja.dvi
+
+! Package biblatex Error: Style 'apalike' not found.
+
+
+processing file: 12-spatial-cv-ja.Rmd
+  |.................................................. |  99%                   Error:
+! object 'classif.auc' not found
+Backtrace:
+    x
+ 1. +-...[]
+ 2. +-base::`[.data.frame`(...)
+ 3. \-base::mean(classif.auc)
+
+Remove _book and other interim folders
