@@ -164,7 +164,7 @@ GRASS GIS は、CLI をベースとしながらも GUI がある GIS の良い�
 
 <div class="rmdnote">
 コマンドラインインタフェースとは、連続したテキスト行 (コマンドライン) を実行することで、コンピュータプログラムと対話するための環境である。
-Linuxの <code>bash</code> や Windows の <code>PowerShell</code> が、OS のほとんど全てを制御するコマンドラインの代表例である。
+OS のほとんど全てを制御するコマンドラインの代表例として、Linuxの <code>bash</code> や Windows の <code>PowerShell</code> がある。
 CLI は、RStudio や VS Code のような IDE で補強することができ、コードの自動補完やユーザーエクスペリエンスを向上させる機能を提供する。
 </div>
 <p>R はインターフェース言語として<u>誕生</u>したため、再現可能なデータ分析と GIS をつなぐブリッジを構築する選択肢として当然のごとく選ばれた。
@@ -175,9 +175,9 @@ GIS ブリッジを通すことで、R はさまざまな作業を実行でき�
 さらに、R は、インタラクティブ地図/地図アニメーション作成 (Chapter <a href="adv-map.html#adv-map">9</a> 参照) や空間統計モデリング ( Chapter <a href="spatial-cv.html#spatial-cv">12</a> 参照) など、ジオコンピュテーションのいくつかの分野では GIS を凌駕する性能を有している。</p>
 <p>この章では、Table <a href="gis.html#tab:gis-comp">10.1</a> にまとめた 3 つの成熟したオープンソース GIS 製品への「ブリッジ」に焦点を当てる。</p>
 <ul>
-<li>QGIS <strong>qgisprocess</strong>; [<span class="citation">Dunnington et al. (<a href="references.html#ref-R-qgisprocess">2024</a>)</span>; Section <a href="gis.html#rqgis">10.2</a>]</li>
-<li>SAGA <strong>Rsagacmd</strong>; [<span class="citation">Pawley (<a href="references.html#ref-R-Rsagacmd">2023</a>)</span>; Section <a href="gis.html#saga">10.3</a>]</li>
-<li>GRASS GIS <strong>rgrass</strong>; [<span class="citation">Bivand (<a href="references.html#ref-R-rgrass">2023</a>)</span>; Section <a href="gis.html#grass">10.4</a>]</li>
+<li>QGIS: <strong>qgisprocess</strong> [<span class="citation">Dunnington et al. (<a href="references.html#ref-R-qgisprocess">2024</a>)</span>; Section <a href="gis.html#rqgis">10.2</a>]</li>
+<li>SAGA: <strong>Rsagacmd</strong> [<span class="citation">Pawley (<a href="references.html#ref-R-Rsagacmd">2023</a>)</span>; Section <a href="gis.html#saga">10.3</a>]</li>
+<li>GRASS GIS: <strong>rgrass</strong>: [<span class="citation">Bivand (<a href="references.html#ref-R-rgrass">2023</a>)</span>; Section <a href="gis.html#grass">10.4</a>]</li>
 </ul>
 <p>また、QGIS (<a href="https://docs.qgis.org/3.28/en/docs/training_manual/processing/r_intro.html">docs.qgis.org</a> 参照) や GRASS GIS (<a href="https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#R_within_GRASS">grasswiki.osgeo.org</a> 参照) など GIS から R を実行する環境も開発されている。</p>
 <div class="inline-table"><table class="table table-sm">
@@ -407,8 +407,8 @@ QGIS の GRASS GIS provider は、QGIS version 3.34 まで <code>grass7</code> �
 <p>その結果、Figure <a href="gis.html#fig:sliver">10.2</a> の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:sliver"></span>
-<img src="images/10-sliver.png" alt="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。" width="100%"><p class="caption">
-FIGURE 10.2: 灰色部分を赤で強調 (左) と灰色部分を除去 (右)。
+<img src="images/10-sliver.png" alt="切れ端 (sliver) 部分を赤で強調 (左) と切れ端部分を除去 (右)。" width="100%"><p class="caption">
+FIGURE 10.2: 切れ端 (sliver) 部分を赤で強調 (左) と切れ端部分を除去 (右)。
 </p>
 </div>
 </div>
@@ -439,9 +439,9 @@ DEM は、衛星航法、水流モデル、表面分析、可視化など、さ�
 <span><span class="co">#&gt;   &lt;chr&gt;          &lt;chr&gt;</span></span>
 <span><span class="co">#&gt; 1 SAGA Next Gen  sagang:sagawetnessindex</span></span>
 <span><span class="co">#&gt; 2 SAGA Next Gen  sagang:topographicwetnessindexonestep</span></span></code></pre></div>
-<p>上記のコードの出力は、目的のアルゴリズムが SAGA ソフトウェアに存在することを示唆するものである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;TWI は、GRASS GIS 関数 &lt;code&gt;r.topidx&lt;/code&gt; でも計算可能。&lt;/p&gt;"><sup>63</sup></a>
+<p>上記のコードの出力から、目的のアルゴリズムが SAGA ソフトウェアに存在することが推測できる。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;TWI は、GRASS GIS 関数 &lt;code&gt;r.topidx&lt;/code&gt; でも計算可能。&lt;/p&gt;"><sup>63</sup></a>
 SAGA はハイブリッド GIS であるが、主にラスタ処理、ここでは特にデジタル標高モデル (土壌特性、地形属性、気候パラメータ) に重点を置いている。
-したがって、SAGA は大規模な (高解像度の) ラスタデータセットの高速処理に特に優れている <span class="citation">(<a href="references.html#ref-conrad_system_2015">Conrad et al. 2015</a>)</span>。</p>
+SAGA が特に優れているのは、大規模な (高解像度の) ラスタデータセットの高速処理である <span class="citation">(<a href="references.html#ref-conrad_system_2015">Conrad et al. 2015</a>)</span>。</p>
 <p><code>"sagang:sagawetnessindex"</code> アルゴリズムは、実際には修正された TWI であり、谷底に位置するセルに対してより現実的な土壌水分ポテンシャルをもたらすものである <span class="citation">(<a href="references.html#ref-bohner_spatial_2006">Böhner and Selige 2006</a>)</span>。</p>
 <div class="sourceCode" id="cb369"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help</a></span><span class="op">(</span><span class="st">"sagang:sagawetnessindex"</span><span class="op">)</span></span></code></pre></div>
@@ -499,7 +499,7 @@ FIGURE 10.3: 研究対象地 Mongón の地形湿潤指数 (TWI、パネル左) 
 <h2>
 <span class="header-section-number">10.3</span> SAGA<a class="anchor" aria-label="anchor" href="#saga"><i class="fas fa-link"></i></a>
 </h2>
-<p>System for Automated Geoscientific Analyses (SAGA; Table <a href="gis.html#tab:gis-comp">10.1</a>) は、コマンドラインインタフェース (Windows では <code>saga_cmd.exe</code>、Linux では単に <code>saga_cmd</code>) を介して SAGA モジュールを実行する可能性を提供する (<a href="https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/">SAGA wiki on modules</a> を参照)。
+<p>System for Automated Geoscientific Analyses (SAGA; Table <a href="gis.html#tab:gis-comp">10.1</a>) は、コマンドラインインタフェース (Windows では <code>saga_cmd.exe</code>、Linux では単に <code>saga_cmd</code>) を介して SAGA モジュールを実行することができる (<a href="https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/">SAGA wiki on modules</a> を参照)。
 また、Python インターフェース (SAGA Python API) も用意されている。
 <strong>Rsagacmd</strong> は、前者を使って R 内で SAGA を実行している。</p>
 <p>この Section では、<strong>Rsagacmd</strong> を使用して、SAGA の seeded region growing アルゴリズムを使って、2000年9月の Peru の Mongón 調査地域の正規化差分植生指数 (normalized difference vegetation index, NDVI) の値が類似した地域を抽出する (Figure <a href="gis.html#fig:sagasegments">10.4</a> 左図)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;リモートセンシング画像から NDVI を算出する方法については、Section &lt;a href="spatial-operations.html#local-operations"&gt;4.3.3&lt;/a&gt; を参照。&lt;/p&gt;'><sup>65</sup></a></p>
@@ -569,7 +569,7 @@ FIGURE 10.4: 正規化差分植生指数 (NDVI、左図) と、Mongón調査地�
 </h2>
 <p>米国陸軍建設工学研究所 (U.S. Army - Construction Engineering Research Laboratory, USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (Geographical Resources Analysis Support System, GRASS GIS) の中核となるシステムを作成した [Table <a href="gis.html#tab:gis-comp">10.1</a>; <span class="citation">Neteler and Mitasova (<a href="references.html#ref-neteler_open_2008">2008</a>)</span>]。
 アカデミアは1997年からこの作業を継続した。
-SAGA と同様、グラスも当初はラスタ処理に注力し、その後、GRASS GIS 6.0 以降、高度なベクタ機能を追加している <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span>。</p>
+SAGA と同様、GRASS も当初はラスタ処理に注力し、その後、GRASS GIS 6.0 以降、高度なベクタ機能を追加している <span class="citation">(<a href="references.html#ref-bivand_applied_2013">Bivand, Pebesma, and Gómez-Rubio 2013</a>)</span>。</p>
 <p>GRASS は、入力データを内部データベースに格納する。
 ベクタデータに関して、GRASS GIS はデフォルトでトポロジカル GIS、すなわち隣接するフィーチャのジオメトリを一度だけ保存する。
 ベクタ属性の管理にはデフォルトで SQLite を用い、属性はキーによってジオメトリ、すなわち GRASS GIS データベースにリンクされる (<a href="https://grasswiki.osgeo.org/wiki/Vector_Database_Management#GRASS_GIS_vector_management_model">GRASS GIS vector management</a>)。</p>
@@ -1071,7 +1071,7 @@ openEO プラットフォームのバックエンドには無料版があり、�
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-10.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-11.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

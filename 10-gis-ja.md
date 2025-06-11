@@ -59,7 +59,7 @@ GRASS GIS は、CLI をベースとしながらも GUI がある GIS の良い�
 ブリッジを通して R の機能を拡張し、地理データ問題を解決することが本章のテーマである。
 
 \BeginKnitrBlock{rmdnote}<div class="rmdnote">コマンドラインインタフェースとは、連続したテキスト行 (コマンドライン) を実行することで、コンピュータプログラムと対話するための環境である。
-Linuxの `bash` や Windows の `PowerShell` が、OS のほとんど全てを制御するコマンドラインの代表例である。
+OS のほとんど全てを制御するコマンドラインの代表例として、Linuxの `bash` や Windows の `PowerShell` がある。
 CLI は、RStudio や VS Code のような IDE で補強することができ、コードの自動補完やユーザーエクスペリエンスを向上させる機能を提供する。</div>\EndKnitrBlock{rmdnote}
 
 R はインターフェース言語として<u>誕生</u>したため、再現可能なデータ分析と GIS をつなぐブリッジを構築する選択肢として当然のごとく選ばれた。
@@ -72,9 +72,9 @@ GIS ブリッジを通すことで、R はさまざまな作業を実行でき�
 
 この章では、Table \@ref(tab:gis-comp) にまとめた 3 つの成熟したオープンソース GIS 製品への「ブリッジ」に焦点を当てる。
 
-- QGIS\index{QGIS} **qgisprocess**\index{qgisprocess (package)}; [@R-qgisprocess; Section \@ref(rqgis)]
-- SAGA\index{SAGA} **Rsagacmd**\index{Rsagacmd (package)}; [@R-Rsagacmd; Section \@ref(saga)]
-- GRASS GIS\index{GRASS GIS} **rgrass**\index{rgrass (package)}; [@R-rgrass; Section \@ref(grass)]
+- QGIS\index{QGIS}: **qgisprocess**\index{qgisprocess (package)} [@R-qgisprocess; Section \@ref(rqgis)]
+- SAGA\index{SAGA}: **Rsagacmd**\index{Rsagacmd (package)} [@R-Rsagacmd; Section \@ref(saga)]
+- GRASS GIS\index{GRASS GIS}: **rgrass**\index{rgrass (package)}: [@R-rgrass; Section \@ref(grass)]
 
 また、QGIS\index{QGIS} ([docs.qgis.org](https://docs.qgis.org/3.28/en/docs/training_manual/processing/r_intro.html) 参照) や GRASS GIS\index{GRASS GIS}  ([grasswiki.osgeo.org](https://grasswiki.osgeo.org/wiki/R_statistics/rgrass#R_within_GRASS) 参照) など GIS から R を実行する環境も開発されている。
 
@@ -344,8 +344,8 @@ clean_sf = st_as_sf(clean)
 その結果、Figure \@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
 
 <div class="figure" style="text-align: center">
-<img src="images/10-sliver.png" alt="灰色部分を赤で強調 (左) と灰色部分を除去 (右)。" width="100%" />
-<p class="caption">(\#fig:sliver)灰色部分を赤で強調 (左) と灰色部分を除去 (右)。</p>
+<img src="images/10-sliver.png" alt="切れ端 (sliver) 部分を赤で強調 (左) と切れ端部分を除去 (右)。" width="100%" />
+<p class="caption">(\#fig:sliver)切れ端 (sliver) 部分を赤で強調 (左) と切れ端部分を除去 (右)。</p>
 </div>
 
 ### ラスタデータ  {#qgis-raster}
@@ -382,9 +382,9 @@ qgis_search_algorithms("wetness") |>
 #> 2 SAGA Next Gen  sagang:topographicwetnessindexonestep
 ```
 
-上記のコードの出力は、目的のアルゴリズムが SAGA\index{SAGA} ソフトウェアに存在することを示唆するものである。^[TWI は、GRASS GIS 関数 `r.topidx` でも計算可能。]
+上記のコードの出力から、目的のアルゴリズムが SAGA\index{SAGA} ソフトウェアに存在することが推測できる。^[TWI は、GRASS GIS 関数 `r.topidx` でも計算可能。]
 SAGA はハイブリッド GIS であるが、主にラスタ処理、ここでは特にデジタル標高モデル\index{でじたるひょうこうもでる@デジタル標高モデル} (土壌特性、地形属性、気候パラメータ) に重点を置いている。 
-したがって、SAGA は大規模な (高解像度の) ラスタ\index{らすた@ラスタ}データセットの高速処理に特に優れている [@conrad_system_2015]。
+SAGA が特に優れているのは、大規模な (高解像度の) ラスタ\index{らすた@ラスタ}データセットの高速処理である [@conrad_system_2015]。
 
 `"sagang:sagawetnessindex"` アルゴリズムは、実際には修正された TWI であり、谷底に位置するセルに対してより現実的な土壌水分ポテンシャルをもたらすものである [@bohner_spatial_2006]。
 
@@ -466,7 +466,7 @@ TWI 値が最も大きいのは谷や窪地であり、最も小さいのは予�
 
 ## SAGA  {#saga}
 
-System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:gis-comp)) は、コマンドラインインタフェース\index{こまんどらいんいんたーふぇいす@コマンドラインインターフェース} (Windows では `saga_cmd.exe`、Linux では単に `saga_cmd`) を介して SAGA モジュールを実行する可能性を提供する ([SAGA wiki on modules](https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/) を参照)。
+System for Automated Geoscientific Analyses (SAGA\index{SAGA}; Table \@ref(tab:gis-comp)) は、コマンドラインインタフェース\index{こまんどらいんいんたーふぇいす@コマンドラインインターフェース} (Windows では `saga_cmd.exe`、Linux では単に `saga_cmd`) を介して SAGA モジュールを実行することができる ([SAGA wiki on modules](https://sourceforge.net/p/saga-gis/wiki/Executing%20Modules%20with%20SAGA%20CMD/) を参照)。
 また、Python インターフェース (SAGA Python API\index{API}) も用意されている。
 **Rsagacmd**\index{Rsagacmd (package)} は、前者を使って R 内で SAGA\index{SAGA} を実行している。
 
@@ -559,7 +559,7 @@ R には、似たような値を持つポリゴン (いわゆるセグメント)
 
 米国陸軍建設工学研究所 (U.S. Army - Construction Engineering Research Laboratory, USA-CERL) は、1982年から1995年にかけて、地理資源解析支援システム (Geographical Resources Analysis Support System, GRASS GIS)\index{GRASS GIS} の中核となるシステムを作成した [Table \@ref(tab:gis-comp); @neteler_open_2008]。 
 アカデミアは1997年からこの作業を継続した。
-SAGA\index{SAGA} と同様、グラスも当初はラスタ処理に注力し、その後、GRASS GIS 6.0 以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
+SAGA\index{SAGA} と同様、GRASS も当初はラスタ処理に注力し、その後、GRASS GIS 6.0 以降、高度なベクタ機能を追加している [@bivand_applied_2013]。
 
 GRASS は、入力データを内部データベースに格納する。
 ベクタデータに関して、GRASS GIS はデフォルトでトポロジカル GIS、すなわち隣接するフィーチャのジオメトリを一度だけ保存する。
