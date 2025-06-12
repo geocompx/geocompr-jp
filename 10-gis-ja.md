@@ -613,9 +613,9 @@ london_streets = select(london_streets, osm_id)
 これでデータが揃ったので、次に GRASS GIS\index{GRASS GIS} のセッションを開始する。
 幸い、**link2GI** パッケージの `linkGRASS()` を使えば、たった一行のコードで GRASS GIS 環境をセットアップできる。
 空間オブジェクトは、空間データベースの投影と範囲を決定するものである。
-まず、`linkGRASS()` は、あなたのコンピュータにインストールされている全ての GRASS GIS\index{GRASS GIS} を検索する。
+まず、`linkGRASS()` は、コンピュータにインストールされている全ての GRASS GIS\index{GRASS GIS} を検索する。
 ここでは `ver_select` を `TRUE` に設定しているので、見つかった GRASS GIS-installation の中から対話的に一つを選択することができる。
-もし、インストールが一つしかない場合は、`linkGRASS()` が自動的にそれを選択する。
+一つしかインストールされていない場合は、`linkGRASS()` が自動的にこれを選択する。
 次に、`linkGRASS()` は、GRASS GIS への接続を確立する。
 
 
@@ -627,7 +627,7 @@ link2GI::linkGRASS(london_streets, ver_select = TRUE)
 GRASS GIS のジオアルゴリズムを使用する前に、GRASS GIS の空間データベースにデータを追加する必要がある。
 幸いなことに、便利な関数 `write_VECT()` がこれを代行してくれる。
 (ラスタデータには `write_RAST()` を使用する。)
-この例では、最初の属性列のみを使用して、道路と自転車レンタル点データを追加し、GRASS GIS で `london_streets` と `points` という名前を付けている。
+この例では、最初の属性列のみを使用して、道路と自転車レンタル店データを追加し、GRASS GIS で `london_streets` と `points` という名前を付けている。
 
 
 ``` r
