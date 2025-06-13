@@ -857,7 +857,7 @@ tm1 = tm_shape(dem) +
 tm2 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("対象") +
-  tm_layout(frame = FALSE, legend.show = FALSE) +
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP") +
   tm_shape(target_rast_p, is.main = TRUE) +
   tm_borders()
 tm3 = tm_shape(dem) +
@@ -865,7 +865,7 @@ tm3 = tm_shape(dem) +
   tm_shape(dem_resampl1) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("リサンプリング") +
-  tm_layout(frame = FALSE, legend.show = FALSE)
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tmap_arrange(tm1, tm2, tm3, nrow = 1)
 ```
 
