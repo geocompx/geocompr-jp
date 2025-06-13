@@ -791,6 +791,12 @@ identical(dem, dem_disagg)
 これがリサンプリングの役割で、新しい画素の位置に対して値を計算する処理である。
 つまり、この処理では、元のラスタの値を受け取り、カスタム解像度と原点を持つターゲットラスタの値を新たに計算し直す (Figure \@ref(fig:resampl0))。
 
+
+```
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+```
+
 <div class="figure" style="text-align: center">
 <img src="figures/resampl0-1.png" alt="オリジナルからカスタムの解像度と原点のターゲットラスタへのリサンプリング" width="100%" />
 <p class="caption">(\#fig:resampl0)オリジナルからカスタムの解像度と原点のターゲットラスタへのリサンプリング</p>

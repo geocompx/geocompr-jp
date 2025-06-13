@@ -841,6 +841,8 @@ FIGURE 5.16: 双一次補間法で分解する場合は、最も近い 4 つの�
 しかし、解像度や原点の異なるラスタが 2 つ以上ある場合はどうしたらよいのだろうか。
 これがリサンプリングの役割で、新しい画素の位置に対して値を計算する処理である。
 つまり、この処理では、元のラスタの値を受け取り、カスタム解像度と原点を持つターゲットラスタの値を新たに計算し直す (Figure <a href="geometry-operations.html#fig:resampl0">5.17</a>)。</p>
+<pre><code>#&gt; [v3-&gt;v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#&gt; [v3-&gt;v4] `tm_layout()`: use text.fontfamily instead of fontfamily</code></pre>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:resampl0"></span>
 <img src="figures/resampl0-1.png" alt="オリジナルからカスタムの解像度と原点のターゲットラスタへのリサンプリング" width="100%"><p class="caption">
@@ -866,12 +868,12 @@ Figure <a href="geometry-operations.html#fig:resampl">5.18</a> に示すよう�
 入力ラスタ (<code>x</code>)、目的の空間特性を持つラスタ (<code>y</code>)、リサンプリング方法 (<code>method</code>) を受け付ける。</p>
 <p><code><a href="https://rspatial.github.io/terra/reference/resample.html">resample()</a></code> 関数の動作を確認するために、対象となる空間特性を持つラスタが必要である。
 この例では、<code>target_rast</code> を作成するが、すでに存在するラスタオブジェクトを使用することが多いだろう。</p>
-<div class="sourceCode" id="cb200"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">target_rast</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">794650</span>, xmax <span class="op">=</span> <span class="fl">798250</span>, </span>
 <span>                   ymin <span class="op">=</span> <span class="fl">8931750</span>, ymax <span class="op">=</span> <span class="fl">8935350</span>,</span>
 <span>                   resolution <span class="op">=</span> <span class="fl">300</span>, crs <span class="op">=</span> <span class="st">"EPSG:32717"</span><span class="op">)</span></span></code></pre></div>
 <p>次に、2 つのラスタオブジェクトを最初の 2 つの引数として与え、上で説明したリサンプリングメソッドのうちの 1 つを提供する必要がある。</p>
-<div class="sourceCode" id="cb201"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb202"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dem_resampl</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">dem</span>, y <span class="op">=</span> <span class="va">target_rast</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span></code></pre></div>
 <p>Figure <a href="geometry-operations.html#fig:resampl">5.18</a> は、<code>dem</code> オブジェクトについて、異なるリサンプリング手法を比較したものである。</p>
 <pre><code>#&gt; [v3-&gt;v4] `tm_layout()`: use text.fontfamily instead of fontfamily

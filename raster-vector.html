@@ -112,7 +112,7 @@
 <h2>必須パッケージ<a class="anchor" aria-label="anchor" href="#prerequisites-06"><i class="fas fa-link"></i></a>
 </h2>
 <p>この章では、以下のパッケージが必要である。</p>
-<div class="sourceCode" id="cb203"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb204"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span></code></pre></div>
@@ -146,28 +146,28 @@
 </ul>
 <p>ターゲットと切り取りオブジェクトの両方が同じ投影である必要がある。
 したがって、以下のコードは Chapter <a href="spatial-class.html#spatial-class">2</a> でインストールされた <strong>spDataLarge</strong> パッケージからデータセットを読み込むだけでなく、<code>zion</code> を「再投影」している (この話題は Chapter <a href="reproj-geo-data.html#reproj-geo-data">7</a> で取り上げている)。</p>
-<div class="sourceCode" id="cb204"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb205"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">srtm</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/srtm.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">zion</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"vector/zion.gpkg"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">zion</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">zion</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">srtm</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><code>srtm</code> のラスタを切り出すために <strong>terra</strong> パッケージの <code><a href="https://rspatial.github.io/terra/reference/crop.html">crop()</a></code> を使用する。
 この関数は、第 1 引数に渡されたオブジェクトの矩形範囲を、第 2 引数に渡されたオブジェクトの範囲に縮小する。
 つまり、以下のコマンドで Figure <a href="raster-vector.html#fig:cropmask">6.1</a> (B) を生成する。</p>
-<div class="sourceCode" id="cb205"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">srtm_cropped</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html">crop</a></span><span class="op">(</span><span class="va">srtm</span>, <span class="va">zion</span><span class="op">)</span></span></code></pre></div>
 <p>
 <code><a href="https://rspatial.github.io/terra/reference/crop.html">crop()</a></code> に関連するものとして、<strong>terra</strong> 関数 <code><a href="https://rspatial.github.io/terra/reference/mask.html">mask()</a></code> がある。これは第 2 引数に渡されたオブジェクトの境界外の値を <code>NA</code> に設定するものである。
 したがって、次のコマンドは、Zion 国立公園の境界の外側のすべてのセルをマスクする (Figure <a href="raster-vector.html#fig:cropmask">6.1</a> (C))。</p>
-<div class="sourceCode" id="cb206"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">srtm_masked</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/mask.html">mask</a></span><span class="op">(</span><span class="va">srtm</span>, <span class="va">zion</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="https://rspatial.github.io/terra/reference/crop.html">crop()</a></code> と <code><a href="https://rspatial.github.io/terra/reference/mask.html">mask()</a></code> は、一緒に使うことが多い。
 (a) ラスタの範囲を目的の領域に限定し、(b) 領域外の値をすべて NA に置き換える。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;ここで示した二つの操作は &lt;code&gt;terra::crop(srtm, zion, mask = TRUE)&lt;/code&gt; と一つにまとめることもできる。理解しやすくするために二つに分けた。&lt;/p&gt;"><sup>27</sup></a></p>
-<div class="sourceCode" id="cb207"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb208"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">srtm_cropped</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/crop.html">crop</a></span><span class="op">(</span><span class="va">srtm</span>, <span class="va">zion</span><span class="op">)</span></span>
 <span><span class="va">srtm_final</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/mask.html">mask</a></span><span class="op">(</span><span class="va">srtm_cropped</span>, <span class="va">zion</span><span class="op">)</span></span></code></pre></div>
 <p><code><a href="https://rspatial.github.io/terra/reference/mask.html">mask()</a></code> の設定を変更すると、異なる結果が得られる。
 <code>inverse = TRUE</code> を設定すると、公園の境界の<u>内側</u>をすべてマスクする (詳細は <code><a href="https://rspatial.github.io/terra/reference/mask.html">?mask</a></code> を参照) (Figure <a href="raster-vector.html#fig:cropmask">6.1</a> (D))。また、<code>updatevalue = 0</code> を設定すると、国立公園外のすべてのピクセルが 0 に設定される。</p>
-<div class="sourceCode" id="cb208"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb209"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">srtm_inv_masked</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/mask.html">mask</a></span><span class="op">(</span><span class="va">srtm</span>, <span class="va">zion</span>, inverse <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:cropmask"></span>
@@ -189,7 +189,7 @@ FIGURE 6.1: ラスタクロップ、ラスタマスク。
 そのために、Zion 国立公園内の 30 カ所のサンプルを収録した <code>zion_points</code> を使用する (Figure <a href="raster-vector.html#fig:pointextr">6.2</a>)。
 次のコマンドは、<code>srtm</code> から標高値を抽出し、各ポイントの ID (ベクタの行ごとに 1 つの値) と関連する <code>srtm</code> の値を含むデータフレームを作成する。
 さて、出来上がったオブジェクトを <code><a href="https://rdrr.io/r/base/cbind.html">cbind()</a></code> 関数で <code>zion_points</code> データセットに追加してみよう。</p>
-<div class="sourceCode" id="cb209"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb210"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"zion_points"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span></span>
 <span><span class="va">elevation</span> <span class="op">=</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html">extract</a></span><span class="op">(</span><span class="va">srtm</span>, <span class="va">zion_points</span><span class="op">)</span></span>
 <span><span class="va">zion_points</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">zion_points</span>, <span class="va">elevation</span><span class="op">)</span></span></code></pre></div>
@@ -205,7 +205,7 @@ FIGURE 6.2: ラスタ抽出に使用した点の位置。
 しかし、抽出されたラスタ値の各ペア間の距離を正しく取得することが難しいため、線の断片に沿った値を得るための線抽出アプローチは推奨されていない。</p>
 <p>この場合、線を多くの点に分割し、その点の値を抽出するのが良い方法である。
 これを示すために、以下のコードでは、Figure <a href="raster-vector.html#fig:lineextr">6.3</a> (A) に示した Zion 国立公園の北西から南東に向かう直線、<code>zion_transect</code> を作成する (ベクタデータモデルについての復習は Section <a href="spatial-class.html#vector-data">2.2</a> を参照)。</p>
-<div class="sourceCode" id="cb210"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb211"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zion_transect</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">113.2</span>, <span class="op">-</span><span class="fl">112.9</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">37.45</span>, <span class="fl">37.2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st.html">st_linestring</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sfc.html">st_sfc</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html">crs</a></span><span class="op">(</span><span class="va">srtm</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -214,18 +214,18 @@ FIGURE 6.2: ラスタ抽出に使用した点の位置。
 以下に示す方法は、ルートの「標高プロファイル」を提供し (線は直線である必要はない)、長い上り坂による所要時間を見積もるのに便利である。</p>
 <p>まず、各断片に固有の <code>id</code> を追加する。
 次に、<code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_segmentize()</a></code> 関数を使って、与えられた密度 (<code>dfMaxLength</code>) で線に沿って点を追加し、<code><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast()</a></code> で点に変換することができる。</p>
-<div class="sourceCode" id="cb211"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zion_transect</span><span class="op">$</span><span class="va">id</span> <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">zion_transect</span><span class="op">)</span></span>
 <span><span class="va">zion_transect</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_segmentize</a></span><span class="op">(</span><span class="va">zion_transect</span>, dfMaxLength <span class="op">=</span> <span class="fl">250</span><span class="op">)</span></span>
 <span><span class="va">zion_transect</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">zion_transect</span>, <span class="st">"POINT"</span><span class="op">)</span></span></code></pre></div>
 <p>これで大きな点の集合ができたので、断片の最初の点と、それ以降の各点との距離を導き出してみたい。
 このケースでは、1 つの断片しかないが、原理的には、このコードはいくつの断片でも動作するはずである。</p>
-<div class="sourceCode" id="cb212"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zion_transect</span> <span class="op">=</span> <span class="va">zion_transect</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">id</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>dist <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_distance</a></span><span class="op">(</span><span class="va">geometry</span><span class="op">)</span><span class="op">[</span>, <span class="fl">1</span><span class="op">]</span><span class="op">)</span> </span></code></pre></div>
 <p>最後に、断片の各ポイントの標高値を抽出し、この情報をメインオブジェクトに結合する。</p>
-<div class="sourceCode" id="cb213"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zion_elev</span> <span class="op">=</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html">extract</a></span><span class="op">(</span><span class="va">srtm</span>, <span class="va">zion_transect</span><span class="op">)</span></span>
 <span><span class="va">zion_transect</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html">cbind</a></span><span class="op">(</span><span class="va">zion_transect</span>, <span class="va">zion_elev</span><span class="op">)</span></span></code></pre></div>
 <p>その結果、<code>zion_transect</code>、Figure <a href="raster-vector.html#fig:lineextr">6.3</a> (B) に示すように、標高プロファイルを作成することができる。</p>
@@ -239,11 +239,11 @@ FIGURE 6.3: ラスタ抽出に使用した線の位置 (A) と、その線に沿
 ラスタ抽出のための地理ベクタオブジェクトの最後のタイプは、<strong>ポリゴン</strong>である。
 線と同様に、ポリゴンも 1 ポリゴンあたり多くのラスタ値を返す傾向がある。
 これは以下のコマンドで示され、<code>ID</code> (ポリゴンの行番号) と <code>srtm</code> (関連する標高値) の列名を持つデータフレームが生成される。</p>
-<div class="sourceCode" id="cb214"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zion_srtm_values</span> <span class="op">=</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html">extract</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">srtm</span>, y <span class="op">=</span> <span class="va">zion</span><span class="op">)</span></span></code></pre></div>
 <p>このような結果を利用して、ポリゴンごとのラスタ値の要約統計量を生成することで、例えば、単一の地域を特徴付けることや、多くの地域を比較することができる。
 これは以下のコードで示されている。このコードは、Zion 国立公園の標高値の要約統計を含むオブジェクト <code>zion_srtm_df</code> を作成する (Figure <a href="raster-vector.html#fig:polyextr">6.4</a> (A) を参照)。</p>
-<div class="sourceCode" id="cb215"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">zion_srtm_values</span>, <span class="va">ID</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="va">srtm</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="va">min</span>, mean <span class="op">=</span> <span class="va">mean</span>, max <span class="op">=</span> <span class="va">max</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; # A tibble: 1 × 4</span></span>
@@ -255,7 +255,7 @@ FIGURE 6.3: ラスタ抽出に使用した線の位置 (A) と、その線に沿
 この例ではポリゴンが 1 つしかないので 1 行のデータフレームだが、複数の範囲選択ポリゴンが使用されている場合にも動作する。</p>
 <p>同様のアプローチは、ポリゴン内のカテゴリ的なラスタ値の出現をカウントする場合にも有効である。
 これは、Figure <a href="raster-vector.html#fig:polyextr">6.4</a> (B) の <strong>spDataLarge</strong> パッケージの土地被覆データセット (<code>nlcd</code>) を使って説明され、以下のコードで実証されている。</p>
-<div class="sourceCode" id="cb216"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nlcd</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/nlcd.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">zion2</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">zion</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">nlcd</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">zion_nlcd</span> <span class="op">=</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/extract.html">extract</a></span><span class="op">(</span><span class="va">nlcd</span>, <span class="va">zion2</span><span class="op">)</span></span>
@@ -307,7 +307,7 @@ Chapter <a href="spatial-class.html#spatial-class">2</a> で見たように、�
 例えば、ラスタ化の出力を他の既存ラスタに合わせる必要がある場合など、ターゲット解像度がユーザーに課されることがよくある。</p>
 <p>
 ラスタ化を実演するために、入力ベクタデータ <code>cycle_hire_osm_projected</code> (ロンドンの自転車レンタルポイントに関するデータセットを Figure <a href="raster-vector.html#fig:vector-rasterization1">6.5</a> (A) に図示) と同じ範囲と CRS、空間解像度 1000 メートルのテンプレートラスタを使用することにする。</p>
-<div class="sourceCode" id="cb217"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cycle_hire_osm</span> <span class="op">=</span> <span class="fu">spData</span><span class="fu">::</span><span class="va"><a href="https://jakubnowosad.com/spData/reference/cycle_hire_osm.html">cycle_hire_osm</a></span></span>
 <span><span class="va">cycle_hire_osm_projected</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">cycle_hire_osm</span>, <span class="st">"EPSG:27700"</span><span class="op">)</span></span>
 <span><span class="va">raster_template</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html">ext</a></span><span class="op">(</span><span class="va">cycle_hire_osm_projected</span><span class="op">)</span>, resolution <span class="op">=</span> <span class="fl">1000</span>,</span>
@@ -316,17 +316,17 @@ Chapter <a href="spatial-class.html#spatial-class">2</a> で見たように、�
 <p>この柔軟性を説明するために、3 つの異なるアプローチでラスタ化を試みる。
 まず、レンタルサイクルの有無を表すラスタ (有無ラスタと呼ぶ) を作成する。
 この場合、<code><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize()</a></code> は、<code>x</code> と <code>y</code> (前述のベクタとラスタのオブジェクト) のみを要求する (図示の結果 Figure <a href="raster-vector.html#fig:vector-rasterization1">6.5</a> (B))。</p>
-<div class="sourceCode" id="cb218"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ch_raster1</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">cycle_hire_osm_projected</span>, <span class="va">raster_template</span><span class="op">)</span></span></code></pre></div>
 <p><code>fun</code> 引数は、近接した複数の観測値をラスタオブジェクトの関連セルに変換するために使用される要約統計量を指定する。
 デフォルトでは、<code>fun = "last"</code> が使用されるが、<code>fun = "length"</code> などの他のオプションも使用できる。この場合、各グリッドセル内のレンタルサイクルのステーション数をカウントする (この操作の結果は、Figure <a href="raster-vector.html#fig:vector-rasterization1">6.5</a> (C) に示す)。</p>
-<div class="sourceCode" id="cb219"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ch_raster2</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">cycle_hire_osm_projected</span>, <span class="va">raster_template</span>, </span>
 <span>                       fun <span class="op">=</span> <span class="st">"length"</span><span class="op">)</span></span></code></pre></div>
 <p>新しい出力である <code>ch_raster2</code> は、各グリッドセル内のレンタルサイクルのステーション数を示している。
 レンタルサイクルのステーションは、<code>capacity</code> 変数で記述される自転車の数が異なるため、各グリッドセルの収容台数 (<code>capacity</code>) はどの程度なのかという疑問が生じる。
 これを計算するためには、フィールド (<code>"capacity"</code>) を <code>sum</code> することが必要で、その結果、Figure <a href="raster-vector.html#fig:vector-rasterization1">6.5</a> (D) のような出力が得られる。以下のコマンドで計算する (<code>mean</code> など他の要約関数も使用できる)。</p>
-<div class="sourceCode" id="cb220"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ch_raster3</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/vect.html">vect</a></span><span class="op">(</span><span class="va">cycle_hire_osm_projected</span><span class="op">)</span>, <span class="va">raster_template</span>, </span>
 <span>                       field <span class="op">=</span> <span class="st">"capacity"</span>, fun <span class="op">=</span> <span class="va">sum</span>, na.rm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
@@ -338,7 +338,7 @@ FIGURE 6.5: 点のラスタ化例。
 <p>
 また、カリフォルニア州のポリゴンと境界線をベースにしたデータセット (下記作成) は、線のラスタ化を表している。
 ポリゴンオブジェクトを複合線にキャストした後、0.5 度の分解能を持つテンプレートラスタを作成する。</p>
-<div class="sourceCode" id="cb221"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">california</span> <span class="op">=</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">us_states</span>, <span class="va">NAME</span> <span class="op">==</span> <span class="st">"California"</span><span class="op">)</span></span>
 <span><span class="va">california_borders</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span><span class="va">california</span>, <span class="st">"MULTILINESTRING"</span><span class="op">)</span></span>
 <span><span class="va">raster_template2</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/ext.html">ext</a></span><span class="op">(</span><span class="va">california</span><span class="op">)</span>, resolution <span class="op">=</span> <span class="fl">0.5</span>,</span>
@@ -346,11 +346,11 @@ FIGURE 6.5: 点のラスタ化例。
 <p>線またはポリゴンのラスタ化を考慮する場合、有用な追加引数の 1 つは <code>touches</code> である。
 デフォルトでは <code>FALSE</code> であるが、<code>TRUE</code> に変更すると、線またはポリゴンの境界で接触しているすべてのセルが値を得る。
 <code>touches = TRUE</code> による線のラスタ化を以下のコードで実行する (Figure <a href="raster-vector.html#fig:vector-rasterization2">6.6</a> (A))。</p>
-<div class="sourceCode" id="cb222"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">california_raster1</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">california_borders</span>, <span class="va">raster_template2</span>,</span>
 <span>                               touches <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p>ポリゴンのラスタ化と比較すると、<code>touches = FALSE</code> がデフォルトで、Figure <a href="raster-vector.html#fig:vector-rasterization2">6.6</a> (B) に示すように、範囲選択ポリゴン内に中心点があるラスタセルのみが選択されることになる。</p>
-<div class="sourceCode" id="cb223"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">california_raster2</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">california</span>, <span class="va">raster_template2</span><span class="op">)</span> </span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:vector-rasterization2"></span>
@@ -375,7 +375,7 @@ R では通常、単にベクトル化と言った場合、<code>for</code> ル�
 最も単純なベクタ化は、ラスタセルの中心を点に変換することである。
 <code><a href="https://rspatial.github.io/terra/reference/as.points.html">as.points()</a></code> は、<code>NA</code> 以外のすべてのラスタグリッドセルに対して実行する (Figure <a href="raster-vector.html#fig:raster-vectorization1">6.7</a>)。
 なお、ここでは、<code><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf()</a></code> を使って、結果のオブジェクトを <code>sf</code> クラスに変換することもしている。</p>
-<div class="sourceCode" id="cb224"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">elev</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/elev.tif"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">elev_point</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.points.html">as.points</a></span><span class="op">(</span><span class="va">elev</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -389,7 +389,7 @@ FIGURE 6.7: elev オブジェクトのラスタ表現と点表現。
 空間ベクタ化のもう一つの一般的なタイプは、例えば連続した高さや温度の線 (等温線) を表す等高線の作成である。
 ここでは、実世界のデジタル標高モデル (DEM) を使用する。というのも、人工のラスタ <code>elev</code> は平行線を生成するためである (読者への課題: これを検証し、なぜこうなるのかを説明しなさい)。
 等高線は <strong>terra</strong> 関数 <code><a href="https://rspatial.github.io/terra/reference/contour.html">as.contour()</a></code> で作成することができる。この関数は、R に元々ある <code><a href="https://rdrr.io/r/graphics/filled.contour.html">filled.contour()</a></code> のラッパーである (図示せず)。</p>
-<div class="sourceCode" id="cb225"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">dem</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/dem.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">cl</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/contour.html">as.contour</a></span><span class="op">(</span><span class="va">dem</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span></span>
@@ -409,7 +409,7 @@ FIGURE 6.8: モンゴル山南麓の等高線を重ねた陰影付きデジタ�
 ベクタ化の最後のタイプとして、ラスタをポリゴンに変換しよう。
 これには、<code><a href="https://rspatial.github.io/terra/reference/as.polygons.html">terra::as.polygons()</a></code> を使う。各ラスタセルを 5 つの座標からなるポリゴンに変換し、そのすべてがメモリに保存される (ラスタがベクタと比較して高速であることが多い理由が分かる!)。</p>
 <p>以下では、<code>grain</code> オブジェクトをポリゴンに変換し、その後、同じ属性値を持つポリゴン間の境界を解消することで説明している (<code><a href="https://rspatial.github.io/terra/reference/as.polygons.html">as.polygons()</a></code> の <code>dissolve</code> の引数も参照)。</p>
-<div class="sourceCode" id="cb226"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">grain</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/grain.tif"</span>, package <span class="op">=</span> <span class="st">"spData"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">grain_poly</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.polygons.html">as.polygons</a></span><span class="op">(</span><span class="va">grain</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
@@ -430,7 +430,7 @@ FIGURE 6.9: ラスタ (A)のベクタ化 (B) ポリゴン (dissolve = FALSE; 中
 </h2>
 <p>以下の演習では、<strong>spDataLarge</strong> パッケージのベクタデータ (<code>zion_points</code>) とラスタデータ (<code>srtm</code>) を使うことがある。
 まず、ベクタデータ (<code>ch</code>) から、ポリゴンの「凸多面体」で領域を示す。</p>
-<div class="sourceCode" id="cb227"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb228"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>

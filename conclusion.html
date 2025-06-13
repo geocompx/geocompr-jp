@@ -131,7 +131,7 @@ Section <a href="conclusion.html#benefit">16.5</a> は、Chapter <a href="intro.
 </h2>
 <p>オープンソース全般に言えることだが、R の特徴として、同じ結果を得るために複数の方法が存在することが多い。
 下記のコードでは、Chapter <a href="attr.html#attr">3</a> と Chapter <a href="geometry-operations.html#geometry-operations">5</a> にある 3 つの関数を使って、New Zealand の 16 の地域を 1 つの幾何学的形状にまとめている。</p>
-<div class="sourceCode" id="cb519"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb520"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
 <span><span class="va">nz_u1</span> <span class="op">=</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span></span>
 <span><span class="va">nz_u2</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/aggregate.html">aggregate</a></span><span class="op">(</span><span class="va">nz</span><span class="op">[</span><span class="st">"Population"</span><span class="op">]</span>, <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span></span>
@@ -153,7 +153,7 @@ R のパッケージが増えれば、さらに選択肢は広がる。例えば
 このことは、本書のすべてのパッケージに当てはまるが、他の手段の存在を知って自分の選択について正当化できることは、(邪魔にならない程度に) 役に立つことがある。</p>
 <p>ジオコンピュテーションをする際の選択で困ることの代表として、 <strong>tidyverse</strong> と Base R のどちらを使うかという簡単に答えられない問題がある。
 例えば、次のコードチャンクは、Chapter <a href="attr.html#attr">3</a> で説明したした <code>nz</code> オブジェクトから <code>Name</code> 列を抽出する操作を、<strong>tidyverse</strong> と Base R の 2 つの方法を示している。</p>
-<div class="sourceCode" id="cb520"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb521"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>                          <span class="co"># TidyVerse パッケージをアタッチ</span></span>
 <span><span class="va">nz_name1</span> <span class="op">=</span> <span class="va">nz</span><span class="op">[</span><span class="st">"Name"</span><span class="op">]</span>                   <span class="co"># Base R による方法</span></span>
 <span><span class="va">nz_name2</span> <span class="op">=</span> <span class="va">nz</span> <span class="op">|&gt;</span>                        <span class="co"># TidyVerse による方法</span></span>
@@ -284,13 +284,13 @@ Chapter <a href="gis.html#gis">10</a> で紹介した空間データベースは
 前項で説明したような場所で、その方法を尋ねることもできできる。
 しかし、あなたがこれまでに試したことの再現可能な例を示すことで、より良い回答が得られる可能性がある。
 次のコードは、青い海と緑の陸地がある世界地図を作成するが、陸地は塗りつぶされない。</p>
-<div class="sourceCode" id="cb521"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span>, col <span class="op">=</span> <span class="st">"green"</span><span class="op">)</span></span></code></pre></div>
 <p>このコードをフォーラムに投稿すれば、より具体的で有用な回答が得られる可能性がある。
 例えば、Figure <a href="conclusion.html#fig:16-synthesis-reprex">16.1</a> のように、問題を解決する以下のようなコードを投稿してくれる人がいるかもしれない。</p>
-<div class="sourceCode" id="cb522"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb523"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
 <span><span class="co"># 塗りつぶすために引数を使用</span></span>

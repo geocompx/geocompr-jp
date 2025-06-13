@@ -115,7 +115,7 @@
 <li>この章では、以下のパッケージを使用する<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;strong&gt;nabor&lt;/strong&gt; パッケージもインストールされている必要があるが、ロードする必要はない。&lt;/p&gt;"><sup>90</sup></a>
 </li>
 </ul>
-<div class="sourceCode" id="cb447"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb448"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/Nowosad/spData">spDataLarge</a></span><span class="op">)</span></span>
@@ -240,7 +240,7 @@ Bristol は、周辺の町からのトラベル者を惹きつける主要な雇
 <p>本章で使用する 102 のゾーンは、Figure <a href="transport.html#fig:zones">13.2</a> に図示されているように <code>bristol_zones</code> に格納されている。
 人口が密集しているところでは、ゾーンが小さくなっていることに注意しておこう。
 <code>bristol_zones</code> は、交通に関する属性データは含まず、各ゾーンの名称とコードのみである。</p>
-<div class="sourceCode" id="cb448"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb449"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/names.html">names</a></span><span class="op">(</span><span class="va">bristol_zones</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "geo_code" "name"     "geometry"</span></span></code></pre></div>
 <p>トラベルデータを追加するために、Section <a href="attr.html#vector-attribute-joining">3.2.4</a> で説明されている一般的なタスクである<u>属性結合</u>を実行する。
@@ -248,13 +248,13 @@ Bristol は、周辺の町からのトラベル者を惹きつける主要な雇
 <code>bristol_od</code> は、英国の2011年国勢調査によるゾーン間の通勤に関する起点 (Origin)ー終点 (Desitination) (OD) データセットである (Section <a href="transport.html#desire-lines">13.4</a> 参照)。
 Section <a href="transport.html#desire-lines">13.4</a> 1 列目は出発地のゾーン ID、2 列目は目的地のゾーンである。
 <code>bristol_od</code> は、<code>bristol_zones</code> よりも多くの行を持ち、ゾーンそのものよりもゾーン<u>間</u>の移動を表している。</p>
-<div class="sourceCode" id="cb449"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb450"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">bristol_od</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 2910</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">nrow</a></span><span class="op">(</span><span class="va">bristol_zones</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 102</span></span></code></pre></div>
 <p>先ほどのコードチャンクの結果、各ゾーンに 10 組以上の OD ペアがあることがわかった。つまり、下図のように、<code>bristol_zones</code> に結合する前に発着地データを集約する必要がある (発着地データは Section <a href="transport.html#desire-lines">13.4</a> に記述されている)。</p>
-<div class="sourceCode" id="cb450"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb451"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zones_attr</span> <span class="op">=</span> <span class="va">bristol_od</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">o</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise_all.html">summarize_if</a></span><span class="op">(</span><span class="va">is.numeric</span>, <span class="va">sum</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html">%&gt;%</a></span> </span>
@@ -269,14 +269,14 @@ Section <a href="transport.html#desire-lines">13.4</a> 1 列目は出発地の�
 </ul>
 <p>結果として得られるオブジェクト <code>zones_attr</code> は、ゾーンを表す行と ID 変数を持つデータフレームである。
 ID が <code>zones</code> データセットのものと一致するかどうかは、<code>%in%</code> 演算子を用いて以下のように確認することができる。</p>
-<div class="sourceCode" id="cb451"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb452"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">zones_attr</span><span class="op">$</span><span class="va">geo_code</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html">%in%</a></span> <span class="va">bristol_zones</span><span class="op">$</span><span class="va">geo_code</span><span class="op">)</span></span>
 <span><span class="co">#&gt;    Mode    TRUE </span></span>
 <span><span class="co">#&gt; logical     102</span></span></code></pre></div>
 <p>その結果、新しいオブジェクトには 102 のゾーンがすべて存在し、<code>zone_attr</code>、ゾーン上に結合できる形になっていることがわかった。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;また、実データで ID が逆方向で一致するかどうかのチェックも重要だろう。
 これは、&lt;code&gt;summary()&lt;/code&gt; コマンドの ID の順序を変更することで可能となる。&lt;code&gt;summary(bristol_zones $geo_code %in% zones_attr$ geo_code)&lt;/code&gt; — または、&lt;code&gt;setdiff()&lt;/code&gt; を次のように使用することで可能である。&lt;code&gt;setdiff(bristol_zones $geo_code, zones_attr$ geo_code)&lt;/code&gt;&lt;/p&gt;"><sup>93</sup></a>
 これは、結合関数 <code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join()</a></code> を使って行われる (なお、<code><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join()</a></code> でも同じ結果になる)。</p>
-<div class="sourceCode" id="cb452"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb453"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zones_joined</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">bristol_zones</span>, <span class="va">zones_attr</span>, by <span class="op">=</span> <span class="st">"geo_code"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/sum.html">sum</a></span><span class="op">(</span><span class="va">zones_joined</span><span class="op">$</span><span class="va">all</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 238805</span></span>
@@ -295,14 +295,14 @@ Bristol の中心部付近に住む人の移動が増え、郊外に住む人の
 人は、中心部に引き寄せられるように集まる傾向がある。
 このことは、右図 (Figure <a href="transport.html#fig:zones">13.2</a>) で表される空間分布が比較的不均一であり、最も多い目的地ゾーンが Bristol 市の中心部に集中していることを説明している。
 その結果、任意のモードによるトラベル先数を報告する新しい列を含む、<code>zones_od</code> が以下のように作成される。</p>
-<div class="sourceCode" id="cb453"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb454"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zones_destinations</span> <span class="op">=</span> <span class="va">bristol_od</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">d</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://tidyselect.r-lib.org/reference/where.html">where</a></span><span class="op">(</span><span class="va">is.numeric</span><span class="op">)</span>, <span class="va">sum</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span>geo_code <span class="op">=</span> <span class="va">d</span>, all_dest <span class="op">=</span> <span class="va">all</span><span class="op">)</span></span>
 <span><span class="va">zones_od</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">inner_join</a></span><span class="op">(</span><span class="va">zones_joined</span>, <span class="va">zones_destinations</span>, by <span class="op">=</span> <span class="st">"geo_code"</span><span class="op">)</span></span></code></pre></div>
 <p>Figure <a href="transport.html#fig:zones">13.2</a> の簡易版は、以下のコードで作成する (図を再現するには、本書の GitHub リポジトリの <a href="https://github.com/geocompx/geocompr/tree/main/code"><code>code</code></a> フォルダ の <code>13-zones.R</code> を参照。<strong>tmap</strong> によるファセット地図の詳細は Section <a href="adv-map.html#faceted-maps">9.2.7</a> を参照)。</p>
-<div class="sourceCode" id="cb454"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb455"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm</a></span><span class="op">(</span><span class="va">zones_od</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"all"</span>, <span class="st">"all_dest"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>panel.labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"Origin"</span>, <span class="st">"Destination"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
@@ -323,7 +323,7 @@ FIGURE 13.2: 地域内に居住・勤務するトリップ (通勤者) 数。左
 <p>データセット <code>bristol_od</code> に、希望線を表すデータをすでに読み込んでいる。
 この起点ー終点 (OD) データフレームオブジェクトは、<code>o</code> で表されるゾーンと <code>d</code>、Table <a href="transport.html#tab:od">13.1</a> で示されるゾーン間の移動人数を表している。
 OD データをすべてのトリップで並べ、上位5つだけをフィルタリングするには、次のように入力する (非空間属性操作の詳細については、Chapter <a href="attr.html#attr">3</a> を参照)。</p>
-<div class="sourceCode" id="cb455"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb456"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_top5</span> <span class="op">=</span> <span class="va">bristol_od</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/slice.html">slice_max</a></span><span class="op">(</span><span class="va">all</span>, n <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <div class="inline-table"><table class="table table-sm">
@@ -390,24 +390,24 @@ OD データをすべてのトリップで並べ、上位5つだけをフィル�
 これは、上位 5 つの OD ペアにおいて、徒歩が最も人気のある交通手段であること、ゾーン <code>E02003043</code> が人気のある目的地であること (Bristol の中心部、上位 5 つの OD ペアの目的地)、ゾーン <code>E02003043</code> のある部分から別の部分への<u>ゾーン内</u>トリップ (Table <a href="transport.html#tab:od">13.1</a> の最初の行) がデータセットで最も移動した OD ペアであることを実証している。
 しかし、政策的な観点から見ると、Table <a href="transport.html#tab:od">13.1</a> で示される生データは、限られた用途にしか使えない。2,910 組の OD のうち、ごく一部しか含まれていないという事実を除けば、政策的措置が必要な場所は<u>どこ</u>か、徒歩や自転車による移動が<u>どの程度の割合を占める</u>のかについては、ほとんどわからないのである。
 次のコマンドは、これらのアクティブモードによって作られる各希望線の割合を計算する。</p>
-<div class="sourceCode" id="cb456"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb457"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bristol_od</span><span class="op">$</span><span class="va">Active</span> <span class="op">=</span> <span class="op">(</span><span class="va">bristol_od</span><span class="op">$</span><span class="va">bicycle</span> <span class="op">+</span> <span class="va">bristol_od</span><span class="op">$</span><span class="va">foot</span><span class="op">)</span> <span class="op">/</span></span>
 <span>  <span class="va">bristol_od</span><span class="op">$</span><span class="va">all</span> <span class="op">*</span> <span class="fl">100</span></span></code></pre></div>
 <p>OD ペアは、大きく分けて<u>ゾーン間</u>と<u>ゾーン内</u>の 2 種類がある。
 ゾーン間 OD ペアは、目的地と出発地が異なるゾーン間の移動を表する。
 ゾーン内 OD ペアは、同一ゾーン内の移動を表す (Table <a href="transport.html#tab:od">13.1</a> の上段参照)。
 以下のコードチャンクでは、<code>od_bristol</code> をこの2種類に分割している。</p>
-<div class="sourceCode" id="cb457"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb458"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">od_intra</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bristol_od</span>, <span class="va">o</span> <span class="op">==</span> <span class="va">d</span><span class="op">)</span></span>
 <span><span class="va">od_inter</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">bristol_od</span>, <span class="va">o</span> <span class="op">!=</span> <span class="va">d</span><span class="op">)</span></span></code></pre></div>
 <p>次のステップは、ゾーン間 OD ペアを、<strong>stplanr</strong> 関数 <code><a href="https://docs.ropensci.org/stplanr/reference/od2line.html">od2line()</a></code> を用いて地図上にプロットできる希望線を表す <code>sf</code> オブジェクトに変換することである。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content='&lt;p&gt;&lt;code&gt;od2line()&lt;/code&gt; は、 オブジェクトの最初の 2 列の ID を、地理的な オブジェクトの ID 列にマッチングさせることで動作する。
 &lt;code&gt;bristol_od&lt;/code&gt; &lt;code&gt;zones_od&lt;/code&gt; &lt;code&gt;zone_code&lt;/code&gt; なお、この操作は警告を発するが、これは &lt;code&gt;od2line()&lt;/code&gt; が各起点と終点のペアをその起点と終点のゾーンの&lt;u&gt;重心&lt;/u&gt;に割り当てることで動作するためである。
 実際の使用では、投影データから生成された重心を使用するか、できれば&lt;u&gt;人口重み付け&lt;/u&gt;された重心を使用することになるだろう &lt;span class="citation"&gt;(&lt;a href="references.html#ref-lovelace_propensity_2017"&gt;Lovelace et al. 2017&lt;/a&gt;)&lt;/span&gt;。&lt;/p&gt;'><sup>94</sup></a></p>
-<div class="sourceCode" id="cb458"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb459"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">desire_lines</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/od2line.html">od2line</a></span><span class="op">(</span><span class="va">od_inter</span>, <span class="va">zones_od</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Creating centroids representing desire line start and end points.</span></span></code></pre></div>
 <p>結果の図は Figure <a href="transport.html#fig:desire">13.3</a> に示されており、その簡易版は以下のコマンドで作成される (図を正確に再現するには <code>13-desire.R</code> のコードを、 <strong>tmap</strong> による視覚化の詳細については Chapter <a href="adv-map.html#adv-map">9</a> を参照)。</p>
-<div class="sourceCode" id="cb459"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb460"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm</a></span><span class="op">(</span><span class="va">desire_lines</span>, lines.lwd <span class="op">=</span> <span class="st">"all"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:desire"></span>
@@ -450,7 +450,7 @@ FIGURE 13.3: Bristol のトリップパターンを表す希望線は、幅が�
 <p>Section <a href="transport.html#desire-lines">13.4</a> で行った分析に基づき、公共交通機関のノードを使って、バスと (この例では) 鉄道を利用できるトラベルのための 3 分割の希望線を構築することができる。
 最初の段階は、公共交通機関の利用が多い希望線を特定することである。ここでは、先に作成したデータセット <code>desire_lines</code> にすでに電車での移動回数を表す変数が含まれているので簡単である (公共交通機関の利用可能性は、<a href="http://www.opentripplanner.org/">OpenTripPlanner</a> などの公共交通ルート探索サービスを使って推定することも可能)。
 アプローチを簡単にするために、レールの使用量の上位 3 つの希望線のみを選択することにする。</p>
-<div class="sourceCode" id="cb460"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb461"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">desire_rail</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/top_n.html">top_n</a></span><span class="op">(</span><span class="va">desire_lines</span>, n <span class="op">=</span> <span class="fl">3</span>, wt <span class="op">=</span> <span class="va">train</span><span class="op">)</span></span></code></pre></div>
 <p>そこで、これらの線を 3 つに分解し、公共交通機関の乗り換えを表現することにする。
 これは、希望線を、トラベルの出発地、公共交通機関、目的地の 3 つの線ジオメトリからなる複合線に変換することで実現できる。
@@ -458,7 +458,7 @@ FIGURE 13.3: Bristol のトリップパターンを表す希望線は、幅が�
 この一連の処理は、<code><a href="https://docs.ropensci.org/stplanr/reference/line_via.html">line_via()</a></code> 関数が行う。
 この <strong>stplanr</strong> 関数は入力された線と点を受け取り、希望線のコピーを返す (この動作の詳細については geocompr.github.io ウェブサイトの <a href="https://geocompr.github.io/geocompkg/articles/linevia.html">Desire Lines Extended</a> vignette と <code><a href="https://docs.ropensci.org/stplanr/reference/line_via.html">?line_via</a></code> を参照)。
 出力は入力と同じだが、公共交通機関のノードを使った旅を表す新しいジオメトリの列がある (以下に示す)。</p>
-<div class="sourceCode" id="cb461"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb462"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/dimensions.html">ncol</a></span><span class="op">(</span><span class="va">desire_rail</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 9</span></span>
 <span><span class="va">desire_rail</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/line_via.html">line_via</a></span><span class="op">(</span><span class="va">desire_rail</span>, <span class="va">bristol_stations</span><span class="op">)</span></span>
@@ -582,7 +582,7 @@ R では <a href="https://rpackage.cyclestreets.net/"><strong>cyclestreets</stro
 <p>自転車トラベルの利点は、自動車トラベルを置き換えるときに最も大きく、比較的短いトラベルは長いトラベルよりも自転車に乗る可能性が高いという観察に基づいて、自転車トラベルの可能性を推定することに重点を置いて希望線のサブセットをフィルタリングする <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span>。
 短いトリップ (5 km 程度、時速 20 km で 15 分程度で走れる距離) は、比較的自転車で移動する確率が高く、電動自転車で移動すると最大距離が延びる <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span>。
 これらの考察に基づき、希望線をフィルタし、多くの (100 以上の) 短い (ユークリッド距離 2.5〜5 km) トリップを駆動する OD ペアを表すオブジェクト <code>desire_lines_short</code> を返す次のコードチャンクに反映しよう。</p>
-<div class="sourceCode" id="cb462"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb463"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">desire_lines</span><span class="op">$</span><span class="va">distance_km</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_length</a></span><span class="op">(</span><span class="va">desire_lines</span><span class="op">)</span><span class="op">)</span> <span class="op">/</span> <span class="fl">1000</span></span>
 <span><span class="va">desire_lines_short</span> <span class="op">=</span> <span class="va">desire_lines</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">car_driver</span> <span class="op">&gt;=</span> <span class="fl">100</span>, <span class="va">distance_km</span> <span class="op">&lt;=</span> <span class="fl">5</span>, <span class="va">distance_km</span> <span class="op">&gt;=</span> <span class="fl">2.5</span><span class="op">)</span></span></code></pre></div>
@@ -590,7 +590,7 @@ R では <a href="https://rpackage.cyclestreets.net/"><strong>cyclestreets</stro
 Section <a href="attr.html#vector-attribute-subsetting">3.2.1</a> で述べるように、<strong>dplyr</strong> の <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> 関数で、上記の条件に基づいて <code>desire_lines</code> データセットにフィルタをかけている。
 次に、この希望線をルートに変換する。
 これは一般に公開されている OSRM サービスを用いて、以下のコードにある <strong>stplanr</strong> 関数 <code><a href="https://docs.ropensci.org/stplanr/reference/route.html">route()</a></code> と <code><a href="https://docs.ropensci.org/stplanr/reference/route_osrm.html">route_osrm()</a></code> で行われる。</p>
-<div class="sourceCode" id="cb463"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb464"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">routes_short</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/route.html">route</a></span><span class="op">(</span>l <span class="op">=</span> <span class="va">desire_lines_short</span>, route_fun <span class="op">=</span> <span class="va">route_osrm</span>,</span>
 <span>                     osrm.profile <span class="op">=</span> <span class="st">"car"</span><span class="op">)</span></span></code></pre></div>
 <p>出力は <code>routes_short</code> で、(少なくとも OSRM ルート検索エンジンによれば) 自転車利用に適したトランスポートネットワーク 上のルートを表す <code>sf</code> オブジェクトで、各希望線に対して一つずつ出力される。
@@ -632,7 +632,7 @@ FIGURE 13.5: 短距離 (ユークリッド距離 5 km 未満) の自動車移動
 ルート距離 0～3 km の車移動の 50% が自転車に置き換えられ、その割合はルート距離が 1 km 増えるごとに 10 ポイントずつ下がり、6 km の車移動の 20％ が自転車に置き換えられ、8 km 以上の車移動が自転車に置き換えられないと想像しよう。
 これはもちろん非現実的なシナリオ <span class="citation">(<a href="references.html#ref-lovelace_propensity_2017">Lovelace et al. 2017</a>)</span> ではあるものの、出発点としては有用であろう。
 この場合、自動車から自転車へのモーダルシフトを次のようにモデル化することができる。</p>
-<div class="sourceCode" id="cb464"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb465"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">uptake</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html">case_when</a></span><span class="op">(</span></span>
 <span>    <span class="va">x</span> <span class="op">&lt;=</span> <span class="fl">3</span> <span class="op">~</span> <span class="fl">0.5</span>,</span>
@@ -649,7 +649,7 @@ FIGURE 13.5: 短距離 (ユークリッド距離 5 km 未満) の自動車移動
 <p>約 4,000 のトリップが車から自転車に切り替わるというシナリオを作成したので、この更新されたモデル化された自転車利用活動がどこで行われるかをモデル化することができるようになった。
 これには、<strong>stplanr</strong> パッケージの関数 <code><a href="https://docs.ropensci.org/stplanr/reference/overline.html">overline()</a></code> を使用する。
 この関数は、ルートと要約する属性の名前を含むオブジェクトを第 1 と第 2 の引数として受け取り、分岐点 (2 つ以上の線の形状が出会うところ) で線を切断し、それぞれのユニークなルートセグメント <span class="citation">(<a href="references.html#ref-morgan_travel_2020">Morgan and Lovelace 2020</a>)</span> について集約した統計量を計算するものである。</p>
-<div class="sourceCode" id="cb465"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb466"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">route_network_scenario</span> <span class="op">=</span> <span class="fu"><a href="https://docs.ropensci.org/stplanr/reference/overline.html">overline</a></span><span class="op">(</span><span class="va">routes_short_scenario</span>, attrib <span class="op">=</span> <span class="st">"bicycle"</span><span class="op">)</span></span></code></pre></div>
 <p>前出の 2 つのコードチャンクの出力は、以下の Figure <a href="transport.html#fig:rnetvis">13.6</a> に要約している。</p>
 <div class="figure" style="text-align: center">
@@ -661,7 +661,7 @@ FIGURE 13.6: 距離関数による自動車から自転車への移行率 (左) 
 <p>道路種別や幅員などの属性がセグメントレベルで記録されている交通網は、一般的な路線網の一種である。
 このような路線網のデータセットは、OpenStreetMap から世界中で入手でき、<strong>osmdata</strong> や <strong>osmextract</strong> などのパッケージでダウンロードすることが可能である。
 OSMのダウンロードと準備の時間を節約するために、以下の出力に示すように、ケーススタディ地域の交通ネットワークのサンプルを表す LINESTRING ジオメトリと属性を持つ <code>sf</code> オブジェクト、<strong>spDataLarge</strong> パッケージから <code>bristol_ways</code> オブジェクトを使用する (詳細は <code><a href="https://rdrr.io/pkg/spDataLarge/man/bristol_ways.html">?bristol_ways</a></code> を参照)。</p>
-<div class="sourceCode" id="cb466"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb467"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/summary.html">summary</a></span><span class="op">(</span><span class="va">bristol_ways</span><span class="op">)</span></span>
 <span><span class="co">#&gt;      highway       maxspeed             ref                     geometry   </span></span>
 <span><span class="co">#&gt;  cycleway:1721   Length:6160        Length:6160        LINESTRING   :6160  </span></span>
@@ -673,12 +673,12 @@ OSMのダウンロードと準備の時間を節約するために、以下の�
 ルートネットワークを手動で <code>igraph</code> オブジェクトに変換することはできるが、地理的な属性は失われる。
 この <strong>igraph</strong> の制限を克服するために、路線ネットワークをグラフと地理的な線として同時に表現する <strong>sfnetworks</strong> パッケージ <span class="citation">(<a href="references.html#ref-R-sfnetworks">van der Meer et al. 2023</a>)</span> が開発された。
 これは、グラフおよび地理的な線で表現し、以下に見るように tidy な文法である。</p>
-<div class="sourceCode" id="cb467"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb468"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bristol_ways</span><span class="op">$</span><span class="va">lengths</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_measures.html">st_length</a></span><span class="op">(</span><span class="va">bristol_ways</span><span class="op">)</span></span>
 <span><span class="va">ways_sfn</span> <span class="op">=</span> <span class="fu"><a href="https://luukvdmeer.github.io/sfnetworks/reference/as_sfnetwork.html">as_sfnetwork</a></span><span class="op">(</span><span class="va">bristol_ways</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">ways_sfn</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "sfnetwork" "tbl_graph" "igraph"</span></span></code></pre></div>
-<div class="sourceCode" id="cb468"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb469"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ways_sfn</span></span>
 <span><span class="co">#&gt; # A sfnetwork with 5728 nodes and 4915 edges</span></span>
 <span><span class="co">#&gt; # A directed multigraph with 1013 components with spatially explicit edges</span></span>
@@ -693,11 +693,11 @@ OSMのダウンロードと準備の時間を節約するために、以下の�
 下の例では、各エッジを通る最短ルートの数を意味する ‘edge betweenness’ が計算されている (詳しくは <code><a href="https://r.igraph.org/reference/betweenness.html">?igraph::betweenness</a></code> を参照)。
 このデータセットに対して、エッジの間隔を計算した結果を図に示す。図には、比較のために <code><a href="https://docs.ropensci.org/stplanr/reference/overline.html">overline()</a></code> 関数で計算した自転車ルートネットワークデータセットをオーバーレイで表示している。
 この結果は、グラフの各エッジがセグメントを表していることを示している。道路ネットワークの中心に近いセグメントは最も高い betweenness 値を持ち、一方、Bristol 中心部に近いセグメントはより高い自転車利用の可能性を持っていることが、これらの単純化されたデータセットに基づいて示されている。</p>
-<div class="sourceCode" id="cb469"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb470"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ways_centrality</span> <span class="op">=</span> <span class="va">ways_sfn</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://tidygraph.data-imaginist.com/reference/activate.html">activate</a></span><span class="op">(</span><span class="st">"edges"</span><span class="op">)</span> <span class="op">|&gt;</span>  </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>betweenness <span class="op">=</span> <span class="fu">tidygraph</span><span class="fu">::</span><span class="fu"><a href="https://tidygraph.data-imaginist.com/reference/centrality.html">centrality_edge_betweenness</a></span><span class="op">(</span><span class="va">lengths</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<div class="sourceCode" id="cb470"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb471"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">bb_wayssln</span> <span class="op">=</span> <span class="fu">tmaptools</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmaptools/reference/bb.html">bb</a></span><span class="op">(</span><span class="va">route_network_scenario</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.9</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0.1</span>, <span class="fl">0.6</span><span class="op">)</span>, relative <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">zones_od</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill</a></span><span class="op">(</span>fill_alpha <span class="op">=</span> <span class="fl">0.2</span>, lwd <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span></span>
@@ -739,20 +739,20 @@ FIGURE 13.7: 路線ネットワークデータセット。グレーの線は簡�
 この段階に至るまでには、(希望線から生成された)短いが車に依存する通勤経路を特定するための手順があり、(ルートネットワーク) セクションで <strong>sfnetworks</strong> パッケージを使用してルートネットワークの特性を分析することが含まれている。
 本章の最後のコードチャンクは、自転車利用インフラから短い距離のエリアを表す新しいデータセットに、前のセクションの自転車利用潜在力の推定値を重ねることによって、これらの一連の分析を結合する。
 この新しいデータセットは、以下のコードで作成される。(1) 交通ネットワークを表す <code>bristol_ways</code> オブジェクトから自転車道をフィルタする。(2) 自転車道の個々の線エンティティを単一の複合線オブジェクトに「統合」する (バッファ作成が速くなるため)。(3) 周囲に 100 m バッファのポリゴンを生成する。</p>
-<div class="sourceCode" id="cb471"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb472"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">existing_cycleways_buffer</span> <span class="op">=</span> <span class="va">bristol_ways</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">highway</span> <span class="op">==</span> <span class="st">"cycleway"</span><span class="op">)</span> <span class="op">|&gt;</span>    <span class="co"># 1) filter out cycleways</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span>                       <span class="co"># 2) unite geometries</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span>dist <span class="op">=</span> <span class="fl">100</span><span class="op">)</span>               <span class="co"># 3) create buffer</span></span></code></pre></div>
 <p>次の段階は、ネットワークの中で、自転車利用の可能性が高いが、自転車利用のための設備がほとんどない点を表すデータセットを作成することである。</p>
-<div class="sourceCode" id="cb472"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb473"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">route_network_no_infra</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_binary_ops.html">st_difference</a></span><span class="op">(</span></span>
 <span>  <span class="va">route_network_scenario</span>,</span>
 <span>  <span class="va">route_network_scenario</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_set_crs</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">existing_cycleways_buffer</span><span class="op">)</span><span class="op">)</span>,</span>
 <span>  <span class="va">existing_cycleways_buffer</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Figure <a href="transport.html#fig:cycleways">13.8</a> は、自動車への依存度が高く、自転車の利用可能性が高いが、自転車専用道路が整備されていないルートを示している。</p>
-<div class="sourceCode" id="cb473"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb474"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/qtm.html">qtm</a></span><span class="op">(</span><span class="va">route_network_no_infra</span>, basemaps <span class="op">=</span> <span class="fu">leaflet</span><span class="fu">::</span><span class="va"><a href="https://rstudio.github.io/leaflet/reference/providers.html">providers</a></span><span class="op">$</span><span class="va">Esri.WorldTopoMap</span>,</span>
 <span>    lines.lwd <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
