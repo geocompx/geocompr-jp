@@ -12,15 +12,18 @@ jobs:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install Japanese Fonts
+        run: |
+          apt-get update
+          apt-get install -y fonts-noto-cjk
+
       - name: Render Book
         run: |
           Rscript -e 'install.packages("remotes")'
           Rscript -e 'remotes::install_github("geocompx/geocompkg", dependencies = TRUE, force = TRUE)'
-          #Rscript -e 'install.packages("geocompkg", repos = c("https://geocompr.r-universe.dev", "https://cloud.r-project.org"), dependencies = TRUE, force = TRUE)'
           Rscript -e 'bookdown::render_book("index.Rmd")'
-          #cp -fvr _redirects _book/
-          #cp -fvr .htaccess _book/
-          #cp -fvr es.html fr.html solutions.html htaccess.txt _book/
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
