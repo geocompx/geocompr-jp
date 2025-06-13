@@ -841,6 +841,12 @@ Figure \@ref(fig:resampl) は、`dem` オブジェクトについて、異なる
 #> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
 #> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
 #> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
+#> [plot mode] fit legend/component: Some legend items or map compoments do not
+#> fit well, and are therefore rescaled.
+#> ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
+#> [plot mode] fit legend/component: Some legend items or map compoments do not
+#> fit well, and are therefore rescaled.
+#> ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
 ```
 
 <div class="figure" style="text-align: center">

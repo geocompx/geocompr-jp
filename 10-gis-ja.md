@@ -341,7 +341,7 @@ clean = qgis_run_algorithm("grass7:v.clean",
 clean_sf = st_as_sf(clean)
 ```
 
-その結果、Figure \@ref(fig:sliver) の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。
+その結果、Figure \@ref(fig:sliver) の右側のパネルでは、予想通り、切れ端 (sliver) 部分のポリゴンが削除されていることが見える。
 
 <div class="figure" style="text-align: center">
 <img src="images/10-sliver.png" alt="切れ端 (sliver) 部分を赤で強調 (左) と切れ端部分を除去 (右)。" width="100%" />

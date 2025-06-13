@@ -404,7 +404,7 @@ QGIS の GRASS GIS provider は、QGIS version 3.34 まで <code>grass7</code> �
 <span>  tool <span class="op">=</span> <span class="st">"rmarea"</span>, threshold <span class="op">=</span> <span class="fl">25000</span></span>
 <span><span class="op">)</span></span>
 <span><span class="va">clean_sf</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sf.html">st_as_sf</a></span><span class="op">(</span><span class="va">clean</span><span class="op">)</span></span></code></pre></div>
-<p>その結果、Figure <a href="gis.html#fig:sliver">10.2</a> の右側のパネルでは、予想通り、灰色のポリゴンが削除されているように見える。</p>
+<p>その結果、Figure <a href="gis.html#fig:sliver">10.2</a> の右側のパネルでは、予想通り、切れ端 (sliver) 部分のポリゴンが削除されていることが見える。</p>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:sliver"></span>
 <img src="images/10-sliver.png" alt="切れ端 (sliver) 部分を赤で強調 (左) と切れ端部分を除去 (右)。" width="100%"><p class="caption">

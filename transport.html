@@ -712,7 +712,10 @@ OSMのダウンロードと準備の時間を節約するために、以下の�
 <span>           lwd.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html">tm_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"自転車トリップ数 (modeled, one direction)"</span><span class="op">)</span>,</span>
 <span>           col <span class="op">=</span> <span class="st">"darkgreen"</span>, col_alpha <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html">tm_scalebar</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>fontfamily <span class="op">=</span> <span class="st">"HiraginoSans-W3"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [v3-&gt;v4] `tm_layout()`: use text.fontfamily instead of fontfamily</span></span></code></pre></div>
+<span><span class="co">#&gt; [v3-&gt;v4] `tm_layout()`: use text.fontfamily instead of fontfamily</span></span>
+<span><span class="co">#&gt; [plot mode] legend/component: Some components or legends are too "wide" and are</span></span>
+<span><span class="co">#&gt; therefore rescaled.</span></span>
+<span><span class="co">#&gt; ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:wayssln"></span>
 <img src="figures/wayssln-1.png" alt="路線ネットワークデータセット。グレーの線は簡略化された道路網を表し、セグメントの太さは betweenness に比例する。緑色の線は、上記のコードで計算された潜在的な自転車利用フロー (片道) である。" width="100%"><p class="caption">
