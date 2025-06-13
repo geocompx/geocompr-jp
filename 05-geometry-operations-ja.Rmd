@@ -61,7 +61,7 @@ seine_simp = st_simplify(seine, dTolerance = 2000) # 2000 m
 ```{r seine-simp, echo=FALSE, fig.cap="seine のオリジナルと簡略化した形状の比較。", warning=FALSE, fig.scap="Simplification in action.", message=FALSE, fig.asp=0.5, dev="ragg_png"}
 library(tmap)
 p_simp1 = tm_shape(seine) + tm_lines() +
-  tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("オリジナルデータ") + tm_layout(fontfamily = "Noto Sans CJK JP")
 p_simp2 = tm_shape(seine_simp) + tm_lines() +
   tm_title("st_simplify")
 tmap_arrange(p_simp1, p_simp2, ncol = 2)
@@ -102,7 +102,7 @@ us_states_simp2 = rmapshaper::ms_simplify(us_states, keep = 0.01,
 \index{べくた@ベクタ!かんりゃくか@簡略化}
 簡略化の代わりに、ポリゴンや線のジオメトリの境界を平滑化するという方法もあり、**smoothr** パッケージ\index{smoothr (package)}で実装されている。
 平滑化はジオメトリのエッジを補間するため、必ずしも頂点の数が少なくなるわけではないが、ラスタを空間的にベクトル化したジオメトリを扱うときに特に有用である (このトピックは Chapter \@ref(raster-vector) で説明する)。
-**Smoothr** は、Gaussian kernel 回帰、Chaikin's corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と[web](https://strimas.com/smoothr/)で説明されている。
+**Smoothr** は、Gaussian kernel 回帰、Chaikin's corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と[web](https://strimas.com/smoothr/)で説明している。
 `st_simplify()` と同様に、平滑化アルゴリズムは「トポロジー」を保存しないことに注意。
 **smoothr** の主要関数は `smooth()` であり、 `method` 引数は使用する平滑化手法を指定する。
 以下は、Gaussian kernel 回帰を使用して、`method=ksmooth` を使用して米国の州の境界線を滑らかにする。
@@ -117,7 +117,7 @@ Figure \@ref(fig:us-simp) で、Douglas-Peucker (`st_simplify`)、Visvalingam (`
 
 ```{r us-simp, echo=FALSE, fig.cap="ポリゴンの簡略化。sf (右上)、rmapshaper (左下)、smoothr (右下) の各パッケージの関数で生成された簡略版と元のアメリカ合衆国のジオメトリ形状を比較。", warning=FALSE, fig.scap="Polygon simplification in action.", dev="ragg_png"}
 library(tmap)
-p_ussimp1 = tm_shape(us_states) + tm_polygons() + tm_title("オリジナルデータ") + tm_layout(fontfamily = "HiraginoSans-W3")
+p_ussimp1 = tm_shape(us_states) + tm_polygons() + tm_title("オリジナルデータ") + tm_layout(fontfamily = "Noto Sans CJK JP")
 p_ussimp2 = tm_shape(us_states_simp1) + tm_polygons() + tm_title("st_simplify")
 p_ussimp3 = tm_shape(us_states_simp2) + tm_polygons() + tm_title("ms_simplify")
 p_ussimp4 = tm_shape(us_states_simp3) + tm_polygons() + tm_title('smooth(method = "ksmooth")')
@@ -192,11 +192,11 @@ seine_buff_50km = st_buffer(seine, dist = 50000)
 p_buffs1 = tm_shape(seine_buff_5km) + tm_polygons(fill = "name") +
   tm_shape(seine) + tm_lines() +
   tm_title("5 km バッファ") + 
-  tm_layout(legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 p_buffs2 = tm_shape(seine_buff_50km) + tm_polygons(fill = "name") +
   tm_shape(seine) + tm_lines() +
   tm_title("50 km バッファ") + 
-  tm_layout(legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tmap_arrange(p_buffs1, p_buffs2, ncol = 2)
 ```
 
@@ -314,13 +314,13 @@ st_crs(nz_scale) = st_crs(nz_sfc)
 st_crs(nz_rotate) = st_crs(nz_sfc)
 p_at1 = tm_shape(nz_sfc) + tm_polygons() +
   tm_shape(nz_shift) + tm_polygons(col = "red") +
-  tm_title("シフト") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("シフト") + tm_layout(fontfamily = "Noto Sans CJK JP")
 p_at2 = tm_shape(nz_sfc) + tm_polygons() +
   tm_shape(nz_scale) + tm_polygons(col = "red") +
-  tm_title("拡大縮小") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("拡大縮小") + tm_layout(fontfamily = "Noto Sans CJK JP")
 p_at3 = tm_shape(nz_sfc) + tm_polygons() +
   tm_shape(nz_rotate) + tm_polygons(col = "red") +
-  tm_title("回転") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("回転") + tm_layout(fontfamily = "Noto Sans CJK JP")
 tmap_arrange(p_at1, p_at2, p_at3, ncol = 3)
 ```
 
@@ -636,11 +636,11 @@ linestring_sf2
 
 ```{r line-cast, echo=FALSE, fig.cap="複合線 (左) と線 (右) 間の型キャストの例。", warning=FALSE, fig.scap="Examples of type casting.", message=FALSE, dev="ragg_png"}
 p_lc1 = tm_shape(multilinestring_sf) + tm_lines(lwd = 3) +
-  tm_title("複合線") + tm_layout(fontfamily = "HiraginoSans-W3")
+  tm_title("複合線") + tm_layout(fontfamily = "Noto Sans CJK JP")
 linestring_sf2$name = c("Riddle Rd", "Marshall Ave", "Foulke St")
 p_lc2 = tm_shape(linestring_sf2) + tm_lines(lwd = 3, col = "name", palette = "Set2") +
   tm_title("線") + 
-  tm_layout(legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tmap_arrange(p_lc1, p_lc2, ncol = 2)
 ```
 
@@ -783,11 +783,11 @@ dem_agg = aggregate(dem, fact = 5, fun = mean)
 p_ar1 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale_continuous()) +
   tm_title("A. オリジナル") + 
-  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 p_ar2 = tm_shape(dem_agg) +
   tm_raster(col.scale = tm_scale_continuous()) +
   tm_title("B. Aggregate 後") +
-  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tmap_arrange(p_ar1, p_ar2, ncol = 2)
 ```
 
@@ -804,7 +804,7 @@ agg_df = data.frame(
   Dimensions = c("117 * 117", "24 * 24"),
   Extent = c("794599.1, 798208.6, 8931775, 8935384", "794599.1, 798301.1, 8931682, 8935384")
 )
-knitr::kable(agg_df, caption = "Properties of the original and aggregated raster.", booktabs = TRUE)
+knitr::kable(agg_df, caption = "オリジナルと集計後のラスタの", booktabs = TRUE)
 ```
 
 \index{らすた@ラスタ!ぶんかい@分解}
@@ -852,11 +852,11 @@ dem_resampl1 = resample(dem, target_rast, method = "near")
 
 tm1 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-  tm_title("Original raster") +
+  tm_title("オリジナル") +
   tm_layout(frame = FALSE, legend.show = FALSE)
 tm2 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-  tm_title("Target raster") +
+  tm_title("対象") +
   tm_layout(frame = FALSE, legend.show = FALSE) +
   tm_shape(target_rast_p, is.main = TRUE) +
   tm_borders()
@@ -864,7 +864,7 @@ tm3 = tm_shape(dem) +
   tm_raster(col_alpha = 0) +
   tm_shape(dem_resampl1) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
-  tm_title("Resampled raster") +
+  tm_title("リサンプリング") +
   tm_layout(frame = FALSE, legend.show = FALSE)
 tmap_arrange(tm1, tm2, tm3, nrow = 1)
 ```
@@ -916,23 +916,23 @@ library(tmap)
 tm1 = tm_shape(dem) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("オリジナル") +
-  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tm2 = tm_shape(dem_resampl1) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("最近傍 (near)") +
-  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tm3 = tm_shape(dem_resampl2) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("双一次補間 (bilinear)") +
-  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tm4 = tm_shape(dem_resampl3) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("三次補間 (cubic)") +
-  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tm5 = tm_shape(dem_resampl4) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("三次スプライン補間 (cubicspline)") +
-  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "HiraginoSans-W3")
+  tm_layout(frame = FALSE, legend.show = FALSE, fontfamily = "Noto Sans CJK JP")
 tm6 = tm_shape(dem_resampl5) +
   tm_raster(col.scale = tm_scale(breaks = seq(200, 1100, by = 150))) +
   tm_title("lanczos") +
