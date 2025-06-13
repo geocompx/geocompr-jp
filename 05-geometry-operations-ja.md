@@ -103,7 +103,7 @@ us_states_simp2 = rmapshaper::ms_simplify(us_states, keep = 0.01,
 \index{べくた@ベクタ!かんりゃくか@簡略化}
 簡略化の代わりに、ポリゴンや線のジオメトリの境界を平滑化するという方法もあり、**smoothr** パッケージ\index{smoothr (package)}で実装されている。
 平滑化はジオメトリのエッジを補間するため、必ずしも頂点の数が少なくなるわけではないが、ラスタを空間的にベクトル化したジオメトリを扱うときに特に有用である (このトピックは Chapter \@ref(raster-vector) で説明する)。
-**Smoothr** は、Gaussian kernel 回帰、Chaikin's corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と[web](https://strimas.com/smoothr/)で説明されている。
+**Smoothr** は、Gaussian kernel 回帰、Chaikin's corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と[web](https://strimas.com/smoothr/)で説明している。
 `st_simplify()` と同様に、平滑化アルゴリズムは「トポロジー」を保存しないことに注意。
 **smoothr** の主要関数は `smooth()` であり、 `method` 引数は使用する平滑化手法を指定する。
 以下は、Gaussian kernel 回帰を使用して、`method=ksmooth` を使用して米国の州の境界線を滑らかにする。
@@ -750,7 +750,7 @@ Table \@ref(tab:aggdf) は、オリジナルと集計後の比較である。
 
 
 
-Table: (\#tab:aggdf)Properties of the original and aggregated raster.
+Table: (\#tab:aggdf)オリジナルと集計後のラスタの
 
 |Object  |Resolution       |Dimensions |Extent                               |
 |:-------|:----------------|:----------|:------------------------------------|

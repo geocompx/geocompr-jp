@@ -195,7 +195,7 @@ FIGURE 5.1: seine のオリジナルと簡略化した形状の比較。
 <p>
 簡略化の代わりに、ポリゴンや線のジオメトリの境界を平滑化するという方法もあり、<strong>smoothr</strong> パッケージで実装されている。
 平滑化はジオメトリのエッジを補間するため、必ずしも頂点の数が少なくなるわけではないが、ラスタを空間的にベクトル化したジオメトリを扱うときに特に有用である (このトピックは Chapter <a href="raster-vector.html#raster-vector">6</a> で説明する)。
-<strong>Smoothr</strong> は、Gaussian kernel 回帰、Chaikin’s corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と<a href="https://strimas.com/smoothr/">web</a>で説明されている。
+<strong>Smoothr</strong> は、Gaussian kernel 回帰、Chaikin’s corner cutting アルゴリズム、スプライン補間の 3 つの平滑化手法を実装しており、パッケージ vignette と<a href="https://strimas.com/smoothr/">web</a>で説明している。
 <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_simplify()</a></code> と同様に、平滑化アルゴリズムは「トポロジー」を保存しないことに注意。
 <strong>smoothr</strong> の主要関数は <code><a href="https://rdrr.io/r/stats/smooth.html">smooth()</a></code> であり、 <code>method</code> 引数は使用する平滑化手法を指定する。
 以下は、Gaussian kernel 回帰を使用して、<code>method=ksmooth</code> を使用して米国の州の境界線を滑らかにする。
@@ -785,7 +785,7 @@ FIGURE 5.15: オリジナル (左) と 集計後 (右)。
 範囲は、新しいグリッドに合うように微調整された。</p>
 <div class="inline-table"><table class="table table-sm">
 <caption>
-<span id="tab:aggdf">TABLE 5.2: </span>Properties of the original and aggregated raster.</caption>
+<span id="tab:aggdf">TABLE 5.2: </span>オリジナルと集計後のラスタの</caption>
 <colgroup>
 <col width="10%">
 <col width="23%">
@@ -1011,7 +1011,7 @@ Canterburyの地理的重心からの距離は？</p>
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-11.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-13.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">
