@@ -38,7 +38,7 @@ Section \@ref(raster-vector) では、ベクタオブジェクトとラスタオ
 
 ## ベクタデータに対するジオメトリ操作  {#geo-vec}
 
-ここでは、ベクタ (`sf`) オブジェクトのジオメトリを何らかの方法で変更する操作について説明する。
+ここでは、ベクタ (`sf`) オブジェクトのジオメトリを変更する操作について説明する。
 前の章 (Section \@ref(spatial-vec)) で紹介した空間データ操作よりも高度なもので、ここではジオメトリを掘り下げていくことがある。
 このセクションで説明する関数は、クラス `sf` のオブジェクトに加えて、クラス `sfc` のオブジェクトにも作用する。
 
@@ -46,8 +46,8 @@ Section \@ref(raster-vector) では、ベクタオブジェクトとラスタオ
 
 \index{べくた@ベクタ!かんりゃくか@簡略化} 
 簡略化とは、通常、縮尺の小さい地図で使用するために、ベクタオブジェクト (線やポリゴン) を一般化する処理のことである。
-オブジェクトを単純化するもう一つの理由は、それらが消費するメモリ、ハードディスク容量、ネットワーク帯域幅の量を減らすためである。
-インタラクティブ地図として公開する前に、複雑な形状を簡略化することが賢明だろう。 
+オブジェクトを単純化するもう一つの理由は、消費するメモリ、ハードディスク容量、ネットワーク帯域幅の量を減らすためである。
+インタラクティブ地図として公開する前に複雑な形状を簡略化することも賢明だろう。 
 **sf** パッケージは `st_simplify()` を提供する。これは Douglas-Peucker アルゴリズムの実装を使用して、頂点数を削減するものである。
 `st_simplify()` は、`dTolerance` を使用することで、一般化のレベルを地図で使われている単位で制御することができる  [詳細は @douglas_algorithms_1973]。
 Figure \@ref(fig:seine-simp) は、セーヌ川とその支流を表すジオメトリ `LINESTRING` を簡略化したものである。
@@ -63,8 +63,8 @@ seine_simp = st_simplify(seine, dTolerance = 2000) # 2000 m
 <p class="caption">(\#fig:seine-simp)seine のオリジナルと簡略化した形状の比較。</p>
 </div>
 
-ここでできた `seine_simp` オブジェクトは、元の `seine` のコピーであるが、頂点の数は少なくなっている。
-これは明らかで、以下の検証のように、結果は視覚的にシンプルになり (Figure \@ref(fig:seine-simp)、右)、元のオブジェクトよりもメモリ消費が少ない。
+ここでできた `seine_simp` オブジェクトは、元の `seine` の頂点の数は少なくしたコピーである。
+これは明らかで、以下の検証のように、結果は視覚的に簡略化され (Figure \@ref(fig:seine-simp)、右)、元のオブジェクトよりもメモリ消費が少ない。
 
 
 ``` r
@@ -84,8 +84,8 @@ us_states_simp1 = st_simplify(us_states, dTolerance = 100000) # 100 km
 ```
 
 `st_simplify()` の制限として、ジオメトリ単位でオブジェクトを簡略化することが挙げられる。
-このため、「トポロジー」が失われ、Figure \@ref(fig:us-simp) (パネル右上) に示すような、重なり合った「穴のあいた」面単位になってしまうのである。
-**rmapshaper** の `ms_simplify()` が代替となる。
+このため、「トポロジー」が失われ、Figure \@ref(fig:us-simp) (パネル右上) に示すような、重なり合ったり隙間ができたりする。
+**rmapshaper** の `ms_simplify()` を使えば、この問題は解決できる。
 デフォルトでは、Douglas-Peucker アルゴリズムのいくつかの制限を克服した Visvalingam アルゴリズムが使用される [@visvalingam_line_1993]。
 <!-- https://bost.ocks.org/mike/simplify/ -->
 次のコードチャンクは、この関数を使用して、`us_states` を簡略化している。
@@ -284,13 +284,6 @@ rotation = function(a){
 nz_rotate = (nz_sfc - nz_centroid_sfc) * rotation(30) + nz_centroid_sfc
 ```
 
-
-```
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-```
-
 <div class="figure" style="text-align: center">
 <img src="figures/affine-trans-1.png" alt="アフィン変換 (平行移動、拡大縮小、回転)。" width="100%" />
 <p class="caption">(\#fig:affine-trans)アフィン変換 (平行移動、拡大縮小、回転)。</p>
@@ -395,11 +388,11 @@ x_and_y = st_intersection(x, y)
 
 
 ``` r
-# way #1
+# 方法 #1
 p_xy1 = p[x_and_y]
-# way #2
+# 方法 #2
 p_xy2 = st_intersection(p, x_and_y)
-# way #3
+# 方法 #3
 sel_p_xy = st_intersects(p, x, sparse = FALSE)[, 1] & 
   st_intersects(p, y, sparse = FALSE)[, 1]
 p_xy3 = p[sel_p_xy]
@@ -407,8 +400,8 @@ p_xy3 = p[sel_p_xy]
 
 
 
-上記の例は、応用というより教育的な目的で作成されたものであり、R で地理的ベクタオブジェクトを扱うための理解を深めるために結果を再現することを勧める。しかし、これは、どの実装を使うべきかという重要な問題を提起している。
-一般に、上記の最初のアプローチのような簡潔な実装が好まれる。
+上記の例は、応用というより教育的な目的で作成されたものであり、どの実装を使うべきかという重要な問題を提起している。R で地理的ベクタオブジェクトを扱うための理解を深めるために結果を再現することを勧める。
+一般には、最初の方法が簡潔で、実装する際に好まれる。
 Chapter \@ref(algorithms) では、同じ技術やアルゴリズムの異なる実装を選択する問題に戻る。
 
 ### ジオメトリ結合  {#geometry-unions}
@@ -842,11 +835,6 @@ Figure \@ref(fig:resampl) は、`dem` オブジェクトについて、異なる
 
 
 ```
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-#> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
 #> [plot mode] fit legend/component: Some legend items or map compoments do not
 #> fit well, and are therefore rescaled.
 #> ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.

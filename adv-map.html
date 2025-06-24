@@ -114,7 +114,7 @@
 <ul>
 <li>この章では、すでに使用している以下のパッケージが必要である。</li>
 </ul>
-<div class="sourceCode" id="cb303"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb302"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rspatial.org/">terra</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span></span>
@@ -124,20 +124,20 @@
 <li>本章での主要なパッケージは <strong>tmap</strong> である。
 CRAN よりも頻繁に更新されている <a href="https://r-universe.dev/">r-universe</a> 版をお勧めする。訳註: macOS では、<strong>tmap</strong> は文字化けすることがある。<a href="https://uribo.hatenablog.com/entry/2021/03/29/202756">macOS で ragg を使用することで文字化けが解消する</a>。</li>
 </ul>
-<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb303"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tmap"</span>, repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"https://r-tmap.r-universe.dev"</span>,</span>
 <span>                                   <span class="st">"https://cloud.r-project.org"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <ul>
 <li>以下の可視化に関するパッケージを使用する (動的な地図アプリを開発したい場合は、<strong>shiny</strong> もインストールしよう)。</li>
 </ul>
-<div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb304"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap">tmap</a></span><span class="op">)</span>    <span class="co"># 静的地図と動的地図</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span> <span class="co"># 動的地図</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span> <span class="co"># tidyverse データ可視化パッケージ</span></span></code></pre></div>
 <ul>
 <li>Section <a href="spatial-operations.html#spatial-ras">4.3</a> で紹介した二つのデータセットを読み込む必要がある。</li>
 </ul>
-<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb305"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_elev</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/nz_elev.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div id="introduction-09" class="section level2" number="9.1">
@@ -198,7 +198,7 @@ Base R のアプローチは拡張可能で、<code><a href="https://rspatial.gi
 各入力データセットは、地図上の位置 (データの <code>geometry</code> で定義)、色、その他の視覚的変数など、さまざまな方法で「地図作成」することができる。
 基本的な構成要素は <code><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape()</a></code> (入力データ、ベクタまたはラスタのオブジェクトを定義する) で、その後に <code><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill()</a></code> や <code><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">tm_dots()</a></code> などの 1 つまたは複数のレイヤ要素が続く。
 以下のチャンクは、このようなレイヤ構成を示し、Figure <a href="adv-map.html#fig:tmshape">9.1</a> の地図を生成する。</p>
-<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb306"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># nz shape に塗りつぶしレイヤを追加</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill</a></span><span class="op">(</span><span class="op">)</span> </span>
@@ -253,7 +253,7 @@ FIGURE 9.1: New Zealand の形状を <strong>tmap</strong> 関数で塗りつぶ
 </h3>
 <p><strong>tmap</strong> の便利な点は、地図を表す<u>オブジェクト</u>を格納できることである。
 以下のコードは、Figure <a href="adv-map.html#fig:tmshape">9.1</a> の最後のプロットをクラス <code>tmap</code> のオブジェクトとして保存することでこれを示している (<code><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons()</a></code> 関数は、<code>tm_fill() + tm_borders()</code> を単一の関数に凝縮したもの)。</p>
-<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb307"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_nz</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/class.html">class</a></span><span class="op">(</span><span class="va">map_nz</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "tmap"</span></span></code></pre></div>
@@ -262,12 +262,12 @@ FIGURE 9.1: New Zealand の形状を <strong>tmap</strong> 関数で塗りつぶ
 この場合、<code>new_obj</code> は、先行するレイヤの上にプロットされる新しい空間オブジェクトを表す。
 このようにして新しい形状が追加されると、次の新しい形状が追加されるまで、それ以降のすべての美観機能はその形状を参照する。
 この構文により、複数の形状やレイヤを持つ地図を作成することができる。次のコードでは、関数 <code><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html">tm_raster()</a></code> を使ってラスタレイヤ (レイヤを半透明にするために <code>col_alpha</code> を設定している) を描画している様子を示している。</p>
-<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb308"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_nz1</span> <span class="op">=</span> <span class="va">map_nz</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz_elev</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html">tm_raster</a></span><span class="op">(</span>col_alpha <span class="op">=</span> <span class="fl">0.7</span><span class="op">)</span></span></code></pre></div>
 <p>先に作成した <code>map_nz</code> オブジェクトをベースに、新しい地図オブジェクト <code>map_nz1</code> を作成する。このオブジェクトには、New Zealand 全土の平均標高を表す別の図形 (<code>nz_elev</code>) が含まれている (Figure <a href="adv-map.html#fig:tmlayers">9.2</a> 左図)。
 さらに図形やレイヤを追加することもできる。以下のコードでは、New Zealand の<a href="https://en.wikipedia.org/wiki/Territorial_waters">領海</a>を表す <code>nz_water</code> を作成し、作成した線を既存の地図オブジェクトに追加している。</p>
-<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb309"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_water</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_combine.html">st_union</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer</a></span><span class="op">(</span><span class="fl">22200</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_cast.html">st_cast</a></span><span class="op">(</span>to <span class="op">=</span> <span class="st">"LINESTRING"</span><span class="op">)</span></span>
@@ -276,13 +276,13 @@ FIGURE 9.1: New Zealand の形状を <strong>tmap</strong> 関数で塗りつぶ
 <p><code>tmap</code> オブジェクトに追加できるレイヤやシェイプの数に制限はない。同じシェイプを複数回使用することも可能である。
 Figure <a href="adv-map.html#fig:tmlayers">9.2</a> に示される最終的な地図は、先に作成された <code>map_nz2</code> オブジェクトに <code><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">tm_dots()</a></code> で高ポイントを表すレイヤ (オブジェクト <code>nz_height</code> に格納) を追加して作成される (<strong>tmap</strong> のポイントプロット機能の詳細については <code><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">?tm_dots</a></code> と <code><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">?tm_bubbles</a></code> を参照)。
 その結果、4つのレイヤを持つ地図ができあがり、Figure <a href="adv-map.html#fig:tmlayers">9.2</a> の右側のパネルに示されている。</p>
-<div class="sourceCode" id="cb311"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb310"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_nz3</span> <span class="op">=</span> <span class="va">map_nz2</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz_height</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">tm_symbols</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>
 便利だがあまり知られていない <strong>tmap</strong> の機能として、<code><a href="https://r-tmap.github.io/tmap/reference/tmap_arrange.html">tmap_arrange()</a></code> がある。これは、複数の地図オブジェクトを一つの「メタプロット」に配置することができる。
 Figure <a href="adv-map.html#fig:tmlayers">9.2</a>は、<code>map_nz1</code> から <code>map_nz3</code> までをメタプロットしている例である。</p>
-<div class="sourceCode" id="cb312"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb311"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_arrange.html">tmap_arrange</a></span><span class="op">(</span><span class="va">map_nz1</span>, <span class="va">map_nz2</span>, <span class="va">map_nz3</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:tmlayers"></span>
@@ -322,7 +322,7 @@ FIGURE 9.2: Figure 9.1 の最終地図にレイヤを追加した地図。
 <p>美観に変数に応じて変化させるには、対応する引数に列名を渡す。美観を固定するには、希望の値を渡す。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
 固定値と列名の間に衝突があった場合、列名が優先される。これは、&lt;code&gt;nz$red = 1:nrow(nz)&lt;/code&gt; を実行した後に次のコードチャンクを実行することで確認できる。&lt;/p&gt;"><sup>49</sup></a>
 固定値を設定した例を Figure <a href="adv-map.html#fig:tmstatic">9.3</a> に示す。</p>
-<div class="sourceCode" id="cb313"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb312"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ma1</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"red"</span><span class="op">)</span></span>
 <span><span class="va">ma2</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"red"</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span></span>
 <span><span class="va">ma3</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
@@ -339,13 +339,13 @@ FIGURE 9.3: よく使われる塗りつぶしや枠線の美観を固定値に�
 </div>
 <p>Base R のプロットと同様に、美観を定義する引数もまた、様々な値を受け取ることができる。
 ただし、Base R コード (Figure <a href="adv-map.html#fig:tmcol">9.4</a> の左のパネルを生成) とは異なり、<strong>tmap</strong> 美観引数は数値ベクトルを受け付けない。</p>
-<div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb313"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_geometry.html">st_geometry</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span>, col <span class="op">=</span> <span class="va">nz</span><span class="op">$</span><span class="va">Land_area</span><span class="op">)</span>  <span class="co"># 成功</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">nz</span><span class="op">$</span><span class="va">Land_area</span><span class="op">)</span> <span class="co"># 失敗</span></span>
 <span><span class="co">#&gt; Error: palette should be a character value</span></span></code></pre></div>
 <p><code>fill</code> (線レイヤの場合は <code>lwd</code>、点レイヤの場合は <code>size</code> など) は、プロットされるジオメトリに関連する属性を、数値ベクトルではなく文字列を渡す必要がある。
 次のようにすると望ましい結果を得ることができる (Figure <a href="adv-map.html#fig:tmcol">9.4</a> 右図)。</p>
-<div class="sourceCode" id="cb315"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb314"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_fill</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Land_area"</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:tmcol"></span>
@@ -380,7 +380,7 @@ FIGURE 9.4: 数値色フィールドの Base (左) と <strong>tmap</strong> (�
 <code>palette</code> は配色を定義するもので、例えば <code>BuGn</code>
 </li>
 </ul>
-<div class="sourceCode" id="cb316"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb315"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Median_income"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Median_income"</span>,</span>
 <span>                           fill.scale <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale.html">tm_scale</a></span><span class="op">(</span>breaks <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">30000</span>, <span class="fl">40000</span>, <span class="fl">50000</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -454,7 +454,7 @@ FIGURE 9.7: <strong>tmap</strong> における連続スケールとカテゴリ�
 <p>次に、連続パレットをみてみよう。
 連続パレットは、例えば明るい色から暗い色への勾配に沿っており (明るい色は低い値を表す傾向がある)、連続的な (数値) 変数に適している。
 連続パレットは、以下のコードで示すように、単色 (例えば、<code>greens</code> は明るいから暗い緑へ) または多色/色相 (例えば、<code>yl_gn_bu</code> は明るい黄色から緑色を経て青色へのグラデーション) である (出力は示していない)。結果を見るために自分でコードを実行してみよう。</p>
-<div class="sourceCode" id="cb317"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb316"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">"Median_income"</span>, fill.scale <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale.html">tm_scale</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"greens"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -462,7 +462,7 @@ FIGURE 9.7: <strong>tmap</strong> における連続スケールとカテゴリ�
 <p>3 番目のパレットである発散パレットは、通常 3 色の間 (紫-白-緑: Figure <a href="adv-map.html#fig:colpal">9.8</a>) で、通常 2 つの単色パレットの両端を濃い色で結合して作成される。
 その主な目的は、ある気温、世帯収入の中央値、干ばつイベントの平均確率など、重要な基準点からの差異を可視化することである。
 参照点の値は、<code>midpoint</code> の引数を用いて <strong>tmap</strong> で調整することができる。</p>
-<div class="sourceCode" id="cb318"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb317"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">"Median_income"</span>,</span>
 <span>              fill.scale <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale_continuous.html">tm_scale_continuous</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"pu_gn_div"</span>, </span>
@@ -492,13 +492,13 @@ FIGURE 9.8: カテゴリ、連続色、発散のパレットの例。
 最も重要なのは<code>タイトル</code>で、凡例のタイトルとなる。
 一般に、タイトルには二つの情報を記述する。一つ目は内容で、二つ目は値の単位である。
 以下のコードは、変数名 <code>Land_area</code> よりも魅力的な名前を提供することで、この機能を示している (<code><a href="https://rdrr.io/r/base/expression.html">expression()</a></code> は上付き文字を設定するために使用)。</p>
-<div class="sourceCode" id="cb319"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb318"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">legend_title</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/expression.html">expression</a></span><span class="op">(</span><span class="st">"Area (km"</span><span class="op">^</span><span class="fl">2</span><span class="op">*</span><span class="st">")"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Land_area"</span>, fill.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html">tm_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="va">legend_title</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><strong>tmap</strong> の凡例方向はデフォルトでは縦長 <code>"portrait"</code> であるが、<code>"landscape"</code> で横長とすることもできる。
 凡例の位置は、<code>position</code> 引数で設定する。</p>
-<div class="sourceCode" id="cb320"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb319"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Land_area"</span>,</span>
 <span>              fill.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html">tm_legend</a></span><span class="op">(</span>title <span class="op">=</span> <span class="va">legend_title</span>,</span>
@@ -525,7 +525,7 @@ FIGURE 9.8: カテゴリ、連続色、発散のパレットの例。
 地図要素には、マップされるオブジェクト、地図グリッド (メッシュ)、縮尺バー、タイトル、マージンなどがあり、前のセクションで説明したカラー設定は、地図の見え方に影響を与えるパレットとブレークポイントに関連している。
 どちらも微妙な変化をもたらすだろうが、地図が残す印象には同じように大きな影響を与える。</p>
 <p>経緯線網、方位記号、スケールバー、タイトルなどの整飾には、それぞれ <code><a href="https://r-tmap.github.io/tmap/reference/tm_grid.html">tm_graticules()</a></code>、<code><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html">tm_compass()</a></code>、<code><a href="https://r-tmap.github.io/tmap/reference/tm_scalebar.html">tm_scalebar()</a></code>、<code><a href="https://r-tmap.github.io/tmap/reference/tm_title.html">tm_title()</a></code> といった関数がある (Figure <a href="adv-map.html#fig:na-sb">9.9</a>)。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;この他、&lt;code&gt;tm_grid()&lt;/code&gt;、&lt;code&gt;tm_logo()&lt;/code&gt;、&lt;code&gt;tm_credits()&lt;/code&gt; がある。&lt;/p&gt;"><sup>53</sup></a></p>
-<div class="sourceCode" id="cb321"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb320"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_nz</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_grid.html">tm_graticules</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_compass.html">tm_compass</a></span><span class="op">(</span>type <span class="op">=</span> <span class="st">"8star"</span>, position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"top"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -538,7 +538,7 @@ FIGURE 9.9: 方位記号とスケールバーを追加した地図。
 </p>
 </div>
 <p>また、<strong>tmap</strong> では、様々なレイアウト設定を変更することができる。その一部を、以下のコードで作成し、Figure <a href="adv-map.html#fig:layout1">9.10</a> に図示している (全リストは、<code>args(tm_layout)</code> または <code><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">?tm_layout</a></code> を参照)。</p>
-<div class="sourceCode" id="cb322"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb321"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_nz</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="fl">4</span>, fontfamily <span class="op">=</span> <span class="st">"HiraginoSans-W3"</span><span class="op">)</span></span>
 <span><span class="va">map_nz</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>bg.color <span class="op">=</span> <span class="st">"lightblue"</span><span class="op">)</span></span>
 <span><span class="va">map_nz</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
@@ -580,7 +580,7 @@ FIGURE 9.11: 選択したレイアウトオプション。
 <p>ファセット地図では、一つのジオメトリ・データの属性データのそれぞれの列に対して一つのファセットとなる (<code>sf</code> オブジェクトのデフォルトのプロット方法、Chapter <a href="spatial-class.html#spatial-class">2</a> を参照)。
 また、ファセットを用いて、点パターンの経時変化など、ジオメトリの変化を表現することもできる。
 このファセット化されたプロットの使用例を Figure <a href="adv-map.html#fig:urban-facet">9.12</a> に示す。</p>
-<div class="sourceCode" id="cb323"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb322"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">urb_1970_2030</span> <span class="op">=</span> <span class="va">urban_agglomerations</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">year</span> <span class="op"><a href="https://rspatial.github.io/terra/reference/match.html">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1970</span>, <span class="fl">1990</span>, <span class="fl">2010</span>, <span class="fl">2030</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
@@ -616,14 +616,14 @@ FIGURE 9.12: 国連による人口予測に基づき、1970年から2030年ま�
 <p>下の例では、New Zealand の南アルプスの中央部の地図を作成している。
 差し込み地図は、メイン地図が New Zealand 全体に対してどのような位置にあるかを示すものである。
 最初のステップは、関心のある領域を定義することである。これは、新しい空間オブジェクト <code>nz_region</code> を作成することで可能である。</p>
-<div class="sourceCode" id="cb324"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb323"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_region</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>xmin <span class="op">=</span> <span class="fl">1340000</span>, xmax <span class="op">=</span> <span class="fl">1450000</span>,</span>
 <span>                      ymin <span class="op">=</span> <span class="fl">5130000</span>, ymax <span class="op">=</span> <span class="fl">5210000</span><span class="op">)</span>,</span>
 <span>                    crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">nz_height</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p>ステップ 2 では、New Zealand の南アルプス周辺を示すベース地図を作成する。
 ここは、最も重要なメッセージが述べられている場所である。</p>
-<div class="sourceCode" id="cb325"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb324"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_height_map</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz_elev</span>, bbox <span class="op">=</span> <span class="va">nz_region</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html">tm_raster</a></span><span class="op">(</span>col.scale <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_scale_continuous.html">tm_scale_continuous</a></span><span class="op">(</span>values <span class="op">=</span> <span class="st">"YlGn"</span><span class="op">)</span>,</span>
 <span>            col.legend <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_legend.html">tm_legend</a></span><span class="op">(</span>position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"left"</span>, <span class="st">"top"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -632,7 +632,7 @@ FIGURE 9.12: 国連による人口予測に基づき、1970年から2030年ま�
 <p>ステップ 3 で、差し込み地図を作成する。
 差し込み地図はコンテキストを示し、関心のある領域を特定するのに役立つ。
 差し込み地図には境界線を記載するなどして、メイン地図の位置を明確に示す必要がある。</p>
-<div class="sourceCode" id="cb326"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb325"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">nz_map</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz_height</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">tm_symbols</a></span><span class="op">(</span>shape <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"red"</span>, size <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz_region</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_borders</a></span><span class="op">(</span>lwd <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span></span>
@@ -640,7 +640,7 @@ FIGURE 9.12: 国連による人口予測に基づき、1970年から2030年ま�
 <p>散布図など通常のグラフと地図の違いの一つとして、入力データは地図のアスペクト比を決定する。
 よって、この場合、<code>nz_region</code> と <code>nz</code> という二つのデータセットのアスペクト比を計算する必要がある。
 <code>norm_dim()</code> 関数は、オブジェクトの幅 (<code>"w"</code>) と高さ (<code>"h"</code>) を正規化する (画像デバイスは <code>"snpc"</code> の単位を理解する)。</p>
-<div class="sourceCode" id="cb327"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb326"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">grid</span><span class="op">)</span></span>
 <span><span class="va">norm_dim</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">obj</span><span class="op">)</span><span class="op">{</span></span>
 <span>    <span class="va">bbox</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span><span class="va">obj</span><span class="op">)</span></span>
@@ -655,16 +655,16 @@ FIGURE 9.12: 国連による人口予測に基づき、1970年から2030年ま�
 <p>アスペクト比を得て、<code><a href="https://rdrr.io/r/grid/viewport.html">viewport()</a></code> 関数を使い、二つの地図 (主地図と差し込み地図) の大きさと位置を指定する。
 viewport とは、ある瞬間のグラフィック要素を描画するために使用するグラフィックデバイスの一部である。
 私たちのメイン地図の viewport は、ちょうどそのアスペクト比の表現である。</p>
-<div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb327"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">main_vp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/viewport.html">viewport</a></span><span class="op">(</span>width <span class="op">=</span> <span class="va">main_dim</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, height <span class="op">=</span> <span class="va">main_dim</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span></span></code></pre></div>
 <p>差し込み地図の表示領域は、大きさと位置を指定する必要がある。
 ここでは、メイン地図の半分の大きさにするために幅と高さに 0.5 をかけ、メイン地図フレームの右下から 0.5 cm の位置に配置する。</p>
-<div class="sourceCode" id="cb329"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb328"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ins_vp</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/viewport.html">viewport</a></span><span class="op">(</span>width <span class="op">=</span> <span class="va">ins_dim</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span> <span class="op">*</span> <span class="fl">0.5</span>, height <span class="op">=</span> <span class="va">ins_dim</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span> <span class="op">*</span> <span class="fl">0.5</span>,</span>
 <span>                  x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">1</span>, <span class="st">"npc"</span><span class="op">)</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="st">"cm"</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="st">"cm"</span><span class="op">)</span>,</span>
 <span>                  just <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"right"</span>, <span class="st">"bottom"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>最後に、新規にキャンバスを作り、メイン地図を表示し、メイン地図の領域内に差し込み地図を配置する。</p>
-<div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb329"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/grid/grid.newpage.html">grid.newpage</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">nz_height_map</span>, vp <span class="op">=</span> <span class="va">main_vp</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/grid/viewports.html">pushViewport</a></span><span class="op">(</span><span class="va">main_vp</span><span class="op">)</span></span>
@@ -680,12 +680,12 @@ FIGURE 9.13: 差し込み地図で背景を説明 - New Zealand の南アルプ�
 よく使われる例はアメリカ合衆国の地図で、アメリカ本土とハワイ、アラスカで構成されている。
 このようなケースでは、個々の差し込みに最適なプロジェクションを見つけることが非常に重要である (詳しくは Chapter <a href="reproj-geo-data.html#reproj-geo-data">7</a> を参照)。
 <code><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape()</a></code> の引数 <code>crs</code> に US National Atlas Equal Area の EPSG コードを指定すれば、米国本土の地図に US National Atlas Equal Area を使用することができる。</p>
-<div class="sourceCode" id="cb331"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb330"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">us_states_map</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">us_states</span>, crs <span class="op">=</span> <span class="st">"EPSG:9311"</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>frame <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>残りのオブジェクト <code>hawaii</code> と <code>alaska</code> は、すでに適切な投影を持っている。したがって、2 つの地図を別々に作成するだけでよい。</p>
-<div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb331"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hawaii_map</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">hawaii</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html">tm_title</a></span><span class="op">(</span><span class="st">"Hawaii"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -696,7 +696,7 @@ FIGURE 9.13: 差し込み地図で背景を説明 - New Zealand の南アルプ�
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_title.html">tm_title</a></span><span class="op">(</span><span class="st">"Alaska"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op">(</span>frame <span class="op">=</span> <span class="cn">FALSE</span>, bg.color <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span></span></code></pre></div>
 <p>これら 3 つの地図を組み合わせ、サイズを調整し配置することで、最終的な地図ができあがる。</p>
-<div class="sourceCode" id="cb333"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb332"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">us_states_map</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">hawaii_map</span>, vp <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/viewport.html">viewport</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">0.1</span>, width <span class="op">=</span> <span class="fl">0.2</span>, height <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="va">alaska_map</span>, vp <span class="op">=</span> <span class="fu">grid</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/grid/viewport.html">viewport</a></span><span class="op">(</span><span class="fl">0.15</span>, <span class="fl">0.15</span>, width <span class="op">=</span> <span class="fl">0.3</span>, height <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
@@ -740,14 +740,14 @@ FIGURE 9.15: 1950年から2030年までの、国連による人口予測に基�
 <code>free.coords = FALSE</code> で、アニメーションのために地図の範囲を維持する</li>
 </ul>
 <p>追加した引数を、次のコードチャンクで示そう。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;&lt;code&gt;tm_facets_pagewise()&lt;/code&gt; を使うと、さらに簡潔になる。&lt;/p&gt;"><sup>54</sup></a></p>
-<div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb333"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">urb_anim</span> <span class="op">=</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">world</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">urban_agglomerations</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">tm_symbols</a></span><span class="op">(</span>size <span class="op">=</span> <span class="st">"population_millions"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_facets.html">tm_facets_wrap</a></span><span class="op">(</span>by <span class="op">=</span> <span class="st">"year"</span>, nrow <span class="op">=</span> <span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">1</span>, free.coords <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <p>結果である <code>urb_anim</code> は、各年度の個別の地図のセットを表している。
 最終的には、<code><a href="https://r-tmap.github.io/tmap/reference/tmap_animation.html">tmap_animation()</a></code> でこれらを合成して、<code>.gif</code> ファイルとして保存する。
 次のコマンドは、Figure <a href="adv-map.html#fig:urban-animated">9.15</a> に示されたアニメーションを作成する。ただし、いくつかの要素が欠けているので、演習で追加する。</p>
-<div class="sourceCode" id="cb335"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb334"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_animation.html">tmap_animation</a></span><span class="op">(</span><span class="va">urb_anim</span>, filename <span class="op">=</span> <span class="st">"urb_anim.gif"</span>, delay <span class="op">=</span> <span class="fl">25</span><span class="op">)</span></span></code></pre></div>
 <p>地図アニメーションの威力を示すもう一つの例が、Figure <a href="adv-map.html#fig:animus">9.16</a> である。
 これは、アメリカにおける州の発達を示すもので、最初は東部で形成され、その後徐々に西部へ、最後は内陸部へと発展していった。
@@ -775,7 +775,7 @@ FIGURE 9.16: 米国における人口増加、州形成、境界線の変化を�
 <p>Section <a href="adv-map.html#static-maps">9.2</a> で述べた <strong>tmap</strong> は、同じコードを使って静的な地図とインタラクティブな地図を作ることができる。
 <code>tmap_mode("view")</code> というコマンドでビューモードに切り替えることで、任意の時点でインタラクティブ表示に切り替えることができる。
 以下のコードは、<code>tmap</code> オブジェクト <code>map_nz</code> に基づいて New Zealand のインタラクティブ地図を作成し、Section <a href="adv-map.html#map-obj">9.2.2</a> で作成し、Figure <a href="adv-map.html#fig:tmview">9.17</a> で図示している。</p>
-<div class="sourceCode" id="cb336"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb335"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">"view"</span><span class="op">)</span></span>
 <span><span class="va">map_nz</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
@@ -788,11 +788,11 @@ FIGURE 9.17: <strong>tmap</strong> のビューモードで作成されたNew Ze
 </div>
 <p>インタラクティブモードが「オン」になったので、<strong>tmap</strong> で作成したすべての地図が起動する (インタラクティブな地図を作成する別の方法として、<code>tmap_leaflet</code> 機能がある)。
 このインタラクティブモードの特筆すべき点は、以下のデモのように <code><a href="https://r-tmap.github.io/tmap/reference/tm_basemap.html">tm_basemap()</a></code> (または <code><a href="https://r-tmap.github.io/tmap/reference/tmap_options.html">tmap_options()</a></code>) でベース地図を指定できることである (結果は表示していない)。</p>
-<div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb336"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">map_nz</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_basemap.html">tm_basemap</a></span><span class="op">(</span>server <span class="op">=</span> <span class="st">"OpenTopoMap"</span><span class="op">)</span></span></code></pre></div>
 <p>あまり知られていないが、<strong>tmap</strong> の表示モードは、ファセット・プロットにも対応している。
 この場合、<code><a href="https://r-tmap.github.io/tmap/reference/tm_facets.html">tm_facets_wrap()</a></code> の引数 <code>sync</code> を使用すると、以下のコードで作成した Figure <a href="adv-map.html#fig:sync">9.18</a> のように、複数の地図を作成し、ズームとパンの設定を同期させることができる。</p>
-<div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb337"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">world_coffee</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="va">world</span>, <span class="va">coffee_data</span>, by <span class="op">=</span> <span class="st">"name_long"</span><span class="op">)</span></span>
 <span><span class="va">facets</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"coffee_production_2016"</span>, <span class="st">"coffee_production_2017"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">world_coffee</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="va">facets</span><span class="op">)</span> <span class="op">+</span> </span>
@@ -804,12 +804,12 @@ FIGURE 9.18: 2016年と2017年の世界のコーヒー生産量を同期させ�
 </p>
 </div>
 <p>同じ機能で <strong>tmap</strong> をプロットモードに戻す。</p>
-<div class="sourceCode" id="cb339"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb338"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tmap_mode.html">tmap_mode</a></span><span class="op">(</span><span class="st">"plot"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; ℹ tmap mode set to "plot".</span></span></code></pre></div>
 <p><strong>tmap</strong> を使いこなせない場合は、<strong>mapview</strong> を使ってインタラクティブ地図を作成するのが一番手っ取り早いだろう。
 以下の 1 行コードは、さまざまな地理データ形式をインタラクティブに探索するための信頼できる方法である。</p>
-<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb339"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">mapview</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/mapview/man/mapView.html">mapview</a></span><span class="op">(</span><span class="va">nz</span><span class="op">)</span></span></code></pre></div>
 <div class="figure" style="text-align: center">
 <span style="display:block;" id="fig:mapview"></span>
@@ -824,7 +824,7 @@ FIGURE 9.19: <strong>mapview</strong> の動作イメージ図。
 要するに、データドリブンの <strong>leaflet</strong> API と考えることができる (<strong>leaflet</strong> については後述する)。
 <strong>mapview</strong> は常に空間オブジェクト (<code>sf</code> と <code>SpatRaster</code>) を最初の引数として期待することから、パイプで繋げてもうまく機能する。
 次の例では、<strong>sf</strong> を使って直線とポリゴンを交差させ、<strong>mapview</strong> (Figure <a href="adv-map.html#fig:mapview2">9.20</a>) で可視化する場合を考えてみよう。</p>
-<div class="sourceCode" id="cb341"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb340"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-spatial/mapview">mapview</a></span><span class="op">)</span></span>
 <span><span class="va">oberfranken</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/subset.html">subset</a></span><span class="op">(</span><span class="va">franconia</span>, <span class="va">district</span> <span class="op">==</span> <span class="st">"Oberfranken"</span><span class="op">)</span></span>
 <span><span class="va">trails</span> <span class="op">|&gt;</span></span>
@@ -859,7 +859,7 @@ WebGL を使用することで、大規模なデータセット (最大数百万
 <p><strong>mapdeck</strong> のユニークな点は、Figure <a href="adv-map.html#fig:mapdeck">9.21</a> で図示するようにインタラクティブな 2.5 次元パースペクティブを提供できる点にある。
 これによって、地図をパン、ズーム、回転することができる上に、地図から「押し出した」データを見ることができるのである。
 Figure <a href="adv-map.html#fig:mapdeck">9.21</a> は、英国における交通事故を可視化したもので、棒の高さは地域ごとの死傷者数を表している。</p>
-<div class="sourceCode" id="cb342"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb341"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://symbolixau.github.io/mapdeck/articles/mapdeck.html">mapdeck</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/mapdeck/man/set_token.html">set_token</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.getenv.html">Sys.getenv</a></span><span class="op">(</span><span class="st">"MAPBOX"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">crash_data</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/utils/read.table.html">read.csv</a></span><span class="op">(</span><span class="st">"https://git.io/geocompr-mapdeck"</span><span class="op">)</span></span>
@@ -881,7 +881,7 @@ FIGURE 9.21: <strong>mapdeck</strong> によって生成された、イギリス
 <strong>leaflet</strong> は、Leaflet JavaScript ライブラリへの比較的低レベルのインタフェースを提供し、その引数の多くは、オリジナルの JavaScript ライブラリのドキュメントを読めば理解できる ( <a href="https://leafletjs.com/">leafletjs.com</a> を参照)。</p>
 <p>Leaflet 地図は <code><a href="https://rstudio.github.io/leaflet/reference/leaflet.html">leaflet()</a></code> で作成され、その結果は <code>leaflet</code> 地図オブジェクトとなり、他の <strong>leaflet</strong> 関数にパイプで渡すことができる。
 これにより、Figure <a href="adv-map.html#fig:leaflet">9.22</a> を生成する以下のコードで示すように、複数の地図レイヤや制御設定をインタラクティブに追加することができる (詳しくは <a href="https://rstudio.github.io/leaflet/">rstudio.github.io/leaflet/</a> を参照)。</p>
-<div class="sourceCode" id="cb343"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb342"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pal</span> <span class="op">=</span> <span class="fu"><a href="https://rstudio.github.io/leaflet/reference/colorNumeric.html">colorNumeric</a></span><span class="op">(</span><span class="st">"RdYlBu"</span>, domain <span class="op">=</span> <span class="va">cycle_hire</span><span class="op">$</span><span class="va">nbikes</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rstudio.github.io/leaflet/reference/leaflet.html">leaflet</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">cycle_hire</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://rstudio.github.io/leaflet/reference/addProviderTiles.html">addProviderTiles</a></span><span class="op">(</span><span class="va">providers</span><span class="op">$</span><span class="va">CartoDB.Positron</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -930,7 +930,7 @@ Section <a href="adv-map.html#interactive-maps">9.4</a> で示したインタラ
 <p>大規模なアプリを検討する前に、「lifeApp」と名付けた最小限の例を実際に見てみよう。<a class="footnote-ref" tabindex="0" data-toggle="popover" data-content="&lt;p&gt;
 ここでいう「アプリ」とは「Web アプリケーション」のことであり、一般的な意味であるスマートフォンのアプリと混同しないようにしよう。&lt;/p&gt;"><sup>56</sup></a>
 以下のコードでは、<code><a href="https://rdrr.io/pkg/shiny/man/shinyApp.html">shinyApp()</a></code> というコマンドで、lifeApp を定義して起動する。これは、平均寿命のレベルが低い国を表示させることができるインタラクティブなスライダーである (Figure <a href="adv-map.html#fig:lifeApp">9.23</a> を参照)。</p>
-<div class="sourceCode" id="cb344"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb343"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://shiny.posit.co/">shiny</a></span><span class="op">)</span>   <span class="co"># shiny</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://rstudio.github.io/leaflet/">leaflet</a></span><span class="op">)</span> <span class="co"># renderLeaflet 関数</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span>  <span class="co"># world データを読み込む </span></span>
@@ -1005,7 +1005,7 @@ FIGURE 9.24: CycleHireApp は、住んでいる場所と必要な自転車に基
 これらのセクションで触れていないが、ベクタとラスタのオブジェクトのプロットメソッドは、組み合わせて同じプロットエリアに描画することができる (<strong>sf</strong> プロットのキーやマルチバンドのラスタなどの要素はこれを邪魔する)。
 この動作は、Figure <a href="adv-map.html#fig:nz-plot">9.25</a> を生成する次のコードチャンクで説明される。
 <code><a href="https://rspatial.github.io/terra/reference/plot.html">plot()</a></code> には他にも多くのオプションがあり、<code><a href="https://r-spatial.github.io/sf/reference/plot.html">?plot</a></code> のヘルプページと <strong>sf</strong> 5 番目の vignette <a href="https://cran.r-project.org/package=sf/vignettes/sf5.html"><code>sf5</code></a> のリンクをたどって調べることができる (訳注: <a href="https://www.uclmail.net/users/babayoshihiko/R/">vignette 日本語版</a>)。</p>
-<div class="sourceCode" id="cb345"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb344"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">g</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_graticule.html">st_graticule</a></span><span class="op">(</span><span class="va">nz</span>, lon <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">170</span>, <span class="fl">175</span><span class="op">)</span>, lat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">45</span>, <span class="op">-</span><span class="fl">40</span>, <span class="op">-</span><span class="fl">35</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nz_water</span>, graticule <span class="op">=</span> <span class="va">g</span>, axes <span class="op">=</span> <span class="cn">TRUE</span>, col <span class="op">=</span> <span class="st">"blue"</span><span class="op">)</span></span>
 <span><span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">nz_elev</span> <span class="op">/</span> <span class="fl">1000</span>, add <span class="op">=</span> <span class="cn">TRUE</span>, axes <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -1022,7 +1022,7 @@ FIGURE 9.25: plot() で作成したNew Zealand の地図。右の凡例は標高
 <p><strong>ggplot2</strong> はデフォルトで経緯度図郭線を描画する。
 経緯度図郭線のデフォルト設定は、<code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous()</a></code> , <code><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous()</a></code> または <a href="https://github.com/tidyverse/ggplot2/issues/2071"><code>coord_sf(datum = NA)</code></a> で上書きできる。
 その他の注目すべき特徴としては、<code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> でカプセル化された引用符なしの変数名を使って、どの美観が異なるかを示したり、<code>data</code> 引数を使ってデータソースを切り替えたりしている。以下のコードチャンクでは Figure <a href="adv-map.html#fig:nz-gg2">9.26</a> を作成している。</p>
-<div class="sourceCode" id="cb346"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb345"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="va">g1</span> <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nz</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="va">Median_income</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">nz_height</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1034,7 +1034,7 @@ FIGURE 9.25: plot() で作成したNew Zealand の地図。右の凡例は標高
 例えば、<strong>ggplot2</strong> の地図機能を強化するために、北矢印 (<code><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_north_arrow.html">annotation_north_arrow()</a></code>) やスケールバー (<code><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_scale.html">annotation_scale()</a></code>) あるいは背景タイル (<code><a href="https://paleolimbot.github.io/ggspatial/reference/annotation_map_tile.html">annotation_map_tile()</a></code>) を追加する <strong>ggspatial</strong> がある。
 また、<code><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial()</a></code> は様々な空間データクラスを扱うことができる。
 これによって、Figure <a href="adv-map.html#fig:nz-gg2">9.26</a> で示すように、<strong>terra</strong> の <code>SpatRaster</code> オブジェクトをプロットすることができる。</p>
-<div class="sourceCode" id="cb347"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb346"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://paleolimbot.github.io/ggspatial/">ggspatial</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
 <span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial</a></span><span class="op">(</span><span class="va">nz_elev</span><span class="op">)</span> <span class="op">+</span></span>
@@ -1148,7 +1148,7 @@ FIGURE 9.26: ggplot2 のみ (左) と ggplot2 と ggspatial (右) で生成し�
 入力として、<code>sf</code> オブジェクトと変数名 (列) を受け取る。
 さらに、<code>intermax</code> 引数 (カルトグラム変換の最大反復回数) を変更することが可能である。
 例えば、New Zealand の地域の所得の中央値を連続カルトグラム (Figure <a href="adv-map.html#fig:cartomap1">9.27</a> 右図) で表すと、次のようになる。</p>
-<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb348"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/sjewo/cartogram">cartogram</a></span><span class="op">)</span></span>
 <span><span class="va">nz_carto</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/cartogram/man/cartogram_cont.html">cartogram_cont</a></span><span class="op">(</span><span class="va">nz</span>, <span class="st">"Median_income"</span>, itermax <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op">(</span><span class="va">nz_carto</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op">(</span><span class="st">"Median_income"</span><span class="op">)</span></span></code></pre></div>
@@ -1162,7 +1162,7 @@ FIGURE 9.27: 標準地図 (左) と連続範囲 (右) の比較。
 非連続面積カルトグラムは、提供された重み付け変数に基づいて各面積を縮小することによって作成される。
 円面積カルトグラム (Dorling 法) は、重み付け変数に比例した面積を持つ円から構成されている。
 以下のコードは、米国各州の人口の非連続面積と円面積カルトグラム (Dorling 法) の作成例である (Figure <a href="adv-map.html#fig:cartomap2">9.28</a>)。</p>
-<div class="sourceCode" id="cb350"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb349"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">us_states9311</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">us_states</span>, <span class="st">"EPSG:9311"</span><span class="op">)</span></span>
 <span><span class="va">us_states9311_ncont</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/cartogram/man/cartogram_ncont.html">cartogram_ncont</a></span><span class="op">(</span><span class="va">us_states9311</span>, <span class="st">"total_pop_15"</span><span class="op">)</span></span>
 <span><span class="va">us_states9311_dorling</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/cartogram/man/cartogram_dorling.html">cartogram_dorling</a></span><span class="op">(</span><span class="va">us_states9311</span>, <span class="st">"total_pop_15"</span><span class="op">)</span></span></code></pre></div>
@@ -1179,7 +1179,7 @@ FIGURE 9.28: 非連続領域カルトグラム (左) と円面積カルトグラ
 </h2>
 <p>ここでの演習は、新しくオブジェクト <code>africa</code> を使用する。
 これは、<strong>spData</strong> のデータセット <code>world</code> と <code>worldbank_df</code> から、以下のように作成する。</p>
-<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb350"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://jakubnowosad.com/spData/">spData</a></span><span class="op">)</span></span>
 <span><span class="va">africa</span> <span class="op">=</span> <span class="va">world</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">==</span> <span class="st">"Africa"</span>, <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/NA.html">is.na</a></span><span class="op">(</span><span class="va">iso_a2</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -1189,7 +1189,7 @@ FIGURE 9.28: 非連続領域カルトグラム (左) と円面積カルトグラ
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/valid.html">st_make_valid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_collection_extract.html">st_collection_extract</a></span><span class="op">(</span><span class="st">"POLYGON"</span><span class="op">)</span></span></code></pre></div>
 <p><strong>spDataLarge</strong> のデータセット <code>zion</code> と <code>nlcd</code> も使用する。</p>
-<div class="sourceCode" id="cb352"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb351"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">zion</span> <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">read_sf</a></span><span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"vector/zion.gpkg"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">nlcd</span> <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"raster/nlcd.tif"</span>, package <span class="op">=</span> <span class="st">"spDataLarge"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p>E1. <strong>graphics</strong> (ヒント: <code><a href="https://rspatial.github.io/terra/reference/plot.html">plot()</a></code>) と <strong>tmap</strong> パッケージ (ヒント: <code>tm_shape(africa) + ...</code>) を使って、Africa 全土の人間開発指数 (<code>HDI</code>) の地理的分布を示す地図を作成しなさい。</p>
@@ -1308,7 +1308,7 @@ FIGURE 9.28: 非連続領域カルトグラム (左) と円面積カルトグラ
 <footer class="bg-primary text-light mt-5"><div class="container"><div class="row">
 
   <div class="col-12 col-md-6 mt-3">
-    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-13.</p>
+    <p>"<strong>Geocomputation with R</strong>" was written by Robin Lovelace, Jakub Nowosad, Jannes Muenchow. It was last built on 2025-06-24.</p>
   </div>
 
   <div class="col-12 col-md-6 mt-3">

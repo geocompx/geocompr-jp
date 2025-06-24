@@ -658,9 +658,6 @@ tm_shape(zones_od) +
            col = "darkgreen", col_alpha = 0.75) +
   tm_scalebar() + tm_layout(fontfamily = "HiraginoSans-W3")
 #> [v3->v4] `tm_layout()`: use text.fontfamily instead of fontfamily
-#> [plot mode] legend/component: Some components or legends are too "wide" and are
-#> therefore rescaled.
-#> ℹ Set the tmap option `component.autoscale = FALSE` to disable rescaling.
 ```
 
 <div class="figure" style="text-align: center">
